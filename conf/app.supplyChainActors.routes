@@ -1,0 +1,11 @@
+->         /                                                                                  app.supplyChainActors.index.Routes
+
+GET        /:lrn/transport-details/supply-chain-actor/add                                     controllers.supplyChainActors.SupplyChainActorYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/supply-chain-actor/add                                     controllers.supplyChainActors.SupplyChainActorYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/supply-chain-actor/change-add                              controllers.supplyChainActors.SupplyChainActorYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/supply-chain-actor/change-add                              controllers.supplyChainActors.SupplyChainActorYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/transport-details/supply-chain-actor/add-another                             controllers.supplyChainActors.AddAnotherSupplyChainActorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/supply-chain-actor/add-another                             controllers.supplyChainActors.AddAnotherSupplyChainActorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/supply-chain-actor/change-add-another                      controllers.supplyChainActors.AddAnotherSupplyChainActorController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/supply-chain-actor/change-add-another                      controllers.supplyChainActors.AddAnotherSupplyChainActorController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

@@ -1,0 +1,21 @@
+->         /                                                                                    app.equipment.index.Routes
+
+GET        /:lrn/transport-details/transport-equipment/add-transport-equipment                  controllers.equipment.AddTransportEquipmentYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/transport-equipment/add-transport-equipment                  controllers.equipment.AddTransportEquipmentYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/transport-equipment/change-add-transport-equipment           controllers.equipment.AddTransportEquipmentYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/transport-equipment/change-add-transport-equipment           controllers.equipment.AddTransportEquipmentYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/transport-details/transport-equipment/add-another                              controllers.equipment.AddAnotherEquipmentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/transport-equipment/add-another                              controllers.equipment.AddAnotherEquipmentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/transport-equipment/change-add-another                       controllers.equipment.AddAnotherEquipmentController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/transport-equipment/change-add-another                       controllers.equipment.AddAnotherEquipmentController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/transport-details/transport-charges/add-payment-method                         controllers.equipment.AddPaymentMethodYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/transport-charges/add-payment-method                         controllers.equipment.AddPaymentMethodYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/transport-charges/change-add-payment-method                  controllers.equipment.AddPaymentMethodYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/transport-charges/change-add-payment-method                  controllers.equipment.AddPaymentMethodYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/transport-details/transport-charges/payment-method                             controllers.equipment.PaymentMethodController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/transport-charges/payment-method                             controllers.equipment.PaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/transport-charges/change-payment-method                      controllers.equipment.PaymentMethodController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/transport-charges/change-payment-method                      controllers.equipment.PaymentMethodController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
