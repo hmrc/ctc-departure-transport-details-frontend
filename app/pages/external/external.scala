@@ -16,12 +16,12 @@
 
 package pages
 
-import play.api.libs.json.{JsPath, __}
+import play.api.libs.json.{__, JsPath}
 
 package object external {
 
-  lazy val preTaskListPath: JsPath = __ \ "preTaskList"
+  lazy val preTaskListPath: JsPath              = __ \ "preTaskList"
   lazy val traderDetailsConsignmentPath: JsPath = __ \ "traderDetails" \ "consignment"
-  lazy val routeDetailsRoutingPath: JsPath = __ \ "routeDetails" \ "routing"
+  lazy val routeDetailsRoutingPath: JsPath      = __ \ "routeDetails" \ "routing"
 
 }

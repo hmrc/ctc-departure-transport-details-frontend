@@ -27,7 +27,7 @@ import views.html.TransportAnswersView
 
 import javax.inject.Inject
 
-class TransportAnswersController @Inject()(
+class TransportAnswersController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,

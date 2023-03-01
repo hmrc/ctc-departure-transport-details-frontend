@@ -37,7 +37,8 @@ trait ItemNumberNavigatorProvider {
   def apply(mode: Mode, equipmentIndex: Index, itemNumberIndex: Index): UserAnswersNavigator
 }
 
-class ItemNumberNavigator(override val mode: Mode, equipmentIndex: Index, itemNumberIndex: Index)(implicit override val config: FrontendAppConfig) extends UserAnswersNavigator {
+class ItemNumberNavigator(override val mode: Mode, equipmentIndex: Index, itemNumberIndex: Index)(implicit override val config: FrontendAppConfig)
+    extends UserAnswersNavigator {
 
   override type T = ItemNumberDomain
 

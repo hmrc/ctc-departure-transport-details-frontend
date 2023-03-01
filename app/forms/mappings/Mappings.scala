@@ -50,33 +50,33 @@ trait Mappings extends Formatters with Constraints {
     of(enumerableFormatter[A](requiredKey, invalidKey))
 
   protected def country(
-                         countryList: CountryList,
-                         errorKey: String = "error.required",
-                         args: Seq[Any] = Seq.empty
-                       ): FieldMapping[Country] =
+    countryList: CountryList,
+    errorKey: String = "error.required",
+    args: Seq[Any] = Seq.empty
+  ): FieldMapping[Country] =
     of(countryFormatter(countryList, errorKey, args))
 
   protected def customsOffice(
-                               customsOfficeList: CustomsOfficeList,
-                               errorKey: String = "error.required",
-                               args: Seq[Any] = Seq.empty
-                             ): FieldMapping[CustomsOffice] =
+    customsOfficeList: CustomsOfficeList,
+    errorKey: String = "error.required",
+    args: Seq[Any] = Seq.empty
+  ): FieldMapping[CustomsOffice] =
     of(customsOfficeFormatter(customsOfficeList, errorKey, args))
 
   protected def localDate(
-                           invalidKey: String,
-                           allRequiredKey: String,
-                           twoRequiredKey: String,
-                           requiredKey: String,
-                           args: Seq[String] = Seq.empty
-                         ): FieldMapping[LocalDate] =
+    invalidKey: String,
+    allRequiredKey: String,
+    twoRequiredKey: String,
+    requiredKey: String,
+    args: Seq[String] = Seq.empty
+  ): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
 
   protected def nationality(
-                             nationalityList: NationalityList,
-                             errorKey: String = "error.required",
-                             args: Seq[Any] = Seq.empty
-                           ): FieldMapping[Nationality] =
+    nationalityList: NationalityList,
+    errorKey: String = "error.required",
+    args: Seq[Any] = Seq.empty
+  ): FieldMapping[Nationality] =
     of(nationalityFormatter(nationalityList, errorKey, args))
 
 }

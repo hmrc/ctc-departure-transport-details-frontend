@@ -28,7 +28,8 @@ import play.api.mvc.Call
 import utils.cyaHelpers.AnswersHelper
 import viewModels.ListItem
 
-class SealsAnswersHelper(userAnswers: UserAnswers, mode: Mode, equipmentIndex: Index)(implicit messages: Messages, config: FrontendAppConfig) extends AnswersHelper(userAnswers, mode) {
+class SealsAnswersHelper(userAnswers: UserAnswers, mode: Mode, equipmentIndex: Index)(implicit messages: Messages, config: FrontendAppConfig)
+    extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(SealsSection(equipmentIndex)) {

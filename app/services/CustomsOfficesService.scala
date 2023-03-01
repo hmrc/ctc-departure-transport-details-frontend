@@ -25,7 +25,7 @@ import pages.sections.external.{OfficesOfExitSection, OfficesOfTransitSection}
 
 import javax.inject.Inject
 
-class CustomsOfficesService @Inject()(
+class CustomsOfficesService @Inject() (
   referenceDataConnector: ReferenceDataConnector
 ) {
 

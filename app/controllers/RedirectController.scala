@@ -25,12 +25,12 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 class RedirectController @Inject() (
-                                     override val messagesApi: MessagesApi,
-                                     actions: Actions,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     navigatorProvider: TransportNavigatorProvider
-                                   ) extends FrontendBaseController
-  with I18nSupport {
+  override val messagesApi: MessagesApi,
+  actions: Actions,
+  val controllerComponents: MessagesControllerComponents,
+  navigatorProvider: TransportNavigatorProvider
+) extends FrontendBaseController
+    with I18nSupport {
 
   def redirect(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

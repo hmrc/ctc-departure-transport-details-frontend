@@ -37,7 +37,8 @@ trait SealNavigatorProvider {
   def apply(mode: Mode, equipmentIndex: Index, sealIndex: Index): UserAnswersNavigator
 }
 
-class SealNavigator(override val mode: Mode, equipmentIndex: Index, sealIndex: Index)(implicit override val config: FrontendAppConfig) extends UserAnswersNavigator {
+class SealNavigator(override val mode: Mode, equipmentIndex: Index, sealIndex: Index)(implicit override val config: FrontendAppConfig)
+    extends UserAnswersNavigator {
 
   override type T = SealDomain
 

@@ -29,9 +29,9 @@ trait Formatters {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
-        case None => Left(Seq(FormError(key, errorKey, args)))
+        case None                      => Left(Seq(FormError(key, errorKey, args)))
         case Some(s) if s.trim.isEmpty => Left(Seq(FormError(key, errorKey, args)))
-        case Some(s) => Right(s)
+        case Some(s)                   => Right(s)
       }
 
     override def unbind(key: String, value: String): Map[String, String] =
@@ -143,10 +143,10 @@ trait Formatters {
     }
 
   private[mappings] def countryFormatter(
-                                          countryList: CountryList,
-                                          errorKey: String,
-                                          args: Seq[Any] = Seq.empty
-                                        ): Formatter[Country] = new Formatter[Country] {
+    countryList: CountryList,
+    errorKey: String,
+    args: Seq[Any] = Seq.empty
+  ): Formatter[Country] = new Formatter[Country] {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Country] = {
       lazy val error = Left(Seq(FormError(key, errorKey, args)))
@@ -155,7 +155,7 @@ trait Formatters {
         case Some(code) =>
           countryList.countries.find(_.code.code == code) match {
             case Some(country) => Right(country)
-            case None => error
+            case None          => error
           }
       }
     }
@@ -165,10 +165,10 @@ trait Formatters {
   }
 
   private[mappings] def customsOfficeFormatter(
-                                                customsOfficeList: CustomsOfficeList,
-                                                errorKey: String,
-                                                args: Seq[Any] = Seq.empty
-                                              ): Formatter[CustomsOffice] = new Formatter[CustomsOffice] {
+    customsOfficeList: CustomsOfficeList,
+    errorKey: String,
+    args: Seq[Any] = Seq.empty
+  ): Formatter[CustomsOffice] = new Formatter[CustomsOffice] {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], CustomsOffice] = {
       lazy val error = Left(Seq(FormError(key, errorKey, args)))
@@ -177,7 +177,7 @@ trait Formatters {
         case Some(id) =>
           customsOfficeList.customsOffices.find(_.id == id) match {
             case Some(customsOffice) => Right(customsOffice)
-            case None => error
+            case None                => error
           }
       }
     }
@@ -187,10 +187,10 @@ trait Formatters {
   }
 
   private[mappings] def nationalityFormatter(
-                                              nationalityList: NationalityList,
-                                              errorKey: String,
-                                              args: Seq[Any] = Seq.empty
-                                            ): Formatter[Nationality] = new Formatter[Nationality] {
+    nationalityList: NationalityList,
+    errorKey: String,
+    args: Seq[Any] = Seq.empty
+  ): Formatter[Nationality] = new Formatter[Nationality] {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Nationality] = {
       lazy val error = Left(Seq(FormError(key, errorKey, args)))
@@ -199,7 +199,7 @@ trait Formatters {
         case Some(code) =>
           nationalityList.getNationality(code) match {
             case Some(nationality: Nationality) => Right(nationality)
-            case None => error
+            case None                           => error
           }
       }
     }

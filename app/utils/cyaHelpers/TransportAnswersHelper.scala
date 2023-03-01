@@ -44,7 +44,8 @@ import viewModels.Link
 
 import java.time.LocalDate
 
-class TransportAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig) extends AnswersHelper(userAnswers, mode) {
+class TransportAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig)
+    extends AnswersHelper(userAnswers, mode) {
 
   def usingSameUcr: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = SameUcrYesNoPage,

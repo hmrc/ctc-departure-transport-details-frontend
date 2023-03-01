@@ -24,7 +24,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class CountriesService @Inject()(referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
   def getCountries()(implicit hc: HeaderCarrier): Future[CountryList] =
     getCountries(Nil)

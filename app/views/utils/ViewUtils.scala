@@ -124,7 +124,7 @@ object ViewUtils {
     def withHeadingAndCaption(heading: String, caption: Option[String]): DateInput =
       caption match {
         case Some(value) => dateInput.withHeadingAndSectionCaption(Text(heading), Text(value))
-        case None => dateInput.withHeading(Text(heading))
+        case None        => dateInput.withHeading(Text(heading))
       }
 
     def withVisuallyHiddenLegend(legend: String): DateInput =

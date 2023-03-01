@@ -21,7 +21,6 @@ import models.DeclarationType.Option4
 import play.api.libs.json.JsPath
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
 
-
 case object ApprovedOperatorPage extends ReadOnlyPage[Boolean] {
 
   override def path: JsPath = traderDetailsConsignmentPath \ toString
@@ -30,6 +29,6 @@ case object ApprovedOperatorPage extends ReadOnlyPage[Boolean] {
 
   def inferredReader: UserAnswersReader[Boolean] = DeclarationTypePage.reader.flatMap {
     case Option4 => UserAnswersReader(false)
-    case _ => ApprovedOperatorPage.reader
+    case _       => ApprovedOperatorPage.reader
   }
 }

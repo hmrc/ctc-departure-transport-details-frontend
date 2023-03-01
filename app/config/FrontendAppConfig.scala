@@ -26,7 +26,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val appName: String = configuration.get[String]("appName")
 
   lazy val limitDateDaysBefore: Int = configuration.get[Int]("dates.limitDate.daysBefore")
-  lazy val limitDateDaysAfter: Int = configuration.get[Int]("dates.limitDate.daysAfter")
+  lazy val limitDateDaysAfter: Int  = configuration.get[Int]("dates.limitDate.daysAfter")
 
   val enrolmentProxyUrl: String            = servicesConfig.fullServiceUrl("enrolment-store-proxy")
   val eccEnrolmentSplashPage: String       = configuration.get[String]("urls.eccEnrolmentSplashPage")

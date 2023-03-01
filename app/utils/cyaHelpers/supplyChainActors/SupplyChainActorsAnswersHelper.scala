@@ -26,7 +26,8 @@ import play.api.i18n.Messages
 import utils.cyaHelpers.AnswersHelper
 import viewModels.ListItem
 
-class SupplyChainActorsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig) extends AnswersHelper(userAnswers, mode) {
+class SupplyChainActorsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig)
+    extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(SupplyChainActorsSection) {

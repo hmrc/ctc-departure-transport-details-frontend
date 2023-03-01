@@ -28,7 +28,8 @@ import play.api.mvc.Call
 import utils.cyaHelpers.AnswersHelper
 import viewModels.ListItem
 
-class AuthorisationsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig) extends AnswersHelper(userAnswers, mode) {
+class AuthorisationsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig)
+    extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(AuthorisationsSection) {
