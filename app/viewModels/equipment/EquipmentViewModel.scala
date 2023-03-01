@@ -16,8 +16,11 @@
 
 package viewModels.equipment
 
+import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
+import utils.cyaHelpers.equipment.EquipmentAnswersHelper
+import viewModels.Section
 
 import javax.inject.Inject
 
@@ -25,7 +28,7 @@ case class EquipmentViewModel(sections: Seq[Section])
 
 object EquipmentViewModel {
 
-  class EquipmentViewModelProvider @Inject() () {
+  class EquipmentViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode, equipmentIndex: Index)(implicit messages: Messages): EquipmentViewModel = {
       val helper = new EquipmentAnswersHelper(userAnswers, mode, equipmentIndex)
@@ -38,15 +41,15 @@ object EquipmentViewModel {
       )
 
       val sealsSection = Section(
-        sectionTitle = messages("transport.equipment.index.checkYourAnswers.seals"),
+        sectionTitle = messages("equipment.index.checkYourAnswers.seals"),
         rows = helper.sealsYesNo.toList ++ helper.seals,
-        addAnotherLink = helper.addOrRemoveSeals
+        addAnotherLink = helper.addOrRemoveSeals()
       )
 
       val itemNumbersSection = Section(
-        sectionTitle = messages("transport.equipment.index.checkYourAnswers.itemNumbers"),
+        sectionTitle = messages("equipment.index.checkYourAnswers.itemNumbers"),
         rows = helper.itemNumbersYesNo.toList ++ helper.itemNumbers,
-        addAnotherLink = helper.addOrRemoveItemNumbers
+        addAnotherLink = helper.addOrRemoveItemNumbers()
       )
 
       new EquipmentViewModel(Seq(preSection, sealsSection, itemNumbersSection))

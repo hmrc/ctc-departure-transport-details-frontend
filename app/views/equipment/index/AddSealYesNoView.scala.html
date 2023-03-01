@@ -30,9 +30,9 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.equipment.index.addSealYesNo.title"),
+    title = messages("equipment.index.addSealYesNo.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.AddSealYesNoController.onSubmit(lrn, mode, equipmentIndex), Symbol("autoComplete") -> "off") {
@@ -42,8 +42,8 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("transport.equipment.index.addSealYesNo.heading"),
-                caption = Some(messages("transport.equipment.caption"))
+                heading = messages("equipment.index.addSealYesNo.heading"),
+                caption = Some(messages("equipment.caption"))
             )
         )
 

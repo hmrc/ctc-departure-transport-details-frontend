@@ -17,7 +17,7 @@
 package controllers.authorisationsAndLimit.authorisations.index
 
 import config.FrontendAppConfig
-import controllers.{NavigatorOps, SettableOps}
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import controllers.actions._
 import forms.AuthorisationReferenceNumberFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
@@ -46,7 +46,7 @@ class AuthorisationReferenceNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix = "transport.authorisations.authorisationReferenceNumber"
+  private val prefix = "authorisations.authorisationReferenceNumber"
 
   private def authorisationType(authorisationIndex: Index)(implicit request: DataRequest[_]): Option[String] =
     AuthorisationTypePage(authorisationIndex).inferredReader.run(request.userAnswers).toOption.map(_.forDisplay)

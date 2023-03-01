@@ -45,7 +45,7 @@ class BorderModeOfTransportController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[BorderModeOfTransport]("transport.transportMeans.borderModeOfTransport")
+  private val form = formProvider[BorderModeOfTransport]("transportMeans.borderModeOfTransport")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

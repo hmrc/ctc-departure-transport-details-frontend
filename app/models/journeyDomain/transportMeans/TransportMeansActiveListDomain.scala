@@ -17,9 +17,11 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
-import models.domain.UserAnswersReader
+import controllers.transportMeans.active.routes
+import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, RichJsArray, UserAnswers}
+import pages.sections.transportMeans.TransportMeansActiveListSection
 import play.api.mvc.Call
 
 case class TransportMeansActiveListDomain(

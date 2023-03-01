@@ -17,9 +17,18 @@
 package controllers.transportMeans.departure
 
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import forms.NationalityFormProvider
+import models.{LocalReferenceNumber, Mode}
+import navigation.UserAnswersNavigator
+import navigation.TransportMeansNavigatorProvider
+import pages.transportMeans.departure.VehicleCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
+import services.NationalitiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.transportMeans.departure.VehicleCountryView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +50,7 @@ class VehicleCountryController @Inject() (
     implicit request =>
       service.getNationalities().map {
         nationalityList =>
-          val form = formProvider("transport.transportMeans.departure.vehicleCountry", nationalityList)
+          val form = formProvider("transportMeans.departure.vehicleCountry", nationalityList)
           val preparedForm = request.userAnswers.get(VehicleCountryPage) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -55,14 +64,14 @@ class VehicleCountryController @Inject() (
     implicit request =>
       service.getNationalities().flatMap {
         nationalityList =>
-          val form = formProvider("transport.transportMeans.departure.vehicleCountry", nationalityList)
+          val form = formProvider("transportMeans.departure.vehicleCountry", nationalityList)
           form
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, nationalityList.nationalities, mode))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                VehicleCountryPage.writeToUserAnswers(value).updateTask[TransportDomain]().writeToSession().navigate()
+                VehicleCountryPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
               }
             )
       }

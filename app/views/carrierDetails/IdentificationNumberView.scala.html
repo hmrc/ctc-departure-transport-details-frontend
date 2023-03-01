@@ -30,9 +30,9 @@
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.carrierDetails.identificationNumber.title"),
+    title = messages("carrierDetails.identificationNumber.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.IdentificationNumberController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
@@ -42,11 +42,11 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("transport.carrierDetails.identificationNumber.heading"),
-                caption = Some(messages("transport.carrierDetails.caption"))
+                heading = messages("carrierDetails.identificationNumber.heading"),
+                caption = Some(messages("carrierDetails.caption"))
             ),
             inputClass = InputSize.Width20,
-            hint = Some(messages("transport.carrierDetails.identificationNumber.hint"))
+            hint = Some(messages("carrierDetails.identificationNumber.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))

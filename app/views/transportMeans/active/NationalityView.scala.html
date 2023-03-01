@@ -34,9 +34,9 @@
 @(form: Form[Nationality], lrn: LocalReferenceNumber, nationalities: Seq[Nationality], mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.transportMeans.active.nationality.title"),
+    title = messages("transportMeans.active.nationality.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.NationalityController.onSubmit(lrn, mode, index: Index), Symbol("autoComplete") -> "off") {
@@ -46,12 +46,12 @@
         @inputSelect(
             field = form("value"),
             selectType = OrdinarySelect(
-                heading = messages("transport.transportMeans.active.nationality.heading"),
-                caption = Some(messages("transport.activeBorderMeansOfTransport.caption"))
+                heading = messages("transportMeans.active.nationality.heading"),
+                caption = Some(messages("activeBorderMeansOfTransport.caption"))
             ),
-            hint = Some(messages("transport.transportMeans.active.nationality.hint")),
+            hint = Some(messages("transportMeans.active.nationality.hint")),
             selectItems = nationalities.toSelectItems(form.value),
-            placeholder = messages("transport.transportMeans.active.nationality.placeholder")
+            placeholder = messages("transportMeans.active.nationality.placeholder")
         )
 
         @button(attributes = Map("id" -> "submit"))

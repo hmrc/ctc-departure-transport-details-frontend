@@ -17,9 +17,10 @@
 package models.journeyDomain.supplyChainActors
 
 import cats.implicits._
-import models.domain.UserAnswersReader
+import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, RichJsArray, UserAnswers}
+import pages.sections.supplyChainActors.SupplyChainActorsSection
 import play.api.mvc.Call
 
 case class SupplyChainActorsDomain(

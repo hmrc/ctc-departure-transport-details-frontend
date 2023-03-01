@@ -30,9 +30,9 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.transportMeans.active.confirmRemoveBorderTransport.title", activeIndex.display),
+    title = messages("transportMeans.active.confirmRemoveBorderTransport.title", activeIndex.display),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.ConfirmRemoveBorderTransportController.onSubmit(lrn, mode, activeIndex), Symbol("autoComplete") -> "off") {
@@ -42,8 +42,8 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("transport.transportMeans.active.confirmRemoveBorderTransport.heading", activeIndex.display),
-                caption = Some(messages("transport.activeBorderMeansOfTransport.caption"))
+                heading = messages("transportMeans.active.confirmRemoveBorderTransport.heading", activeIndex.display),
+                caption = Some(messages("activeBorderMeansOfTransport.caption"))
             )
         )
 

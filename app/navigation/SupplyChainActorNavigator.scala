@@ -16,15 +16,15 @@
 
 package navigation
 
+import config.FrontendAppConfig
 import models.domain.UserAnswersReader
-import models.journeyDomain.transport.supplyChainActors.SupplyChainActorDomain
+import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.{CheckMode, Index, Mode, NormalMode}
-import navigation.UserAnswersNavigator
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SupplyChainActorNavigatorProviderImpl @Inject() () extends SupplyChainActorNavigatorProvider {
+class SupplyChainActorNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends SupplyChainActorNavigatorProvider {
 
   override def apply(mode: Mode, index: Index): UserAnswersNavigator =
     mode match {
@@ -37,7 +37,7 @@ trait SupplyChainActorNavigatorProvider {
   def apply(mode: Mode, index: Index): UserAnswersNavigator
 }
 
-class SupplyChainActorNavigator(override val mode: Mode, index: Index) extends UserAnswersNavigator {
+class SupplyChainActorNavigator(override val mode: Mode, index: Index)(implicit override val config: FrontendAppConfig) extends UserAnswersNavigator {
 
   override type T = SupplyChainActorDomain
 

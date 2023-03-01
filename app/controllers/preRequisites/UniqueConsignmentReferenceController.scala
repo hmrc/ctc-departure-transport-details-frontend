@@ -44,7 +44,7 @@ class UniqueConsignmentReferenceController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.preRequisites.uniqueConsignmentReference")
+  private val form = formProvider("preRequisites.uniqueConsignmentReference")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

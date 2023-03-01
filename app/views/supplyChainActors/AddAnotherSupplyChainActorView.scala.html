@@ -35,14 +35,14 @@
 @mainTemplate(
     title = viewModel.title,
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @errorSummary(form.errors)
 
     @heading(
         heading = viewModel.heading,
-        caption = Some(messages("transport.supplyChainActors.caption"))
+        caption = Some(messages("supplyChainActors.caption"))
     )
 
     @listWithActions(viewModel.listItems)

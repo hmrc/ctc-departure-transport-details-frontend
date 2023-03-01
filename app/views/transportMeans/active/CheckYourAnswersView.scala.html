@@ -16,7 +16,7 @@
 
 @import models.{Index, LocalReferenceNumber}
 @import controllers.transportMeans.active.routes
-@import viewModels.sections.Section
+@import viewModels.Section
 @import views.html.components.{AnswerSections, Button, Heading}
 
 @this(
@@ -30,14 +30,14 @@
 @(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.transportMeans.active.checkYourAnswers.title"),
+    title = messages("transportMeans.active.checkYourAnswers.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @heading(
-        heading = messages("transport.transportMeans.active.checkYourAnswers.heading"),
-        caption = Some(messages("transport.activeBorderMeansOfTransport.caption"))
+        heading = messages("transportMeans.active.checkYourAnswers.heading"),
+        caption = Some(messages("activeBorderMeansOfTransport.caption"))
     )
 
     @answerSections(sections)

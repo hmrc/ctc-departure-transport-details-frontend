@@ -16,8 +16,9 @@
 
 package models.journeyDomain.authorisationsAndLimit.limit
 
-import models.domain.UserAnswersReader
+import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.JourneyDomainModel
+import pages.authorisationsAndLimit.limit.LimitDatePage
 
 import java.time.LocalDate
 

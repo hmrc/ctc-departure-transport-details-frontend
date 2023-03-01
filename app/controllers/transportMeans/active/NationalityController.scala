@@ -17,9 +17,18 @@
 package controllers.transportMeans.active
 
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import forms.NationalityFormProvider
+import models.{Index, LocalReferenceNumber, Mode}
+import navigation.UserAnswersNavigator
+import navigation.TransportMeansActiveNavigatorProvider
+import pages.transportMeans.active.NationalityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
+import services.NationalitiesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.transportMeans.active.NationalityView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +50,7 @@ class NationalityController @Inject() (
     implicit request =>
       service.getNationalities().map {
         nationalityList =>
-          val form = formProvider("transport.transportMeans.active.nationality", nationalityList)
+          val form = formProvider("transportMeans.active.nationality", nationalityList)
           val preparedForm = request.userAnswers.get(NationalityPage(index)) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -55,14 +64,14 @@ class NationalityController @Inject() (
     implicit request =>
       service.getNationalities().flatMap {
         nationalityList =>
-          val form = formProvider("transport.transportMeans.active.nationality", nationalityList)
+          val form = formProvider("transportMeans.active.nationality", nationalityList)
           form
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, nationalityList.nationalities, mode, index))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-                NationalityPage(index).writeToUserAnswers(value).updateTask[TransportDomain]().writeToSession().navigate()
+                NationalityPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
               }
             )
       }

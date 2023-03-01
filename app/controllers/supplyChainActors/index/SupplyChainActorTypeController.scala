@@ -45,7 +45,7 @@ class SupplyChainActorTypeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[SupplyChainActorType]("transport.supplyChainActors.index.supplyChainActorType")
+  private val form = formProvider[SupplyChainActorType]("supplyChainActors.index.supplyChainActorType")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, actorIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

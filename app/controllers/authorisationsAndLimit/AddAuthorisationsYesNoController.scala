@@ -43,7 +43,7 @@ class AddAuthorisationsYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.authorisations.addAuthorisationsYesNo")
+  private val form = formProvider("authorisations.addAuthorisationsYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

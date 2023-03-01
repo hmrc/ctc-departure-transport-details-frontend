@@ -17,11 +17,18 @@
 package controllers.transportMeans.active
 
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.CustomsOfficeFormProvider
+import models.{Index, LocalReferenceNumber, Mode}
+import navigation.UserAnswersNavigator
+import navigation.TransportMeansActiveNavigatorProvider
+import pages.transportMeans.active.CustomsOfficeActiveBorderPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.CustomsOfficesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.transportMeans.active.CustomsOfficeActiveBorderView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,7 +49,7 @@ class CustomsOfficeActiveBorderController @Inject() (
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
       val customsOffices = customsOfficeService.getCustomsOffices(request.userAnswers)
-      val form           = formProvider("transport.transportMeans.active.customsOfficeActiveBorder", customsOffices)
+      val form           = formProvider("transportMeans.active.customsOfficeActiveBorder", customsOffices)
       val preparedForm = request.userAnswers.get(CustomsOfficeActiveBorderPage(activeIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -54,14 +61,14 @@ class CustomsOfficeActiveBorderController @Inject() (
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       val customsOffices = customsOfficeService.getCustomsOffices(request.userAnswers)
-      val form           = formProvider("transport.transportMeans.active.customsOfficeActiveBorder", customsOffices)
+      val form           = formProvider("transportMeans.active.customsOfficeActiveBorder", customsOffices)
       form
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, customsOffices, mode, activeIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
-            CustomsOfficeActiveBorderPage(activeIndex).writeToUserAnswers(value).updateTask[TransportDomain]().writeToSession().navigate()
+            CustomsOfficeActiveBorderPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

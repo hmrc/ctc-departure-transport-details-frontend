@@ -16,19 +16,18 @@
 
 package forms.mappings
 
-import models.{CountryList, Enumerable}
-import models.reference.Country
+import models.{CountryList, CustomsOfficeList, Enumerable, NationalityList}
+import models.reference.{Country, CustomsOffice, Nationality}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import play.api.data.format.Formats.ignoredFormat
+
+import java.time.LocalDate
 
 trait Mappings extends Formatters with Constraints {
 
   protected def text(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
     of(stringFormatter(errorKey, args))
-
-  protected def trimmedText(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
-    of(trimmedStringFormatter(errorKey, args))
 
   protected def textWithSpacesRemoved(errorKey: String = "error.required"): FieldMapping[String] =
     of(spacelessStringFormatter(errorKey))
@@ -56,5 +55,28 @@ trait Mappings extends Formatters with Constraints {
                          args: Seq[Any] = Seq.empty
                        ): FieldMapping[Country] =
     of(countryFormatter(countryList, errorKey, args))
+
+  protected def customsOffice(
+                               customsOfficeList: CustomsOfficeList,
+                               errorKey: String = "error.required",
+                               args: Seq[Any] = Seq.empty
+                             ): FieldMapping[CustomsOffice] =
+    of(customsOfficeFormatter(customsOfficeList, errorKey, args))
+
+  protected def localDate(
+                           invalidKey: String,
+                           allRequiredKey: String,
+                           twoRequiredKey: String,
+                           requiredKey: String,
+                           args: Seq[String] = Seq.empty
+                         ): FieldMapping[LocalDate] =
+    of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
+
+  protected def nationality(
+                             nationalityList: NationalityList,
+                             errorKey: String = "error.required",
+                             args: Seq[Any] = Seq.empty
+                           ): FieldMapping[Nationality] =
+    of(nationalityFormatter(nationalityList, errorKey, args))
 
 }

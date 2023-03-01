@@ -47,7 +47,7 @@ class TelephoneNumberController @Inject() (
     with I18nSupport {
 
   private def form(implicit request: Request): Form[String] =
-    formProvider("transport.carrierDetails.contact.telephoneNumber", contactName)
+    formProvider("carrierDetails.contact.telephoneNumber", contactName)
 
   private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
 

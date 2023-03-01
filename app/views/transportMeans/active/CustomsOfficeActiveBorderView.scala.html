@@ -34,9 +34,9 @@
 @(form: Form[CustomsOffice], lrn: LocalReferenceNumber, customsOfficeList: CustomsOfficeList, mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.transportMeans.active.customsOfficeActiveBorder.title"),
+    title = messages("transportMeans.active.customsOfficeActiveBorder.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.CustomsOfficeActiveBorderController.onSubmit(lrn, mode, activeIndex), Symbol("autoComplete") -> "off") {
@@ -46,13 +46,13 @@
         @inputSelect(
             field = form("value"),
             selectType = SelectWithAdditionalHtml(
-                heading = messages("transport.transportMeans.active.customsOfficeActiveBorder.heading"),
-                caption = Some(messages("transport.activeBorderMeansOfTransport.caption")),
-                additionalHtml = messages("transport.transportMeans.active.customsOfficeActiveBorder.paragraph").toParagraph
+                heading = messages("transportMeans.active.customsOfficeActiveBorder.heading"),
+                caption = Some(messages("activeBorderMeansOfTransport.caption")),
+                additionalHtml = messages("transportMeans.active.customsOfficeActiveBorder.paragraph").toParagraph
             ),
-            hint = Some(messages("transport.transportMeans.active.customsOfficeActiveBorder.hint")),
+            hint = Some(messages("transportMeans.active.customsOfficeActiveBorder.hint")),
             selectItems = customsOfficeList.customsOffices.toSelectItems(form.value),
-            placeholder = messages("transport.transportMeans.active.customsOfficeActiveBorder.placeholder")
+            placeholder = messages("transportMeans.active.customsOfficeActiveBorder.placeholder")
         )
 
         @button(attributes = Map("id" -> "submit"))

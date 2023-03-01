@@ -30,9 +30,9 @@
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index, itemNumberIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.equipment.index.itemNumber.title"),
+    title = messages("equipment.index.itemNumber.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.ItemNumberController.onSubmit(lrn, mode, equipmentIndex, itemNumberIndex), Symbol("autoComplete") -> "off") {
@@ -42,11 +42,11 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("transport.equipment.index.itemNumber.heading"),
-                caption = Some(messages("transport.equipment.caption"))
+                heading = messages("equipment.index.itemNumber.heading"),
+                caption = Some(messages("equipment.caption"))
             ),
             inputClass = InputSize.Width20,
-            hint = Some(messages("transport.equipment.index.itemNumber.hint"))
+            hint = Some(messages("equipment.index.itemNumber.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))

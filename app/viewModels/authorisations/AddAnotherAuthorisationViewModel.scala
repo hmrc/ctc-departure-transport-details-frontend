@@ -17,9 +17,11 @@
 package viewModels.authorisations
 
 import config.FrontendAppConfig
+import controllers.authorisationsAndLimit.authorisations.routes
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import utils.cyaHelpers.authorisations.AuthorisationsAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
 
 import javax.inject.Inject
@@ -29,14 +31,14 @@ case class AddAnotherAuthorisationViewModel(
   onSubmitCall: Call
 ) extends AddAnotherViewModel {
 
-  override val prefix: String = "transport.authorisations.addAnotherAuthorisation"
+  override val prefix: String = "authorisations.addAnotherAuthorisation"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxAuthorisations
 }
 
 object AddAnotherAuthorisationViewModel {
 
-  class AddAnotherAuthorisationViewModelProvider @Inject() () {
+  class AddAnotherAuthorisationViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherAuthorisationViewModel = {
       val helper = new AuthorisationsAnswersHelper(userAnswers, mode)

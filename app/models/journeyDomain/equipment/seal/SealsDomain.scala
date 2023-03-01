@@ -16,8 +16,9 @@
 
 package models.journeyDomain.equipment.seal
 
-import models.Index
-import models.domain.UserAnswersReader
+import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
+import models.{Index, RichJsArray}
+import pages.sections.equipment.SealsSection
 
 case class SealsDomain(value: Seq[SealDomain])
 

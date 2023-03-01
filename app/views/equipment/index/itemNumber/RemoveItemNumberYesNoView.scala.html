@@ -30,9 +30,9 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index, itemNumberIndex: Index, itemNumber: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.equipment.index.itemNumber.removeItemNumberYesNo.title", itemNumber),
+    title = messages("equipment.index.itemNumber.removeItemNumberYesNo.title", itemNumber),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.RemoveItemNumberYesNoController.onSubmit(lrn, mode, equipmentIndex, itemNumberIndex), Symbol("autoComplete") -> "off") {
@@ -42,8 +42,8 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("transport.equipment.index.itemNumber.removeItemNumberYesNo.heading", itemNumber),
-                caption = Some(messages("transport.equipment.caption"))
+                heading = messages("equipment.index.itemNumber.removeItemNumberYesNo.heading", itemNumber),
+                caption = Some(messages("equipment.caption"))
             )
         )
 

@@ -43,7 +43,7 @@ class ContainerIndicatorController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.preRequisites.containerIndicator")
+  private val form = formProvider("preRequisites.containerIndicator")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

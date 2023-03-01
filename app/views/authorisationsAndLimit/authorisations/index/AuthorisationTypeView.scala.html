@@ -32,9 +32,9 @@
 @(form: Form[AuthorisationType], lrn: LocalReferenceNumber, radios: (String, Option[AuthorisationType]) => Seq[RadioItem], mode: Mode, authorisationIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.authorisations.authorisationType.title"),
+    title = messages("authorisations.authorisationType.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.AuthorisationTypeController.onSubmit(lrn, mode, authorisationIndex), Symbol("autoComplete") -> "off") {
@@ -44,8 +44,8 @@
         @inputRadio(
             field = form("value"),
             radioType = Radio(
-                caption = Some(messages("transport.authorisations.caption")),
-                heading = messages("transport.authorisations.authorisationType.heading")
+                caption = Some(messages("authorisations.caption")),
+                heading = messages("authorisations.authorisationType.heading")
             ),
             radioItems = fieldId => radios(fieldId, form.value)
         )

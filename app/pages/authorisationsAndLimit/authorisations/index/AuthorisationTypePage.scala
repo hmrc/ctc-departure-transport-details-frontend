@@ -24,9 +24,8 @@ import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.transportMeans.departure.InlandMode._
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.preTaskList.ProcedureTypePage
+import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
 import pages.sections.authorisationsAndLimit.AuthorisationSection
-import pages.traderDetails.consignment.ApprovedOperatorPage
 import pages.transportMeans.departure.InlandModePage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call

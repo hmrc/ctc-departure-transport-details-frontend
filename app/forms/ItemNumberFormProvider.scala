@@ -16,6 +16,9 @@
 
 package forms
 
+import forms.Constants.{itemNumberLength, itemNumberMax}
+import forms.mappings.Mappings
+import models.domain.StringFieldRegex.numericRegex
 import play.api.data.Form
 
 import javax.inject.Inject

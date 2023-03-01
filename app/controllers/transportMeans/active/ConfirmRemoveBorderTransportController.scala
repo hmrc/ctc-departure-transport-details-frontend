@@ -44,14 +44,14 @@ class ConfirmRemoveBorderTransportController @Inject() (
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
     .requireData(lrn) {
       implicit request =>
-        val form = formProvider("transport.transportMeans.active.confirmRemoveBorderTransport", activeIndex.display)
+        val form = formProvider("transportMeans.active.confirmRemoveBorderTransport", activeIndex.display)
 
         Ok(view(form, lrn, mode, activeIndex))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val form = formProvider("transport.transportMeans.active.confirmRemoveBorderTransport", activeIndex.display)
+      val form = formProvider("transportMeans.active.confirmRemoveBorderTransport", activeIndex.display)
       form
         .bindFromRequest()
         .fold(

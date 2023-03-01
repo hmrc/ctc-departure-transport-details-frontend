@@ -30,9 +30,9 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.authorisations.addAuthorisationsYesNo.title"),
+    title = messages("authorisations.addAuthorisationsYesNo.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.AddAuthorisationsYesNoController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
@@ -42,9 +42,9 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("transport.authorisations.addAuthorisationsYesNo.heading"),
-                caption = Some(messages("transport.authorisations.caption")),
-                additionalHtml = messages("transport.authorisations.addAuthorisationsYesNo.paragraph").toParagraph
+                heading = messages("authorisations.addAuthorisationsYesNo.heading"),
+                caption = Some(messages("authorisations.caption")),
+                additionalHtml = messages("authorisations.addAuthorisationsYesNo.paragraph").toParagraph
             )
         )
 

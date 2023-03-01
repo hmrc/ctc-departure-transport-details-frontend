@@ -30,9 +30,9 @@
 @(form: Form[String], lrn: LocalReferenceNumber, dynamicTitle: String, mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.transportMeans.active.identificationNumber.title", messages(dynamicTitle)),
+    title = messages("transportMeans.active.identificationNumber.title", messages(dynamicTitle)),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.IdentificationNumberController.onSubmit(lrn, mode, activeIndex), Symbol("autoComplete") -> "off") {
@@ -42,8 +42,8 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("transport.transportMeans.active.identificationNumber.heading", messages(dynamicTitle)),
-                caption = Some(messages("transport.activeBorderMeansOfTransport.caption"))
+                heading = messages("transportMeans.active.identificationNumber.heading", messages(dynamicTitle)),
+                caption = Some(messages("activeBorderMeansOfTransport.caption"))
             ),
             inputClass = InputSize.Width20
         )

@@ -42,7 +42,7 @@ class RemoveSupplyChainActorController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.supplyChainActors.index.removeSupplyChainActor")
+  private val form = formProvider("supplyChainActors.index.removeSupplyChainActor")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

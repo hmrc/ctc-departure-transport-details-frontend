@@ -17,7 +17,7 @@
 package models.transportMeans.departure
 
 import models.{RadioModelU, UserAnswers, WithName}
-import pages.transport.transportMeans.departure.InlandModePage
+import pages.transportMeans.departure.InlandModePage
 import play.api.i18n.Messages
 
 sealed trait Identification {

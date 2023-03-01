@@ -44,7 +44,7 @@ class TransportedToSameCountryYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.preRequisites.transportedToSameCountryYesNo")
+  private val form = formProvider("preRequisites.transportedToSameCountryYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

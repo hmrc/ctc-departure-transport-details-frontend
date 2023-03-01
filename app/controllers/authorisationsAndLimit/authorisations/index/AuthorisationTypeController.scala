@@ -44,7 +44,7 @@ class AuthorisationTypeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[AuthorisationType]("transport.authorisations.authorisationType")
+  private val form = formProvider[AuthorisationType]("authorisations.authorisationType")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

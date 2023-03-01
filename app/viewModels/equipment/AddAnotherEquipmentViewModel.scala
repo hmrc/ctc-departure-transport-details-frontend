@@ -17,9 +17,11 @@
 package viewModels.equipment
 
 import config.FrontendAppConfig
+import controllers.equipment.routes
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import utils.cyaHelpers.equipment.EquipmentsAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
 
 import javax.inject.Inject
@@ -28,14 +30,14 @@ case class AddAnotherEquipmentViewModel(
   override val listItems: Seq[ListItem],
   onSubmitCall: Call
 ) extends AddAnotherViewModel {
-  override val prefix: String = "transport.equipment.addAnotherEquipment"
+  override val prefix: String = "equipment.addAnotherEquipment"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxEquipmentNumbers
 }
 
 object AddAnotherEquipmentViewModel {
 
-  class AddAnotherEquipmentViewModelProvider @Inject() () {
+  class AddAnotherEquipmentViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherEquipmentViewModel = {
       val helper = new EquipmentsAnswersHelper(userAnswers, mode)

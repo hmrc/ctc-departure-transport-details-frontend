@@ -17,9 +17,20 @@
 package controllers.transportMeans.departure
 
 import controllers.actions._
+import config.FrontendAppConfig
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import forms.MeansIdentificationNumberFormProvider
+import models.requests.SpecificDataRequestProvider1
+import models.transportMeans.departure.{Identification, InlandMode}
+import models.{LocalReferenceNumber, Mode}
+import navigation.UserAnswersNavigator
+import navigation.TransportMeansNavigatorProvider
+import pages.transportMeans.departure.{IdentificationPage, InlandModePage, MeansIdentificationNumberPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.transportMeans.departure.MeansIdentificationNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -28,8 +39,9 @@ class MeansIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
-  formProvider: MeansIdentificationNumberProvider,
+  formProvider: MeansIdentificationNumberFormProvider,
   actions: Actions,
+  config: FrontendAppConfig,
   val controllerComponents: MessagesControllerComponents,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   view: MeansIdentificationNumberView
@@ -50,13 +62,13 @@ class MeansIdentificationNumberController @Inject() (
       implicit request =>
         identificationType match {
           case Some(value) =>
-            val form = formProvider("transport.transportMeans.departure.meansIdentificationNumber", value.arg)
+            val form = formProvider("transportMeans.departure.meansIdentificationNumber", value.arg)
             val preparedForm = request.userAnswers.get(MeansIdentificationNumberPage) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
             Ok(view(preparedForm, lrn, mode, value))
-          case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+          case _ => Redirect(config.sessionExpiredUrl)
         }
     }
 
@@ -67,17 +79,17 @@ class MeansIdentificationNumberController @Inject() (
       implicit request =>
         identificationType match {
           case Some(value) =>
-            val form = formProvider("transport.transportMeans.departure.meansIdentificationNumber", value.arg)
+            val form = formProvider("transportMeans.departure.meansIdentificationNumber", value.arg)
             form
               .bindFromRequest()
               .fold(
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, value))),
                 value => {
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                  MeansIdentificationNumberPage.writeToUserAnswers(value).updateTask[TransportDomain]().writeToSession().navigate()
+                  MeansIdentificationNumberPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
                 }
               )
-          case _ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+          case _ => Future.successful(Redirect(config.sessionExpiredUrl))
         }
     }
 }

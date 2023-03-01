@@ -16,15 +16,15 @@
 
 package navigation
 
+import config.FrontendAppConfig
 import models.domain.UserAnswersReader
-import models.journeyDomain.transport.equipment.seal.SealDomain
+import models.journeyDomain.equipment.seal.SealDomain
 import models.{CheckMode, Index, Mode, NormalMode}
-import navigation.UserAnswersNavigator
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SealNavigatorProviderImpl @Inject() () extends SealNavigatorProvider {
+class SealNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends SealNavigatorProvider {
 
   override def apply(mode: Mode, equipmentIndex: Index, sealIndex: Index): UserAnswersNavigator =
     mode match {
@@ -37,7 +37,7 @@ trait SealNavigatorProvider {
   def apply(mode: Mode, equipmentIndex: Index, sealIndex: Index): UserAnswersNavigator
 }
 
-class SealNavigator(override val mode: Mode, equipmentIndex: Index, sealIndex: Index) extends UserAnswersNavigator {
+class SealNavigator(override val mode: Mode, equipmentIndex: Index, sealIndex: Index)(implicit override val config: FrontendAppConfig) extends UserAnswersNavigator {
 
   override type T = SealDomain
 

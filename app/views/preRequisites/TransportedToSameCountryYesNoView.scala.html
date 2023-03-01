@@ -30,9 +30,9 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.preRequisites.transportedToSameCountryYesNo.title"),
+    title = messages("preRequisites.transportedToSameCountryYesNo.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.TransportedToSameCountryYesNoController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
@@ -42,8 +42,8 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("transport.preRequisites.transportedToSameCountryYesNo.heading"),
-                caption = Some(messages("transport.caption"))
+                heading = messages("preRequisites.transportedToSameCountryYesNo.heading"),
+                caption = Some(messages("caption"))
             )
         )
 

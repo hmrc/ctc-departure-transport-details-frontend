@@ -56,7 +56,7 @@ class LimitDateController @Inject() (
 
   private def form: Form[LocalDate] = {
     val minDate = dateTimeService.plusMinusDays(config.limitDateDaysBefore)
-    formProvider("transport.authorisationsAndLimit.limit.limitDate", minDate, maxDate)
+    formProvider("authorisationsAndLimit.limit.limitDate", minDate, maxDate)
   }
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {

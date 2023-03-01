@@ -30,9 +30,9 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, index: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.supplyChainActors.index.removeSupplyChainActor.title"),
+    title = messages("supplyChainActors.index.removeSupplyChainActor.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.RemoveSupplyChainActorController.onSubmit(lrn, mode, index), Symbol("autoComplete") -> "off") {
@@ -42,8 +42,8 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("transport.supplyChainActors.index.removeSupplyChainActor.heading"),
-                caption = Option(messages("transport.supplyChainActors.caption"))
+                heading = messages("supplyChainActors.index.removeSupplyChainActor.heading"),
+                caption = Option(messages("supplyChainActors.caption"))
             )
         )
 

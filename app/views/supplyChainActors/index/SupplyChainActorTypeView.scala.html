@@ -32,9 +32,9 @@
 @(form: Form[SupplyChainActorType], lrn: LocalReferenceNumber, radios: (String, Option[SupplyChainActorType]) => Seq[RadioItem], mode: Mode, actorIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.supplyChainActors.index.supplyChainActorType.title"),
+    title = messages("supplyChainActors.index.supplyChainActorType.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.SupplyChainActorTypeController.onSubmit(lrn, mode, actorIndex), Symbol("autoComplete") -> "off") {
@@ -44,8 +44,8 @@
         @inputRadio(
             field = form("value"),
             radioType = Radio(
-                caption = Some(messages("transport.supplyChainActors.caption")),
-                heading = messages("transport.supplyChainActors.index.supplyChainActorType.heading")
+                caption = Some(messages("supplyChainActors.caption")),
+                heading = messages("supplyChainActors.index.supplyChainActorType.heading")
             ),
             radioItems = fieldId => radios(fieldId, form.value)
         )

@@ -30,9 +30,9 @@
 @(form: Form[String], lrn: LocalReferenceNumber, dynamicTitle: String, mode: Mode, authorisationIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.authorisations.authorisationReferenceNumber.title", messages(dynamicTitle)),
+    title = messages("authorisations.authorisationReferenceNumber.title", messages(dynamicTitle)),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.AuthorisationReferenceNumberController.onSubmit(lrn, mode, authorisationIndex), Symbol("autoComplete") -> "off") {
@@ -42,10 +42,10 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                caption = Some(messages("transport.authorisations.caption")),
-                heading = messages("transport.authorisations.authorisationReferenceNumber.heading", messages(dynamicTitle))
+                caption = Some(messages("authorisations.caption")),
+                heading = messages("authorisations.authorisationReferenceNumber.heading", messages(dynamicTitle))
             ),
-            hint = Some(messages("transport.authorisations.authorisationReferenceNumber.hint")),
+            hint = Some(messages("authorisations.authorisationReferenceNumber.hint")),
             inputClass = InputSize.Width20
         )
 

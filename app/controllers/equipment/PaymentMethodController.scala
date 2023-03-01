@@ -44,7 +44,7 @@ class PaymentMethodController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[PaymentMethod]("transport.equipment.paymentMethod")
+  private val form = formProvider[PaymentMethod]("equipment.paymentMethod")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

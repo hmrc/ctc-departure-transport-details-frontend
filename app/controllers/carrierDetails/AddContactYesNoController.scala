@@ -44,7 +44,7 @@ class AddContactYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.carrierDetails.addContactYesNo")
+  private val form = formProvider("carrierDetails.addContactYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

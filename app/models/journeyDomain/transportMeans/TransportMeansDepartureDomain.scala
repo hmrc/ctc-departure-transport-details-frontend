@@ -17,8 +17,12 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
-import models.domain.UserAnswersReader
+import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.JourneyDomainModel
+import models.reference.Nationality
+import models.transportMeans.departure.{Identification, InlandMode}
+import pages.transportMeans.departure.{IdentificationPage, InlandModePage, MeansIdentificationNumberPage, VehicleCountryPage}
+
 
 sealed trait TransportMeansDepartureDomain extends JourneyDomainModel
 

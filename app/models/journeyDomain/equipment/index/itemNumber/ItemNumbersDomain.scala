@@ -16,8 +16,9 @@
 
 package models.journeyDomain.equipment.index.itemNumber
 
-import models.Index
-import models.domain.UserAnswersReader
+import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
+import models.{Index, RichJsArray}
+import pages.sections.equipment.ItemNumbersSection
 
 case class ItemNumbersDomain(value: Seq[ItemNumberDomain])
 

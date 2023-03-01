@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import utils.cyaHelpers.equipment.SealsAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
 
 import javax.inject.Inject
@@ -28,14 +29,14 @@ case class AddAnotherSealViewModel(
   override val listItems: Seq[ListItem],
   onSubmitCall: Call
 ) extends AddAnotherViewModel {
-  override val prefix: String = "transport.equipment.index.addAnotherSeal"
+  override val prefix: String = "equipment.index.addAnotherSeal"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxSeals
 }
 
 object AddAnotherSealViewModel {
 
-  class AddAnotherSealViewModelProvider @Inject() () {
+  class AddAnotherSealViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode, equipmentIndex: Index)(implicit messages: Messages): AddAnotherSealViewModel = {
       val helper = new SealsAnswersHelper(userAnswers, mode, equipmentIndex)
@@ -47,7 +48,7 @@ object AddAnotherSealViewModel {
 
       new AddAnotherSealViewModel(
         listItems,
-        onSubmitCall = controllers.transport.equipment.index.routes.AddAnotherSealController.onSubmit(userAnswers.lrn, mode, equipmentIndex)
+        onSubmitCall = controllers.equipment.index.routes.AddAnotherSealController.onSubmit(userAnswers.lrn, mode, equipmentIndex)
       )
     }
   }

@@ -17,11 +17,20 @@
 package controllers.transportMeans.active
 
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
+import models.transportMeans.active.Identification
+import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
+import navigation.UserAnswersNavigator
+import navigation.TransportMeansActiveNavigatorProvider
+import pages.transportMeans.BorderModeOfTransportPage
+import pages.transportMeans.active.IdentificationPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.transportMeans.active.IdentificationView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +47,7 @@ class IdentificationController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[Identification]("transport.transportMeans.active.identification")
+  private val form = formProvider[Identification]("transportMeans.active.identification")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
@@ -58,7 +67,7 @@ class IdentificationController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, radioOptions(request.userAnswers, activeIndex), mode, activeIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
-            IdentificationPage(activeIndex).writeToUserAnswers(value).updateTask[TransportDomain]().writeToSession().navigate()
+            IdentificationPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

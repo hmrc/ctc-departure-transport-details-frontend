@@ -16,8 +16,11 @@
 
 package viewModels
 
+import config.FrontendAppConfig
 import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
+import utils.cyaHelpers.TransportAnswersHelper
+import viewModels.transportMeans.TransportMeansAnswersViewModel.TransportMeansAnswersViewModelProvider
 
 import javax.inject.Inject
 
@@ -26,7 +29,8 @@ case class TransportAnswersViewModel(sections: Seq[Section])
 object TransportAnswersViewModel {
 
   class TransportAnswersViewModelProvider @Inject() (
-    transportMeansAnswersViewModelProvider: TransportMeansAnswersViewModelProvider
+    transportMeansAnswersViewModelProvider: TransportMeansAnswersViewModelProvider,
+    implicit val config: FrontendAppConfig
   ) {
 
     // scalastyle:off method.length
@@ -49,19 +53,19 @@ object TransportAnswersViewModel {
       val transportMeansSections = transportMeansAnswersViewModelProvider.apply(userAnswers, mode).sections
 
       val supplyChainActorsSection = Section(
-        sectionTitle = messages("transport.checkYourAnswers.supplyChainActors"),
+        sectionTitle = messages("checkYourAnswers.supplyChainActors"),
         rows = helper.addSupplyChainActor.toList ++ helper.supplyChainActors,
         addAnotherLink = helper.addOrRemoveSupplyChainActors
       )
 
       val authorisationsSection = Section(
-        sectionTitle = messages("transport.checkYourAnswers.authorisations"),
+        sectionTitle = messages("checkYourAnswers.authorisations"),
         rows = helper.addAuthorisation.toList ++ helper.authorisations ++ helper.limitDate.toList,
         addAnotherLink = helper.addOrRemoveAuthorisations
       )
 
       val carrierDetailsSection = Section(
-        sectionTitle = messages("transport.checkYourAnswers.carrierDetails"),
+        sectionTitle = messages("checkYourAnswers.carrierDetails"),
         rows = Seq(
           helper.eoriNumber,
           helper.addContactPerson,
@@ -71,13 +75,13 @@ object TransportAnswersViewModel {
       )
 
       val transportEquipmentSection = Section(
-        sectionTitle = messages("transport.checkYourAnswers.transportEquipment"),
+        sectionTitle = messages("checkYourAnswers.transportEquipment"),
         rows = helper.addEquipment.toList ++ helper.equipments,
         addAnotherLink = helper.addOrRemoveEquipments
       )
 
       val transportChargesSection = Section(
-        sectionTitle = messages("transport.checkYourAnswers.transportCharges"),
+        sectionTitle = messages("checkYourAnswers.transportCharges"),
         rows = Seq(
           helper.addPaymentMethod,
           helper.paymentMethod

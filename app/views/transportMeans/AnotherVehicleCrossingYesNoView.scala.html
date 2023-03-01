@@ -30,9 +30,9 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.transportMeans.anotherVehicleCrossingYesNo.title"),
+    title = messages("transportMeans.anotherVehicleCrossingYesNo.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.AnotherVehicleCrossingYesNoController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
@@ -42,9 +42,9 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("transport.transportMeans.anotherVehicleCrossingYesNo.heading"),
-                caption = Some(messages("transport.activeBorderModeOfTransport.caption")),
-                additionalHtml = messages("transport.transportMeans.anotherVehicleCrossingYesNo.paragraph").toParagraph
+                heading = messages("transportMeans.anotherVehicleCrossingYesNo.heading"),
+                caption = Some(messages("activeBorderModeOfTransport.caption")),
+                additionalHtml = messages("transportMeans.anotherVehicleCrossingYesNo.paragraph").toParagraph
             )
         )
 

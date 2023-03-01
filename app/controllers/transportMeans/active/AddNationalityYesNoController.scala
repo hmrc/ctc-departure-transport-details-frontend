@@ -44,7 +44,7 @@ class AddNationalityYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.transportMeans.active.addNationalityYesNo")
+  private val form = formProvider("transportMeans.active.addNationalityYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

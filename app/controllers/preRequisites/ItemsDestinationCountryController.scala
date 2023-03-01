@@ -50,7 +50,7 @@ class ItemsDestinationCountryController @Inject() (
     implicit request =>
       service.getCountries().map {
         countryList =>
-          val form = formProvider("transport.preRequisites.itemsDestinationCountry", countryList)
+          val form = formProvider("preRequisites.itemsDestinationCountry", countryList)
           val preparedForm = request.userAnswers.get(ItemsDestinationCountryPage) match {
             case None        => form
             case Some(value) => form.fill(value)
@@ -64,7 +64,7 @@ class ItemsDestinationCountryController @Inject() (
     implicit request =>
       service.getCountries().flatMap {
         countryList =>
-          val form = formProvider("transport.preRequisites.itemsDestinationCountry", countryList)
+          val form = formProvider("preRequisites.itemsDestinationCountry", countryList)
           form
             .bindFromRequest()
             .fold(

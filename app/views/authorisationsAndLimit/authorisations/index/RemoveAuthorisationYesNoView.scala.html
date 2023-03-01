@@ -30,9 +30,9 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index, authType: String, authRefNumber: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.authorisations.index.removeAuthorisationYesNo.title", authType, authRefNumber),
+    title = messages("authorisations.index.removeAuthorisationYesNo.title", authType, authRefNumber),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.RemoveAuthorisationYesNoController.onSubmit(lrn, mode, authorisationIndex), Symbol("autoComplete") -> "off") {
@@ -42,8 +42,8 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("transport.authorisations.index.removeAuthorisationYesNo.heading", authType, authRefNumber),
-                caption = Some(messages("transport.authorisations.caption"))
+                heading = messages("authorisations.index.removeAuthorisationYesNo.heading", authType, authRefNumber),
+                caption = Some(messages("authorisations.caption"))
             )
         )
 

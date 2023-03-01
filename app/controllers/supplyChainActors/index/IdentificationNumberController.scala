@@ -45,7 +45,7 @@ class IdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.supplyChainActors.index.identificationNumber")
+  private val form = formProvider("supplyChainActors.index.identificationNumber")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, actorIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)

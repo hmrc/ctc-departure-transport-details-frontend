@@ -44,7 +44,7 @@ class ConveyanceReferenceNumberYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.transportMeans.active.conveyanceReferenceNumberYesNo")
+  private val form = formProvider("transportMeans.active.conveyanceReferenceNumberYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

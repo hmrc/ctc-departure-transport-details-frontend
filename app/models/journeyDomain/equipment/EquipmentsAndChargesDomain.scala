@@ -17,8 +17,13 @@
 package models.journeyDomain.equipment
 
 import cats.implicits._
-import models.domain.UserAnswersReader
+import models.SecurityDetailsType.NoSecurityDetails
+import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.JourneyDomainModel
+import models.equipment.PaymentMethod
+import pages.equipment._
+import pages.external.SecurityDetailsTypePage
+import pages.preRequisites.ContainerIndicatorPage
 
 case class EquipmentsAndChargesDomain(
   equipments: Option[EquipmentsDomain],

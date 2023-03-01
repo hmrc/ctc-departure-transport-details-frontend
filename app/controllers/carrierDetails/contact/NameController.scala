@@ -44,7 +44,7 @@ class NameController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.carrierDetails.contact.name")
+  private val form = formProvider("carrierDetails.contact.name")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

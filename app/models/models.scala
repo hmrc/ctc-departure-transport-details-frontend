@@ -15,6 +15,7 @@
  */
 
 import cats.implicits._
+import models.domain.UserAnswersReader
 import play.api.libs.json._
 
 import scala.annotation.nowarn
@@ -197,6 +198,9 @@ package object models {
   }
 
   implicit class RichString(string: String) {
-    def removeSpaces(): String = string.replaceAll(" ", "")
+    def removeSpaces(): String = string.foldLeft("") {
+      (acc, c) =>
+        acc + c.toString.trim
+    }
   }
 }

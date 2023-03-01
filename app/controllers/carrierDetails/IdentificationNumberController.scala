@@ -44,7 +44,7 @@ class IdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.carrierDetails.identificationNumber")
+  private val form = formProvider("carrierDetails.identificationNumber")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

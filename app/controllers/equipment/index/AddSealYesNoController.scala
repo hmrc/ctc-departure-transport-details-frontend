@@ -45,7 +45,7 @@ class AddSealYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form: Form[Boolean] = formProvider("transport.equipment.index.addSealYesNo")
+  private def form: Form[Boolean] = formProvider("equipment.index.addSealYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn) {

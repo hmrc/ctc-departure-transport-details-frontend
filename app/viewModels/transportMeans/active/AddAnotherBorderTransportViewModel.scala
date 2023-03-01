@@ -22,6 +22,7 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases.Content
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import utils.cyaHelpers.transportMeans.active.ActiveBorderTransportsAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
 
 import javax.inject.Inject
@@ -30,7 +31,7 @@ case class AddAnotherBorderTransportViewModel(
   override val listItems: Seq[ListItem],
   onSubmitCall: Call
 ) extends AddAnotherViewModel {
-  override val prefix: String = "transport.transportMeans.active.addAnotherBorderTransport"
+  override val prefix: String = "transportMeans.active.addAnotherBorderTransport"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxActiveBorderTransports
 
@@ -39,7 +40,7 @@ case class AddAnotherBorderTransportViewModel(
 
 object AddAnotherBorderTransportViewModel {
 
-  class AddAnotherBorderTransportViewModelProvider @Inject() () {
+  class AddAnotherBorderTransportViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherBorderTransportViewModel = {
       val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)
@@ -51,7 +52,7 @@ object AddAnotherBorderTransportViewModel {
 
       new AddAnotherBorderTransportViewModel(
         listItems,
-        onSubmitCall = controllers.transport.transportMeans.active.routes.AddAnotherBorderTransportController.onSubmit(userAnswers.lrn, mode)
+        onSubmitCall = controllers.transportMeans.active.routes.AddAnotherBorderTransportController.onSubmit(userAnswers.lrn, mode)
       )
     }
   }

@@ -44,7 +44,7 @@ class SameUcrYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.preRequisites.sameUcrYesNo")
+  private val form = formProvider("preRequisites.sameUcrYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

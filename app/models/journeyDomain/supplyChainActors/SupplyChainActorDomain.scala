@@ -16,10 +16,13 @@
 
 package models.journeyDomain.supplyChainActors
 
-import models.domain.UserAnswersReader
+import cats.implicits.catsSyntaxTuple2Semigroupal
+import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, Stage}
+import models.supplyChainActors.SupplyChainActorType
 import models.{Index, Mode, UserAnswers}
+import pages.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 

@@ -57,7 +57,7 @@ class IdentificationNumberController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val form = formProvider("transport.equipment.index.seals.identificationNumber", otherIdentificationNumbers(equipmentIndex, sealIndex))
+      val form = formProvider("equipment.index.seals.identificationNumber", otherIdentificationNumbers(equipmentIndex, sealIndex))
       val preparedForm = request.userAnswers.get(IdentificationNumberPage(equipmentIndex: Index, sealIndex: Index)) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -67,7 +67,7 @@ class IdentificationNumberController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val form = formProvider("transport.equipment.index.seals.identificationNumber", otherIdentificationNumbers(equipmentIndex, sealIndex))
+      val form = formProvider("equipment.index.seals.identificationNumber", otherIdentificationNumbers(equipmentIndex, sealIndex))
       form
         .bindFromRequest()
         .fold(

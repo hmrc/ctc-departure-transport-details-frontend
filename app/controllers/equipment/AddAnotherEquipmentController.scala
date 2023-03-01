@@ -67,7 +67,7 @@ class AddAnotherEquipmentController @Inject() (
           {
             case true =>
               Redirect(
-                UserAnswersNavigator.nextPage[EquipmentDomain](request.userAnswers, mode)(EquipmentDomain.userAnswersReader(viewModel.nextIndex))
+                UserAnswersNavigator.nextPage[EquipmentDomain](request.userAnswers, mode)(EquipmentDomain.userAnswersReader(viewModel.nextIndex), config)
               )
             case false =>
               Redirect(navigatorProvider(mode).nextPage(request.userAnswers))

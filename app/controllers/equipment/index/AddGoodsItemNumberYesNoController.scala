@@ -46,7 +46,7 @@ class AddGoodsItemNumberYesNoController @Inject() (
     with I18nSupport {
 
   private val form: Form[Boolean] =
-    formProvider("transport.equipment.index.addGoodsItemNumberYesNo")
+    formProvider("equipment.index.addGoodsItemNumberYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions
     .requireData(lrn) {

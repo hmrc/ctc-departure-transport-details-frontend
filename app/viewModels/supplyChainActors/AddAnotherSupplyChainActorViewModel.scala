@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import utils.cyaHelpers.supplyChainActors.SupplyChainActorsAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
 
 import javax.inject.Inject
@@ -28,14 +29,14 @@ case class AddAnotherSupplyChainActorViewModel(
   listItems: Seq[ListItem],
   onSubmitCall: Call
 ) extends AddAnotherViewModel {
-  override val prefix: String = "transport.supplyChainActors.addAnotherSupplyChainActor"
+  override val prefix: String = "supplyChainActors.addAnotherSupplyChainActor"
 
   override def maxCount(implicit config: FrontendAppConfig): Int = config.maxSupplyChainActors
 }
 
 object AddAnotherSupplyChainActorViewModel {
 
-  class AddAnotherSupplyChainActorViewModelProvider @Inject() () {
+  class AddAnotherSupplyChainActorViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherSupplyChainActorViewModel = {
       val helper = new SupplyChainActorsAnswersHelper(userAnswers, mode)
@@ -47,7 +48,7 @@ object AddAnotherSupplyChainActorViewModel {
 
       new AddAnotherSupplyChainActorViewModel(
         listItems,
-        onSubmitCall = controllers.transport.supplyChainActors.routes.AddAnotherSupplyChainActorController.onSubmit(userAnswers.lrn, mode)
+        onSubmitCall = controllers.supplyChainActors.routes.AddAnotherSupplyChainActorController.onSubmit(userAnswers.lrn, mode)
       )
     }
   }

@@ -44,7 +44,7 @@ class AnotherVehicleCrossingYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.transportMeans.anotherVehicleCrossingYesNo")
+  private val form = formProvider("transportMeans.anotherVehicleCrossingYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

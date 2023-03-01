@@ -16,8 +16,11 @@
 
 package viewModels.transportMeans.active
 
+import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
+import utils.cyaHelpers.transportMeans.active.ActiveBorderTransportAnswersHelper
+import viewModels.Section
 
 import javax.inject.Inject
 
@@ -25,7 +28,7 @@ case class CheckYourAnswersViewModel(sections: Seq[Section])
 
 object CheckYourAnswersViewModel {
 
-  class CheckYourAnswersViewModelProvider @Inject() () {
+  class CheckYourAnswersViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode, index: Index)(implicit messages: Messages): CheckYourAnswersViewModel = {
       val helper = new ActiveBorderTransportAnswersHelper(userAnswers, mode, index)

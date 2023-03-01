@@ -30,9 +30,9 @@
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.equipment.index.containerIdentificationNumber.title"),
+    title = messages("equipment.index.containerIdentificationNumber.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.ContainerIdentificationNumberController.onSubmit(lrn, mode, equipmentIndex), Symbol("autoComplete") -> "off") {
@@ -42,10 +42,10 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("transport.equipment.index.containerIdentificationNumber.heading"),
-                caption = Some(messages("transport.equipment.caption"))
+                heading = messages("equipment.index.containerIdentificationNumber.heading"),
+                caption = Some(messages("equipment.caption"))
             ),
-            hint = Some(messages("transport.equipment.index.containerIdentificationNumber.hint")),
+            hint = Some(messages("equipment.index.containerIdentificationNumber.hint")),
             inputClass = InputSize.Width20
         )
 

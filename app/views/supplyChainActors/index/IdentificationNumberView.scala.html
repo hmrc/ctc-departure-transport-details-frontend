@@ -30,9 +30,9 @@
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, actorIndex: Index, supplyChainActor: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.supplyChainActors.index.identificationNumber.title", supplyChainActor),
+    title = messages("supplyChainActors.index.identificationNumber.title", supplyChainActor),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.IdentificationNumberController.onSubmit(lrn, mode, actorIndex), Symbol("autoComplete") -> "off") {
@@ -42,10 +42,10 @@
         @inputText(
             field = form("value"),
             inputTextType = OrdinaryTextInput(
-                heading = messages("transport.supplyChainActors.index.identificationNumber.heading", supplyChainActor),
-                caption = Option(messages("transport.supplyChainActors.caption"))
+                heading = messages("supplyChainActors.index.identificationNumber.heading", supplyChainActor),
+                caption = Option(messages("supplyChainActors.caption"))
             ),
-            hint = Some(messages("transport.supplyChainActors.index.identificationNumber.hint")),
+            hint = Some(messages("supplyChainActors.index.identificationNumber.hint")),
             inputClass = InputSize.Width20
         )
 

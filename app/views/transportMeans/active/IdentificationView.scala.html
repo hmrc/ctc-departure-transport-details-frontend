@@ -32,9 +32,9 @@
 @(form: Form[Identification], lrn: LocalReferenceNumber, radios: (String, Option[Identification]) => Seq[RadioItem], mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.transportMeans.active.identification.title"),
+    title = messages("transportMeans.active.identification.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.IdentificationController.onSubmit(lrn, mode, activeIndex), Symbol("autoComplete") -> "off") {
@@ -44,8 +44,8 @@
         @inputRadio(
             field = form("value"),
             radioType = Radio(
-                caption = Some(messages("transport.activeBorderMeansOfTransport.caption")),
-                heading = messages("transport.transportMeans.active.identification.heading")
+                caption = Some(messages("activeBorderMeansOfTransport.caption")),
+                heading = messages("transportMeans.active.identification.heading")
             ),
             radioItems = fieldId => radios(fieldId, form.value)
         )

@@ -16,7 +16,9 @@
 
 package models.journeyDomain.carrierDetails
 
+import cats.implicits._
 import models.domain._
+import pages.carrierDetails.contact._
 
 case class ContactPersonDomain(
   name: String,

@@ -16,7 +16,9 @@
 
 package models.journeyDomain.carrierDetails
 
-import models.domain.UserAnswersReader
+import cats.implicits._
+import models.domain.{UserAnswersReader, _}
+import pages.carrierDetails._
 
 case class CarrierDetailsDomain(
   identificationNumber: String,

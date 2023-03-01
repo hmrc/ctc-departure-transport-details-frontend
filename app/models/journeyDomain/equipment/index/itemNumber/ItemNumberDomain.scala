@@ -16,10 +16,13 @@
 
 package models.journeyDomain.equipment.index.itemNumber
 
-import models.domain.UserAnswersReader
+import controllers.equipment.index.itemNumber.{routes => itemNumberRoutes}
+import controllers.equipment.index.routes
+import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.{Index, Mode, UserAnswers}
+import pages.equipment.index.itemNumber.ItemNumberPage
 import play.api.mvc.Call
 
 case class ItemNumberDomain(

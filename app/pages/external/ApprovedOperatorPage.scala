@@ -24,7 +24,7 @@ import models.domain.{GettableAsReaderOps, UserAnswersReader}
 
 case object ApprovedOperatorPage extends ReadOnlyPage[Boolean] {
 
-  override def path: JsPath = traderDetailsConsigmentPath \ toString
+  override def path: JsPath = traderDetailsConsignmentPath \ toString
 
   override def toString: String = "approvedOperator"
 

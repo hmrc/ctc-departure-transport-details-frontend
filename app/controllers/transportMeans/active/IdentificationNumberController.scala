@@ -17,10 +17,19 @@
 package controllers.transportMeans.active
 
 import controllers.actions._
+import config.FrontendAppConfig
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.IdentificationNumberFormProvider
+import models.requests.DataRequest
+import models.{Index, LocalReferenceNumber, Mode}
+import navigation.UserAnswersNavigator
+import navigation.TransportMeansActiveNavigatorProvider
+import pages.transportMeans.active.{IdentificationNumberPage, IdentificationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.transportMeans.active.IdentificationNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,13 +40,14 @@ class IdentificationNumberController @Inject() (
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   formProvider: IdentificationNumberFormProvider,
   actions: Actions,
+  config: FrontendAppConfig,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationNumberView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix = "transport.transportMeans.active.identificationNumber"
+  private val prefix = "transportMeans.active.identificationNumber"
 
   private def identificationType(index: Index)(implicit request: DataRequest[_]): Option[String] =
     IdentificationPage(index).inferredReader.run(request.userAnswers).toOption.map(_.forDisplay)
@@ -56,7 +66,7 @@ class IdentificationNumberController @Inject() (
               }
 
               Ok(view(preparedForm, lrn, value, mode, activeIndex))
-            case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad())
+            case _ => Redirect(config.sessionExpiredUrl)
           }
       }
 
@@ -74,10 +84,10 @@ class IdentificationNumberController @Inject() (
                   formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, value, mode, activeIndex))),
                   value => {
                     implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
-                    IdentificationNumberPage(activeIndex).writeToUserAnswers(value).updateTask[TransportDomain]().writeToSession().navigate()
+                    IdentificationNumberPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
                   }
                 )
-            case _ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad()))
+            case _ => Future.successful(Redirect(config.sessionExpiredUrl))
           }
       }
 }

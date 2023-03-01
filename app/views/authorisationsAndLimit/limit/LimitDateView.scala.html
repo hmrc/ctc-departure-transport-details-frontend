@@ -33,7 +33,7 @@
 @mainTemplate(
     title = messages("authorisationsAndLimit.limit.limitDate.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @formHelper(action = routes.LimitDateController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {

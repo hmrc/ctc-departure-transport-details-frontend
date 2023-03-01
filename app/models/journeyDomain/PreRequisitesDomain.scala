@@ -16,8 +16,12 @@
 
 package models.journeyDomain
 
-import models.domain.UserAnswersReader
+import cats.implicits._
+import models.DeclarationType.Option4
+import models.domain.{UserAnswersReader, _}
 import models.reference.Country
+import pages.external.DeclarationTypePage
+import pages.preRequisites._
 
 case class PreRequisitesDomain(
   ucr: Option[String],

@@ -16,9 +16,10 @@
 
 package models.journeyDomain.equipment
 
-import models.domain.UserAnswersReader
+import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, RichJsArray, UserAnswers}
+import pages.sections.equipment.EquipmentsSection
 import play.api.mvc.Call
 
 case class EquipmentsDomain(value: Seq[EquipmentDomain]) extends JourneyDomainModel {

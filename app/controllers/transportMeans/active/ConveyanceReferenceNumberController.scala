@@ -17,11 +17,17 @@
 package controllers.transportMeans.active
 
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.ConveyanceReferenceNumberFormProvider
+import models.{Index, LocalReferenceNumber, Mode}
+import navigation.UserAnswersNavigator
+import navigation.TransportMeansActiveNavigatorProvider
+import pages.transportMeans.active.ConveyanceReferenceNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.transportMeans.active.ConveyanceReferenceNumberView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +44,7 @@ class ConveyanceReferenceNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.transportMeans.active.conveyanceReferenceNumber")
+  private val form = formProvider("transportMeans.active.conveyanceReferenceNumber")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
@@ -57,7 +63,7 @@ class ConveyanceReferenceNumberController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
-            ConveyanceReferenceNumberPage(activeIndex).writeToUserAnswers(value).updateTask[TransportDomain]().writeToSession().navigate()
+            ConveyanceReferenceNumberPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

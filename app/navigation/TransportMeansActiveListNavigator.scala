@@ -16,15 +16,15 @@
 
 package navigation
 
+import config.FrontendAppConfig
 import models.domain.UserAnswersReader
-import models.journeyDomain.transport.transportMeans.TransportMeansActiveListDomain
+import models.journeyDomain.transportMeans.TransportMeansActiveListDomain
 import models.{CheckMode, Mode, NormalMode}
-import navigation.UserAnswersNavigator
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class TransportMeansActiveListNavigatorProviderImpl @Inject() () extends TransportMeansActiveListNavigatorProvider {
+class TransportMeansActiveListNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends TransportMeansActiveListNavigatorProvider {
 
   override def apply(mode: Mode): UserAnswersNavigator =
     mode match {
@@ -37,7 +37,7 @@ trait TransportMeansActiveListNavigatorProvider {
   def apply(mode: Mode): UserAnswersNavigator
 }
 
-class TransportMeansActiveListNavigator(override val mode: Mode) extends UserAnswersNavigator {
+class TransportMeansActiveListNavigator(override val mode: Mode)(implicit override val config: FrontendAppConfig) extends UserAnswersNavigator {
 
   override type T = TransportMeansActiveListDomain
 

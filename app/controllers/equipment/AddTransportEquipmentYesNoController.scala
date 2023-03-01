@@ -44,7 +44,7 @@ class AddTransportEquipmentYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.equipment.addTransportEquipmentYesNo")
+  private val form = formProvider("equipment.addTransportEquipmentYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

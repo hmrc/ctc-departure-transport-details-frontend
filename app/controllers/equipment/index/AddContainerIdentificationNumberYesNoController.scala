@@ -44,7 +44,7 @@ class AddContainerIdentificationNumberYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transport.equipment.index.addContainerIdentificationNumberYesNo")
+  private val form = formProvider("equipment.index.addContainerIdentificationNumberYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

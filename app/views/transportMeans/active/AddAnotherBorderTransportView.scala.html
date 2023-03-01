@@ -36,14 +36,14 @@
 @mainTemplate(
     title = viewModel.title,
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @errorSummary(form.errors)
 
     @heading(
         heading = viewModel.heading,
-        caption = Some(messages("transport.activeBorderMeansOfTransport.caption"))
+        caption = Some(messages("activeBorderMeansOfTransport.caption"))
     )
 
     @listWithActions(viewModel.listItems)

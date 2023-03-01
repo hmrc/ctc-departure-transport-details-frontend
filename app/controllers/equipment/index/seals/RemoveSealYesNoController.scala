@@ -49,7 +49,7 @@ class RemoveSealYesNoController @Inject() (
   private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
 
   private def form(implicit request: Request): Form[Boolean] =
-    formProvider("transport.equipment.index.seals.removeSealYesNo", request.arg)
+    formProvider("equipment.index.seals.removeSealYesNo", request.arg)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)

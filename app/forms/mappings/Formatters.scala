@@ -16,8 +16,8 @@
 
 package forms.mappings
 
-import models.reference.{Country, CurrencyCode, CurrencyCodeList}
-import models.{CountryList, Enumerable, RichString}
+import models.reference.{Country, CustomsOffice, Nationality}
+import models.{CountryList, CustomsOfficeList, Enumerable, NationalityList, RichString}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -29,23 +29,9 @@ trait Formatters {
 
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
-        case None | Some("") => Left(Seq(FormError(key, errorKey, args)))
-        case Some(s)         => Right(s)
-      }
-
-    override def unbind(key: String, value: String): Map[String, String] =
-      Map(key -> value)
-  }
-
-  private[mappings] def trimmedStringFormatter(errorKey: String, args: Seq[Any] = Seq.empty): Formatter[String] = new Formatter[String] {
-
-    private def error(key: String) = Left(Seq(FormError(key, errorKey, args)))
-
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
-      data.get(key) match {
-        case None                      => error(key)
-        case Some(s) if s.trim.isEmpty => error(key)
-        case Some(s)                   => Right(s.trim)
+        case None => Left(Seq(FormError(key, errorKey, args)))
+        case Some(s) if s.trim.isEmpty => Left(Seq(FormError(key, errorKey, args)))
+        case Some(s) => Right(s)
       }
 
     override def unbind(key: String, value: String): Map[String, String] =
@@ -176,5 +162,49 @@ trait Formatters {
 
     override def unbind(key: String, country: Country): Map[String, String] =
       Map(key -> country.code.code)
+  }
+
+  private[mappings] def customsOfficeFormatter(
+                                                customsOfficeList: CustomsOfficeList,
+                                                errorKey: String,
+                                                args: Seq[Any] = Seq.empty
+                                              ): Formatter[CustomsOffice] = new Formatter[CustomsOffice] {
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], CustomsOffice] = {
+      lazy val error = Left(Seq(FormError(key, errorKey, args)))
+      data.get(key) match {
+        case None => error
+        case Some(id) =>
+          customsOfficeList.customsOffices.find(_.id == id) match {
+            case Some(customsOffice) => Right(customsOffice)
+            case None => error
+          }
+      }
+    }
+
+    override def unbind(key: String, customsOffice: CustomsOffice): Map[String, String] =
+      Map(key -> customsOffice.id)
+  }
+
+  private[mappings] def nationalityFormatter(
+                                              nationalityList: NationalityList,
+                                              errorKey: String,
+                                              args: Seq[Any] = Seq.empty
+                                            ): Formatter[Nationality] = new Formatter[Nationality] {
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Nationality] = {
+      lazy val error = Left(Seq(FormError(key, errorKey, args)))
+      data.get(key) match {
+        case None => error
+        case Some(code) =>
+          nationalityList.getNationality(code) match {
+            case Some(nationality: Nationality) => Right(nationality)
+            case None => error
+          }
+      }
+    }
+
+    override def unbind(key: String, nationality: Nationality): Map[String, String] =
+      Map(key -> nationality.code)
   }
 }

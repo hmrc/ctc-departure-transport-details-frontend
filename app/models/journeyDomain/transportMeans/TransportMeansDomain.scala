@@ -17,9 +17,15 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
-import models.domain.UserAnswersReader
+import controllers.transportMeans.routes
+import models.SecurityDetailsType.NoSecurityDetails
+import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
+import models.transportMeans.departure.InlandMode
 import models.{Mode, UserAnswers}
+import pages.external.SecurityDetailsTypePage
+import pages.transportMeans.AnotherVehicleCrossingYesNoPage
+import pages.transportMeans.departure.InlandModePage
 import play.api.mvc.Call
 
 sealed trait TransportMeansDomain extends JourneyDomainModel {

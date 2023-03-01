@@ -16,8 +16,10 @@
 
 package forms
 
+import forms.Constants.maxUCRLength
+import forms.mappings.Mappings
+import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
-
 import javax.inject.Inject
 
 class UCRFormProvider @Inject() extends Mappings {

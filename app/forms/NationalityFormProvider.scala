@@ -16,9 +16,11 @@
 
 package forms
 
-import play.api.data.Form
-
 import javax.inject.Inject
+import forms.mappings.Mappings
+import play.api.data.Form
+import models.reference.Nationality
+import models.NationalityList
 
 class NationalityFormProvider @Inject() extends Mappings {
 

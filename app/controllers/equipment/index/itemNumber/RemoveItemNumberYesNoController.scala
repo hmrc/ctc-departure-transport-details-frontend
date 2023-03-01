@@ -49,7 +49,7 @@ class RemoveItemNumberYesNoController @Inject() (
   private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
 
   private def form(implicit request: Request): Form[Boolean] =
-    formProvider("transport.equipment.index.itemNumber.removeItemNumberYesNo", request.arg)
+    formProvider("equipment.index.itemNumber.removeItemNumberYesNo", request.arg)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index, itemNumberIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)

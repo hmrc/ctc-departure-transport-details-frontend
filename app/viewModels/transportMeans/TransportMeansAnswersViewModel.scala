@@ -16,8 +16,13 @@
 
 package viewModels.transportMeans
 
+import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
+import pages.sections.external.OfficesOfTransitSection
 import play.api.i18n.Messages
+import utils.cyaHelpers.transportMeans.TransportMeansCheckYourAnswersHelper
+import utils.cyaHelpers.transportMeans.active.ActiveBorderTransportAnswersHelper
+import viewModels.Section
 
 import javax.inject.Inject
 
@@ -25,18 +30,18 @@ case class TransportMeansAnswersViewModel(sections: Seq[Section])
 
 object TransportMeansAnswersViewModel {
 
-  class TransportMeansAnswersViewModelProvider @Inject() () {
+  class TransportMeansAnswersViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): TransportMeansAnswersViewModel = {
       val helper = new TransportMeansCheckYourAnswersHelper(userAnswers, mode)
 
       val inlandModeSection = Section(
-        sectionTitle = messages("transport.transportMeans.inlandMode.subheading"),
+        sectionTitle = messages("transportMeans.inlandMode.subheading"),
         rows = Seq(helper.inlandMode).flatten
       )
 
       val departureMeansSection = Section(
-        sectionTitle = messages("transport.transportMeans.departureMeans.subheading"),
+        sectionTitle = messages("transportMeans.departureMeans.subheading"),
         rows = Seq(
           helper.departureIdentificationType,
           helper.departureIdentificationNumber,
@@ -45,20 +50,20 @@ object TransportMeansAnswersViewModel {
       )
 
       val borderModeSection = Section(
-        sectionTitle = messages("transport.transportMeans.borderMode.subheading"),
+        sectionTitle = messages("transportMeans.borderMode.subheading"),
         rows = Seq(helper.modeCrossingBorder, helper.anotherVehicleCrossing).flatten
       )
 
       val borderMeansSection = {
         if (userAnswers.get(OfficesOfTransitSection).isDefined) {
           Section(
-            sectionTitle = messages("transport.transportMeans.borderMeans.subheading"),
+            sectionTitle = messages("transportMeans.borderMeans.subheading"),
             rows = helper.activeBorderTransportsMeans,
-            addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans
+            addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans()
           )
         } else {
           Section(
-            sectionTitle = messages("transport.transportMeans.borderMeans.subheading"),
+            sectionTitle = messages("transportMeans.borderMeans.subheading"),
             rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
           )
         }

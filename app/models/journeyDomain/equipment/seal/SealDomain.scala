@@ -16,10 +16,11 @@
 
 package models.journeyDomain.equipment.seal
 
-import models.domain.UserAnswersReader
+import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.Stage._
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.{Index, Mode, UserAnswers}
+import pages.equipment.index.seals.IdentificationNumberPage
 import play.api.mvc.Call
 
 case class SealDomain(

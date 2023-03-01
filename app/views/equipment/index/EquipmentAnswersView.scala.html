@@ -16,7 +16,7 @@
 
 @import controllers.equipment.index.routes
 @import models.LocalReferenceNumber
-@import viewModels.sections.Section
+@import viewModels.Section
 @import views.html.components.{AnswerSections, Button, Heading}
 
 @this(
@@ -30,14 +30,14 @@
 @(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transport.equipment.index.checkYourAnswers.title"),
+    title = messages("equipment.index.checkYourAnswers.title"),
     showBackLink = true,
-    lrn = Some(lrn)
+    lrn = lrn
 ) {
 
     @heading(
-        heading = messages("transport.equipment.index.checkYourAnswers.heading"),
-        caption = Some(messages("transport.equipment.caption"))
+        heading = messages("equipment.index.checkYourAnswers.heading"),
+        caption = Some(messages("equipment.caption"))
     )
 
     @answerSections(sections)

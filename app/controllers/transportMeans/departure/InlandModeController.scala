@@ -17,9 +17,18 @@
 package controllers.transportMeans.departure
 
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import forms.EnumerableFormProvider
+import models.transportMeans.departure.InlandMode
+import models.{LocalReferenceNumber, Mode}
+import navigation.UserAnswersNavigator
+import navigation.TransportMeansNavigatorProvider
+import pages.transportMeans.departure.InlandModePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.transportMeans.departure.InlandModeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +45,7 @@ class InlandModeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[InlandMode]("transport.transportMeans.departure.inlandMode")
+  private val form = formProvider[InlandMode]("transportMeans.departure.inlandMode")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
@@ -56,7 +65,7 @@ class InlandModeController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, InlandMode.radioItems, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            InlandModePage.writeToUserAnswers(value).updateTask[TransportDomain]().writeToSession().navigate()
+            InlandModePage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }
