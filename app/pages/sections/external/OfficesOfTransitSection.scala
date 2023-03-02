@@ -16,10 +16,10 @@
 
 package pages.sections.external
 
-import pages.sections.Section
+import pages.sections.ReadOnlySection
 import play.api.libs.json.{JsArray, JsPath}
 
-case object OfficesOfTransitSection extends Section[JsArray] {
+case object OfficesOfTransitSection extends ReadOnlySection[JsArray] {
 
   override def path: JsPath = transitSectionPath \ toString
 

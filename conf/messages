@@ -227,7 +227,7 @@ transportMeans.active.customsOfficeActiveBorder.error.required = Enter the offic
 
 transportMeans.active.conveyanceReferenceNumberYesNo.title = Do you want to add a conveyance reference number?
 transportMeans.active.conveyanceReferenceNumberYesNo.heading = Do you want to add a conveyance reference number?
-transportMeans.active.conveyanceReferenceNumberYesNo.hint = This is a unique reference provided by the carrier to identify the means of 
+transportMeans.active.conveyanceReferenceNumberYesNo.hint = This is a unique reference provided by the carrier to identify the means of transport.
 transportMeans.active.conveyanceReferenceNumberYesNo.checkYourAnswersLabel = Do you want to add a conveyance reference number?
 transportMeans.active.conveyanceReferenceNumberYesNo.error.required = Select yes if you want to add a conveyance reference number
 transportMeans.active.conveyanceReferenceNumberYesNo.change.hidden = if you want to add a conveyance reference number for the border means of transport
@@ -249,7 +249,7 @@ transportMeans.active.addAnotherBorderTransport.error.required =  Select yes if 
 transportMeans.active.addAnotherBorderTransport.label = Do you want to add another border means of transport?
 transportMeans.active.addAnotherBorderTransport.hidden = Do you want to add another border means of transport?
 transportMeans.active.addAnotherBorderTransport.hint = Only include vehicles that cross into another CTC country. As the EU is one CTC country, you don’t need to provide vehicle changes that stay within the EU.
-transportMeans.active.addAnotherBorderTransport.maxLimit.label = You cannot add any more border means of  To add another, you need to remove one first.
+transportMeans.active.addAnotherBorderTransport.maxLimit.label = You cannot add any more border means of transport. To add another, you need to remove one first.
 
 transportMeans.active.confirmRemoveBorderTransport.title = Are you sure you want to remove this border means of transport?
 transportMeans.active.confirmRemoveBorderTransport.heading = Are you sure you want to remove this border means of transport?

@@ -52,7 +52,7 @@ object BorderModeOfTransport extends RadioModel[BorderModeOfTransport] {
     override val borderModeType: Int = 8
   }
 
-  override val messageKeyPrefix: String = "transport.transportMeans.borderModeOfTransport"
+  override val messageKeyPrefix: String = "transportMeans.borderModeOfTransport"
 
   val values: Seq[BorderModeOfTransport] = Seq(
     Maritime,

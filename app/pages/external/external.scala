@@ -16,12 +16,14 @@
 
 package pages
 
+import models.Index
 import play.api.libs.json.{__, JsPath}
 
 package object external {
 
-  lazy val preTaskListPath: JsPath              = __ \ "preTaskList"
-  lazy val traderDetailsConsignmentPath: JsPath = __ \ "traderDetails" \ "consignment"
-  lazy val routeDetailsRoutingPath: JsPath      = __ \ "routeDetails" \ "routing"
-
+  lazy val preTaskListPath: JsPath                  = __ \ "preTaskList"
+  lazy val traderDetailsConsignmentPath: JsPath     = __ \ "traderDetails" \ "consignment"
+  lazy val routeDetailsRoutingPath: JsPath          = __ \ "routeDetails" \ "routing"
+  def routeDetailsTransitPath(index: Index): JsPath = __ \ "routeDetails" \ "transit" \ "officesOfTransit" \ index.position
+  def routeDetailsExitPath(index: Index): JsPath    = __ \ "routeDetails" \ "exit" \ "officesOfExit" \ index.position
 }

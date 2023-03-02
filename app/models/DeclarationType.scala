@@ -16,9 +16,15 @@
 
 package models
 
+import config.Constants.XI
+import models.ProcedureType.Normal
+import pages.external.{OfficeOfDeparturePage, ProcedureTypePage}
+
 sealed trait DeclarationType
 
-object DeclarationType extends EnumerableType[DeclarationType] {
+object DeclarationType extends RadioModelU[DeclarationType] {
+
+  override val messageKeyPrefix = "declarationType"
 
   case object Option1 extends WithName("T1") with DeclarationType
   case object Option2 extends WithName("T2") with DeclarationType
@@ -33,4 +39,13 @@ object DeclarationType extends EnumerableType[DeclarationType] {
     Option4,
     Option5
   )
+
+  override def valuesU(userAnswers: UserAnswers): Seq[DeclarationType] =
+    (
+      userAnswers.get(OfficeOfDeparturePage).map(_.countryCode),
+      userAnswers.get(ProcedureTypePage)
+    ) match {
+      case (Some(XI), Some(Normal)) => values
+      case _                        => values.filterNot(_ == Option4)
+    }
 }

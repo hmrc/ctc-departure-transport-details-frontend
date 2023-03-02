@@ -63,7 +63,7 @@ object Identification extends RadioModel[Identification] {
     override val borderModeType: Int = 81
   }
 
-  override val messageKeyPrefix: String = "transport.transportMeans.active.identification"
+  override val messageKeyPrefix: String = "transportMeans.active.identification"
 
   val values: Seq[Identification] = Seq(
     ImoShipIdNumber,

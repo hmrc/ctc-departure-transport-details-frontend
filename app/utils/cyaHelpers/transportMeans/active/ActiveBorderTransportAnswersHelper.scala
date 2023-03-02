@@ -35,49 +35,49 @@ class ActiveBorderTransportAnswersHelper(
   def activeBorderIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
     page = IdentificationPage(index),
     formatAnswer = formatEnumAsText(Identification.messageKeyPrefix),
-    prefix = "transport.transportMeans.active.identification",
+    prefix = "transportMeans.active.identification",
     id = Some("change-transport-means-active-identification")
   )
 
   def activeBorderIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = IdentificationNumberPage(index),
     formatAnswer = formatAsText,
-    prefix = "transport.transportMeans.active.identificationNumber",
+    prefix = "transportMeans.active.identificationNumber",
     id = Some("change-transport-means-active-identification-number")
   )
 
   def activeBorderAddNationality: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddNationalityYesNoPage(index),
     formatAnswer = formatAsYesOrNo,
-    prefix = "transport.transportMeans.active.addNationalityYesNo",
+    prefix = "transportMeans.active.addNationalityYesNo",
     id = Some("change-add-transport-means-vehicle-nationality")
   )
 
   def activeBorderNationality: Option[SummaryListRow] = getAnswerAndBuildRow[Nationality](
     page = NationalityPage(index),
     formatAnswer = formatAsText,
-    prefix = "transport.transportMeans.active.nationality",
+    prefix = "transportMeans.active.nationality",
     id = Some("change-transport-means-active-vehicle-nationality")
   )
 
   def customsOfficeAtBorder: Option[SummaryListRow] = getAnswerAndBuildRow[CustomsOffice](
     page = CustomsOfficeActiveBorderPage(index),
     formatAnswer = formatAsText,
-    prefix = "transport.transportMeans.active.customsOfficeActiveBorder",
+    prefix = "transportMeans.active.customsOfficeActiveBorder",
     id = Some("change-transport-means-customs-office-at-border")
   )
 
   def activeBorderConveyanceReferenceNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = ConveyanceReferenceNumberYesNoPage(index),
     formatAnswer = formatAsYesOrNo,
-    prefix = "transport.transportMeans.active.conveyanceReferenceNumberYesNo",
+    prefix = "transportMeans.active.conveyanceReferenceNumberYesNo",
     id = Some("change-add-transport-means-conveyance-reference-number")
   )
 
   def conveyanceReferenceNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ConveyanceReferenceNumberPage(index),
     formatAnswer = formatAsText,
-    prefix = "transport.transportMeans.active.conveyanceReferenceNumber",
+    prefix = "transportMeans.active.conveyanceReferenceNumber",
     id = Some("change-transport-means-conveyance-reference-number")
   )
 

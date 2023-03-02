@@ -100,14 +100,6 @@ trait ModelGenerators {
       } yield Country(code, name)
     }
 
-  implicit lazy val arbitraryNationality: Arbitrary[Nationality] =
-    Arbitrary {
-      for {
-        code <- nonEmptyString
-        desc <- nonEmptyString
-      } yield Nationality(code, desc)
-    }
-
   implicit lazy val arbitraryCountryCode: Arbitrary[CountryCode] =
     Arbitrary {
       Gen
@@ -115,6 +107,14 @@ trait ModelGenerators {
         .map(
           code => CountryCode(code.mkString)
         )
+    }
+
+  implicit lazy val arbitraryNationality: Arbitrary[Nationality] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield Nationality(code, desc)
     }
 
   implicit lazy val arbitraryCountryList: Arbitrary[CountryList] = Arbitrary {
@@ -156,5 +156,15 @@ trait ModelGenerators {
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
+
+  lazy val arbitrarySomeSecurityDetailsType: Arbitrary[SecurityDetailsType] =
+    Arbitrary {
+      Gen.oneOf(SecurityDetailsType.values.filterNot(_ == SecurityDetailsType.NoSecurityDetails))
+    }
+
+  lazy val arbitraryNonMailOrUnknownInlandMode: Arbitrary[InlandMode] =
+    Arbitrary {
+      Gen.oneOf(InlandMode.values.filterNot(_ == InlandMode.Mail).filterNot(_ == InlandMode.Unknown))
+    }
 
 }

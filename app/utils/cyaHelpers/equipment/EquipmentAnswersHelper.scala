@@ -38,21 +38,21 @@ class EquipmentAnswersHelper(
   def containerIdentificationNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddContainerIdentificationNumberYesNoPage(equipmentIndex),
     formatAnswer = formatAsYesOrNo,
-    prefix = "transport.equipment.index.addContainerIdentificationNumberYesNo",
+    prefix = "equipment.index.addContainerIdentificationNumberYesNo",
     id = Some("change-add-container-identification-number")
   )
 
   def containerIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = ContainerIdentificationNumberPage(equipmentIndex),
     formatAnswer = formatAsText,
-    prefix = "transport.equipment.index.containerIdentificationNumber",
+    prefix = "equipment.index.containerIdentificationNumber",
     id = Some("change-container-identification-number")
   )
 
   def sealsYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddSealYesNoPage(equipmentIndex),
     formatAnswer = formatAsYesOrNo,
-    prefix = "transport.equipment.index.addSealYesNo",
+    prefix = "equipment.index.addSealYesNo",
     id = Some("change-add-seals")
   )
 
@@ -61,7 +61,7 @@ class EquipmentAnswersHelper(
 
   def seal(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[SealDomain](
     formatAnswer = formatAsText,
-    prefix = "transport.equipment.index.checkYourAnswers.seal",
+    prefix = "equipment.index.checkYourAnswers.seal",
     id = Some(s"change-seal-${index.display}"),
     args = index.display
   )(SealDomain.userAnswersReader(equipmentIndex, index))
@@ -69,7 +69,7 @@ class EquipmentAnswersHelper(
   def addOrRemoveSeals(): Option[Link] = buildLink(SealsSection(equipmentIndex)) {
     Link(
       id = "add-or-remove-seals",
-      text = messages("transport.equipment.index.checkYourAnswers.seals.addOrRemove"),
+      text = messages("equipment.index.checkYourAnswers.seals.addOrRemove"),
       href = routes.AddAnotherSealController.onPageLoad(userAnswers.lrn, mode, equipmentIndex).url
     )
   }
@@ -77,7 +77,7 @@ class EquipmentAnswersHelper(
   def itemNumbersYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddGoodsItemNumberYesNoPage(equipmentIndex),
     formatAnswer = formatAsYesOrNo,
-    prefix = "transport.equipment.index.addGoodsItemNumberYesNo",
+    prefix = "equipment.index.addGoodsItemNumberYesNo",
     id = Some("change-add-item-numbers")
   )
 
@@ -86,7 +86,7 @@ class EquipmentAnswersHelper(
 
   def itemNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[ItemNumberDomain](
     formatAnswer = formatAsText,
-    prefix = "transport.equipment.index.checkYourAnswers.itemNumber",
+    prefix = "equipment.index.checkYourAnswers.itemNumber",
     id = Some(s"change-goods-item-number-${index.display}"),
     args = index.display
   )(ItemNumberDomain.userAnswersReader(equipmentIndex, index))
@@ -94,7 +94,7 @@ class EquipmentAnswersHelper(
   def addOrRemoveItemNumbers(): Option[Link] = buildLink(ItemNumbersSection(equipmentIndex)) {
     Link(
       id = "add-or-remove-goods-item-numbers",
-      text = messages("transport.equipment.index.checkYourAnswers.itemNumbers.addOrRemove"),
+      text = messages("equipment.index.checkYourAnswers.itemNumbers.addOrRemove"),
       href = routes.AddAnotherGoodsItemNumberController.onPageLoad(userAnswers.lrn, mode, equipmentIndex).url
     )
   }

@@ -19,9 +19,15 @@ package generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
+import play.api.mvc.Call
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import viewModels.authorisations.AddAnotherAuthorisationViewModel
+import viewModels.equipment.{AddAnotherEquipmentViewModel, AddAnotherSealViewModel}
+import viewModels.equipment.index.AddAnotherGoodsItemNumberViewModel
+import viewModels.supplyChainActors.AddAnotherSupplyChainActorViewModel
+import viewModels.transportMeans.active.AddAnotherBorderTransportViewModel
 import viewModels.{Link, ListItem, Section}
 
 trait ViewModelGenerators {
@@ -166,5 +172,47 @@ trait ViewModelGenerators {
       changeUrl <- nonEmptyString
       removeUrl <- Gen.option(nonEmptyString)
     } yield ListItem(name, changeUrl, removeUrl)
+  }
+
+  implicit lazy val arbitraryAddAnotherAuthorisationViewModel: Arbitrary[AddAnotherAuthorisationViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherAuthorisationViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryAddAnotherGoodsItemNumberViewModel: Arbitrary[AddAnotherGoodsItemNumberViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherGoodsItemNumberViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryAddAnotherSealViewModel: Arbitrary[AddAnotherSealViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherSealViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryAddAnotherEquipmentViewModel: Arbitrary[AddAnotherEquipmentViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherEquipmentViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryAddAnotherSupplyChainActorViewModel: Arbitrary[AddAnotherSupplyChainActorViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherSupplyChainActorViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryAddAnotherBorderTransportViewModel: Arbitrary[AddAnotherBorderTransportViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherBorderTransportViewModel(listItems, onSubmitCall)
   }
 }

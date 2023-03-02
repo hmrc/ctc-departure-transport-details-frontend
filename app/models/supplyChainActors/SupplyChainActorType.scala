@@ -32,7 +32,7 @@ object SupplyChainActorType extends RadioModel[SupplyChainActorType] {
   case object Manufacturer extends WithName("manufacturer") with SupplyChainActorType
   case object WarehouseKeeper extends WithName("warehouseKeeper") with SupplyChainActorType
 
-  override val messageKeyPrefix: String = "transport.supplyChainActors.index.supplyChainActorType"
+  override val messageKeyPrefix: String = "supplyChainActors.index.supplyChainActorType"
 
   val values: Seq[SupplyChainActorType] = Seq(
     Consolidator,

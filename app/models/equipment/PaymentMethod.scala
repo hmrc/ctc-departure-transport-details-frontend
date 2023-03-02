@@ -52,7 +52,7 @@ object PaymentMethod extends RadioModel[PaymentMethod] {
     override val code: String = "Z"
   }
 
-  override val messageKeyPrefix: String = "transport.equipment.paymentMethod"
+  override val messageKeyPrefix: String = "equipment.paymentMethod"
 
   val values: Seq[PaymentMethod] = Seq(
     Cash,

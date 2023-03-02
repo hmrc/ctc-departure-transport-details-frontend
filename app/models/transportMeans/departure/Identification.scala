@@ -71,7 +71,7 @@ object Identification extends RadioModelU[Identification] {
     override val identificationType: Int = 99
   }
 
-  override val messageKeyPrefix: String = "transport.transportMeans.departure.identification"
+  override val messageKeyPrefix: String = "transportMeans.departure.identification"
 
   val values: Seq[Identification] = Seq(
     SeaGoingVessel,

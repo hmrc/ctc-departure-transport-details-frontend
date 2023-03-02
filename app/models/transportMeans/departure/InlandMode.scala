@@ -56,7 +56,7 @@ object InlandMode extends RadioModel[InlandMode] {
     override val inlandModeType: Int = 9
   }
 
-  override val messageKeyPrefix: String = "transport.transportMeans.departure.inlandMode"
+  override val messageKeyPrefix: String = "transportMeans.departure.inlandMode"
 
   val values: Seq[InlandMode] = Seq(
     Maritime,

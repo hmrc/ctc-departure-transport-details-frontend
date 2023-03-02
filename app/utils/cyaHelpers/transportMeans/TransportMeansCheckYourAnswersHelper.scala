@@ -40,7 +40,7 @@ class TransportMeansCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)
 
   def activeBorderTransportMeans(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[TransportMeansActiveDomain](
     formatAnswer = _.asString.toText,
-    prefix = "transport.transportMeans.active",
+    prefix = "transportMeans.active",
     id = Some(s"change-active-border-transport-means-${index.display}"),
     args = index.display
   )(TransportMeansActiveDomain.userAnswersReader(index))
@@ -48,7 +48,7 @@ class TransportMeansCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)
   def addOrRemoveActiveBorderTransportsMeans(): Option[Link] = buildLink(TransportMeansActiveListSection) {
     Link(
       id = "add-or-remove-border-means-of-transport",
-      text = messages("transport.transportMeans.borderMeans.addOrRemove"),
+      text = messages("transportMeans.borderMeans.addOrRemove"),
       href = routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode).url
     )
   }
@@ -56,42 +56,42 @@ class TransportMeansCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)
   def anotherVehicleCrossing: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AnotherVehicleCrossingYesNoPage,
     formatAnswer = formatAsYesOrNo,
-    prefix = "transport.transportMeans.anotherVehicleCrossingYesNo",
+    prefix = "transportMeans.anotherVehicleCrossingYesNo",
     id = Some("change-another-vehicle-crossing-border")
   )
 
   def modeCrossingBorder: Option[SummaryListRow] = getAnswerAndBuildRow[BorderModeOfTransport](
     page = BorderModeOfTransportPage,
     formatAnswer = formatEnumAsText(BorderModeOfTransport.messageKeyPrefix),
-    prefix = "transport.transportMeans.borderModeOfTransport",
+    prefix = "transportMeans.borderModeOfTransport",
     id = Some("change-border-mode-of-transport")
   )
 
   def inlandMode: Option[SummaryListRow] = getAnswerAndBuildRow[InlandMode](
     page = InlandModePage,
     formatAnswer = formatEnumAsText(InlandMode.messageKeyPrefix),
-    prefix = "transport.transportMeans.departure.inlandMode",
+    prefix = "transportMeans.departure.inlandMode",
     id = Some("change-transport-means-inland-mode")
   )
 
   def departureIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
     page = IdentificationPage,
     formatAnswer = formatEnumAsText(Identification.messageKeyPrefix),
-    prefix = "transport.transportMeans.departure.identification",
+    prefix = "transportMeans.departure.identification",
     id = Some("change-transport-means-departure-identification")
   )
 
   def departureIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
     page = MeansIdentificationNumberPage,
     formatAnswer = formatAsText,
-    prefix = "transport.transportMeans.departure.meansIdentificationNumber",
+    prefix = "transportMeans.departure.meansIdentificationNumber",
     id = Some("change-transport-means-departure-identification-number")
   )
 
   def departureNationality: Option[SummaryListRow] = getAnswerAndBuildRow[Nationality](
     page = VehicleCountryPage,
     formatAnswer = formatAsText,
-    prefix = "transport.transportMeans.departure.vehicleCountry",
+    prefix = "transportMeans.departure.vehicleCountry",
     id = Some("change-transport-means-departure-vehicle-nationality")
   )
 
