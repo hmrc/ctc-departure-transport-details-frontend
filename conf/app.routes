@@ -7,8 +7,8 @@
 ->         /                                                                                               app.carrierDetails.Routes
 ->         /                                                                                               app.equipment.Routes
 
-GET        /:lrn/guarantee-details/hmrc-frontend/assets/*file                                              controllers.HmrcFrontendController.at(path: String = "/public/lib/hmrc-frontend/hmrc", file: String, lrn: LocalReferenceNumber)
-GET        /:lrn/guarantee-details/assets/*file                                                            controllers.AssetsController.versioned(path: String = "/public", file: Asset, lrn: LocalReferenceNumber)
+GET        /:lrn/transport-details/hmrc-frontend/assets/*file                                              controllers.HmrcFrontendController.at(path: String = "/public/lib/hmrc-frontend/hmrc", file: String, lrn: LocalReferenceNumber)
+GET        /:lrn/transport-details/assets/*file                                                            controllers.AssetsController.versioned(path: String = "/public", file: Asset, lrn: LocalReferenceNumber)
 
 GET        /:lrn/transport-details                                                                         controllers.RedirectController.redirect(lrn: LocalReferenceNumber)
 

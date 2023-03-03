@@ -28,7 +28,7 @@ lazy val microservice = Project(appName, file("."))
       "templates._",
       "views.utils.ViewUtils._"
     ),
-    PlayKeys.playDefaultPort := 10128,
+    PlayKeys.playDefaultPort := 10131,
     libraryDependencies ++= AppDependencies(),
     // https://www.scala-lang.org/2021/01/12/configuring-and-suppressing-warnings.html
     // suppress warnings in generated routes files
