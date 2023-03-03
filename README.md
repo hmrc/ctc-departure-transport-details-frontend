@@ -1,7 +1,9 @@
 
 # ctc-departure-transport-details-frontend
 
-This is a placeholder README.md for a new repository
+This service allows a user to complete the transport-details section of a transit movement departure.
+
+Service manager port: 10131
 
 ### License
 

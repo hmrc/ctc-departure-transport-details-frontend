@@ -1,5 +1,31 @@
 # microservice specific routes
+->         /                                                                                               app.preRequisites.Routes
+->         /                                                                                               app.transportMeans.departure.Routes
+->         /                                                                                               app.transportMeans.active.Routes
+->         /                                                                                               app.supplyChainActors.Routes
+->         /                                                                                               app.authorisationsAndLimit.Routes
+->         /                                                                                               app.carrierDetails.Routes
+->         /                                                                                               app.equipment.Routes
 
-->         /hmrc-frontend           hmrcfrontend.Routes
-GET        /                        uk.gov.hmrc.ctcdeparturetransportdetailsfrontend.controllers.HelloWorldController.helloWorld
-GET        /assets/*file            controllers.Assets.versioned(path = "/public", file: Asset)
+GET        /:lrn/guarantee-details/hmrc-frontend/assets/*file                                              controllers.HmrcFrontendController.at(path: String = "/public/lib/hmrc-frontend/hmrc", file: String, lrn: LocalReferenceNumber)
+GET        /:lrn/guarantee-details/assets/*file                                                            controllers.AssetsController.versioned(path: String = "/public", file: Asset, lrn: LocalReferenceNumber)
+
+GET        /:lrn/transport-details                                                                         controllers.RedirectController.redirect(lrn: LocalReferenceNumber)
+
+GET        /:lrn/transport-details/border-mode-of-transport/add                                            controllers.transportMeans.AnotherVehicleCrossingYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/border-mode-of-transport/add                                            controllers.transportMeans.AnotherVehicleCrossingYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/border-mode-of-transport/change-add                                     controllers.transportMeans.AnotherVehicleCrossingYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/border-mode-of-transport/change-add                                     controllers.transportMeans.AnotherVehicleCrossingYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/transport-details/border-mode-of-transport                                                controllers.transportMeans.BorderModeOfTransportController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/border-mode-of-transport                                                controllers.transportMeans.BorderModeOfTransportController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/change-border-mode-of-transport                                         controllers.transportMeans.BorderModeOfTransportController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/change-border-mode-of-transport                                         controllers.transportMeans.BorderModeOfTransportController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/transport-details/modes-means-of-transport/check-answers                                  controllers.transportMeans.TransportMeansCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /:lrn/transport-details/modes-means-of-transport/check-answers                                  controllers.transportMeans.TransportMeansCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /:lrn/transport-details/modes-means-of-transport/change-check-answers                           controllers.transportMeans.TransportMeansCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /:lrn/transport-details/modes-means-of-transport/change-check-answers                           controllers.transportMeans.TransportMeansCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /:lrn/transport-details/check-answers                                                           controllers.TransportAnswersController.onPageLoad(lrn: LocalReferenceNumber)
+POST       /:lrn/transport-details/check-answers                                                           controllers.TransportAnswersController.onSubmit(lrn: LocalReferenceNumber)
