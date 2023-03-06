@@ -208,6 +208,15 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with ViewMode
     datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
   }
 
+  implicit lazy val arbitraryLocalDateTime: Arbitrary[LocalDateTime] = Arbitrary {
+    dateTimesBetween(
+      LocalDateTime.of(1900, 1, 1, 0, 0, 0),
+      LocalDateTime.of(2100, 1, 1, 0, 0, 0)
+    ).map(
+      x => x.withNano(0).withSecond(0)
+    )
+  }
+
   implicit lazy val arbitraryDateTime: Arbitrary[DateTime] = Arbitrary {
     dateTimesBetween(
       min = LocalDateTime.of(2000, 1, 1, 23, 55, 0),

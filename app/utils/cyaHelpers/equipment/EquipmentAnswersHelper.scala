@@ -66,7 +66,7 @@ class EquipmentAnswersHelper(
     args = index.display
   )(SealDomain.userAnswersReader(equipmentIndex, index))
 
-  def addOrRemoveSeals(): Option[Link] = buildLink(SealsSection(equipmentIndex)) {
+  def addOrRemoveSeals: Option[Link] = buildLink(SealsSection(equipmentIndex)) {
     Link(
       id = "add-or-remove-seals",
       text = messages("equipment.index.checkYourAnswers.seals.addOrRemove"),
@@ -91,7 +91,7 @@ class EquipmentAnswersHelper(
     args = index.display
   )(ItemNumberDomain.userAnswersReader(equipmentIndex, index))
 
-  def addOrRemoveItemNumbers(): Option[Link] = buildLink(ItemNumbersSection(equipmentIndex)) {
+  def addOrRemoveItemNumbers: Option[Link] = buildLink(ItemNumbersSection(equipmentIndex)) {
     Link(
       id = "add-or-remove-goods-item-numbers",
       text = messages("equipment.index.checkYourAnswers.itemNumbers.addOrRemove"),

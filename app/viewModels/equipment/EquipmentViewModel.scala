@@ -43,13 +43,13 @@ object EquipmentViewModel {
       val sealsSection = Section(
         sectionTitle = messages("equipment.index.checkYourAnswers.seals"),
         rows = helper.sealsYesNo.toList ++ helper.seals,
-        addAnotherLink = helper.addOrRemoveSeals()
+        addAnotherLink = helper.addOrRemoveSeals
       )
 
       val itemNumbersSection = Section(
         sectionTitle = messages("equipment.index.checkYourAnswers.itemNumbers"),
         rows = helper.itemNumbersYesNo.toList ++ helper.itemNumbers,
-        addAnotherLink = helper.addOrRemoveItemNumbers()
+        addAnotherLink = helper.addOrRemoveItemNumbers
       )
 
       new EquipmentViewModel(Seq(preSection, sealsSection, itemNumbersSection))
