@@ -33,7 +33,10 @@ case class PreRequisitesDomain(
 object PreRequisitesDomain {
 
   implicit val countryOfDispatchReader: UserAnswersReader[Option[Country]] =
-    DeclarationTypePage.filterOptionalDependent(_ == Option4)(CountryOfDispatchPage.reader)
+    DeclarationTypePage.reader.flatMap {
+      case Option4 => SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
+      case _       => none[Country].pure[UserAnswersReader]
+    }
 
   implicit val userAnswersReader: UserAnswersReader[PreRequisitesDomain] = (
     SameUcrYesNoPage.filterOptionalDependent(identity)(UniqueConsignmentReferencePage.reader),

@@ -58,25 +58,50 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
         result.value mustBe expectedResult
       }
 
-      "when TIR declaration type" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, Option4)
-          .setValue(SameUcrYesNoPage, false)
-          .setValue(CountryOfDispatchPage, country)
-          .setValue(TransportedToSameCountryYesNoPage, true)
-          .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
-          .setValue(ContainerIndicatorPage, true)
+      "when TIR declaration type" - {
+        "when using the same country of dispatch" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(DeclarationTypePage, Option4)
+            .setValue(SameUcrYesNoPage, false)
+            .setValue(SameCountryOfDispatchYesNoPage, true)
+            .setValue(CountryOfDispatchPage, country)
+            .setValue(TransportedToSameCountryYesNoPage, true)
+            .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
+            .setValue(ContainerIndicatorPage, true)
 
-        val expectedResult = PreRequisitesDomain(
-          ucr = None,
-          countryOfDispatch = Some(country),
-          itemsDestinationCountry = Some(itemsDestinationCountry),
-          containerIndicator = true
-        )
+          val expectedResult = PreRequisitesDomain(
+            ucr = None,
+            countryOfDispatch = Some(country),
+            itemsDestinationCountry = Some(itemsDestinationCountry),
+            containerIndicator = true
+          )
 
-        val result: EitherType[PreRequisitesDomain] = UserAnswersReader[PreRequisitesDomain].run(userAnswers)
+          val result: EitherType[PreRequisitesDomain] = UserAnswersReader[PreRequisitesDomain].run(userAnswers)
 
-        result.value mustBe expectedResult
+          result.value mustBe expectedResult
+        }
+
+        "when not using the same country of dispatch" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(DeclarationTypePage, Option4)
+            .setValue(SameUcrYesNoPage, false)
+            .setValue(SameCountryOfDispatchYesNoPage, false)
+            .setValue(TransportedToSameCountryYesNoPage, true)
+            .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
+            .setValue(ContainerIndicatorPage, true)
+
+          val expectedResult = PreRequisitesDomain(
+            ucr = None,
+            countryOfDispatch = None,
+            itemsDestinationCountry = Some(itemsDestinationCountry),
+            containerIndicator = true
+          )
+
+          val result: EitherType[PreRequisitesDomain] = UserAnswersReader[PreRequisitesDomain].run(userAnswers)
+
+          result.value mustBe expectedResult
+        }
+
       }
     }
 
@@ -92,6 +117,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           val mandatoryPages: Seq[QuestionPage[_]] = Seq(
             SameUcrYesNoPage,
             UniqueConsignmentReferencePage,
+            SameCountryOfDispatchYesNoPage,
             CountryOfDispatchPage,
             TransportedToSameCountryYesNoPage,
             ItemsDestinationCountryPage,
@@ -102,6 +128,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             .setValue(DeclarationTypePage, Option4)
             .setValue(SameUcrYesNoPage, true)
             .setValue(UniqueConsignmentReferencePage, ucr)
+            .setValue(SameCountryOfDispatchYesNoPage, true)
             .setValue(CountryOfDispatchPage, country)
             .setValue(TransportedToSameCountryYesNoPage, true)
             .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)

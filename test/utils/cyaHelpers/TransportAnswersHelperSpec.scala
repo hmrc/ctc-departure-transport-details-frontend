@@ -124,6 +124,40 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
     }
 
+    "usingSameCountryOfDispatch" - {
+      "must return None" - {
+        s"when $SameCountryOfDispatchYesNoPage is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.usingSameCountryOfDispatch
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $SameCountryOfDispatchYesNoPage is defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(SameCountryOfDispatchYesNoPage, true)
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.usingSameCountryOfDispatch.get
+
+              result.key.value mustBe "Are all the items being dispatched from the same country?"
+              result.value.value mustBe "Yes"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe preRequisitesRoutes.SameCountryOfDispatchYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustBe "if all the items are being dispatched from the same country"
+              action.id mustBe "change-using-same-country-of-dispatch"
+          }
+        }
+      }
+    }
+
     "countryOfDispatch" - {
       "must return None" - {
         s"when $CountryOfDispatchPage undefined" in {
