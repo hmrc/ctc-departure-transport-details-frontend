@@ -16,6 +16,8 @@
 
 package pages.preRequisites
 
+import models.reference.Country
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class SameCountryOfDispatchYesNoPageSpec extends PageBehaviours {
@@ -27,5 +29,18 @@ class SameCountryOfDispatchYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](SameCountryOfDispatchYesNoPage)
 
     beRemovable[Boolean](SameCountryOfDispatchYesNoPage)
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove country of destination answer" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(CountryOfDispatchPage, arbitrary[Country].sample.value)
+
+          val result = userAnswers.setValue(SameCountryOfDispatchYesNoPage, false)
+
+          result.get(CountryOfDispatchPage) must not be defined
+        }
+      }
+    }
   }
 }
