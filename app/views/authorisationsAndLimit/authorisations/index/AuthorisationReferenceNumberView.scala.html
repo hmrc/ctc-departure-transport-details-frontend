@@ -27,7 +27,27 @@
     button: Button
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, dynamicTitle: String, mode: Mode, authorisationIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, dynamicTitle: String, mode: Mode, authorisationIndex: Index, isApprovedOperator: Boolean)(implicit request: Request[_], messages: Messages)
+
+@inputTextOptionality() = @{
+
+    if(isApprovedOperator) {
+        TextInputWithHiddenLabel(
+            caption = Some(messages("authorisations.caption")),
+            heading = messages("authorisations.authorisationReferenceNumber.heading", messages(dynamicTitle)),
+            additionalHtml = messages("authorisations.authorisationReferenceNumber.paragraph").toParagraph
+        )
+
+    } else {
+
+        OrdinaryTextInput(
+            caption = Some(messages("authorisations.caption")),
+            heading = messages("authorisations.authorisationReferenceNumber.heading", messages(dynamicTitle))
+        )
+
+    }
+}
+
 
 @mainTemplate(
     title = messages("authorisations.authorisationReferenceNumber.title", messages(dynamicTitle)),
@@ -41,10 +61,7 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
-                caption = Some(messages("authorisations.caption")),
-                heading = messages("authorisations.authorisationReferenceNumber.heading", messages(dynamicTitle))
-            ),
+            inputTextType = inputTextOptionality(),
             hint = Some(messages("authorisations.authorisationReferenceNumber.hint")),
             inputClass = InputSize.Width20
         )

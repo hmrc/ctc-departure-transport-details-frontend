@@ -24,6 +24,7 @@ import models.{Index, LocalReferenceNumber, Mode}
 import models.requests.DataRequest
 import navigation.{AuthorisationNavigatorProvider, UserAnswersNavigator}
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
+import pages.external.ApprovedOperatorPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -51,6 +52,9 @@ class AuthorisationReferenceNumberController @Inject() (
   private def authorisationType(authorisationIndex: Index)(implicit request: DataRequest[_]): Option[String] =
     AuthorisationTypePage(authorisationIndex).inferredReader.run(request.userAnswers).toOption.map(_.forDisplay)
 
+  private def approvedOperator()(implicit request: DataRequest[_]): Boolean =
+    ApprovedOperatorPage.inferredReader.run(request.userAnswers).toOption.get
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions
     .requireData(lrn) {
       implicit request =>
@@ -63,7 +67,7 @@ class AuthorisationReferenceNumberController @Inject() (
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, lrn, value, mode, authorisationIndex))
+            Ok(view(preparedForm, lrn, value, mode, authorisationIndex, approvedOperator()))
           case _ => Redirect(config.sessionExpiredUrl)
         }
     }
@@ -76,7 +80,7 @@ class AuthorisationReferenceNumberController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, value, mode, authorisationIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, value, mode, authorisationIndex, approvedOperator()))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, authorisationIndex)
                 AuthorisationReferenceNumberPage(authorisationIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

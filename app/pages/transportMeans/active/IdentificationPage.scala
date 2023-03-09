@@ -48,9 +48,9 @@ case class IdentificationPage(index: Index) extends QuestionPage[Identification]
   def inferredReader: UserAnswersReader[Identification] =
     if (index.isFirst) {
       BorderModeOfTransportPage.reader.flatMap {
-        case BorderModeOfTransport.Rail => UserAnswersReader.apply(TrainNumber)
-        case BorderModeOfTransport.Road => UserAnswersReader.apply(RegNumberRoadVehicle)
-        case _                          => IdentificationPage(index).reader
+        case BorderModeOfTransport.ChannelTunnel     => UserAnswersReader.apply(TrainNumber)
+        case BorderModeOfTransport.IrishLandBoundary => UserAnswersReader.apply(RegNumberRoadVehicle)
+        case _                                       => IdentificationPage(index).reader
       }
     } else {
       IdentificationPage(index).reader

@@ -26,7 +26,6 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
-import pages.transportMeans.AnotherVehicleCrossingYesNoPage
 import pages.transportMeans.departure.InlandModePage
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

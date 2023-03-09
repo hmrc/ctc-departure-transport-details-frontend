@@ -62,15 +62,16 @@ preRequisites.countryOfDispatch.checkYourAnswersLabel = Country of dispatch
 preRequisites.countryOfDispatch.change.hidden = country of dispatch
 preRequisites.countryOfDispatch.placeholder = Select a country
 preRequisites.countryOfDispatch.error.required = Enter the country of dispatch
-preRequisites.countryOfDispatch.paragraph = This is the country where the CTC transit begins.
+preRequisites.countryOfDispatch.paragraph = This is the country the item was originally dispatched from. It might not be where the CTC transit movement begins.
 
-preRequisites.itemsDestinationCountry.title = What country are the items being transported to?
-preRequisites.itemsDestinationCountry.heading = What country are the items being transported to?
+preRequisites.itemsDestinationCountry.title = What is the country of destination?
+preRequisites.itemsDestinationCountry.heading = What is the country of destination?
 preRequisites.itemsDestinationCountry.hint = Enter the country, like France or Portugal.
+preRequisites.itemsDestinationCountry.paragraph = This is where the goods complete their journey. It may not be the final CTC country of the transit route.
 preRequisites.itemsDestinationCountry.checkYourAnswersLabel = Country of destination
 preRequisites.itemsDestinationCountry.change.hidden = country of destination
 preRequisites.itemsDestinationCountry.placeholder = Select a country
-preRequisites.itemsDestinationCountry.error.required = Enter the country the items are being transported to
+preRequisites.itemsDestinationCountry.error.required = Enter the country of destination
 
 preRequisites.containerIndicator.title = Are you using any containers?
 preRequisites.containerIndicator.heading = Are you using any containers?
@@ -99,7 +100,6 @@ transportMeans.departure.inlandMode.air = Air
 transportMeans.departure.inlandMode.mail = Mail (active mode of transport unknown)
 transportMeans.departure.inlandMode.fixed = Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods
 transportMeans.departure.inlandMode.waterway = Inland waterway
-transportMeans.departure.inlandMode.unknown = Unknown (own propulsion)
 transportMeans.departure.inlandMode.checkYourAnswersLabel = Mode
 transportMeans.departure.inlandMode.error.required = Select which inland mode of transport you’re using
 transportMeans.departure.inlandMode.change.hidden = inland mode of transport
@@ -126,9 +126,6 @@ transportMeans.departure.identification.regNumberAircraft = Registration number 
 transportMeans.departure.identification.regNumberAircraft.arg = registration number of the aircraft
 transportMeans.departure.identification.europeanVesselIdNumber = European vessel identification number (ENI code)
 transportMeans.departure.identification.europeanVesselIdNumber.arg = European vessel identification number (ENI code)
-transportMeans.departure.identification.unknown = Unknown - this can only be used during the transitional period
-# TODO: Ask Gavin for content for unknown identification type
-transportMeans.departure.identification.unknown.arg = ask gavin what this should be
 transportMeans.departure.identification.checkYourAnswersLabel = Identification type
 transportMeans.departure.identification.change.hidden = identification type for the departure means of transport
 transportMeans.departure.identification.error.required = Select which identification you want to use for this vehicle
@@ -157,18 +154,15 @@ transportMeans.anotherVehicleCrossingYesNo.checkYourAnswersLabel = Are you using
 transportMeans.anotherVehicleCrossingYesNo.change.hidden = if you are using another vehicle to cross the border
 transportMeans.anotherVehicleCrossingYesNo.error.required = Select yes if the vehicle will change before crossing the border
 
-transportMeans.borderModeOfTransport.title = Which mode of transport are you using to cross the border?
-transportMeans.borderModeOfTransport.heading = Which mode of transport are you using to cross the border?
-transportMeans.borderModeOfTransport.maritime = Maritime
-transportMeans.borderModeOfTransport.rail = Rail
-transportMeans.borderModeOfTransport.road = Road
-transportMeans.borderModeOfTransport.air = Air
-transportMeans.borderModeOfTransport.mail = Mail (active mode of transport unknown)
-transportMeans.borderModeOfTransport.fixed = Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods
-transportMeans.borderModeOfTransport.waterway = Inland waterway
+transportMeans.borderModeOfTransport.title = How is the transit crossing the border?
+transportMeans.borderModeOfTransport.heading = How is the transit crossing the border?
+transportMeans.borderModeOfTransport.sea = Maritime
+transportMeans.borderModeOfTransport.air = Rail
+transportMeans.borderModeOfTransport.channelTunnel = Road
+transportMeans.borderModeOfTransport.irishLandBoundary = Air
 transportMeans.borderModeOfTransport.checkYourAnswersLabel = Border mode of transport
 transportMeans.borderModeOfTransport.change.hidden = border mode of transport
-transportMeans.borderModeOfTransport.error.required = Select which mode of transport you’re using to cross the border
+transportMeans.borderModeOfTransport.error.required = Select how the transit is crossing the border
 
 transportMeans.active.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.active.identification.heading = Which identification do you want to use for this vehicle?
@@ -216,14 +210,13 @@ transportMeans.active.nationality.change.hidden = registered country for the bor
 transportMeans.active.nationality.checkYourAnswersLabel = Registered country
 transportMeans.active.nationality.error.required = Select the country the vehicle is registered to
 
-transportMeans.active.customsOfficeActiveBorder.title = Where is the office of transit?
-transportMeans.active.customsOfficeActiveBorder.heading = Where is the office of transit?
-transportMeans.active.customsOfficeActiveBorder.hint = Enter the office location or code, like Calais or FR620001.
+transportMeans.active.customsOfficeActiveBorder.title = Where is the customs office at the border?
+transportMeans.active.customsOfficeActiveBorder.heading = Where is the customs office at the border?
 transportMeans.active.customsOfficeActiveBorder.placeholder = Select a customs office
-transportMeans.active.customsOfficeActiveBorder.paragraph = This is the customs office after crossing the border.
+transportMeans.active.customsOfficeActiveBorder.paragraph = You can only select a location from the offices of transit, exit or destination in your transit route.
 transportMeans.active.customsOfficeActiveBorder.change.hidden = customs office for the border means of transport
 transportMeans.active.customsOfficeActiveBorder.checkYourAnswersLabel = Customs office
-transportMeans.active.customsOfficeActiveBorder.error.required = Enter the office of transit
+transportMeans.active.customsOfficeActiveBorder.error.required = Select the customs office at the border
 
 transportMeans.active.conveyanceReferenceNumberYesNo.title = Do you want to add a conveyance reference number?
 transportMeans.active.conveyanceReferenceNumberYesNo.heading = Do you want to add a conveyance reference number?
@@ -282,8 +275,8 @@ supplyChainActors.index.supplyChainActorType.manufacturer = Manufacturer
 supplyChainActors.index.supplyChainActorType.warehouseKeeper = Warehouse keeper
 supplyChainActors.index.supplyChainActorType.error.required = Select which type of supply chain actor you want to add
 
-supplyChainActors.index.identificationNumber.title = What’s the EORI number or Trader Identification Number (TIN) for the {0}?
-supplyChainActors.index.identificationNumber.heading = What’s the EORI number or Trader Identification Number (TIN) for the {0}?
+supplyChainActors.index.identificationNumber.title = What is the EORI number or Trader Identification Number (TIN) for the {0}?
+supplyChainActors.index.identificationNumber.heading = What is the EORI number or Trader Identification Number (TIN) for the {0}?
 supplyChainActors.index.identificationNumber.hint = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
 supplyChainActors.index.identificationNumber.error.required = Enter the EORI number or Trader Identification Number (TIN) for the supply chain actor
 supplyChainActors.index.identificationNumber.error.length = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
@@ -318,9 +311,10 @@ authorisations.authorisationType.forDisplay.SSE = SSE
 authorisations.authorisationType.forDisplay.TRD = TRD
 authorisations.authorisationType.error.required = Select which type of authorisation you want to add
 
-authorisations.authorisationReferenceNumber.title = What’s the reference number for the {0} authorisation?
-authorisations.authorisationReferenceNumber.heading = What’s the reference number for the {0} authorisation?
+authorisations.authorisationReferenceNumber.title = What is the the reference number for the {0} authorisation?
+authorisations.authorisationReferenceNumber.heading = What is the the reference number for the {0} authorisation?
 authorisations.authorisationReferenceNumber.hint = This can be up to 35 characters long and include both letters and numbers.
+authorisations.authorisationReferenceNumber.paragraph = You need to enter this as you’re using a reduced data set.
 authorisations.authorisationReferenceNumber.error.required = Enter the reference number for the {0} authorisation
 authorisations.authorisationReferenceNumber.error.length = The reference number must be 35 characters or less
 authorisations.authorisationReferenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
@@ -384,15 +378,15 @@ carrierDetails.contact.name.error.length = The contact’s name must be 70 chara
 carrierDetails.contact.name.error.invalid = The contact’s name must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), forward slashes, full stops, hyphens, question marks and spaces
 
 carrierDetails.contact.telephoneNumber.title = What is the phone number for the carrier’s contact?
-carrierDetails.contact.telephoneNumber.heading = What is {0}’s phone number?
+carrierDetails.contact.telephoneNumber.heading = What is {0}'s phone number?
 carrierDetails.contact.telephoneNumber.hint = Include the country code, for example +44 808 157 0192.
 carrierDetails.contact.telephoneNumber.checkYourAnswersLabel = Phone number
 carrierDetails.contact.telephoneNumber.change.hidden = carrier phone number
-carrierDetails.contact.telephoneNumber.error.required = Enter {0}’s telephone number, including the country code
-carrierDetails.contact.telephoneNumber.error.invalidCharacters = {0}’s telephone number must only include numbers 0 to 9 and a plus sign
-carrierDetails.contact.telephoneNumber.error.invalidFormat = Enter {0}’s telephone number in the right format
-carrierDetails.contact.telephoneNumber.error.maxLength = {0}’s telephone number must be {1} characters or less
-carrierDetails.contact.telephoneNumber.error.minLength = {0}’s telephone number must be {1} characters or more
+carrierDetails.contact.telephoneNumber.error.required = Enter {0}’s phone number, including the country code
+carrierDetails.contact.telephoneNumber.error.invalidCharacters = {0}’s phone number must only include numbers 0 to 9 and a plus sign
+carrierDetails.contact.telephoneNumber.error.invalidFormat = Enter {0}’s phone number in the right format
+carrierDetails.contact.telephoneNumber.error.maxLength = {0}’s phone number must be {1} characters or less
+carrierDetails.contact.telephoneNumber.error.minLength = {0}’s phone number must be {1} characters or more
 
 # Transport details - Transport equipment
 

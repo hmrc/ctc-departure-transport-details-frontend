@@ -30,7 +30,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
 import pages.sections.transportMeans.TransportMeansActiveSection
 import pages.transportMeans.departure._
-import pages.transportMeans.{AnotherVehicleCrossingYesNoPage, BorderModeOfTransportPage}
+import pages.transportMeans.BorderModeOfTransportPage
 import play.api.libs.json.{JsArray, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._

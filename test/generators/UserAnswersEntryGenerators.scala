@@ -74,8 +74,7 @@ trait UserAnswersEntryGenerators {
     import pages.transportMeans._
     generateTransportMeansDepartureAnswer orElse
       generateTransportMeansActiveAnswer orElse {
-        case AnotherVehicleCrossingYesNoPage => arbitrary[Boolean].map(JsBoolean)
-        case BorderModeOfTransportPage       => arbitrary[BorderModeOfTransport].map(Json.toJson(_))
+        case BorderModeOfTransportPage => arbitrary[BorderModeOfTransport].map(Json.toJson(_))
       }
   }
 

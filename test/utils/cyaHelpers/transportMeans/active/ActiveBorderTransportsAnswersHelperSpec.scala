@@ -29,7 +29,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
 import pages.sections.external.OfficesOfTransitSection
 import pages.transportMeans.active._
-import pages.transportMeans.{AnotherVehicleCrossingYesNoPage, BorderModeOfTransportPage}
+import pages.transportMeans.BorderModeOfTransportPage
 import play.api.libs.json.{JsArray, Json}
 import viewModels.ListItem
 

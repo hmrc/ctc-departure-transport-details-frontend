@@ -24,43 +24,28 @@ sealed trait BorderModeOfTransport {
 
 object BorderModeOfTransport extends RadioModel[BorderModeOfTransport] {
 
-  case object Maritime extends WithName("maritime") with BorderModeOfTransport {
+  case object Sea extends WithName("sea") with BorderModeOfTransport {
     override val borderModeType: Int = 1
   }
 
-  case object Rail extends WithName("rail") with BorderModeOfTransport {
+  case object Air extends WithName("air") with BorderModeOfTransport {
     override val borderModeType: Int = 2
   }
 
-  case object Road extends WithName("road") with BorderModeOfTransport {
+  case object ChannelTunnel extends WithName("channelTunnel") with BorderModeOfTransport {
     override val borderModeType: Int = 3
   }
 
-  case object Air extends WithName("air") with BorderModeOfTransport {
+  case object IrishLandBoundary extends WithName("irishLandBoundary") with BorderModeOfTransport {
     override val borderModeType: Int = 4
-  }
-
-  case object Mail extends WithName("mail") with BorderModeOfTransport {
-    override val borderModeType: Int = 5
-  }
-
-  case object Fixed extends WithName("fixed") with BorderModeOfTransport {
-    override val borderModeType: Int = 7
-  }
-
-  case object Waterway extends WithName("waterway") with BorderModeOfTransport {
-    override val borderModeType: Int = 8
   }
 
   override val messageKeyPrefix: String = "transportMeans.borderModeOfTransport"
 
   val values: Seq[BorderModeOfTransport] = Seq(
-    Maritime,
-    Rail,
-    Road,
+    Sea,
     Air,
-    Mail,
-    Fixed,
-    Waterway
+    ChannelTunnel,
+    IrishLandBoundary
   )
 }

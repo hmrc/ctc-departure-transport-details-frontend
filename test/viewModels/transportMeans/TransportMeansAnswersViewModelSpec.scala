@@ -27,7 +27,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
 import pages.transportMeans.departure.InlandModePage
-import pages.transportMeans.{departure, AnotherVehicleCrossingYesNoPage, BorderModeOfTransportPage}
+import pages.transportMeans.{departure, BorderModeOfTransportPage}
 import play.api.libs.json.{JsArray, Json}
 import viewModels.transportMeans.TransportMeansAnswersViewModel.TransportMeansAnswersViewModelProvider
 

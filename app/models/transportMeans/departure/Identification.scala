@@ -67,10 +67,6 @@ object Identification extends RadioModelU[Identification] {
     override val identificationType: Int = 80
   }
 
-  case object Unknown extends WithName("unknown") with Identification {
-    override val identificationType: Int = 99
-  }
-
   override val messageKeyPrefix: String = "transportMeans.departure.identification"
 
   val values: Seq[Identification] = Seq(
@@ -83,8 +79,7 @@ object Identification extends RadioModelU[Identification] {
     RegNumberRoadVehicle,
     RegNumberRoadTrailer,
     RegNumberAircraft,
-    EuropeanVesselIdNumber,
-    Unknown
+    EuropeanVesselIdNumber
   )
 
   override def valuesU(userAnswers: UserAnswers): Seq[Identification] =

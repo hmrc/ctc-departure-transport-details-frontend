@@ -45,9 +45,11 @@ class ItemsDestinationCountryViewSpec extends InputSelectViewBehaviours[Country]
 
   behave like pageWithHeading()
 
-  behave like pageWithSelect()
+  behave like pageWithContent("p", "This is the country the item was originally dispatched from. It might not be where the CTC transit movement begins.")
 
   behave like pageWithHint("Enter the country, like France or Portugal.")
+
+  behave like pageWithSelect()
 
   behave like pageWithSubmitButton("Save and continue")
 }

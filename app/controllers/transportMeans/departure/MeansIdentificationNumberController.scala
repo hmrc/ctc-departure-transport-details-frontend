@@ -51,10 +51,7 @@ class MeansIdentificationNumberController @Inject() (
 
   private type Request = SpecificDataRequestProvider1[InlandMode]#SpecificDataRequest[_]
 
-  private def identificationType(implicit request: Request): Option[Identification] = request.arg match {
-    case InlandMode.Unknown => Some(Identification.Unknown)
-    case _                  => request.userAnswers.get(IdentificationPage)
-  }
+  private def identificationType(implicit request: Request): Option[Identification] = request.userAnswers.get(IdentificationPage)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(lrn)

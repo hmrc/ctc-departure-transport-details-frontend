@@ -35,26 +35,9 @@ object TransportMeansDepartureDomain {
 
   implicit val userAnswersReader: UserAnswersReader[TransportMeansDepartureDomain] =
     InlandModePage.reader.flatMap {
-      case InlandMode.Mail    => UserAnswersReader.fail(InlandModePage)
-      case InlandMode.Unknown => UserAnswersReader[TransportMeansDepartureDomainWithUnknownInlandMode].widen[TransportMeansDepartureDomain]
-      case _                  => UserAnswersReader[TransportMeansDepartureDomainWithOtherInlandMode].widen[TransportMeansDepartureDomain]
+      case InlandMode.Mail => UserAnswersReader.fail(InlandModePage)
+      case _               => UserAnswersReader[TransportMeansDepartureDomainWithOtherInlandMode].widen[TransportMeansDepartureDomain]
     }
-}
-
-case class TransportMeansDepartureDomainWithUnknownInlandMode(
-  identificationNumber: String,
-  nationality: Nationality
-) extends TransportMeansDepartureDomainWithIdentification {
-  override val identification: Identification = Identification.Unknown
-}
-
-object TransportMeansDepartureDomainWithUnknownInlandMode {
-
-  implicit val userAnswersReader: UserAnswersReader[TransportMeansDepartureDomainWithUnknownInlandMode] =
-    (
-      MeansIdentificationNumberPage.reader,
-      VehicleCountryPage.reader
-    ).tupled.map((TransportMeansDepartureDomainWithUnknownInlandMode.apply _).tupled)
 }
 
 case class TransportMeansDepartureDomainWithOtherInlandMode(
