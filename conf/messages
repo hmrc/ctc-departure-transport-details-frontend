@@ -13,6 +13,10 @@ site.section = This section is
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
+date.day.capitalized = Day
+date.month.capitalized = Month
+date.year.capitalized = Year
+
 caption = Transport details
 
 checkYourAnswers.heading = Check your answers
