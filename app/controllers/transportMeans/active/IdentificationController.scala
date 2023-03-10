@@ -75,7 +75,7 @@ class IdentificationController @Inject() (
   private def radioOptions(ua: UserAnswers, index: Index)(implicit messages: Messages): (String, Option[Identification]) => Seq[RadioItem] =
     if (index.isFirst) {
       ua.get(BorderModeOfTransportPage).map(_.borderModeType) match {
-        case Some(borderModeType) if borderModeType != 5 && borderModeType != 7 =>
+        case Some(borderModeType) =>
           val filteredValues = Identification.values.filter(_.borderModeType.toString.startsWith(borderModeType.toString))
           Identification.radioItems(filteredValues, _, _)
         case _ =>

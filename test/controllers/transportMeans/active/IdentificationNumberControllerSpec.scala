@@ -60,10 +60,10 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must return OK and the correct view for a GET" - {
 
-      "when border mode is Rail and index is 0" in {
+      "when border mode is Channel Tunnel and index is 0" in {
 
         val identificationType = Identification.TrainNumber
-        val userAnswers        = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.Rail)
+        val userAnswers        = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(GET, identificationNumberRoute)
@@ -89,7 +89,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
           .sample
           .value
 
-        val firstBorderMode = Gen.oneOf(Seq(BorderModeOfTransport.Rail, BorderModeOfTransport.Road))
+        val firstBorderMode = Gen.oneOf(Seq(BorderModeOfTransport.ChannelTunnel, BorderModeOfTransport.IrishLandBoundary))
         val userAnswers = emptyUserAnswers
           .setValue(BorderModeOfTransportPage, firstBorderMode.sample.value)
           .setValue(IdentificationNumberPage(index), "BX998")
@@ -113,7 +113,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       "when border mode is Road" in {
 
         val identificationType = Identification.RegNumberRoadVehicle
-        val userAnswers        = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.Road)
+        val userAnswers        = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(GET, identificationNumberRoute)
@@ -132,8 +132,8 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
         val borderModeGen = Gen
           .oneOf(BorderModeOfTransport.values)
-          .filterNot(_ == BorderModeOfTransport.Rail)
-          .filterNot(_ == BorderModeOfTransport.Road)
+          .filterNot(_ == BorderModeOfTransport.IrishLandBoundary)
+          .filterNot(_ == BorderModeOfTransport.ChannelTunnel)
 
         forAll(borderModeGen, arbitrary[Identification]) {
           (borderMode, identificationType) =>
@@ -160,7 +160,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val identificationType = Identification.ImoShipIdNumber
       val userAnswers = emptyUserAnswers
-        .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Maritime)
+        .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Sea)
         .setValue(IdentificationPage(index), identificationType)
         .setValue(IdentificationNumberPage(index), validAnswer)
 
@@ -182,7 +182,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must redirect to the next page when valid data is submitted" in {
 
-      val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.Road)
+      val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
       setExistingUserAnswers(userAnswers)
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
@@ -200,7 +200,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val identificationType = Identification.RegNumberRoadVehicle
-      val userAnswers        = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.Road)
+      val userAnswers        = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
       setExistingUserAnswers(userAnswers)
 
       val invalidAnswer = ""

@@ -162,9 +162,4 @@ trait ModelGenerators {
       Gen.oneOf(SecurityDetailsType.values.filterNot(_ == SecurityDetailsType.NoSecurityDetails))
     }
 
-  lazy val arbitraryNonMailOrUnknownInlandMode: Arbitrary[InlandMode] =
-    Arbitrary {
-      Gen.oneOf(InlandMode.values.filterNot(_ == InlandMode.Mail).filterNot(_ == InlandMode.Unknown))
-    }
-
 }

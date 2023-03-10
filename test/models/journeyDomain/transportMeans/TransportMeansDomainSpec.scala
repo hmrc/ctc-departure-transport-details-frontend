@@ -21,11 +21,13 @@ import generators.Generators
 import models.SecurityDetailsType
 import models.SecurityDetailsType._
 import models.domain.{EitherType, UserAnswersReader}
+import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.departure.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
+import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.departure.InlandModePage
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -47,42 +49,25 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
       }
 
       "when inland mode is not 5 (mail)" - {
-        val inlandMode = Gen.oneOf(InlandMode.values.filterNot(_ == InlandMode.Mail)).sample.value
+        val inlandMode            = Gen.oneOf(InlandMode.values.filterNot(_ == InlandMode.Mail)).sample.value
+        val borderModeOfTransport = Gen.oneOf(BorderModeOfTransport.values).sample.value
 
-        "and security type is in Set{0}" - {
-          "and another vehicle crossing border is true" in {
-            val initialAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(AnotherVehicleCrossingYesNoPage, true)
+        "and security type is in Set{0}" in {
+          val initialAnswers = emptyUserAnswers
+            .setValue(InlandModePage, inlandMode)
+            .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+            .setValue(BorderModeOfTransportPage, borderModeOfTransport)
 
-            forAll(arbitraryTransportMeansAnswers(initialAnswers)) {
-              answers =>
-                val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                  TransportMeansDomain.userAnswersReader
-                ).run(answers)
+          forAll(arbitraryTransportMeansAnswers(initialAnswers)) {
+            answers =>
+              val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                TransportMeansDomain.userAnswersReader
+              ).run(answers)
 
-                result.value.inlandMode mustBe inlandMode
-                result.value.asInstanceOf[TransportMeansDomainWithOtherInlandMode].transportMeansActiveList mustBe defined
-            }
+              result.value.inlandMode mustBe inlandMode
+              result.value.asInstanceOf[TransportMeansDomainWithOtherInlandMode].transportMeansActiveList mustBe defined
           }
 
-          "and another vehicle crossing border is false" in {
-            val initialAnswers = emptyUserAnswers
-              .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(InlandModePage, inlandMode)
-              .setValue(AnotherVehicleCrossingYesNoPage, false)
-
-            forAll(arbitraryTransportMeansAnswers(initialAnswers)) {
-              answers =>
-                val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                  TransportMeansDomain.userAnswersReader
-                ).run(answers)
-
-                result.value.inlandMode mustBe inlandMode
-                result.value.asInstanceOf[TransportMeansDomainWithOtherInlandMode].transportMeansActiveList must not be defined
-            }
-          }
         }
 
         "and security type is in Set{1, 2, 3}" in {

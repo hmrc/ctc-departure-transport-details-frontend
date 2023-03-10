@@ -323,50 +323,6 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
       }
     }
 
-    "anotherVehicleCrossing" - {
-      "must return None" - {
-        "when AnotherVehicleCrossingYesNoPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.anotherVehicleCrossing
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when AnotherVehicleCrossingYesNoPage is defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers.setValue(AnotherVehicleCrossingYesNoPage, true)
-              val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
-              val result  = helper.anotherVehicleCrossing
-
-              result mustBe Some(
-                SummaryListRow(
-                  key = Key("Are you using another vehicle to cross the border?".toText),
-                  value = Value("Yes".toText),
-                  actions = Some(
-                    Actions(
-                      items = List(
-                        ActionItem(
-                          content = "Change".toText,
-                          href = controllers.transportMeans.routes.AnotherVehicleCrossingYesNoController.onPageLoad(answers.lrn, mode).url,
-                          visuallyHiddenText = Some("if you are using another vehicle to cross the border"),
-                          attributes = Map("id" -> "change-another-vehicle-crossing-border")
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-          }
-        }
-      }
-
-    }
-
   }
 
 }

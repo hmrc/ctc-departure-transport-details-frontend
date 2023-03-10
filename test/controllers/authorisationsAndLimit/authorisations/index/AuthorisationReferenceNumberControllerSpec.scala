@@ -93,7 +93,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(authorisationType), lrn, authorisationType.forDisplay, mode, authorisationIndex)(request, messages).toString
+          view(form(authorisationType), lrn, authorisationType.forDisplay, mode, authorisationIndex, false)(request, messages).toString
 
       }
 
@@ -117,7 +117,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(authorisationType), lrn, authorisationType.forDisplay, mode, authorisationIndex)(request, messages).toString
+          view(form(authorisationType), lrn, authorisationType.forDisplay, mode, authorisationIndex, true)(request, messages).toString
       }
 
       "when using reduced data set and Inland Mode is not one of Maritime, Rail or Road and Procedure type is simplified" in {
@@ -140,7 +140,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(authorisationType), lrn, authorisationType.forDisplay, mode, authorisationIndex)(request, messages).toString
+          view(form(authorisationType), lrn, authorisationType.forDisplay, mode, authorisationIndex, true)(request, messages).toString
       }
 
       "when using reduced data set and Inland Mode is not one of Maritime, Rail or Road and Procedure type is normal" in {
@@ -164,7 +164,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(authorisationType), lrn, authorisationType.forDisplay, mode, authorisationIndex)(request, messages).toString
+          view(form(authorisationType), lrn, authorisationType.forDisplay, mode, authorisationIndex, true)(request, messages).toString
       }
 
     }
@@ -195,7 +195,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(filledForm, lrn, authorisationType.forDisplay, mode, authorisationIndex)(request, messages).toString
+          view(filledForm, lrn, authorisationType.forDisplay, mode, authorisationIndex, true)(request, messages).toString
       }
 
       "when it is not the first authorisation index" in {
@@ -225,7 +225,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(filledForm, lrn, authorisationType1.forDisplay, mode, Index(1))(request, messages).toString
+          view(filledForm, lrn, authorisationType1.forDisplay, mode, Index(1), true)(request, messages).toString
       }
 
     }
@@ -275,7 +275,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
       val view = injector.instanceOf[AuthorisationReferenceNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, authorisationType.forDisplay, mode, authorisationIndex)(request, messages).toString
+        view(filledForm, lrn, authorisationType.forDisplay, mode, authorisationIndex, true)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

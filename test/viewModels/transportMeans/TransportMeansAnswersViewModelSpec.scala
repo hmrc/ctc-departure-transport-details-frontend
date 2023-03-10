@@ -69,7 +69,6 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
 
     "must render a border mode section" in {
       val userAnswers = emptyUserAnswers
-        .setValue(AnotherVehicleCrossingYesNoPage, arbitrary[Boolean].sample.value)
         .setValue(BorderModeOfTransportPage, arbitrary[BorderModeOfTransport].sample.value)
 
       val viewModelProvider = new TransportMeansAnswersViewModelProvider()

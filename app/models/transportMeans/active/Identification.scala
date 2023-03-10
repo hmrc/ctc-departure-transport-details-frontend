@@ -39,28 +39,20 @@ object Identification extends RadioModel[Identification] {
     override val borderModeType: Int = 11
   }
 
-  case object TrainNumber extends WithName("trainNumber") with Identification {
-    override val borderModeType: Int = 21
-  }
-
-  case object RegNumberRoadVehicle extends WithName("regNumberRoadVehicle") with Identification {
-    override val borderModeType: Int = 30
-  }
-
   case object IataFlightNumber extends WithName("iataFlightNumber") with Identification {
-    override val borderModeType: Int = 40
+    override val borderModeType: Int = 20
   }
 
   case object RegNumberAircraft extends WithName("regNumberAircraft") with Identification {
-    override val borderModeType: Int = 41
+    override val borderModeType: Int = 21
   }
 
-  case object EuropeanVesselIdNumber extends WithName("europeanVesselIdNumber") with Identification {
-    override val borderModeType: Int = 80
+  case object TrainNumber extends WithName("trainNumber") with Identification {
+    override val borderModeType: Int = 31
   }
 
-  case object InlandWaterwaysVehicle extends WithName("inlandWaterwaysVehicle") with Identification {
-    override val borderModeType: Int = 81
+  case object RegNumberRoadVehicle extends WithName("regNumberRoadVehicle") with Identification {
+    override val borderModeType: Int = 40
   }
 
   override val messageKeyPrefix: String = "transportMeans.active.identification"
@@ -71,8 +63,6 @@ object Identification extends RadioModel[Identification] {
     TrainNumber,
     RegNumberRoadVehicle,
     IataFlightNumber,
-    RegNumberAircraft,
-    EuropeanVesselIdNumber,
-    InlandWaterwaysVehicle
+    RegNumberAircraft
   )
 }

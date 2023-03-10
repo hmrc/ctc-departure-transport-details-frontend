@@ -36,21 +36,8 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
     "can be parsed from user answers" - {
 
-      "when the InlandMode is 'Unknown'" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(InlandModePage, InlandMode.Unknown)
-          .setValue(MeansIdentificationNumberPage, identificationNumber)
-          .setValue(VehicleCountryPage, nationality)
-
-        val expectedResult = TransportMeansDepartureDomainWithUnknownInlandMode(identificationNumber, nationality)
-
-        val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain].run(userAnswers)
-
-        result.value mustBe expectedResult
-      }
-
-      "when the InlandMode is not 'Mail' or 'Unknown'" in {
-        forAll(arbitrary[InlandMode](arbitraryNonMailOrUnknownInlandMode)) {
+      "when the InlandMode is any value" in {
+        forAll(arbitrary[InlandMode](arbitraryInlandMode)) {
           inlandMode =>
             val userAnswers = emptyUserAnswers
               .setValue(InlandModePage, inlandMode)
@@ -74,39 +61,9 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
         result.left.value.page mustBe InlandModePage
       }
 
-      "when the InlandMode is 'Mail'" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(InlandModePage, InlandMode.Mail)
-
-        val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain].run(userAnswers)
-
-        result.left.value.page mustBe InlandModePage
-      }
-
-      "when inland mode is 'Unknown'" - {
-        "and identification number page is missing" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(InlandModePage, InlandMode.Unknown)
-
-          val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain].run(userAnswers)
-
-          result.left.value.page mustBe MeansIdentificationNumberPage
-        }
-
-        "and vehicle country page is missing" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(InlandModePage, InlandMode.Unknown)
-            .setValue(MeansIdentificationNumberPage, identificationNumber)
-
-          val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain].run(userAnswers)
-
-          result.left.value.page mustBe VehicleCountryPage
-        }
-      }
-
-      "when inland mode is neither 'Mail' nor 'Unknown'" - {
+      "when inland mode is anything" - {
         "and identification page is missing" in {
-          forAll(arbitrary[InlandMode](arbitraryNonMailOrUnknownInlandMode)) {
+          forAll(arbitrary[InlandMode](arbitraryInlandMode)) {
             inlandMode =>
               val userAnswers = emptyUserAnswers
                 .setValue(InlandModePage, inlandMode)
@@ -118,7 +75,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
         }
 
         "and identification number page is missing" in {
-          forAll(arbitrary[InlandMode](arbitraryNonMailOrUnknownInlandMode)) {
+          forAll(arbitrary[InlandMode](arbitraryInlandMode)) {
             inlandMode =>
               val userAnswers = emptyUserAnswers
                 .setValue(InlandModePage, inlandMode)
@@ -131,7 +88,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
         }
 
         "and vehicle country page is missing" in {
-          forAll(arbitrary[InlandMode](arbitraryNonMailOrUnknownInlandMode)) {
+          forAll(arbitrary[InlandMode](arbitraryInlandMode)) {
             inlandMode =>
               val userAnswers = emptyUserAnswers
                 .setValue(InlandModePage, inlandMode)

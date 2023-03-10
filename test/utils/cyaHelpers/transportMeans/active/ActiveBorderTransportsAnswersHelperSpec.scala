@@ -55,8 +55,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         val initialAnswers = emptyUserAnswers
           .setValue(SecurityDetailsTypePage, NoSecurityDetails)
           .setValue(OfficesOfTransitSection, officesOfTransit)
-          .setValue(AnotherVehicleCrossingYesNoPage, true)
-          .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Fixed)
+          .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Sea)
 
         forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index), arbitrary[Mode]) {
           (userAnswers, mode) =>
@@ -74,27 +73,6 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         }
       }
 
-      "and AnotherVehicleCrossingBorder has not been answered" in {
-        val initialAnswers = emptyUserAnswers
-          .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
-          .setValue(OfficesOfTransitSection, officesOfTransit)
-          .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Fixed)
-
-        forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index), arbitrary[Mode]) {
-          (userAnswers, mode) =>
-            val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)
-            val active = TransportMeansActiveDomain.userAnswersReader(index).run(userAnswers).value
-            helper.listItems mustBe Seq(
-              Right(
-                ListItem(
-                  name = s"${messages(s"$prefix.${active.identification}")} - ${active.identificationNumber}",
-                  changeUrl = routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, activeIndex).url,
-                  removeUrl = None
-                )
-              )
-            )
-        }
-      }
     }
 
     "when user answers populated with an in progress active border transport" - {
@@ -102,8 +80,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         val identificationType = Identification.SeaGoingVessel
         val userAnswers = emptyUserAnswers
           .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-          .setValue(AnotherVehicleCrossingYesNoPage, true)
-          .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Fixed)
+          .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
           .setValue(IdentificationPage(index), identificationType)
 
         forAll(arbitrary[Mode]) {
@@ -125,8 +102,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         val identificationNumber = nonEmptyString.sample.value
         val userAnswers = emptyUserAnswers
           .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-          .setValue(AnotherVehicleCrossingYesNoPage, true)
-          .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Rail)
+          .setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
           .setValue(IdentificationNumberPage(index), identificationNumber)
 
         forAll(arbitrary[Mode]) {
@@ -149,8 +125,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         val identificationNumber = nonEmptyString.sample.value
         val userAnswers = emptyUserAnswers
           .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-          .setValue(AnotherVehicleCrossingYesNoPage, true)
-          .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Fixed)
+          .setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
           .setValue(IdentificationPage(index), identificationType)
           .setValue(IdentificationNumberPage(index), identificationNumber)
 
