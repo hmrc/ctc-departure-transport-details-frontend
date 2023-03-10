@@ -43,6 +43,7 @@ object TransportAnswersViewModel {
         rows = Seq(
           helper.usingSameUcr,
           helper.ucr,
+          helper.usingSameCountryOfDispatch,
           helper.countryOfDispatch,
           helper.transportedToSameCountry,
           helper.countryOfDestination,

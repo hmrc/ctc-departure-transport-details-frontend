@@ -4,6 +4,11 @@ POST       /apply-ucr-to-all-items/:lrn                   controllers.preRequisi
 GET        /change-apply-ucr-to-all-items/:lrn            controllers.preRequisites.SameUcrYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /change-apply-ucr-to-all-items/:lrn            controllers.preRequisites.SameUcrYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
+GET        /items-same-dispatch-country/:lrn              controllers.preRequisites.SameCountryOfDispatchYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /items-same-dispatch-country/:lrn              controllers.preRequisites.SameCountryOfDispatchYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /change-items-same-dispatch-country/:lrn       controllers.preRequisites.SameCountryOfDispatchYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /change-items-same-dispatch-country/:lrn       controllers.preRequisites.SameCountryOfDispatchYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
 GET        /ucr/:lrn                                      controllers.preRequisites.UniqueConsignmentReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /ucr/:lrn                                      controllers.preRequisites.UniqueConsignmentReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /change-ucr/:lrn                               controllers.preRequisites.UniqueConsignmentReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
