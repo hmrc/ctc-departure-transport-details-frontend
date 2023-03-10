@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.Nationality
-import models.transportMeans.departure.{Identification, InlandMode}
+import models.transportMeans.departure.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -36,70 +36,44 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
     "can be parsed from user answers" - {
 
-      "when the InlandMode is any value" in {
-        forAll(arbitrary[InlandMode](arbitraryInlandMode)) {
-          inlandMode =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(IdentificationPage, identification)
-              .setValue(MeansIdentificationNumberPage, identificationNumber)
-              .setValue(VehicleCountryPage, nationality)
+      "when all questions are answered" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(IdentificationPage, identification)
+          .setValue(MeansIdentificationNumberPage, identificationNumber)
+          .setValue(VehicleCountryPage, nationality)
 
-            val expectedResult = TransportMeansDepartureDomainWithOtherInlandMode(identification, identificationNumber, nationality)
+        val expectedResult = TransportMeansDepartureDomain(identification, identificationNumber, nationality)
 
-            val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain].run(userAnswers)
+        val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain].run(userAnswers)
 
-            result.value mustBe expectedResult
-        }
+        result.value mustBe expectedResult
       }
     }
 
     "can not be parsed from user answers" - {
-      "when answers are empty" in {
+      "when identification page is missing" in {
         val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain].run(emptyUserAnswers)
 
-        result.left.value.page mustBe InlandModePage
+        result.left.value.page mustBe IdentificationPage
       }
 
-      "when inland mode is anything" - {
-        "and identification page is missing" in {
-          forAll(arbitrary[InlandMode](arbitraryInlandMode)) {
-            inlandMode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(InlandModePage, inlandMode)
+      "when identification number page is missing" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(IdentificationPage, identification)
 
-              val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain].run(userAnswers)
+        val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain].run(userAnswers)
 
-              result.left.value.page mustBe IdentificationPage
-          }
-        }
+        result.left.value.page mustBe MeansIdentificationNumberPage
+      }
 
-        "and identification number page is missing" in {
-          forAll(arbitrary[InlandMode](arbitraryInlandMode)) {
-            inlandMode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(InlandModePage, inlandMode)
-                .setValue(IdentificationPage, identification)
+      "when vehicle country page is missing" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(IdentificationPage, identification)
+          .setValue(MeansIdentificationNumberPage, identificationNumber)
 
-              val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain].run(userAnswers)
+        val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain].run(userAnswers)
 
-              result.left.value.page mustBe MeansIdentificationNumberPage
-          }
-        }
-
-        "and vehicle country page is missing" in {
-          forAll(arbitrary[InlandMode](arbitraryInlandMode)) {
-            inlandMode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(InlandModePage, inlandMode)
-                .setValue(IdentificationPage, identification)
-                .setValue(MeansIdentificationNumberPage, identificationNumber)
-
-              val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain].run(userAnswers)
-
-              result.left.value.page mustBe VehicleCountryPage
-          }
-        }
+        result.left.value.page mustBe VehicleCountryPage
       }
     }
   }

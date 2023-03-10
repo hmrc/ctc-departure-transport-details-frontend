@@ -59,7 +59,7 @@ object TransportMeansActiveDomain {
     s"${identification.asString} - $identificationNumber"
 
   def userAnswersReader(index: Index): UserAnswersReader[TransportMeansActiveDomain] = {
-    val conveyanceReads: UserAnswersReader[Option[String]] =
+    lazy val conveyanceReads: UserAnswersReader[Option[String]] =
       for {
         securityDetails <- SecurityDetailsTypePage.reader
         borderMode      <- BorderModeOfTransportPage.reader

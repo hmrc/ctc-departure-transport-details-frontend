@@ -16,7 +16,8 @@
 
 package models.transportMeans.active
 
-import models.{RadioModel, WithName}
+import models.{RadioModelU, UserAnswers, WithName}
+import pages.transportMeans.BorderModeOfTransportPage
 import play.api.i18n.Messages
 
 sealed trait Identification {
@@ -29,7 +30,7 @@ sealed trait Identification {
     messages(s"${Identification.messageKeyPrefix}.forDisplay.$this")
 }
 
-object Identification extends RadioModel[Identification] {
+object Identification extends RadioModelU[Identification] {
 
   case object ImoShipIdNumber extends WithName("imoShipIdNumber") with Identification {
     override val borderModeType: Int = 10
@@ -65,4 +66,12 @@ object Identification extends RadioModel[Identification] {
     IataFlightNumber,
     RegNumberAircraft
   )
+
+  override def valuesU(userAnswers: UserAnswers): Seq[Identification] =
+    userAnswers.get(BorderModeOfTransportPage).map(_.borderModeType) match {
+      case Some(borderModeType) =>
+        Identification.values.filter(_.borderModeType.toString.startsWith(borderModeType.toString))
+      case _ =>
+        values
+    }
 }

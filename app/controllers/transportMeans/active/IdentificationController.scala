@@ -21,9 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.transportMeans.active.Identification
 import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
-import navigation.UserAnswersNavigator
-import navigation.TransportMeansActiveNavigatorProvider
-import pages.transportMeans.BorderModeOfTransportPage
+import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.active.IdentificationPage
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -72,16 +70,9 @@ class IdentificationController @Inject() (
         )
   }
 
-  private def radioOptions(ua: UserAnswers, index: Index)(implicit messages: Messages): (String, Option[Identification]) => Seq[RadioItem] =
-    if (index.isFirst) {
-      ua.get(BorderModeOfTransportPage).map(_.borderModeType) match {
-        case Some(borderModeType) =>
-          val filteredValues = Identification.values.filter(_.borderModeType.toString.startsWith(borderModeType.toString))
-          Identification.radioItems(filteredValues, _, _)
-        case _ =>
-          Identification.radioItems
-      }
-    } else {
-      Identification.radioItems
-    }
+  private def radioOptions(
+    userAnswers: UserAnswers,
+    index: Index
+  )(implicit messages: Messages): (String, Option[Identification]) => Seq[RadioItem] =
+    if (index.isFirst) Identification.radioItemsU(userAnswers) else Identification.radioItems
 }

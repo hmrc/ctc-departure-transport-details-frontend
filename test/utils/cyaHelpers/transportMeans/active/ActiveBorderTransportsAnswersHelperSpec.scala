@@ -19,7 +19,7 @@ package utils.cyaHelpers.transportMeans.active
 import base.SpecBase
 import controllers.transportMeans.active.routes
 import generators.Generators
-import models.SecurityDetailsType.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
+import models.SecurityDetailsType.NoSecurityDetails
 import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.active.Identification
@@ -28,8 +28,8 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
 import pages.sections.external.OfficesOfTransitSection
-import pages.transportMeans.active._
 import pages.transportMeans.BorderModeOfTransportPage
+import pages.transportMeans.active._
 import play.api.libs.json.{JsArray, Json}
 import viewModels.ListItem
 
@@ -72,7 +72,6 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
             )
         }
       }
-
     }
 
     "when user answers populated with an in progress active border transport" - {

@@ -18,13 +18,11 @@ package models.journeyDomain.transportMeans
 
 import cats.implicits._
 import controllers.transportMeans.routes
-import models.SecurityDetailsType.NoSecurityDetails
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.departure.InlandMode
 import models.{Mode, UserAnswers}
-import pages.external.SecurityDetailsTypePage
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.departure.InlandModePage
 import play.api.mvc.Call
@@ -56,25 +54,17 @@ case object TransportMeansDomainWithMailInlandMode extends TransportMeansDomain 
 case class TransportMeansDomainWithOtherInlandMode(
   override val inlandMode: InlandMode,
   transportMeansDeparture: TransportMeansDepartureDomain,
-  borderModeOfTransport: Option[BorderModeOfTransport],
+  borderModeOfTransport: BorderModeOfTransport,
   transportMeansActiveList: TransportMeansActiveListDomain
 ) extends TransportMeansDomain
 
 object TransportMeansDomainWithOtherInlandMode {
 
-  implicit def userAnswersReader(inlandMode: InlandMode): UserAnswersReader[TransportMeansDomainWithOtherInlandMode] = {
-
-    implicit val borderModeOfTransportReads: UserAnswersReader[Option[BorderModeOfTransport]] =
-      SecurityDetailsTypePage.reader.flatMap {
-        case NoSecurityDetails => BorderModeOfTransportPage.reader.map(Some(_))
-        case _                 => none[BorderModeOfTransport].pure[UserAnswersReader]
-      }
-
+  implicit def userAnswersReader(inlandMode: InlandMode): UserAnswersReader[TransportMeansDomainWithOtherInlandMode] =
     (
       UserAnswersReader(inlandMode),
       UserAnswersReader[TransportMeansDepartureDomain],
-      borderModeOfTransportReads,
+      BorderModeOfTransportPage.reader,
       UserAnswersReader[TransportMeansActiveListDomain]
     ).tupled.map((TransportMeansDomainWithOtherInlandMode.apply _).tupled)
-  }
 }

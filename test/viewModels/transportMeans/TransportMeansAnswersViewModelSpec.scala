@@ -76,7 +76,7 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
 
       val section = result.sections(2)
       section.sectionTitle.get mustBe "Border mode of transport"
-      section.rows.size mustBe 2
+      section.rows.size mustBe 1
       section.addAnotherLink must not be defined
     }
 
