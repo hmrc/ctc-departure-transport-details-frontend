@@ -20,25 +20,25 @@ import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
-class TransportedToSameCountryYesNoPageSpec extends PageBehaviours {
+class SameCountryOfDispatchYesNoPageSpec extends PageBehaviours {
 
-  "TransportedToSameCountryYesNoPage" - {
+  "SameCountryOfDispatchYesNoPage" - {
 
-    beRetrievable[Boolean](TransportedToSameCountryYesNoPage)
+    beRetrievable[Boolean](SameCountryOfDispatchYesNoPage)
 
-    beSettable[Boolean](TransportedToSameCountryYesNoPage)
+    beSettable[Boolean](SameCountryOfDispatchYesNoPage)
 
-    beRemovable[Boolean](TransportedToSameCountryYesNoPage)
+    beRemovable[Boolean](SameCountryOfDispatchYesNoPage)
 
     "cleanup" - {
       "when no selected" - {
         "must remove country of destination answer" in {
           val userAnswers = emptyUserAnswers
-            .setValue(ItemsDestinationCountryPage, arbitrary[Country].sample.value)
+            .setValue(CountryOfDispatchPage, arbitrary[Country].sample.value)
 
-          val result = userAnswers.setValue(TransportedToSameCountryYesNoPage, false)
+          val result = userAnswers.setValue(SameCountryOfDispatchYesNoPage, false)
 
-          result.get(ItemsDestinationCountryPage) must not be defined
+          result.get(CountryOfDispatchPage) must not be defined
         }
       }
     }

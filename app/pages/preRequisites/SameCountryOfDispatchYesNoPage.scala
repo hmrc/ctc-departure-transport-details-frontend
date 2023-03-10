@@ -25,18 +25,18 @@ import play.api.mvc.Call
 
 import scala.util.Try
 
-case object TransportedToSameCountryYesNoPage extends QuestionPage[Boolean] {
+case object SameCountryOfDispatchYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = PreRequisitesSection.path \ toString
 
-  override def toString: String = "transportedToSameCountryYesNo"
+  override def toString: String = "sameCountryOfDispatchYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.TransportedToSameCountryYesNoController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.SameCountryOfDispatchYesNoController.onPageLoad(userAnswers.lrn, mode))
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(ItemsDestinationCountryPage)
+      case Some(false) => userAnswers.remove(CountryOfDispatchPage)
       case _           => super.cleanup(value, userAnswers)
     }
 }

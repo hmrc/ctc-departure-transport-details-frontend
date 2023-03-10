@@ -23,6 +23,8 @@ import pages.sections.PreRequisitesSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object SameUcrYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = PreRequisitesSection.path \ toString
@@ -31,4 +33,10 @@ case object SameUcrYesNoPage extends QuestionPage[Boolean] {
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.SameUcrYesNoController.onPageLoad(userAnswers.lrn, mode))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(UniqueConsignmentReferencePage)
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

@@ -27,5 +27,18 @@ class SameUcrYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](SameUcrYesNoPage)
 
     beRemovable[Boolean](SameUcrYesNoPage)
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove unique consignment reference number" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(UniqueConsignmentReferencePage, nonEmptyString.sample.value)
+
+          val result = userAnswers.setValue(SameUcrYesNoPage, false)
+
+          result.get(UniqueConsignmentReferencePage) must not be defined
+        }
+      }
+    }
   }
 }

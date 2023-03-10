@@ -61,6 +61,13 @@ class TransportAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
     id = Some("change-ucr")
   )
 
+  def usingSameCountryOfDispatch: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = SameCountryOfDispatchYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "preRequisites.sameCountryOfDispatchYesNo",
+    id = Some("change-using-same-country-of-dispatch")
+  )
+
   def countryOfDispatch: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = CountryOfDispatchPage,
     formatAnswer = formatAsText,
