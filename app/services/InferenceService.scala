@@ -16,9 +16,15 @@
 
 package services
 
+import models.ProcedureType.Simplified
+import models.authorisations.AuthorisationType
+import models.domain.GettableAsReaderOps
+import models.transportMeans.departure.InlandMode.{Air, Maritime, Rail}
 import models.transportMeans.{active, BorderModeOfTransport}
 import models.{Index, UserAnswers}
+import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
 import pages.transportMeans.BorderModeOfTransportPage
+import pages.transportMeans.departure.InlandModePage
 
 class InferenceService {
 
@@ -29,6 +35,22 @@ class InferenceService {
         case Some(BorderModeOfTransport.IrishLandBoundary) => Some(active.Identification.RegNumberRoadVehicle)
         case _                                             => None
       }
+    } else {
+      None
+    }
+
+  def inferAuthorisationType(userAnswers: UserAnswers, index: Index): Option[AuthorisationType] =
+    if (index.isFirst) {
+      val reader = for {
+        procedureType           <- ProcedureTypePage.reader
+        reducedDataSetIndicator <- ApprovedOperatorPage.inferredReader
+        inlandMode              <- InlandModePage.reader
+      } yield (reducedDataSetIndicator, inlandMode, procedureType) match {
+        case (true, Maritime | Rail | Air, _) => Some(AuthorisationType.TRD)
+        case (true, _, Simplified)            => Some(AuthorisationType.ACR)
+        case _                                => None
+      }
+      reader.run(userAnswers).toOption.flatten
     } else {
       None
     }
