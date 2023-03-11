@@ -54,4 +54,7 @@ class InferenceService {
     } else {
       None
     }
+
+  def inferIsReducedDataset(userAnswers: UserAnswers): Option[Boolean] =
+    ApprovedOperatorPage.inferredReader.run(userAnswers).toOption
 }

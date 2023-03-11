@@ -177,4 +177,27 @@ class InferenceServiceSpec extends SpecBase with ScalaCheckPropertyChecks with G
     }
   }
 
+  "inferIsReducedDataset" - {
+    "when TIR" - {
+      "must return false" in {
+        val userAnswers = emptyUserAnswers.setValue(DeclarationTypePage, DeclarationType.Option4)
+
+        service.inferIsReducedDataset(userAnswers) mustBe Some(false)
+      }
+    }
+
+    "when not TIR" - {
+      "must read ApprovedOperatorPage" in {
+        forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType), arbitrary[Boolean]) {
+          (declarationType, isReducedDataset) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, isReducedDataset)
+
+            service.inferIsReducedDataset(userAnswers) mustBe Some(isReducedDataset)
+        }
+      }
+    }
+  }
+
 }
