@@ -21,18 +21,20 @@ import forms.EnumerableFormProvider
 import generators.Generators
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.active.Identification
-import models.{Index, NormalMode}
+import models.{Index, NormalMode, UserAnswers}
 import navigation.TransportMeansActiveNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.BorderModeOfTransportPage
-import pages.transportMeans.active.IdentificationPage
+import pages.transportMeans.active.{IdentificationPage, InferredIdentificationPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.InferenceService
 import views.html.transportMeans.active.IdentificationView
 
 import scala.concurrent.Future
@@ -44,12 +46,46 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val mode                     = NormalMode
   private lazy val identificationRoute = routes.IdentificationController.onPageLoad(lrn, mode, activeIndex).url
 
+  private val mockInferenceService = mock[InferenceService]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[TransportMeansActiveNavigatorProvider]).toInstance(fakeTransportMeansActiveNavigatorProvider))
+      .overrides(bind(classOf[InferenceService]).toInstance(mockInferenceService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockInferenceService)
+    when(mockInferenceService.inferActiveIdentifier(any(), any())).thenReturn(None)
+  }
 
   "Identification Controller" - {
+
+    "when value is inferred" - {
+      "must redirect to next page" in {
+        forAll(arbitrary[Identification]) {
+          identifier =>
+            beforeEach()
+            when(mockInferenceService.inferActiveIdentifier(any(), any())).thenReturn(Some(identifier))
+
+            setExistingUserAnswers(emptyUserAnswers)
+
+            val request = FakeRequest(GET, identificationRoute)
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual onwardRoute.url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+            userAnswersCaptor.getValue.getValue(InferredIdentificationPage(activeIndex)) mustBe identifier
+            userAnswersCaptor.getValue.get(IdentificationPage(activeIndex)) must not be defined
+        }
+      }
+    }
 
     "must return OK and the correct view for a GET" - {
       "at index position '0'" in {

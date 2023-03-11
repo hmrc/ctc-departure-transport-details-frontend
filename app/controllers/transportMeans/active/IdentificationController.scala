@@ -19,13 +19,15 @@ package controllers.transportMeans.active
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
+import models.requests.DataRequest
 import models.transportMeans.active.Identification
 import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
 import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
-import pages.transportMeans.active.IdentificationPage
+import pages.transportMeans.active.{BaseIdentificationPage, IdentificationPage, InferredIdentificationPage}
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.InferenceService
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transportMeans.active.IdentificationView
@@ -40,21 +42,27 @@ class IdentificationController @Inject() (
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: IdentificationView
+  view: IdentificationView,
+  inferenceService: InferenceService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val form = formProvider[Identification]("transportMeans.active.identification")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(IdentificationPage(activeIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      inferenceService.inferActiveIdentifier(request.userAnswers, activeIndex) match {
+        case Some(value) =>
+          redirect(mode, activeIndex, InferredIdentificationPage, value)
+        case None =>
+          val preparedForm = request.userAnswers.get(IdentificationPage(activeIndex)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
-      Ok(view(preparedForm, lrn, radioOptions(request.userAnswers, activeIndex), mode, activeIndex))
+          Future.successful(Ok(view(preparedForm, lrn, radioOptions(request.userAnswers, activeIndex), mode, activeIndex)))
+      }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
@@ -63,10 +71,7 @@ class IdentificationController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, radioOptions(request.userAnswers, activeIndex), mode, activeIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
-            IdentificationPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
+          value => redirect(mode, activeIndex, IdentificationPage, value)
         )
   }
 
@@ -75,4 +80,14 @@ class IdentificationController @Inject() (
     index: Index
   )(implicit messages: Messages): (String, Option[Identification]) => Seq[RadioItem] =
     if (index.isFirst) Identification.radioItemsU(userAnswers) else Identification.radioItems
+
+  private def redirect(
+    mode: Mode,
+    index: Index,
+    page: Index => BaseIdentificationPage,
+    value: Identification
+  )(implicit request: DataRequest[_]): Future[Result] = {
+    implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+    page(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+  }
 }

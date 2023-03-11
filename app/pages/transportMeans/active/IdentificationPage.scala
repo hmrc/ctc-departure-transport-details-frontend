@@ -17,24 +17,18 @@
 package pages.transportMeans.active
 
 import controllers.transportMeans.active.routes
-import models.domain.{GettableAsReaderOps, UserAnswersReader}
-import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.active.Identification
-import models.transportMeans.active.Identification.{RegNumberRoadVehicle, TrainNumber}
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transportMeans.TransportMeansActiveSection
-import pages.transportMeans.BorderModeOfTransportPage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try
 
-case class IdentificationPage(index: Index) extends QuestionPage[Identification] {
+abstract class BaseIdentificationPage(index: Index) extends QuestionPage[Identification] {
 
   override def path: JsPath = TransportMeansActiveSection(index).path \ toString
-
-  override def toString: String = "identification"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.IdentificationController.onPageLoad(userAnswers.lrn, mode, index))
@@ -44,15 +38,12 @@ case class IdentificationPage(index: Index) extends QuestionPage[Identification]
       case Some(_) => userAnswers.remove(IdentificationNumberPage(index))
       case _       => super.cleanup(value, userAnswers)
     }
+}
 
-  def inferredReader: UserAnswersReader[Identification] =
-    if (index.isFirst) {
-      BorderModeOfTransportPage.reader.flatMap {
-        case BorderModeOfTransport.ChannelTunnel     => UserAnswersReader.apply(TrainNumber)
-        case BorderModeOfTransport.IrishLandBoundary => UserAnswersReader.apply(RegNumberRoadVehicle)
-        case _                                       => IdentificationPage(index).reader
-      }
-    } else {
-      IdentificationPage(index).reader
-    }
+case class IdentificationPage(index: Index) extends BaseIdentificationPage(index) {
+  override def toString: String = "identification"
+}
+
+case class InferredIdentificationPage(index: Index) extends BaseIdentificationPage(index) {
+  override def toString: String = "inferredIdentification"
 }

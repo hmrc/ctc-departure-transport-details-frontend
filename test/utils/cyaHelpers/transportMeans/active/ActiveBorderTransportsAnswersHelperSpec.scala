@@ -23,6 +23,7 @@ import models.SecurityDetailsType.NoSecurityDetails
 import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.active.Identification
+import models.transportMeans.active.Identification.TrainNumber
 import models.{Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -102,6 +103,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         val userAnswers = emptyUserAnswers
           .setValue(SecurityDetailsTypePage, NoSecurityDetails)
           .setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
+          .setValue(InferredIdentificationPage(index), TrainNumber)
           .setValue(IdentificationNumberPage(index), identificationNumber)
 
         forAll(arbitrary[Mode]) {

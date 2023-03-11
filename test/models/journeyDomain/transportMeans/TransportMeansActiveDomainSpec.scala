@@ -18,8 +18,8 @@ package models.journeyDomain.transportMeans
 
 import base.SpecBase
 import generators.Generators
+import models.SecurityDetailsType
 import models.SecurityDetailsType.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
-import models.{Index, SecurityDetailsType}
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.BorderModeOfTransport
@@ -131,60 +131,25 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
     "can not be parsed from user answers" - {
 
-      "when index is 0" - {
-        val index = Index(0)
+      "when border mode is answered" - {
+        "must go to identification type" in {
+          forAll(arbitrary[BorderModeOfTransport]) {
+            borderModeOfTransport =>
+              val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
 
-        "and border mode is 3 (Channel Tunnel)" - {
-          "must bypass identification type and go to identification number" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
+              val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
+                TransportMeansActiveDomain.userAnswersReader(index)
+              ).run(userAnswers)
 
-            val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-              TransportMeansActiveDomain.userAnswersReader(index)
-            ).run(userAnswers)
-
-            result.left.value.page mustBe IdentificationNumberPage(index)
+              result.left.value.page mustBe IdentificationPage(index)
           }
         }
-
-        "and border mode is 4 (Irish Land Boundary)" - {
-          "must bypass identification type and go to identification number" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
-
-            val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-              TransportMeansActiveDomain.userAnswersReader(index)
-            ).run(userAnswers)
-
-            result.left.value.page mustBe IdentificationNumberPage(index)
-          }
-        }
-
-      }
-
-      "when index is not 0" - {
-        val index = Index(1)
-        "and border mode is anything" - {
-          val gen = arbitrary[BorderModeOfTransport]
-          "must ask identification type" in {
-            forAll(gen) {
-              borderMode =>
-                val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderMode)
-
-                val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-                  TransportMeansActiveDomain.userAnswersReader(index)
-                ).run(userAnswers)
-
-                result.left.value.page mustBe IdentificationPage(index)
-            }
-          }
-        }
-
       }
 
       "when add nationality is unanswered" in {
         val userAnswers = emptyUserAnswers
           .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
+          .setValue(InferredIdentificationPage(index), Identification.RegNumberRoadVehicle)
           .setValue(IdentificationNumberPage(index), identificationNumber)
 
         val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
@@ -196,7 +161,8 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
       "when nationality is unanswered" in {
         val userAnswers = emptyUserAnswers
-          .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
+          .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Air)
+          .setValue(IdentificationPage(index), Identification.IataFlightNumber)
           .setValue(IdentificationNumberPage(index), identificationNumber)
           .setValue(AddNationalityYesNoPage(index), true)
 
@@ -211,6 +177,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         "and add nationality is true" in {
           val userAnswers = emptyUserAnswers
             .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
+            .setValue(InferredIdentificationPage(index), Identification.RegNumberRoadVehicle)
             .setValue(IdentificationNumberPage(index), identificationNumber)
             .setValue(AddNationalityYesNoPage(index), true)
             .setValue(NationalityPage(index), nationality)
@@ -225,6 +192,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         "and add nationality is false" in {
           val userAnswers = emptyUserAnswers
             .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
+            .setValue(InferredIdentificationPage(index), Identification.RegNumberRoadVehicle)
             .setValue(IdentificationNumberPage(index), identificationNumber)
             .setValue(AddNationalityYesNoPage(index), false)
 

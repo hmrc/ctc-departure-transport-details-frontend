@@ -19,19 +19,15 @@ package controllers.transportMeans.active
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.IdentificationNumberFormProvider
 import generators.Generators
-import models.reference.CustomsOffice
-import models.transportMeans.BorderModeOfTransport
+import models.NormalMode
 import models.transportMeans.active.Identification
-import models.transportMeans.active.Identification.{RegNumberRoadVehicle, TrainNumber}
-import models.{Index, NormalMode}
 import navigation.TransportMeansActiveNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transportMeans.BorderModeOfTransportPage
-import pages.transportMeans.active.{CustomsOfficeActiveBorderPage, IdentificationNumberPage, IdentificationPage}
+import pages.transportMeans.active.{IdentificationNumberPage, IdentificationPage, InferredIdentificationPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -56,166 +52,92 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       .guiceApplicationBuilder()
       .overrides(bind(classOf[TransportMeansActiveNavigatorProvider]).toInstance(fakeTransportMeansActiveNavigatorProvider))
 
+  private val identifierPageGen = Gen.oneOf(IdentificationPage(index), InferredIdentificationPage(index))
+
   "IdentificationNumber Controller" - {
 
-    "must return OK and the correct view for a GET" - {
+    "must return OK and the correct view for a GET" in {
+      forAll(arbitrary[Identification], identifierPageGen) {
+        (identifier, page) =>
+          val userAnswers = emptyUserAnswers.setValue(page, identifier)
+          setExistingUserAnswers(userAnswers)
 
-      "when border mode is Channel Tunnel and index is 0" in {
+          val request = FakeRequest(GET, identificationNumberRoute)
 
-        val identificationType = Identification.TrainNumber
-        val userAnswers        = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
-        setExistingUserAnswers(userAnswers)
+          val result = route(app, request).value
 
-        val request = FakeRequest(GET, identificationNumberRoute)
+          val view = injector.instanceOf[IdentificationNumberView]
 
-        val result = route(app, request).value
+          status(result) mustEqual OK
 
-        val view = injector.instanceOf[IdentificationNumberView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form(identificationType), lrn, identificationType.forDisplay, mode, index)(request, messages).toString
-      }
-
-      "when first border mode is either Road or Rail and the next Identification type is different" in {
-
-        val identificationType = Gen
-          .oneOf(
-            Identification.values
-              .filterNot(_ == TrainNumber)
-              .filterNot(_ == RegNumberRoadVehicle)
-          )
-          .sample
-          .value
-
-        val firstBorderMode = Gen.oneOf(Seq(BorderModeOfTransport.ChannelTunnel, BorderModeOfTransport.IrishLandBoundary))
-        val userAnswers = emptyUserAnswers
-          .setValue(BorderModeOfTransportPage, firstBorderMode.sample.value)
-          .setValue(IdentificationNumberPage(index), "BX998")
-          .setValue(CustomsOfficeActiveBorderPage(index), arbitrary[CustomsOffice].sample.value)
-          .setValue(IdentificationPage(Index(1)), identificationType)
-
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, routes.IdentificationNumberController.onPageLoad(lrn, mode, Index(1)).url)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[IdentificationNumberView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form(identificationType), lrn, identificationType.forDisplay, mode, Index(1))(request, messages).toString
-      }
-
-      "when border mode is Road" in {
-
-        val identificationType = Identification.RegNumberRoadVehicle
-        val userAnswers        = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, identificationNumberRoute)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[IdentificationNumberView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form(identificationType), lrn, identificationType.forDisplay, mode, index)(request, messages).toString
-      }
-
-      "when border mode is something else" in {
-
-        val borderModeGen = Gen
-          .oneOf(BorderModeOfTransport.values)
-          .filterNot(_ == BorderModeOfTransport.IrishLandBoundary)
-          .filterNot(_ == BorderModeOfTransport.ChannelTunnel)
-
-        forAll(borderModeGen, arbitrary[Identification]) {
-          (borderMode, identificationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(BorderModeOfTransportPage, borderMode)
-              .setValue(IdentificationPage(index), identificationType)
-            setExistingUserAnswers(userAnswers)
-
-            val request = FakeRequest(GET, identificationNumberRoute)
-
-            val result = route(app, request).value
-
-            val view = injector.instanceOf[IdentificationNumberView]
-
-            status(result) mustEqual OK
-
-            contentAsString(result) mustEqual
-              view(form(identificationType), lrn, identificationType.forDisplay, mode, index)(request, messages).toString
-        }
+          contentAsString(result) mustEqual
+            view(form(identifier), lrn, identifier.forDisplay, mode, index)(request, messages).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
+      forAll(arbitrary[Identification], identifierPageGen) {
+        (identifier, page) =>
+          val userAnswers = emptyUserAnswers
+            .setValue(page, identifier)
+            .setValue(IdentificationNumberPage(index), validAnswer)
 
-      val identificationType = Identification.ImoShipIdNumber
-      val userAnswers = emptyUserAnswers
-        .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Sea)
-        .setValue(IdentificationPage(index), identificationType)
-        .setValue(IdentificationNumberPage(index), validAnswer)
+          setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(userAnswers)
+          val request = FakeRequest(GET, identificationNumberRoute)
 
-      val request = FakeRequest(GET, identificationNumberRoute)
+          val result = route(app, request).value
 
-      val result = route(app, request).value
+          val filledForm = form(identifier).bind(Map("value" -> validAnswer))
 
-      val filledForm = form(identificationType).bind(Map("value" -> validAnswer))
+          val view = injector.instanceOf[IdentificationNumberView]
 
-      val view = injector.instanceOf[IdentificationNumberView]
+          status(result) mustEqual OK
 
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, lrn, identificationType.forDisplay, mode, index)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(filledForm, lrn, identifier.forDisplay, mode, index)(request, messages).toString
+      }
     }
 
     "must redirect to the next page when valid data is submitted" in {
+      forAll(arbitrary[Identification], identifierPageGen) {
+        (identifier, page) =>
+          val userAnswers = emptyUserAnswers.setValue(page, identifier)
+          setExistingUserAnswers(userAnswers)
 
-      val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
-      setExistingUserAnswers(userAnswers)
+          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+          val request = FakeRequest(POST, identificationNumberRoute)
+            .withFormUrlEncodedBody(("value", validAnswer))
 
-      val request = FakeRequest(POST, identificationNumberRoute)
-        .withFormUrlEncodedBody(("value", validAnswer))
+          val result = route(app, request).value
 
-      val result = route(app, request).value
+          status(result) mustEqual SEE_OTHER
 
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual onwardRoute.url
+      }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+      forAll(arbitrary[Identification], identifierPageGen) {
+        (identifier, page) =>
+          val userAnswers = emptyUserAnswers.setValue(page, identifier)
+          setExistingUserAnswers(userAnswers)
 
-      val identificationType = Identification.RegNumberRoadVehicle
-      val userAnswers        = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
-      setExistingUserAnswers(userAnswers)
+          val invalidAnswer = ""
 
-      val invalidAnswer = ""
+          val request    = FakeRequest(POST, identificationNumberRoute).withFormUrlEncodedBody(("value", invalidAnswer))
+          val filledForm = form(identifier).bind(Map("value" -> invalidAnswer))
 
-      val request    = FakeRequest(POST, identificationNumberRoute).withFormUrlEncodedBody(("value", ""))
-      val filledForm = form(identificationType).bind(Map("value" -> invalidAnswer))
+          val result = route(app, request).value
 
-      val result = route(app, request).value
+          status(result) mustEqual BAD_REQUEST
 
-      status(result) mustEqual BAD_REQUEST
+          val view = injector.instanceOf[IdentificationNumberView]
 
-      val view = injector.instanceOf[IdentificationNumberView]
-
-      contentAsString(result) mustEqual
-        view(filledForm, lrn, identificationType.forDisplay, mode, index)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(filledForm, lrn, identifier.forDisplay, mode, index)(request, messages).toString
+      }
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

@@ -72,7 +72,7 @@ object TransportMeansActiveDomain {
       } yield reader
 
     (
-      IdentificationPage(index).inferredReader,
+      InferredIdentificationPage(index).reader orElse IdentificationPage(index).reader,
       IdentificationNumberPage(index).reader,
       AddNationalityYesNoPage(index).filterOptionalDependent(identity)(NationalityPage(index).reader),
       CustomsOfficeActiveBorderPage(index).reader,

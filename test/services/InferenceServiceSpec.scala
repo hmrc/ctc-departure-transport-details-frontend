@@ -1,0 +1,77 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package services
+
+import base.SpecBase
+import generators.Generators
+import models.Index
+import models.transportMeans.{active, BorderModeOfTransport}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transportMeans.BorderModeOfTransportPage
+
+class InferenceServiceSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val service = injector.instanceOf[InferenceService]
+
+  "inferActiveIdentifier" - {
+    "when first index" - {
+      val index = Index(0)
+      "when border mode is ChannelTunnel" - {
+        "must infer answer as TrainNumber" in {
+          val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
+          service.inferActiveIdentifier(userAnswers, index) mustBe Some(active.Identification.TrainNumber)
+        }
+      }
+
+      "when border mode is IrishLandBoundary" - {
+        "must infer answer as RegNumberRoadVehicle" in {
+          val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
+          service.inferActiveIdentifier(userAnswers, index) mustBe Some(active.Identification.RegNumberRoadVehicle)
+        }
+      }
+
+      "when border mode is something else" - {
+        "must not infer answer" in {
+          val borderModeGen = Gen
+            .oneOf(BorderModeOfTransport.values)
+            .filterNot(_ == BorderModeOfTransport.ChannelTunnel)
+            .filterNot(_ == BorderModeOfTransport.IrishLandBoundary)
+
+          forAll(borderModeGen) {
+            borderMode =>
+              val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderMode)
+              service.inferActiveIdentifier(userAnswers, index) mustBe None
+          }
+        }
+      }
+    }
+
+    "when not first index" - {
+      val index = Index(1)
+      "must not infer answer" in {
+        forAll(arbitrary[BorderModeOfTransport]) {
+          borderMode =>
+            val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderMode)
+            service.inferActiveIdentifier(userAnswers, index) mustBe None
+        }
+      }
+    }
+  }
+
+}

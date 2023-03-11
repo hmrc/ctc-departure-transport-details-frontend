@@ -91,41 +91,21 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
         }
       }
 
-      "when no active border means answered" - {
-        "and Sea/Air border mode" in {
-          forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode), Gen.oneOf(Sea, Air)) {
-            (inlandMode, borderMode) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(InlandModePage, inlandMode)
-                .setValue(departure.IdentificationPage, arbitrary[DepartureIdentification].sample.value)
-                .setValue(departure.MeansIdentificationNumberPage, nonEmptyString.sample.value)
-                .setValue(departure.VehicleCountryPage, arbitrary[Nationality].sample.value)
-                .setValue(BorderModeOfTransportPage, borderMode)
+      "when no active border means answered" in {
+        forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode), Gen.oneOf(Sea, Air)) {
+          (inlandMode, borderMode) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InlandModePage, inlandMode)
+              .setValue(departure.IdentificationPage, arbitrary[DepartureIdentification].sample.value)
+              .setValue(departure.MeansIdentificationNumberPage, nonEmptyString.sample.value)
+              .setValue(departure.VehicleCountryPage, arbitrary[Nationality].sample.value)
+              .setValue(BorderModeOfTransportPage, borderMode)
 
-              val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                TransportMeansDomain.userAnswersReader
-              ).run(userAnswers)
+            val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+              TransportMeansDomain.userAnswersReader
+            ).run(userAnswers)
 
-              result.left.value.page mustBe active.IdentificationPage(Index(0))
-          }
-        }
-
-        "and ChannelTunnel/IrishLandBoundary border mode" in {
-          forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode), Gen.oneOf(ChannelTunnel, IrishLandBoundary)) {
-            (inlandMode, borderMode) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(InlandModePage, inlandMode)
-                .setValue(departure.IdentificationPage, arbitrary[DepartureIdentification].sample.value)
-                .setValue(departure.MeansIdentificationNumberPage, nonEmptyString.sample.value)
-                .setValue(departure.VehicleCountryPage, arbitrary[Nationality].sample.value)
-                .setValue(BorderModeOfTransportPage, borderMode)
-
-              val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                TransportMeansDomain.userAnswersReader
-              ).run(userAnswers)
-
-              result.left.value.page mustBe active.IdentificationNumberPage(Index(0))
-          }
+            result.left.value.page mustBe active.IdentificationPage(Index(0))
         }
       }
     }
