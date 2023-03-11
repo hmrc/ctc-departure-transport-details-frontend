@@ -17,11 +17,11 @@
 package controllers.authorisationsAndLimit.authorisations.index
 
 import config.FrontendAppConfig
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AuthorisationReferenceNumberFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
 import models.requests.DataRequest
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{AuthorisationNavigatorProvider, UserAnswersNavigator}
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
 import pages.external.ApprovedOperatorPage
@@ -52,35 +52,35 @@ class AuthorisationReferenceNumberController @Inject() (
   private def authorisationType(authorisationIndex: Index)(implicit request: DataRequest[_]): Option[String] =
     AuthorisationTypePage(authorisationIndex).inferredReader.run(request.userAnswers).toOption.map(_.forDisplay)
 
-  private def approvedOperator()(implicit request: DataRequest[_]): Boolean =
-    ApprovedOperatorPage.inferredReader.run(request.userAnswers).toOption.get
+  private def approvedOperator(implicit request: DataRequest[_]): Option[Boolean] =
+    ApprovedOperatorPage.inferredReader.run(request.userAnswers).toOption
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions
     .requireData(lrn) {
       implicit request =>
-        authorisationType(authorisationIndex) match {
-          case Some(value) =>
-            val form = formProvider(prefix, value)
+        (approvedOperator, authorisationType(authorisationIndex)) match {
+          case (Some(approvedOperator), Some(authorisationType)) =>
+            val form = formProvider(prefix, authorisationType)
 
             val preparedForm = request.userAnswers.get(AuthorisationReferenceNumberPage(authorisationIndex)) match {
               case None        => form
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, lrn, value, mode, authorisationIndex, approvedOperator()))
+            Ok(view(preparedForm, lrn, authorisationType, mode, authorisationIndex, approvedOperator))
           case _ => Redirect(config.sessionExpiredUrl)
         }
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      authorisationType(authorisationIndex) match {
-        case Some(value) =>
-          val form = formProvider(prefix, value)
+      (approvedOperator, authorisationType(authorisationIndex)) match {
+        case (Some(approvedOperator), Some(authorisationType)) =>
+          val form = formProvider(prefix, authorisationType)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, value, mode, authorisationIndex, approvedOperator()))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, authorisationType, mode, authorisationIndex, approvedOperator))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, authorisationIndex)
                 AuthorisationReferenceNumberPage(authorisationIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

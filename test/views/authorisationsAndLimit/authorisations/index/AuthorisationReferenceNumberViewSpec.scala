@@ -21,6 +21,7 @@ import forms.AuthorisationReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import models.authorisations.AuthorisationType
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -32,16 +33,20 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
 
   override val prefix: String = "authorisations.authorisationReferenceNumber"
 
-  private val authorisationType = Arbitrary.arbitrary[AuthorisationType].sample.value
+  private val authorisationType = arbitrary[AuthorisationType].sample.value
 
   private val dynamicText = s"$prefix.${authorisationType.toString}"
+
+  private val approvedOperator: Boolean = arbitrary[Boolean].sample.value
 
   override def form: Form[String] = new AuthorisationReferenceNumberFormProvider()(prefix, dynamicText)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[AuthorisationReferenceNumberView].apply(form, lrn, dynamicText, NormalMode, authorisationIndex, false)(fakeRequest, messages)
+    injector.instanceOf[AuthorisationReferenceNumberView].apply(form, lrn, dynamicText, NormalMode, authorisationIndex, approvedOperator)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+
+  private val paragraph: String = "You need to enter this as you’re using a reduced data set."
 
   behave like pageWithTitle(messages(dynamicText))
 
@@ -56,4 +61,22 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
   behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Save and continue")
+
+  "when using a reduced data set" - {
+    val view = injector.instanceOf[AuthorisationReferenceNumberView]
+    val doc = parseView(
+      view.apply(form, lrn, dynamicText, NormalMode, authorisationIndex, isApprovedOperator = true)(fakeRequest, messages)
+    )
+
+    behave like pageWithContent(doc, "p", paragraph)
+  }
+
+  "when not using a reduced data set" - {
+    val view = injector.instanceOf[AuthorisationReferenceNumberView]
+    val doc = parseView(
+      view.apply(form, lrn, dynamicText, NormalMode, authorisationIndex, isApprovedOperator = false)(fakeRequest, messages)
+    )
+
+    behave like pageWithoutContent(doc, "p", paragraph)
+  }
 }
