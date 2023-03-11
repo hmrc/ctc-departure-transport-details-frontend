@@ -68,7 +68,9 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
             TrainNumber,
             RegNumberRoadVehicle,
             IataFlightNumber,
-            RegNumberAircraft
+            RegNumberAircraft,
+            EuropeanVesselIdNumber,
+            InlandWaterwaysVehicle
           )
         }
       }

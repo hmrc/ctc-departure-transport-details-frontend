@@ -28,15 +28,15 @@ object BorderModeOfTransport extends RadioModel[BorderModeOfTransport] {
     override val borderModeType: Int = 1
   }
 
-  case object Air extends WithName("air") with BorderModeOfTransport {
+  case object ChannelTunnel extends WithName("channelTunnel") with BorderModeOfTransport {
     override val borderModeType: Int = 2
   }
 
-  case object ChannelTunnel extends WithName("channelTunnel") with BorderModeOfTransport {
+  case object IrishLandBoundary extends WithName("irishLandBoundary") with BorderModeOfTransport {
     override val borderModeType: Int = 3
   }
 
-  case object IrishLandBoundary extends WithName("irishLandBoundary") with BorderModeOfTransport {
+  case object Air extends WithName("air") with BorderModeOfTransport {
     override val borderModeType: Int = 4
   }
 

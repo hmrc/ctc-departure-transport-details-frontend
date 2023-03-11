@@ -40,20 +40,28 @@ object Identification extends RadioModelU[Identification] {
     override val borderModeType: Int = 11
   }
 
-  case object IataFlightNumber extends WithName("iataFlightNumber") with Identification {
-    override val borderModeType: Int = 20
-  }
-
-  case object RegNumberAircraft extends WithName("regNumberAircraft") with Identification {
+  case object TrainNumber extends WithName("trainNumber") with Identification {
     override val borderModeType: Int = 21
   }
 
-  case object TrainNumber extends WithName("trainNumber") with Identification {
-    override val borderModeType: Int = 31
+  case object RegNumberRoadVehicle extends WithName("regNumberRoadVehicle") with Identification {
+    override val borderModeType: Int = 30
   }
 
-  case object RegNumberRoadVehicle extends WithName("regNumberRoadVehicle") with Identification {
+  case object IataFlightNumber extends WithName("iataFlightNumber") with Identification {
     override val borderModeType: Int = 40
+  }
+
+  case object RegNumberAircraft extends WithName("regNumberAircraft") with Identification {
+    override val borderModeType: Int = 41
+  }
+
+  case object EuropeanVesselIdNumber extends WithName("europeanVesselIdNumber") with Identification {
+    override val borderModeType: Int = 80
+  }
+
+  case object InlandWaterwaysVehicle extends WithName("inlandWaterwaysVehicle") with Identification {
+    override val borderModeType: Int = 81
   }
 
   override val messageKeyPrefix: String = "transportMeans.active.identification"
@@ -64,7 +72,9 @@ object Identification extends RadioModelU[Identification] {
     TrainNumber,
     RegNumberRoadVehicle,
     IataFlightNumber,
-    RegNumberAircraft
+    RegNumberAircraft,
+    EuropeanVesselIdNumber,
+    InlandWaterwaysVehicle
   )
 
   override def valuesU(userAnswers: UserAnswers): Seq[Identification] =
