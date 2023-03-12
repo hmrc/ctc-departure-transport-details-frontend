@@ -166,10 +166,10 @@ transportMeans.anotherVehicleCrossingYesNo.error.required = Select yes if the ve
 
 transportMeans.borderModeOfTransport.title = How is the transit crossing the border?
 transportMeans.borderModeOfTransport.heading = How is the transit crossing the border?
-transportMeans.borderModeOfTransport.sea = Sea
+transportMeans.borderModeOfTransport.maritime = Sea
 transportMeans.borderModeOfTransport.air = Air
-transportMeans.borderModeOfTransport.channelTunnel = Channel Tunnel
-transportMeans.borderModeOfTransport.irishLandBoundary = Irish land boundary
+transportMeans.borderModeOfTransport.rail = Channel Tunnel
+transportMeans.borderModeOfTransport.road = Irish land boundary
 transportMeans.borderModeOfTransport.checkYourAnswersLabel = Border mode of transport
 transportMeans.borderModeOfTransport.change.hidden = border mode of transport
 transportMeans.borderModeOfTransport.error.required = Select how the transit is crossing the border

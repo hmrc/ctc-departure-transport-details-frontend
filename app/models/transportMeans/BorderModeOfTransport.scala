@@ -24,15 +24,15 @@ sealed trait BorderModeOfTransport {
 
 object BorderModeOfTransport extends RadioModel[BorderModeOfTransport] {
 
-  case object Sea extends WithName("sea") with BorderModeOfTransport {
+  case object Sea extends WithName("maritime") with BorderModeOfTransport {
     override val borderModeType: Int = 1
   }
 
-  case object ChannelTunnel extends WithName("channelTunnel") with BorderModeOfTransport {
+  case object ChannelTunnel extends WithName("rail") with BorderModeOfTransport {
     override val borderModeType: Int = 2
   }
 
-  case object IrishLandBoundary extends WithName("irishLandBoundary") with BorderModeOfTransport {
+  case object IrishLandBoundary extends WithName("road") with BorderModeOfTransport {
     override val borderModeType: Int = 3
   }
 
