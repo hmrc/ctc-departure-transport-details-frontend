@@ -42,13 +42,11 @@ class CustomsOfficeActiveBorderViewSpec extends InputSelectViewBehaviours[Custom
 
   behave like pageWithSectionCaption("Transport details - Border means of transport")
 
-  behave like pageWithContent("p", "This is the customs office after crossing the border.")
-
   behave like pageWithHeading()
 
-  behave like pageWithSelect()
+  behave like pageWithContent("p", "You can only select a location from the offices of transit, exit or destination in your transit route.")
 
-  behave like pageWithHint("Enter the office location or code, like Calais or FR620001.")
+  behave like pageWithSelect()
 
   behave like pageWithSubmitButton("Save and continue")
 }

@@ -27,20 +27,12 @@ sealed trait Identification {
 
 object Identification extends RadioModelU[Identification] {
 
-  case object SeaGoingVessel extends WithName("seaGoingVessel") with Identification {
-    override val identificationType: Int = 11
-  }
-
-  case object IataFlightNumber extends WithName("iataFlightNumber") with Identification {
-    override val identificationType: Int = 40
-  }
-
-  case object InlandWaterwaysVehicle extends WithName("inlandWaterwaysVehicle") with Identification {
-    override val identificationType: Int = 81
-  }
-
   case object ImoShipIdNumber extends WithName("imoShipIdNumber") with Identification {
     override val identificationType: Int = 10
+  }
+
+  case object SeaGoingVessel extends WithName("seaGoingVessel") with Identification {
+    override val identificationType: Int = 11
   }
 
   case object WagonNumber extends WithName("wagonNumber") with Identification {
@@ -59,6 +51,10 @@ object Identification extends RadioModelU[Identification] {
     override val identificationType: Int = 31
   }
 
+  case object IataFlightNumber extends WithName("iataFlightNumber") with Identification {
+    override val identificationType: Int = 40
+  }
+
   case object RegNumberAircraft extends WithName("regNumberAircraft") with Identification {
     override val identificationType: Int = 41
   }
@@ -67,8 +63,8 @@ object Identification extends RadioModelU[Identification] {
     override val identificationType: Int = 80
   }
 
-  case object Unknown extends WithName("unknown") with Identification {
-    override val identificationType: Int = 99
+  case object InlandWaterwaysVehicle extends WithName("inlandWaterwaysVehicle") with Identification {
+    override val identificationType: Int = 81
   }
 
   override val messageKeyPrefix: String = "transportMeans.departure.identification"
@@ -83,8 +79,7 @@ object Identification extends RadioModelU[Identification] {
     RegNumberRoadVehicle,
     RegNumberRoadTrailer,
     RegNumberAircraft,
-    EuropeanVesselIdNumber,
-    Unknown
+    EuropeanVesselIdNumber
   )
 
   override def valuesU(userAnswers: UserAnswers): Seq[Identification] =

@@ -14,7 +14,7 @@ POST       /carrier/contact-name/:lrn                                    control
 GET        /carrier/change-contact-name/:lrn                             controllers.carrierDetails.contact.NameController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /carrier/change-contact-name/:lrn                             controllers.carrierDetails.contact.NameController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /carrier/contact-telephone-number/:lrn                        controllers.carrierDetails.contact.TelephoneNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /carrier/contact-telephone-number/:lrn                        controllers.carrierDetails.contact.TelephoneNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /carrier/change-contact-telephone-number/:lrn                 controllers.carrierDetails.contact.TelephoneNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /carrier/change-contact-telephone-number/:lrn                 controllers.carrierDetails.contact.TelephoneNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /carrier/contact-phone-number/:lrn                            controllers.carrierDetails.contact.TelephoneNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /carrier/contact-phone-number/:lrn                            controllers.carrierDetails.contact.TelephoneNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /carrier/change-contact-phone-number/:lrn                     controllers.carrierDetails.contact.TelephoneNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /carrier/change-contact-phone-number/:lrn                     controllers.carrierDetails.contact.TelephoneNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

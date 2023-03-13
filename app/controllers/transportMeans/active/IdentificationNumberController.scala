@@ -17,14 +17,11 @@
 package controllers.transportMeans.active
 
 import controllers.actions._
-import config.FrontendAppConfig
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.IdentificationNumberFormProvider
-import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.TransportMeansActiveNavigatorProvider
-import pages.transportMeans.active.{IdentificationNumberPage, IdentificationPage}
+import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
+import pages.transportMeans.active.{IdentificationNumberPage, IdentificationPage, InferredIdentificationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -40,7 +37,7 @@ class IdentificationNumberController @Inject() (
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   formProvider: IdentificationNumberFormProvider,
   actions: Actions,
-  config: FrontendAppConfig,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationNumberView
 )(implicit ec: ExecutionContext)
@@ -49,45 +46,35 @@ class IdentificationNumberController @Inject() (
 
   private val prefix = "transportMeans.active.identificationNumber"
 
-  private def identificationType(index: Index)(implicit request: DataRequest[_]): Option[String] =
-    IdentificationPage(index).inferredReader.run(request.userAnswers).toOption.map(_.forDisplay)
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(IdentificationPage(activeIndex), InferredIdentificationPage(activeIndex))) {
+      implicit request =>
+        val form = formProvider(prefix, request.arg.forDisplay)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] =
-    actions
-      .requireData(lrn) {
-        implicit request =>
-          identificationType(activeIndex) match {
-            case Some(value) =>
-              val form = formProvider(prefix, value)
+        val preparedForm = request.userAnswers.get(IdentificationNumberPage(activeIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-              val preparedForm = request.userAnswers.get(IdentificationNumberPage(activeIndex)) match {
-                case None        => form
-                case Some(value) => form.fill(value)
-              }
-
-              Ok(view(preparedForm, lrn, value, mode, activeIndex))
-            case _ => Redirect(config.sessionExpiredUrl)
-          }
-      }
+        Ok(view(preparedForm, lrn, request.arg.forDisplay, mode, activeIndex))
+    }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] =
     actions
       .requireData(lrn)
+      .andThen(getMandatoryPage(IdentificationPage(activeIndex), InferredIdentificationPage(activeIndex)))
       .async {
         implicit request =>
-          identificationType(activeIndex) match {
-            case Some(value) =>
-              val form = formProvider(prefix, value)
-              form
-                .bindFromRequest()
-                .fold(
-                  formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, value, mode, activeIndex))),
-                  value => {
-                    implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
-                    IdentificationNumberPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-                  }
-                )
-            case _ => Future.successful(Redirect(config.sessionExpiredUrl))
-          }
+          val form = formProvider(prefix, request.arg.forDisplay)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, request.arg.forDisplay, mode, activeIndex))),
+              value => {
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
+                IdentificationNumberPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              }
+            )
       }
 }

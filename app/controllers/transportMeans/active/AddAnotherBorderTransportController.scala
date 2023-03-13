@@ -50,7 +50,7 @@ class AddAnotherBorderTransportController @Inject() (
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, mode)
       viewModel.count match {
-        case 0 => Redirect(controllers.transportMeans.routes.AnotherVehicleCrossingYesNoController.onPageLoad(lrn, mode))
+        case 0 => Redirect(controllers.transportMeans.routes.BorderModeOfTransportController.onPageLoad(lrn, mode))
         case _ => Ok(view(form(viewModel), lrn, viewModel))
       }
   }

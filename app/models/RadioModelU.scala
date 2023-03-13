@@ -27,5 +27,11 @@ trait RadioModelU[T] extends RadioModel[T] {
     formKey: String = "value",
     checkedValue: Option[T] = None
   )(implicit messages: Messages): Seq[RadioItem] =
-    radioItems(valuesU(userAnswers), formKey, checkedValue)
+    radioItemsU(valuesU(userAnswers))(formKey, checkedValue)
+
+  def radioItemsU(valuesU: Seq[T])(
+    formKey: String,
+    checkedValue: Option[T]
+  )(implicit messages: Messages): Seq[RadioItem] =
+    radioItems(valuesU, formKey, checkedValue)
 }

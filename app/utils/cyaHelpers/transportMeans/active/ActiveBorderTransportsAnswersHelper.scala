@@ -21,10 +21,8 @@ import controllers.transportMeans.active.routes
 import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.{Mode, UserAnswers}
 import pages.sections.transportMeans.TransportMeansActiveListSection
-import pages.transportMeans.AnotherVehicleCrossingYesNoPage
 import pages.transportMeans.active._
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import utils.cyaHelpers.AnswersHelper
 import viewModels.ListItem
 
@@ -34,12 +32,6 @@ class ActiveBorderTransportsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(TransportMeansActiveListSection) {
       index =>
-        val removeRoute: Option[Call] = if (userAnswers.get(AnotherVehicleCrossingYesNoPage).isEmpty && index.isFirst) {
-          None
-        } else {
-          Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(lrn, mode, index))
-        }
-
         buildListItem[TransportMeansActiveDomain](
           nameWhenComplete = _.asString,
           nameWhenInProgress = (userAnswers.get(IdentificationPage(index)), userAnswers.get(IdentificationNumberPage(index))) match {
@@ -49,7 +41,7 @@ class ActiveBorderTransportsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(
             case (None, Some(identificationNumber)) => Some(identificationNumber)
             case _                                  => None
           },
-          removeRoute = removeRoute
+          removeRoute = Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(lrn, mode, index))
         )(TransportMeansActiveDomain.userAnswersReader(index))
     }
 

@@ -14,39 +14,47 @@
  * limitations under the License.
  */
 
-package models
+package models.transportMeans.departure
 
-import base.SpecBase
-import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
+import org.scalatest.OptionValues
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class DeclarationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class InlandModeSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "DeclarationType" - {
+  "InlandMode" - {
 
     "must deserialise valid values" in {
-      forAll(arbitrary[DeclarationType]) {
-        declarationType =>
-          JsString(declarationType.toString).validate[DeclarationType].asOpt.value mustEqual declarationType
+
+      val gen = Gen.oneOf(InlandMode.values)
+
+      forAll(gen) {
+        inlandMode =>
+          JsString(inlandMode.toString).validate[InlandMode].asOpt.value mustEqual inlandMode
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] retryUntil (!DeclarationType.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!InlandMode.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
-          JsString(invalidValue).validate[DeclarationType] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[InlandMode] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
-      forAll(arbitrary[DeclarationType]) {
-        declarationType =>
-          Json.toJson(declarationType) mustEqual JsString(declarationType.toString)
+
+      val gen = Gen.oneOf(InlandMode.values)
+
+      forAll(gen) {
+        inlandMode =>
+          Json.toJson(inlandMode) mustEqual JsString(inlandMode.toString)
       }
     }
   }

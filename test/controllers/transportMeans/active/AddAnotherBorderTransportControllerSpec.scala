@@ -71,7 +71,7 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
   "AddAnotherBorderTransport Controller" - {
 
-    "redirect to add another vehicle crossing page" - {
+    "redirect to border mode of transport page" - {
       "when 0 active border transports" in {
         when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(viewModelWithNoItems)
@@ -86,7 +86,7 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.transportMeans.routes.AnotherVehicleCrossingYesNoController.onPageLoad(lrn, mode).url
+          controllers.transportMeans.routes.BorderModeOfTransportController.onPageLoad(lrn, mode).url
       }
     }
 
