@@ -16,23 +16,25 @@
 
 package models.supplyChainActors
 
-import models.{RadioModel, WithName}
+import models.{EnumerableType, Radioable, WithName}
 import play.api.i18n.Messages
 
-sealed trait SupplyChainActorType {
+sealed trait SupplyChainActorType extends Radioable[SupplyChainActorType] {
 
   def asString(implicit messages: Messages): String =
     messages(s"${SupplyChainActorType.messageKeyPrefix}.$this")
+
+  override val messageKeyPrefix: String = SupplyChainActorType.messageKeyPrefix
 }
 
-object SupplyChainActorType extends RadioModel[SupplyChainActorType] {
+object SupplyChainActorType extends EnumerableType[SupplyChainActorType] {
 
   case object Consolidator extends WithName("consolidator") with SupplyChainActorType
   case object FreightForwarder extends WithName("freightForwarder") with SupplyChainActorType
   case object Manufacturer extends WithName("manufacturer") with SupplyChainActorType
   case object WarehouseKeeper extends WithName("warehouseKeeper") with SupplyChainActorType
 
-  override val messageKeyPrefix: String = "supplyChainActors.index.supplyChainActorType"
+  val messageKeyPrefix: String = "supplyChainActors.index.supplyChainActorType"
 
   val values: Seq[SupplyChainActorType] = Seq(
     Consolidator,

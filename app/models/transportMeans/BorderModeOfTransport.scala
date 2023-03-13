@@ -16,13 +16,15 @@
 
 package models.transportMeans
 
-import models.{RadioModel, WithName}
+import models.{EnumerableType, Radioable, WithName}
 
-sealed trait BorderModeOfTransport {
+sealed trait BorderModeOfTransport extends Radioable[BorderModeOfTransport] {
   val borderModeType: Int
+
+  override val messageKeyPrefix: String = BorderModeOfTransport.messageKeyPrefix
 }
 
-object BorderModeOfTransport extends RadioModel[BorderModeOfTransport] {
+object BorderModeOfTransport extends EnumerableType[BorderModeOfTransport] {
 
   case object Sea extends WithName("maritime") with BorderModeOfTransport {
     override val borderModeType: Int = 1
@@ -40,7 +42,7 @@ object BorderModeOfTransport extends RadioModel[BorderModeOfTransport] {
     override val borderModeType: Int = 4
   }
 
-  override val messageKeyPrefix: String = "transportMeans.borderModeOfTransport"
+  val messageKeyPrefix: String = "transportMeans.borderModeOfTransport"
 
   val values: Seq[BorderModeOfTransport] = Seq(
     Sea,

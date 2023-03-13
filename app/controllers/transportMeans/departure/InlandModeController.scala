@@ -21,8 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.transportMeans.departure.InlandMode
 import models.{LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.TransportMeansNavigatorProvider
+import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.departure.InlandModePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,7 +53,7 @@ class InlandModeController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, InlandMode.radioItems, mode))
+      Ok(view(preparedForm, lrn, InlandMode.values, mode))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
@@ -62,7 +61,7 @@ class InlandModeController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, InlandMode.radioItems, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, InlandMode.values, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
             InlandModePage.writeToUserAnswers(value).updateTask().writeToSession().navigate()

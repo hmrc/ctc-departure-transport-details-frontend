@@ -25,10 +25,10 @@ import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{AuthorisationNavigatorProvider, UserAnswersNavigator}
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
+import pages.external.ApprovedOperatorPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.InferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.authorisationsAndLimit.authorisations.index.AuthorisationReferenceNumberView
 
@@ -44,8 +44,7 @@ class AuthorisationReferenceNumberController @Inject() (
   getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AuthorisationReferenceNumberView,
-  config: FrontendAppConfig,
-  inferenceService: InferenceService
+  config: FrontendAppConfig
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -55,7 +54,7 @@ class AuthorisationReferenceNumberController @Inject() (
   private val prefix = "authorisations.authorisationReferenceNumber"
 
   private def approvedOperator(implicit request: Request): Option[Boolean] =
-    inferenceService.inferIsReducedDataset(request.userAnswers)
+    ApprovedOperatorPage.inferredReader.run(request.userAnswers).toOption
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)

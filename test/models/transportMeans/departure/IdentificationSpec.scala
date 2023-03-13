@@ -110,7 +110,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           val answers = emptyUserAnswers
             .setValue(InlandModePage, InlandMode.Maritime)
 
-          val radios = Identification.valuesU(answers)
+          val radios = Identification.values(answers)
           val expected = Seq(
             Identification.SeaGoingVessel,
             Identification.ImoShipIdNumber
@@ -123,7 +123,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           val answers = emptyUserAnswers
             .setValue(InlandModePage, InlandMode.Rail)
 
-          val radios = Identification.valuesU(answers)
+          val radios = Identification.values(answers)
           val expected = Seq(
             Identification.WagonNumber,
             Identification.TrainNumber
@@ -136,7 +136,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           val answers = emptyUserAnswers
             .setValue(InlandModePage, InlandMode.Road)
 
-          val radios = Identification.valuesU(answers)
+          val radios = Identification.values(answers)
           val expected = Seq(
             Identification.RegNumberRoadVehicle,
             Identification.RegNumberRoadTrailer
@@ -149,7 +149,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           val answers = emptyUserAnswers
             .setValue(InlandModePage, InlandMode.Air)
 
-          val radios = Identification.valuesU(answers)
+          val radios = Identification.values(answers)
           val expected = Seq(
             Identification.IataFlightNumber,
             Identification.RegNumberAircraft
@@ -162,7 +162,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           val answers = emptyUserAnswers
             .setValue(InlandModePage, InlandMode.Fixed)
 
-          val radios = Identification.valuesU(answers)
+          val radios = Identification.values(answers)
           val expected = Seq(
             Identification.SeaGoingVessel,
             Identification.IataFlightNumber,
@@ -183,7 +183,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           val answers = emptyUserAnswers
             .setValue(InlandModePage, InlandMode.Waterway)
 
-          val radios = Identification.valuesU(answers)
+          val radios = Identification.values(answers)
           val expected = Seq(
             Identification.InlandWaterwaysVehicle,
             Identification.EuropeanVesselIdNumber

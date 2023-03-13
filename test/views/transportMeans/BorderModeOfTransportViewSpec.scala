@@ -30,12 +30,12 @@ class BorderModeOfTransportViewSpec extends RadioViewBehaviours[BorderModeOfTran
   override def form: Form[BorderModeOfTransport] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[BorderModeOfTransport]): HtmlFormat.Appendable =
-    injector.instanceOf[BorderModeOfTransportView].apply(form, lrn, BorderModeOfTransport.radioItems, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[BorderModeOfTransportView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.borderModeOfTransport"
 
   override def radioItems(fieldId: String, checkedValue: Option[BorderModeOfTransport] = None): Seq[RadioItem] =
-    BorderModeOfTransport.radioItems(fieldId, checkedValue)
+    values.toRadioItems(fieldId, checkedValue)
 
   override def values: Seq[BorderModeOfTransport] = BorderModeOfTransport.values
 

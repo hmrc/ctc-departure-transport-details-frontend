@@ -28,7 +28,6 @@ import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage,
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.InferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.authorisationsAndLimit.authorisations.index.AuthorisationTypeView
 
@@ -42,8 +41,7 @@ class AuthorisationTypeController @Inject() (
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AuthorisationTypeView,
-  inferenceService: InferenceService
+  view: AuthorisationTypeView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -52,16 +50,16 @@ class AuthorisationTypeController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      inferenceService.inferAuthorisationType(request.userAnswers, authorisationIndex) match {
-        case Some(value) =>
-          redirect(mode, authorisationIndex, InferredAuthorisationTypePage, value)
-        case None =>
+      AuthorisationType.values(request.userAnswers, authorisationIndex) match {
+        case authorisationType :: Nil =>
+          redirect(mode, authorisationIndex, InferredAuthorisationTypePage, authorisationType)
+        case authorisationTypes =>
           val preparedForm = request.userAnswers.get(AuthorisationTypePage(authorisationIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
 
-          Future.successful(Ok(view(preparedForm, lrn, AuthorisationType.radioItems, mode, authorisationIndex)))
+          Future.successful(Ok(view(preparedForm, lrn, authorisationTypes, mode, authorisationIndex)))
       }
   }
 
@@ -70,7 +68,7 @@ class AuthorisationTypeController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, AuthorisationType.radioItems, mode, authorisationIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, AuthorisationType.values(request.userAnswers), mode, authorisationIndex))),
           value => redirect(mode, authorisationIndex, AuthorisationTypePage, value)
         )
   }

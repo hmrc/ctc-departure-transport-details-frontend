@@ -62,13 +62,13 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
       }
     }
 
-    "valuesU" - {
+    "values" - {
       "when index 0" - {
         val index = Index(0)
 
         "and border mode of transport undefined" - {
           "must return all values" in {
-            Identification.valuesU(emptyUserAnswers, index) mustBe Seq(
+            Identification.values(emptyUserAnswers, index) mustBe Seq(
               ImoShipIdNumber,
               SeaGoingVessel,
               TrainNumber,
@@ -84,7 +84,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         "and border mode of transport is Sea" - {
           "must return ImoShipIdNumber and SeaGoingVessel" in {
             val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, Sea)
-            Identification.valuesU(userAnswers, index) mustBe Seq(
+            Identification.values(userAnswers, index) mustBe Seq(
               ImoShipIdNumber,
               SeaGoingVessel
             )
@@ -94,7 +94,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         "and border mode of transport is Air" - {
           "must return IataFlightNumber and RegNumberAircraft" in {
             val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, Air)
-            Identification.valuesU(userAnswers, index) mustBe Seq(
+            Identification.values(userAnswers, index) mustBe Seq(
               IataFlightNumber,
               RegNumberAircraft
             )
@@ -104,7 +104,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         "and border mode of transport is ChannelTunnel" - {
           "must return TrainNumber" in {
             val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, ChannelTunnel)
-            Identification.valuesU(userAnswers, index) mustBe Seq(
+            Identification.values(userAnswers, index) mustBe Seq(
               TrainNumber
             )
           }
@@ -113,7 +113,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
         "and border mode of transport is IrishLandBoundary" - {
           "wmust return RegNumberRoadVehicle" in {
             val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, IrishLandBoundary)
-            Identification.valuesU(userAnswers, index) mustBe Seq(
+            Identification.values(userAnswers, index) mustBe Seq(
               RegNumberRoadVehicle
             )
           }
@@ -127,7 +127,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           forAll(arbitrary[BorderModeOfTransport]) {
             borderModeOfTransport =>
               val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
-              Identification.valuesU(userAnswers, Index(index)) mustBe Seq(
+              Identification.values(userAnswers, Index(index)) mustBe Seq(
                 ImoShipIdNumber,
                 SeaGoingVessel,
                 TrainNumber,

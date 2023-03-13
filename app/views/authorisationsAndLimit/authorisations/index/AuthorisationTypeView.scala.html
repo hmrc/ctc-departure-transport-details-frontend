@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[AuthorisationType], lrn: LocalReferenceNumber, radios: (String, Option[AuthorisationType]) => Seq[RadioItem], mode: Mode, authorisationIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[AuthorisationType], lrn: LocalReferenceNumber, authorisationTypes: Seq[AuthorisationType], mode: Mode, authorisationIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("authorisations.authorisationType.title"),
@@ -47,7 +47,7 @@
                 caption = Some(messages("authorisations.caption")),
                 heading = messages("authorisations.authorisationType.heading")
             ),
-            radioItems = fieldId => radios(fieldId, form.value)
+            radioItems = fieldId => authorisationTypes.toRadioItems(fieldId, form.value)
         )
 
         @button(attributes = Map("id" -> "submit"))

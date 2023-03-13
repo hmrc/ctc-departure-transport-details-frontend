@@ -19,10 +19,9 @@ package controllers.transportMeans
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.{LocalReferenceNumber, Mode}
 import models.transportMeans.BorderModeOfTransport
-import navigation.UserAnswersNavigator
-import navigation.TransportMeansNavigatorProvider
+import models.{LocalReferenceNumber, Mode}
+import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.BorderModeOfTransportPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,7 +53,7 @@ class BorderModeOfTransportController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, BorderModeOfTransport.radioItems, mode))
+      Ok(view(preparedForm, lrn, BorderModeOfTransport.values, mode))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
@@ -62,7 +61,7 @@ class BorderModeOfTransportController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, BorderModeOfTransport.radioItems, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, BorderModeOfTransport.values, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
             BorderModeOfTransportPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()

@@ -16,13 +16,15 @@
 
 package models.transportMeans.departure
 
-import models.{RadioModel, WithName}
+import models.{EnumerableType, Radioable, WithName}
 
-sealed trait InlandMode {
+sealed trait InlandMode extends Radioable[InlandMode] {
   val inlandModeType: Int
+
+  override val messageKeyPrefix: String = InlandMode.messageKeyPrefix
 }
 
-object InlandMode extends RadioModel[InlandMode] {
+object InlandMode extends EnumerableType[InlandMode] {
 
   case object Maritime extends WithName("maritime") with InlandMode {
     override val inlandModeType: Int = 1
@@ -52,7 +54,7 @@ object InlandMode extends RadioModel[InlandMode] {
     override val inlandModeType: Int = 8
   }
 
-  override val messageKeyPrefix: String = "transportMeans.departure.inlandMode"
+  val messageKeyPrefix: String = "transportMeans.departure.inlandMode"
 
   val values: Seq[InlandMode] = Seq(
     Maritime,

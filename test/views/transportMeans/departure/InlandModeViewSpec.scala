@@ -30,12 +30,12 @@ class InlandModeViewSpec extends RadioViewBehaviours[InlandMode] {
   override def form: Form[InlandMode] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[InlandMode]): HtmlFormat.Appendable =
-    injector.instanceOf[InlandModeView].apply(form, lrn, InlandMode.radioItems, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[InlandModeView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.departure.inlandMode"
 
   override def radioItems(fieldId: String, checkedValue: Option[InlandMode] = None): Seq[RadioItem] =
-    InlandMode.radioItems(fieldId, checkedValue)
+    values.toRadioItems(fieldId, checkedValue)
 
   override def values: Seq[InlandMode] = InlandMode.values
 

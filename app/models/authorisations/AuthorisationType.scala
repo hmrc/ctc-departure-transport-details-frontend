@@ -16,10 +16,17 @@
 
 package models.authorisations
 
-import models.{RadioModel, WithName}
+import models.ProcedureType.Simplified
+import models.domain.GettableAsReaderOps
+import models.transportMeans.departure.InlandMode.{Air, Maritime, Rail}
+import models.{EnumerableType, Index, Radioable, UserAnswers, WithName}
+import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
+import pages.transportMeans.departure.InlandModePage
 import play.api.i18n.Messages
 
-sealed trait AuthorisationType {
+sealed trait AuthorisationType extends Radioable[AuthorisationType] {
+
+  override val messageKeyPrefix: String = AuthorisationType.messageKeyPrefix
 
   def asString(implicit messages: Messages): String =
     messages(s"${AuthorisationType.messageKeyPrefix}.$this")
@@ -29,17 +36,34 @@ sealed trait AuthorisationType {
 
 }
 
-object AuthorisationType extends RadioModel[AuthorisationType] {
+object AuthorisationType extends EnumerableType[AuthorisationType] {
 
   case object ACR extends WithName("ACR") with AuthorisationType
   case object SSE extends WithName("SSE") with AuthorisationType
   case object TRD extends WithName("TRD") with AuthorisationType
 
-  override val messageKeyPrefix: String = "authorisations.authorisationType"
+  val messageKeyPrefix: String = "authorisations.authorisationType"
 
   val values: Seq[AuthorisationType] = Seq(
     ACR,
     SSE,
     TRD
   )
+
+  def values(userAnswers: UserAnswers): Seq[AuthorisationType] = {
+    val reader = for {
+      procedureType           <- ProcedureTypePage.reader
+      reducedDataSetIndicator <- ApprovedOperatorPage.inferredReader
+      inlandMode              <- InlandModePage.reader
+    } yield (reducedDataSetIndicator, inlandMode, procedureType) match {
+      case (true, Maritime | Rail | Air, _) => Seq(TRD)
+      case (true, _, Simplified)            => Seq(ACR)
+      case _                                => values
+    }
+    reader.run(userAnswers).getOrElse(values)
+  }
+
+  def values(userAnswers: UserAnswers, index: Index): Seq[AuthorisationType] =
+    if (index.isFirst) values(userAnswers) else values
+
 }

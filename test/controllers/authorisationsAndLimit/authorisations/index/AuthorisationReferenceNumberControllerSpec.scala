@@ -19,8 +19,8 @@ package controllers.authorisationsAndLimit.authorisations.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AuthorisationReferenceNumberFormProvider
 import generators.Generators
-import models.NormalMode
 import models.authorisations.AuthorisationType
+import models.{DeclarationType, NormalMode}
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,11 +28,11 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
+import pages.external.{ApprovedOperatorPage, DeclarationTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.InferenceService
 import views.html.authorisationsAndLimit.authorisations.index.AuthorisationReferenceNumberView
 
 import scala.concurrent.Future
@@ -48,24 +48,26 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
 
   private lazy val authorisationReferenceNumberRoute = routes.AuthorisationReferenceNumberController.onPageLoad(lrn, mode, authorisationIndex).url
 
-  private val mockInferenceService = mock[InferenceService]
-
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[AuthorisationNavigatorProvider]).toInstance(fakeAuthorisationNavigatorProvider))
-      .overrides(bind(classOf[InferenceService]).toInstance(mockInferenceService))
 
   private val authorisationTypePageGen = Gen.oneOf(AuthorisationTypePage(authorisationIndex), InferredAuthorisationTypePage(authorisationIndex))
+
+  private val baseAnswers = {
+    val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+    emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
+  }
 
   "AuthorisationReferenceNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
       forAll(arbitrary[AuthorisationType], authorisationTypePageGen, arbitrary[Boolean]) {
         (authorisationType, page, isReducedDataset) =>
-          when(mockInferenceService.inferIsReducedDataset(any())).thenReturn(Some(isReducedDataset))
-
-          val userAnswers = emptyUserAnswers.setValue(page, authorisationType)
+          val userAnswers = baseAnswers
+            .setValue(ApprovedOperatorPage, isReducedDataset)
+            .setValue(page, authorisationType)
           setExistingUserAnswers(userAnswers)
 
           val request = FakeRequest(GET, authorisationReferenceNumberRoute)
@@ -84,9 +86,8 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
     "must populate the view correctly on a GET when the question has previously been answered" in {
       forAll(arbitrary[AuthorisationType], authorisationTypePageGen, arbitrary[Boolean]) {
         (authorisationType, page, isReducedDataset) =>
-          when(mockInferenceService.inferIsReducedDataset(any())).thenReturn(Some(isReducedDataset))
-
-          val userAnswers = emptyUserAnswers
+          val userAnswers = baseAnswers
+            .setValue(ApprovedOperatorPage, isReducedDataset)
             .setValue(page, authorisationType)
             .setValue(AuthorisationReferenceNumberPage(authorisationIndex), validAnswer)
           setExistingUserAnswers(userAnswers)
@@ -109,9 +110,9 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
     "must redirect to the next page when valid data is submitted" in {
       forAll(arbitrary[AuthorisationType], authorisationTypePageGen, arbitrary[Boolean]) {
         (authorisationType, page, isReducedDataset) =>
-          when(mockInferenceService.inferIsReducedDataset(any())).thenReturn(Some(isReducedDataset))
-
-          val userAnswers = emptyUserAnswers.setValue(page, authorisationType)
+          val userAnswers = baseAnswers
+            .setValue(ApprovedOperatorPage, isReducedDataset)
+            .setValue(page, authorisationType)
           setExistingUserAnswers(userAnswers)
 
           when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
@@ -130,9 +131,9 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
     "must return a Bad Request and errors when invalid data is submitted" in {
       forAll(arbitrary[AuthorisationType], authorisationTypePageGen, arbitrary[Boolean]) {
         (authorisationType, page, isReducedDataset) =>
-          when(mockInferenceService.inferIsReducedDataset(any())).thenReturn(Some(isReducedDataset))
-
-          val userAnswers = emptyUserAnswers.setValue(page, authorisationType)
+          val userAnswers = baseAnswers
+            .setValue(ApprovedOperatorPage, isReducedDataset)
+            .setValue(page, authorisationType)
           setExistingUserAnswers(userAnswers)
 
           val invalidAnswer = ""

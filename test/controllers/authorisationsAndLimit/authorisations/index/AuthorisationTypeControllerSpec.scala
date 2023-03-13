@@ -20,19 +20,20 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.authorisations.AuthorisationType
-import models.{NormalMode, UserAnswers}
+import models.transportMeans.departure.InlandMode.Maritime
+import models.{DeclarationType, NormalMode, ProcedureType, UserAnswers}
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
+import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
+import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
+import pages.transportMeans.departure.InlandModePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.InferenceService
 import views.html.authorisationsAndLimit.authorisations.index.AuthorisationTypeView
 
 import scala.concurrent.Future
@@ -44,50 +45,40 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
   private val mode                        = NormalMode
   private lazy val authorisationTypeRoute = routes.AuthorisationTypeController.onPageLoad(lrn, mode, index).url
 
-  private val mockInferenceService = mock[InferenceService]
-
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[AuthorisationNavigatorProvider]).toInstance(fakeAuthorisationNavigatorProvider))
-      .overrides(bind(classOf[InferenceService]).toInstance(mockInferenceService))
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    reset(mockInferenceService)
-    when(mockInferenceService.inferAuthorisationType(any(), any())).thenReturn(None)
-  }
 
   "AuthorisationType Controller" - {
 
     "when value is inferred" - {
       "must redirect to next page" in {
-        forAll(arbitrary[AuthorisationType]) {
-          authorisationType =>
-            beforeEach()
-            when(mockInferenceService.inferAuthorisationType(any(), any())).thenReturn(Some(authorisationType))
+        val userAnswers = emptyUserAnswers
+          .setValue(ProcedureTypePage, ProcedureType.Normal)
+          .setValue(DeclarationTypePage, DeclarationType.Option1)
+          .setValue(ApprovedOperatorPage, true)
+          .setValue(InlandModePage, Maritime)
+        setExistingUserAnswers(userAnswers)
 
-            setExistingUserAnswers(emptyUserAnswers)
+        val request = FakeRequest(GET, authorisationTypeRoute)
 
-            val request = FakeRequest(GET, authorisationTypeRoute)
+        val result = route(app, request).value
 
-            val result = route(app, request).value
+        status(result) mustEqual SEE_OTHER
 
-            status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
 
-            redirectLocation(result).value mustEqual onwardRoute.url
-
-            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-            verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-            userAnswersCaptor.getValue.getValue(InferredAuthorisationTypePage(index)) mustBe authorisationType
-            userAnswersCaptor.getValue.get(AuthorisationTypePage(index)) must not be defined
-        }
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+        userAnswersCaptor.getValue.getValue(InferredAuthorisationTypePage(index)) mustBe AuthorisationType.TRD
+        userAnswersCaptor.getValue.get(AuthorisationTypePage(index)) must not be defined
       }
     }
 
     "must return OK and the correct view for a GET" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, authorisationTypeRoute)
 
@@ -98,7 +89,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, AuthorisationType.radioItems, mode, index)(request, messages).toString
+        view(form, lrn, AuthorisationType.values(userAnswers, index), mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -117,7 +108,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, AuthorisationType.radioItems, mode, index)(request, messages).toString
+        view(filledForm, lrn, AuthorisationType.values(userAnswers, index), mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -137,8 +128,8 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+      setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, authorisationTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -150,7 +141,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, AuthorisationType.radioItems, mode, index)(request, messages).toString
+        view(boundForm, lrn, AuthorisationType.values(userAnswers, index), mode, index)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

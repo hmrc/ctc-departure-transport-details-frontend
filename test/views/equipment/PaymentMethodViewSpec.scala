@@ -30,12 +30,12 @@ class PaymentMethodViewSpec extends RadioViewBehaviours[PaymentMethod] {
   override def form: Form[PaymentMethod] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[PaymentMethod]): HtmlFormat.Appendable =
-    injector.instanceOf[PaymentMethodView].apply(form, lrn, PaymentMethod.radioItems, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[PaymentMethodView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "equipment.paymentMethod"
 
   override def radioItems(fieldId: String, checkedValue: Option[PaymentMethod] = None): Seq[RadioItem] =
-    PaymentMethod.radioItems(fieldId, checkedValue)
+    values.toRadioItems(fieldId, checkedValue)
 
   override def values: Seq[PaymentMethod] = PaymentMethod.values
 

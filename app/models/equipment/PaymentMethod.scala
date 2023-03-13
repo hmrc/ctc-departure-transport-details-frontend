@@ -16,13 +16,15 @@
 
 package models.equipment
 
-import models.{RadioModel, WithName}
+import models.{EnumerableType, Radioable, WithName}
 
-sealed trait PaymentMethod {
+sealed trait PaymentMethod extends Radioable[PaymentMethod] {
   val code: String
+
+  override val messageKeyPrefix: String = PaymentMethod.messageKeyPrefix
 }
 
-object PaymentMethod extends RadioModel[PaymentMethod] {
+object PaymentMethod extends EnumerableType[PaymentMethod] {
 
   case object Cash extends WithName("cash") with PaymentMethod {
     override val code: String = "A"
@@ -52,7 +54,7 @@ object PaymentMethod extends RadioModel[PaymentMethod] {
     override val code: String = "Z"
   }
 
-  override val messageKeyPrefix: String = "equipment.paymentMethod"
+  val messageKeyPrefix: String = "equipment.paymentMethod"
 
   val values: Seq[PaymentMethod] = Seq(
     Cash,

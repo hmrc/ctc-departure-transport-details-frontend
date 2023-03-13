@@ -21,8 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.supplyChainActors.SupplyChainActorType
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.SupplyChainActorNavigatorProvider
+import navigation.{SupplyChainActorNavigatorProvider, UserAnswersNavigator}
 import pages.supplyChainActors.index.SupplyChainActorTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,7 +53,7 @@ class SupplyChainActorTypeController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, SupplyChainActorType.radioItems, mode, actorIndex))
+      Ok(view(preparedForm, lrn, SupplyChainActorType.values, mode, actorIndex))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, actorIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
@@ -62,7 +61,7 @@ class SupplyChainActorTypeController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, SupplyChainActorType.radioItems, mode, actorIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, SupplyChainActorType.values, mode, actorIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, actorIndex)
             SupplyChainActorTypePage(actorIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

@@ -16,16 +16,18 @@
 
 package models.transportMeans.departure
 
-import models.{RadioModelU, UserAnswers, WithName}
+import models.{EnumerableType, Radioable, UserAnswers, WithName}
 import pages.transportMeans.departure.InlandModePage
 import play.api.i18n.Messages
 
-sealed trait Identification {
+sealed trait Identification extends Radioable[Identification] {
   def arg(implicit messages: Messages): String = messages(s"${Identification.messageKeyPrefix}.$this.arg")
   val identificationType: Int
+
+  override val messageKeyPrefix: String = Identification.messageKeyPrefix
 }
 
-object Identification extends RadioModelU[Identification] {
+object Identification extends EnumerableType[Identification] {
 
   case object ImoShipIdNumber extends WithName("imoShipIdNumber") with Identification {
     override val identificationType: Int = 10
@@ -67,7 +69,7 @@ object Identification extends RadioModelU[Identification] {
     override val identificationType: Int = 81
   }
 
-  override val messageKeyPrefix: String = "transportMeans.departure.identification"
+  val messageKeyPrefix: String = "transportMeans.departure.identification"
 
   val values: Seq[Identification] = Seq(
     SeaGoingVessel,
@@ -82,7 +84,7 @@ object Identification extends RadioModelU[Identification] {
     EuropeanVesselIdNumber
   )
 
-  override def valuesU(userAnswers: UserAnswers): Seq[Identification] =
+  def values(userAnswers: UserAnswers): Seq[Identification] =
     userAnswers.get(InlandModePage).map(_.inlandModeType) match {
       case Some(inlandModeType) if inlandModeType != 7 => values.filter(_.identificationType.toString.startsWith(inlandModeType.toString))
       case _                                           => values

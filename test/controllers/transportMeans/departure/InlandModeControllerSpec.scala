@@ -59,7 +59,7 @@ class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, InlandMode.radioItems, mode)(request, messages).toString
+        view(form, lrn, InlandMode.values, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -78,7 +78,7 @@ class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, InlandMode.radioItems, mode)(request, messages).toString
+        view(filledForm, lrn, InlandMode.values, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -111,7 +111,7 @@ class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, InlandMode.radioItems, mode)(request, messages).toString
+        view(boundForm, lrn, InlandMode.values, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
