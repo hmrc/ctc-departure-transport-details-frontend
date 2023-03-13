@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[SupplyChainActorType], lrn: LocalReferenceNumber, radios: (String, Option[SupplyChainActorType]) => Seq[RadioItem], mode: Mode, actorIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[SupplyChainActorType], lrn: LocalReferenceNumber, supplyChainActorTypes: Seq[SupplyChainActorType], mode: Mode, actorIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("supplyChainActors.index.supplyChainActorType.title"),
@@ -47,7 +47,7 @@
                 caption = Some(messages("supplyChainActors.caption")),
                 heading = messages("supplyChainActors.index.supplyChainActorType.heading")
             ),
-            radioItems = fieldId => radios(fieldId, form.value)
+            radioItems = fieldId => supplyChainActorTypes.toRadioItems(fieldId, form.value)
         )
 
         @button(attributes = Map("id" -> "submit"))

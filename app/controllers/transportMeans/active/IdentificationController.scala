@@ -27,7 +27,6 @@ import pages.transportMeans.active.{BaseIdentificationPage, IdentificationPage, 
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.InferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transportMeans.active.IdentificationView
 
@@ -41,8 +40,7 @@ class IdentificationController @Inject() (
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: IdentificationView,
-  inferenceService: InferenceService
+  view: IdentificationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
@@ -51,16 +49,16 @@ class IdentificationController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      inferenceService.inferActiveIdentifier(request.userAnswers, activeIndex) match {
-        case Some(value) =>
-          redirect(mode, activeIndex, InferredIdentificationPage, value)
-        case None =>
+      Identification.values(request.userAnswers, activeIndex) match {
+        case identifier :: Nil =>
+          redirect(mode, activeIndex, InferredIdentificationPage, identifier)
+        case identifiers =>
           val preparedForm = request.userAnswers.get(IdentificationPage(activeIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
 
-          Future.successful(Ok(view(preparedForm, lrn, Identification.radioItemsU(request.userAnswers, activeIndex), mode, activeIndex)))
+          Future.successful(Ok(view(preparedForm, lrn, identifiers, mode, activeIndex)))
       }
   }
 
@@ -70,7 +68,9 @@ class IdentificationController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, lrn, Identification.radioItemsU(request.userAnswers, activeIndex), mode, activeIndex))),
+            Future.successful(
+              BadRequest(view(formWithErrors, lrn, Identification.values(request.userAnswers, activeIndex), mode, activeIndex))
+            ),
           value => redirect(mode, activeIndex, IdentificationPage, value)
         )
   }
