@@ -21,14 +21,13 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.requests.DataRequest
 import models.transportMeans.active.Identification
-import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.active.{BaseIdentificationPage, IdentificationPage, InferredIdentificationPage}
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.InferenceService
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transportMeans.active.IdentificationView
 
@@ -61,7 +60,7 @@ class IdentificationController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Future.successful(Ok(view(preparedForm, lrn, radioOptions(request.userAnswers, activeIndex), mode, activeIndex)))
+          Future.successful(Ok(view(preparedForm, lrn, Identification.radioItemsU(request.userAnswers, activeIndex), mode, activeIndex)))
       }
   }
 
@@ -70,16 +69,11 @@ class IdentificationController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, radioOptions(request.userAnswers, activeIndex), mode, activeIndex))),
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, lrn, Identification.radioItemsU(request.userAnswers, activeIndex), mode, activeIndex))),
           value => redirect(mode, activeIndex, IdentificationPage, value)
         )
   }
-
-  private def radioOptions(
-    userAnswers: UserAnswers,
-    index: Index
-  )(implicit messages: Messages): (String, Option[Identification]) => Seq[RadioItem] =
-    if (index.isFirst) Identification.radioItemsU(userAnswers) else Identification.radioItems
 
   private def redirect(
     mode: Mode,

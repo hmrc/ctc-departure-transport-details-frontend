@@ -17,6 +17,9 @@
 package models.transportMeans.active
 
 import base.SpecBase
+import generators.Generators
+import models.Index
+import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.BorderModeOfTransport._
 import models.transportMeans.active.Identification._
 import org.scalacheck.Arbitrary.arbitrary
@@ -25,7 +28,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.BorderModeOfTransportPage
 import play.api.libs.json.{JsError, JsString, Json}
 
-class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
+class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "Identification" - {
 
@@ -60,56 +63,81 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
     }
 
     "valuesU" - {
-      "must return all values" - {
-        "when border mode of transport undefined" in {
-          Identification.valuesU(emptyUserAnswers) mustBe Seq(
-            ImoShipIdNumber,
-            SeaGoingVessel,
-            TrainNumber,
-            RegNumberRoadVehicle,
-            IataFlightNumber,
-            RegNumberAircraft,
-            EuropeanVesselIdNumber,
-            InlandWaterwaysVehicle
-          )
+      "when index 0" - {
+        val index = Index(0)
+
+        "and border mode of transport undefined" - {
+          "must return all values" in {
+            Identification.valuesU(emptyUserAnswers, index) mustBe Seq(
+              ImoShipIdNumber,
+              SeaGoingVessel,
+              TrainNumber,
+              RegNumberRoadVehicle,
+              IataFlightNumber,
+              RegNumberAircraft,
+              EuropeanVesselIdNumber,
+              InlandWaterwaysVehicle
+            )
+          }
+        }
+
+        "and border mode of transport is Sea" - {
+          "must return ImoShipIdNumber and SeaGoingVessel" in {
+            val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, Sea)
+            Identification.valuesU(userAnswers, index) mustBe Seq(
+              ImoShipIdNumber,
+              SeaGoingVessel
+            )
+          }
+        }
+
+        "and border mode of transport is Air" - {
+          "must return IataFlightNumber and RegNumberAircraft" in {
+            val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, Air)
+            Identification.valuesU(userAnswers, index) mustBe Seq(
+              IataFlightNumber,
+              RegNumberAircraft
+            )
+          }
+        }
+
+        "and border mode of transport is ChannelTunnel" - {
+          "must return TrainNumber" in {
+            val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, ChannelTunnel)
+            Identification.valuesU(userAnswers, index) mustBe Seq(
+              TrainNumber
+            )
+          }
+        }
+
+        "and border mode of transport is IrishLandBoundary" - {
+          "wmust return RegNumberRoadVehicle" in {
+            val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, IrishLandBoundary)
+            Identification.valuesU(userAnswers, index) mustBe Seq(
+              RegNumberRoadVehicle
+            )
+          }
         }
       }
 
-      "must return ImoShipIdNumber and SeaGoingVessel" - {
-        "when border mode of transport is Sea" in {
-          val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, Sea)
-          Identification.valuesU(userAnswers) mustBe Seq(
-            ImoShipIdNumber,
-            SeaGoingVessel
-          )
-        }
-      }
+      "when index is not 0" - {
+        val index = Gen.choose(1, frontendAppConfig.maxActiveBorderTransports).sample.value
 
-      "must return IataFlightNumber and RegNumberAircraft" - {
-        "when border mode of transport is Air" in {
-          val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, Air)
-          Identification.valuesU(userAnswers) mustBe Seq(
-            IataFlightNumber,
-            RegNumberAircraft
-          )
-        }
-      }
-
-      "must return TrainNumber" - {
-        "when border mode of transport is ChannelTunnel" in {
-          val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, ChannelTunnel)
-          Identification.valuesU(userAnswers) mustBe Seq(
-            TrainNumber
-          )
-        }
-      }
-
-      "must return RegNumberRoadVehicle" - {
-        "when border mode of transport is IrishLandBoundary" in {
-          val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, IrishLandBoundary)
-          Identification.valuesU(userAnswers) mustBe Seq(
-            RegNumberRoadVehicle
-          )
+        "must return all values" in {
+          forAll(arbitrary[BorderModeOfTransport]) {
+            borderModeOfTransport =>
+              val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
+              Identification.valuesU(userAnswers, Index(index)) mustBe Seq(
+                ImoShipIdNumber,
+                SeaGoingVessel,
+                TrainNumber,
+                RegNumberRoadVehicle,
+                IataFlightNumber,
+                RegNumberAircraft,
+                EuropeanVesselIdNumber,
+                InlandWaterwaysVehicle
+              )
+          }
         }
       }
     }

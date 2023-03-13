@@ -21,7 +21,7 @@ import forms.EnumerableFormProvider
 import generators.Generators
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.active.Identification
-import models.{Index, NormalMode, UserAnswers}
+import models.{NormalMode, UserAnswers}
 import navigation.TransportMeansActiveNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -87,45 +87,23 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       }
     }
 
-    "must return OK and the correct view for a GET" - {
-      "at index position '0'" in {
-        forAll(arbitrary[BorderModeOfTransport]) {
-          borderModeOfTransport =>
-            val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
+    "must return OK and the correct view for a GET" in {
+      forAll(arbitrary[BorderModeOfTransport]) {
+        borderModeOfTransport =>
+          val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
 
-            setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(userAnswers)
 
-            val request = FakeRequest(GET, identificationRoute)
+          val request = FakeRequest(GET, identificationRoute)
 
-            val result = route(app, request).value
+          val result = route(app, request).value
 
-            val view = injector.instanceOf[IdentificationView]
+          val view = injector.instanceOf[IdentificationView]
 
-            status(result) mustEqual OK
+          status(result) mustEqual OK
 
-            contentAsString(result) mustEqual
-              view(form, lrn, Identification.radioItemsU(userAnswers), mode, activeIndex)(request, messages).toString
-        }
-      }
-
-      "at index position '1'" in {
-        forAll(arbitrary[BorderModeOfTransport]) {
-          borderModeOfTransport =>
-            val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
-
-            setExistingUserAnswers(userAnswers)
-
-            val request = FakeRequest(GET, routes.IdentificationController.onPageLoad(lrn, mode, Index(1)).url)
-
-            val result = route(app, request).value
-
-            val view = injector.instanceOf[IdentificationView]
-
-            status(result) mustEqual OK
-
-            contentAsString(result) mustEqual
-              view(form, lrn, Identification.radioItems, mode, Index(1))(request, messages).toString
-        }
+          contentAsString(result) mustEqual
+            view(form, lrn, Identification.radioItemsU(userAnswers, activeIndex), mode, activeIndex)(request, messages).toString
       }
     }
 

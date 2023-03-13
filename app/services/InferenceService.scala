@@ -19,24 +19,18 @@ package services
 import models.ProcedureType.Simplified
 import models.authorisations.AuthorisationType
 import models.domain.GettableAsReaderOps
+import models.transportMeans.active
 import models.transportMeans.departure.InlandMode.{Air, Maritime, Rail}
-import models.transportMeans.{active, BorderModeOfTransport}
 import models.{Index, UserAnswers}
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
-import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.departure.InlandModePage
 
 class InferenceService {
 
   def inferActiveIdentifier(userAnswers: UserAnswers, index: Index): Option[active.Identification] =
-    if (index.isFirst) {
-      userAnswers.get(BorderModeOfTransportPage) match {
-        case Some(BorderModeOfTransport.ChannelTunnel)     => Some(active.Identification.TrainNumber)
-        case Some(BorderModeOfTransport.IrishLandBoundary) => Some(active.Identification.RegNumberRoadVehicle)
-        case _                                             => None
-      }
-    } else {
-      None
+    active.Identification.valuesU(userAnswers, index) match {
+      case identification :: Nil => Some(identification)
+      case _                     => None
     }
 
   def inferAuthorisationType(userAnswers: UserAnswers, index: Index): Option[AuthorisationType] =

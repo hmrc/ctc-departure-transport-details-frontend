@@ -16,9 +16,10 @@
 
 package models.transportMeans.active
 
-import models.{RadioModelU, UserAnswers, WithName}
+import models.{Index, RadioModelU, UserAnswers, WithName}
 import pages.transportMeans.BorderModeOfTransportPage
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 sealed trait Identification {
   val borderModeType: Int
@@ -84,4 +85,13 @@ object Identification extends RadioModelU[Identification] {
       case _ =>
         values
     }
+
+  def valuesU(userAnswers: UserAnswers, index: Index): Seq[Identification] =
+    if (index.isFirst) valuesU(userAnswers) else values
+
+  def radioItemsU(userAnswers: UserAnswers, index: Index)(
+    formKey: String,
+    checkedValue: Option[Identification]
+  )(implicit messages: Messages): Seq[RadioItem] =
+    radioItemsU(valuesU(userAnswers, index))(formKey, checkedValue)
 }
