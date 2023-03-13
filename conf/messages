@@ -321,8 +321,8 @@ authorisations.authorisationType.forDisplay.SSE = SSE
 authorisations.authorisationType.forDisplay.TRD = TRD
 authorisations.authorisationType.error.required = Select which type of authorisation you want to add
 
-authorisations.authorisationReferenceNumber.title = What is the the reference number for the {0} authorisation?
-authorisations.authorisationReferenceNumber.heading = What is the the reference number for the {0} authorisation?
+authorisations.authorisationReferenceNumber.title = What is the reference number for the {0} authorisation?
+authorisations.authorisationReferenceNumber.heading = What is the reference number for the {0} authorisation?
 authorisations.authorisationReferenceNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 authorisations.authorisationReferenceNumber.paragraph = You need to enter this as you’re using a reduced data set.
 authorisations.authorisationReferenceNumber.error.required = Enter the reference number for the {0} authorisation
