@@ -21,8 +21,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.transportMeans.departure.Identification
 import models.{LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.TransportMeansNavigatorProvider
+import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.departure.IdentificationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -54,7 +53,7 @@ class IdentificationController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, Identification.radioItemsU(request.userAnswers), mode))
+      Ok(view(preparedForm, lrn, Identification.values(request.userAnswers), mode))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
@@ -62,7 +61,7 @@ class IdentificationController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, Identification.radioItemsU(request.userAnswers), mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, Identification.values(request.userAnswers), mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
             IdentificationPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()

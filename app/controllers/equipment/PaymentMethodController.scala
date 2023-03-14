@@ -19,8 +19,8 @@ package controllers.equipment
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.{LocalReferenceNumber, Mode}
 import models.equipment.PaymentMethod
+import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.equipment.PaymentMethodPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -53,7 +53,7 @@ class PaymentMethodController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, PaymentMethod.radioItems, mode))
+      Ok(view(preparedForm, lrn, PaymentMethod.values, mode))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
@@ -61,7 +61,7 @@ class PaymentMethodController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, PaymentMethod.radioItems, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, PaymentMethod.values, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
             PaymentMethodPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()

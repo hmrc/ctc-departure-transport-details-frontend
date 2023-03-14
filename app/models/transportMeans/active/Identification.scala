@@ -16,13 +16,14 @@
 
 package models.transportMeans.active
 
-import models.{Index, RadioModelU, UserAnswers, WithName}
+import models.{EnumerableType, Index, Radioable, UserAnswers, WithName}
 import pages.transportMeans.BorderModeOfTransportPage
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
-sealed trait Identification {
+sealed trait Identification extends Radioable[Identification] {
   val borderModeType: Int
+
+  override val messageKeyPrefix: String = Identification.messageKeyPrefix
 
   def asString(implicit messages: Messages): String =
     messages(s"${Identification.messageKeyPrefix}.$this")
@@ -31,7 +32,7 @@ sealed trait Identification {
     messages(s"${Identification.messageKeyPrefix}.forDisplay.$this")
 }
 
-object Identification extends RadioModelU[Identification] {
+object Identification extends EnumerableType[Identification] {
 
   case object ImoShipIdNumber extends WithName("imoShipIdNumber") with Identification {
     override val borderModeType: Int = 10
@@ -65,7 +66,7 @@ object Identification extends RadioModelU[Identification] {
     override val borderModeType: Int = 81
   }
 
-  override val messageKeyPrefix: String = "transportMeans.active.identification"
+  val messageKeyPrefix: String = "transportMeans.active.identification"
 
   val values: Seq[Identification] = Seq(
     ImoShipIdNumber,
@@ -78,20 +79,15 @@ object Identification extends RadioModelU[Identification] {
     InlandWaterwaysVehicle
   )
 
-  override def valuesU(userAnswers: UserAnswers): Seq[Identification] =
-    userAnswers.get(BorderModeOfTransportPage).map(_.borderModeType) match {
-      case Some(borderModeType) =>
-        Identification.values.filter(_.borderModeType.toString.startsWith(borderModeType.toString))
-      case _ =>
-        values
+  def values(userAnswers: UserAnswers, index: Index): Seq[Identification] =
+    if (index.isFirst) {
+      userAnswers.get(BorderModeOfTransportPage).map(_.borderModeType) match {
+        case Some(borderModeType) =>
+          Identification.values.filter(_.borderModeType.toString.startsWith(borderModeType.toString))
+        case _ =>
+          values
+      }
+    } else {
+      values
     }
-
-  def valuesU(userAnswers: UserAnswers, index: Index): Seq[Identification] =
-    if (index.isFirst) valuesU(userAnswers) else values
-
-  def radioItemsU(userAnswers: UserAnswers, index: Index)(
-    formKey: String,
-    checkedValue: Option[Identification]
-  )(implicit messages: Messages): Seq[RadioItem] =
-    radioItemsU(valuesU(userAnswers, index))(formKey, checkedValue)
 }
