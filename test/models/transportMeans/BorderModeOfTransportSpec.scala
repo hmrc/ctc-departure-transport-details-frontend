@@ -14,39 +14,47 @@
  * limitations under the License.
  */
 
-package models
+package models.transportMeans
 
-import base.SpecBase
-import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
+import org.scalatest.OptionValues
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
 
-class DeclarationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class BorderModeOfTransportSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 
-  "DeclarationType" - {
+  "BorderModeOfTransport" - {
 
     "must deserialise valid values" in {
-      forAll(arbitrary[DeclarationType]) {
-        declarationType =>
-          JsString(declarationType.toString).validate[DeclarationType].asOpt.value mustEqual declarationType
+
+      val gen = Gen.oneOf(BorderModeOfTransport.values)
+
+      forAll(gen) {
+        borderModeOfTransport =>
+          JsString(borderModeOfTransport.toString).validate[BorderModeOfTransport].asOpt.value mustEqual borderModeOfTransport
       }
     }
 
     "must fail to deserialise invalid values" in {
 
-      val gen = arbitrary[String] retryUntil (!DeclarationType.values.map(_.toString).contains(_))
+      val gen = arbitrary[String] suchThat (!BorderModeOfTransport.values.map(_.toString).contains(_))
 
       forAll(gen) {
         invalidValue =>
-          JsString(invalidValue).validate[DeclarationType] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[BorderModeOfTransport] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
-      forAll(arbitrary[DeclarationType]) {
-        declarationType =>
-          Json.toJson(declarationType) mustEqual JsString(declarationType.toString)
+
+      val gen = Gen.oneOf(BorderModeOfTransport.values)
+
+      forAll(gen) {
+        borderModeOfTransport =>
+          Json.toJson(borderModeOfTransport) mustEqual JsString(borderModeOfTransport.toString)
       }
     }
   }

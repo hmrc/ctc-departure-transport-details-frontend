@@ -53,13 +53,6 @@ class TransportMeansCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)
     )
   }
 
-  def anotherVehicleCrossing: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AnotherVehicleCrossingYesNoPage,
-    formatAnswer = formatAsYesOrNo,
-    prefix = "transportMeans.anotherVehicleCrossingYesNo",
-    id = Some("change-another-vehicle-crossing-border")
-  )
-
   def modeCrossingBorder: Option[SummaryListRow] = getAnswerAndBuildRow[BorderModeOfTransport](
     page = BorderModeOfTransportPage,
     formatAnswer = formatEnumAsText(BorderModeOfTransport.messageKeyPrefix),

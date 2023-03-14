@@ -16,7 +16,7 @@
 
 @import controllers.authorisationsAndLimit.authorisations.index.routes
 @import models.LocalReferenceNumber
-@import viewModels.components.InputTextViewModel._
+@import viewModels.components.InputTextViewModel
 @import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
@@ -27,7 +27,7 @@
     button: Button
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, dynamicTitle: String, mode: Mode, authorisationIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, dynamicTitle: String, mode: Mode, authorisationIndex: Index, isApprovedOperator: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("authorisations.authorisationReferenceNumber.title", messages(dynamicTitle)),
@@ -41,9 +41,10 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
+            inputTextType = InputTextViewModel(
+                heading = messages("authorisations.authorisationReferenceNumber.heading", messages(dynamicTitle)),
                 caption = Some(messages("authorisations.caption")),
-                heading = messages("authorisations.authorisationReferenceNumber.heading", messages(dynamicTitle))
+                additionalHtml = if (isApprovedOperator) Some(messages("authorisations.authorisationReferenceNumber.paragraph").toParagraph) else None
             ),
             hint = Some(messages("authorisations.authorisationReferenceNumber.hint")),
             inputClass = InputSize.Width20

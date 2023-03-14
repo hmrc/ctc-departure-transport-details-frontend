@@ -17,26 +17,18 @@
 package pages.authorisationsAndLimit.authorisations.index
 
 import controllers.authorisationsAndLimit.authorisations.index.routes
-import models.ProcedureType.Simplified
 import models.authorisations.AuthorisationType
-import models.authorisations.AuthorisationType.{ACR, TRD}
-import models.domain.{GettableAsReaderOps, UserAnswersReader}
-import models.transportMeans.departure.InlandMode._
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
 import pages.sections.authorisationsAndLimit.AuthorisationSection
-import pages.transportMeans.departure.InlandModePage
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try
 
-case class AuthorisationTypePage(authorisationIndex: Index) extends QuestionPage[AuthorisationType] {
+abstract class BaseAuthorisationTypePage(authorisationIndex: Index) extends QuestionPage[AuthorisationType] {
 
   override def path: JsPath = AuthorisationSection(authorisationIndex).path \ toString
-
-  override def toString: String = "authorisationType"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AuthorisationTypeController.onPageLoad(userAnswers.lrn, mode, authorisationIndex))
@@ -47,21 +39,12 @@ case class AuthorisationTypePage(authorisationIndex: Index) extends QuestionPage
       case Some(_) => userAnswers.remove(AuthorisationReferenceNumberPage(authorisationIndex))
       case _       => super.cleanup(value, userAnswers)
     }
+}
 
-  def inferredReader: UserAnswersReader[AuthorisationType] =
-    if (authorisationIndex.isFirst) {
-      for {
-        procedureType           <- ProcedureTypePage.reader
-        reducedDataSetIndicator <- ApprovedOperatorPage.inferredReader
-        inlandMode              <- InlandModePage.reader
+case class AuthorisationTypePage(authorisationIndex: Index) extends BaseAuthorisationTypePage(authorisationIndex) {
+  override def toString: String = "authorisationType"
+}
 
-        reader <- (reducedDataSetIndicator, inlandMode, procedureType) match {
-          case (true, Maritime | Rail | Air, _) => UserAnswersReader.apply(TRD)
-          case (true, _, Simplified)            => UserAnswersReader.apply(ACR)
-          case _                                => AuthorisationTypePage(authorisationIndex).reader
-        }
-      } yield reader
-    } else {
-      AuthorisationTypePage(authorisationIndex).reader
-    }
+case class InferredAuthorisationTypePage(authorisationIndex: Index) extends BaseAuthorisationTypePage(authorisationIndex) {
+  override def toString: String = "inferredAuthorisationType"
 }

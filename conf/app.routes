@@ -12,11 +12,6 @@ GET        /assets/*file                                                        
 
 GET        /:lrn                                                                         controllers.RedirectController.redirect(lrn: LocalReferenceNumber)
 
-GET        /border-mode-of-transport/add/:lrn                                            controllers.transportMeans.AnotherVehicleCrossingYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /border-mode-of-transport/add/:lrn                                            controllers.transportMeans.AnotherVehicleCrossingYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /border-mode-of-transport/change-add/:lrn                                     controllers.transportMeans.AnotherVehicleCrossingYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /border-mode-of-transport/change-add/:lrn                                     controllers.transportMeans.AnotherVehicleCrossingYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-
 GET        /border-mode-of-transport/:lrn                                                controllers.transportMeans.BorderModeOfTransportController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /border-mode-of-transport/:lrn                                                controllers.transportMeans.BorderModeOfTransportController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /change-border-mode-of-transport/:lrn                                         controllers.transportMeans.BorderModeOfTransportController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

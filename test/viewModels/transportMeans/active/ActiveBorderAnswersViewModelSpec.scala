@@ -21,7 +21,7 @@ import generators.Generators
 import models.Mode
 import models.SecurityDetailsType.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
 import models.reference.{CustomsOffice, Nationality}
-import models.transportMeans.BorderModeOfTransport.{Air, Maritime}
+import models.transportMeans.BorderModeOfTransport.{Air, Sea}
 import models.transportMeans.active.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -72,13 +72,13 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
       }
     }
 
-    "and security type is 0 and mode of transport is maritime" - {
+    "and security type is 0 and mode of transport is sea" - {
       "must return 7 rows" in {
         forAll(arbitrary[Identification], arbitrary[CustomsOffice], arbitrary[Nationality]) {
           (identification, office, nationality) =>
             val answers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(BorderModeOfTransportPage, Maritime)
+              .setValue(BorderModeOfTransportPage, Sea)
               .setValue(IdentificationPage(activeIndex), identification)
               .setValue(IdentificationNumberPage(activeIndex), identificationNumber)
               .setValue(AddNationalityYesNoPage(activeIndex), true)
@@ -108,7 +108,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
           (identification, office) =>
             val answers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(BorderModeOfTransportPage, Maritime)
+              .setValue(BorderModeOfTransportPage, Sea)
               .setValue(IdentificationPage(activeIndex), identification)
               .setValue(IdentificationNumberPage(activeIndex), identificationNumber)
               .setValue(AddNationalityYesNoPage(activeIndex), false)
@@ -135,7 +135,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
           (identification, office) =>
             val answers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(BorderModeOfTransportPage, Maritime)
+              .setValue(BorderModeOfTransportPage, Sea)
               .setValue(IdentificationPage(activeIndex), identification)
               .setValue(IdentificationNumberPage(activeIndex), identificationNumber)
               .setValue(AddNationalityYesNoPage(activeIndex), false)

@@ -19,13 +19,16 @@ package controllers.authorisationsAndLimit.authorisations.index
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
 import models.authorisations.AuthorisationType
+import models.requests.DataRequest
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{AuthorisationNavigatorProvider, UserAnswersNavigator}
-import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
+import pages.QuestionPage
+import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.InferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.authorisationsAndLimit.authorisations.index.AuthorisationTypeView
 
@@ -39,21 +42,27 @@ class AuthorisationTypeController @Inject() (
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AuthorisationTypeView
+  view: AuthorisationTypeView,
+  inferenceService: InferenceService
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
   private val form = formProvider[AuthorisationType]("authorisations.authorisationType")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AuthorisationTypePage(authorisationIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      inferenceService.inferAuthorisationType(request.userAnswers, authorisationIndex) match {
+        case Some(value) =>
+          redirect(mode, authorisationIndex, InferredAuthorisationTypePage, value)
+        case None =>
+          val preparedForm = request.userAnswers.get(AuthorisationTypePage(authorisationIndex)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
-      Ok(view(preparedForm, lrn, AuthorisationType.radioItems, mode, authorisationIndex))
+          Future.successful(Ok(view(preparedForm, lrn, AuthorisationType.radioItems, mode, authorisationIndex)))
+      }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
@@ -62,10 +71,17 @@ class AuthorisationTypeController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, AuthorisationType.radioItems, mode, authorisationIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, authorisationIndex)
-            AuthorisationTypePage(authorisationIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
+          value => redirect(mode, authorisationIndex, AuthorisationTypePage, value)
         )
+  }
+
+  private def redirect(
+    mode: Mode,
+    index: Index,
+    page: Index => QuestionPage[AuthorisationType],
+    value: AuthorisationType
+  )(implicit request: DataRequest[_]): Future[Result] = {
+    implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+    page(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
   }
 }

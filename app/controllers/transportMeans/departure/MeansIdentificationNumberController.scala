@@ -17,15 +17,11 @@
 package controllers.transportMeans.departure
 
 import controllers.actions._
-import config.FrontendAppConfig
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.MeansIdentificationNumberFormProvider
-import models.requests.SpecificDataRequestProvider1
-import models.transportMeans.departure.{Identification, InlandMode}
 import models.{LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.TransportMeansNavigatorProvider
-import pages.transportMeans.departure.{IdentificationPage, InlandModePage, MeansIdentificationNumberPage}
+import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
+import pages.transportMeans.departure.{IdentificationPage, MeansIdentificationNumberPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -41,7 +37,6 @@ class MeansIdentificationNumberController @Inject() (
   navigatorProvider: TransportMeansNavigatorProvider,
   formProvider: MeansIdentificationNumberFormProvider,
   actions: Actions,
-  config: FrontendAppConfig,
   val controllerComponents: MessagesControllerComponents,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   view: MeansIdentificationNumberView
@@ -49,47 +44,32 @@ class MeansIdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[InlandMode]#SpecificDataRequest[_]
-
-  private def identificationType(implicit request: Request): Option[Identification] = request.arg match {
-    case InlandMode.Unknown => Some(Identification.Unknown)
-    case _                  => request.userAnswers.get(IdentificationPage)
-  }
-
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(InlandModePage)) {
+    .andThen(getMandatoryPage(IdentificationPage)) {
       implicit request =>
-        identificationType match {
-          case Some(value) =>
-            val form = formProvider("transportMeans.departure.meansIdentificationNumber", value.arg)
-            val preparedForm = request.userAnswers.get(MeansIdentificationNumberPage) match {
-              case None        => form
-              case Some(value) => form.fill(value)
-            }
-            Ok(view(preparedForm, lrn, mode, value))
-          case _ => Redirect(config.sessionExpiredUrl)
+        val form = formProvider("transportMeans.departure.meansIdentificationNumber", request.arg.arg)
+        val preparedForm = request.userAnswers.get(MeansIdentificationNumberPage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
         }
+        Ok(view(preparedForm, lrn, mode, request.arg))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(InlandModePage))
+    .andThen(getMandatoryPage(IdentificationPage))
     .async {
       implicit request =>
-        identificationType match {
-          case Some(value) =>
-            val form = formProvider("transportMeans.departure.meansIdentificationNumber", value.arg)
-            form
-              .bindFromRequest()
-              .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, value))),
-                value => {
-                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                  MeansIdentificationNumberPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
-                }
-              )
-          case _ => Future.successful(Redirect(config.sessionExpiredUrl))
-        }
+        val form = formProvider("transportMeans.departure.meansIdentificationNumber", request.arg.arg)
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, request.arg))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+              MeansIdentificationNumberPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            }
+          )
     }
 }

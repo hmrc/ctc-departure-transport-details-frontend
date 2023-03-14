@@ -16,15 +16,15 @@
 
 package models.journeyDomain.authorisationsAndLimit.authorisations
 
-import cats.implicits.catsSyntaxTuple2Semigroupal
+import cats.implicits._
 import controllers.authorisationsAndLimit.authorisations.index.{routes => authorisationRoutes}
 import controllers.authorisationsAndLimit.authorisations.{routes => authorisationsRoutes}
+import models.authorisations.AuthorisationType
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.authorisations.AuthorisationType
 import models.{Index, Mode, UserAnswers}
-import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
+import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
@@ -52,7 +52,7 @@ object AuthorisationDomain {
   // scalastyle:off cyclomatic.complexity
   def userAnswersReader(index: Index): UserAnswersReader[AuthorisationDomain] =
     (
-      AuthorisationTypePage(index).inferredReader,
+      InferredAuthorisationTypePage(index).reader orElse AuthorisationTypePage(index).reader,
       AuthorisationReferenceNumberPage(index).reader
     ).tupled.map((AuthorisationDomain.apply _).tupled).map(_(index))
 

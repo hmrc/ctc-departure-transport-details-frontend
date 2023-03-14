@@ -19,28 +19,25 @@ package controllers.authorisationsAndLimit.authorisations.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AuthorisationReferenceNumberFormProvider
 import generators.Generators
-import models.DeclarationType.Option4
-import models.ProcedureType.{Normal, Simplified}
+import models.NormalMode
 import models.authorisations.AuthorisationType
-import models.transportMeans.departure.InlandMode
-import models.{DeclarationType, Index, NormalMode, ProcedureType}
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
-import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
-import pages.transportMeans.departure.InlandModePage
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.InferenceService
 import views.html.authorisationsAndLimit.authorisations.index.AuthorisationReferenceNumberView
 
 import scala.concurrent.Future
 
-class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val prefix = "authorisations.authorisationReferenceNumber"
 
@@ -48,234 +45,110 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
   private def form(authorisationType: AuthorisationType) = formProvider(prefix, authorisationType.forDisplay)
   private val mode                                       = NormalMode
   private val validAnswer                                = "testString"
-  private val nonTIRDeclarationType                      = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
-  private val procedureType                              = arbitrary[ProcedureType].sample.value
-
-  private val firstInlandMode = Gen
-    .oneOf(
-      InlandMode.values
-        .filterNot(_ == InlandMode.Maritime)
-        .filterNot(_ == InlandMode.Rail)
-        .filterNot(_ == InlandMode.Air)
-    )
-    .sample
-    .value
 
   private lazy val authorisationReferenceNumberRoute = routes.AuthorisationReferenceNumberController.onPageLoad(lrn, mode, authorisationIndex).url
+
+  private val mockInferenceService = mock[InferenceService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[AuthorisationNavigatorProvider]).toInstance(fakeAuthorisationNavigatorProvider))
+      .overrides(bind(classOf[InferenceService]).toInstance(mockInferenceService))
+
+  private val authorisationTypePageGen = Gen.oneOf(AuthorisationTypePage(authorisationIndex), InferredAuthorisationTypePage(authorisationIndex))
 
   "AuthorisationReferenceNumber Controller" - {
 
-    "must return OK and the correct view for a GET" - {
+    "must return OK and the correct view for a GET" in {
+      forAll(arbitrary[AuthorisationType], authorisationTypePageGen, arbitrary[Boolean]) {
+        (authorisationType, page, isReducedDataset) =>
+          when(mockInferenceService.inferIsReducedDataset(any())).thenReturn(Some(isReducedDataset))
 
-      "when DeclarationType is TIR and reduced data set is undefined" in {
+          val userAnswers = emptyUserAnswers.setValue(page, authorisationType)
+          setExistingUserAnswers(userAnswers)
 
-        val authorisationType = arbitrary[AuthorisationType].sample.value
-        val inlandMode        = Gen.oneOf(Seq(InlandMode.Maritime, InlandMode.Rail, InlandMode.Air)).sample.value
+          val request = FakeRequest(GET, authorisationReferenceNumberRoute)
 
-        val userAnswers = emptyUserAnswers
-          .setValue(ProcedureTypePage, Normal)
-          .setValue(DeclarationTypePage, Option4)
-          .setValue(InlandModePage, inlandMode)
-          .setValue(AuthorisationTypePage(index), authorisationType)
-        setExistingUserAnswers(userAnswers)
+          val result = route(app, request).value
 
-        val request = FakeRequest(GET, authorisationReferenceNumberRoute)
+          val view = injector.instanceOf[AuthorisationReferenceNumberView]
 
-        val result = route(app, request).value
+          status(result) mustEqual OK
 
-        val view = injector.instanceOf[AuthorisationReferenceNumberView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form(authorisationType), lrn, authorisationType.forDisplay, mode, authorisationIndex)(request, messages).toString
-
+          contentAsString(result) mustEqual
+            view(form(authorisationType), lrn, authorisationType.forDisplay, mode, index, isReducedDataset)(request, messages).toString
       }
-
-      "when using reduced data set and Inland Mode is one of Maritime, Rail or Road" in {
-        val authorisationType = AuthorisationType.TRD
-        val inlandMode        = Gen.oneOf(Seq(InlandMode.Maritime, InlandMode.Rail, InlandMode.Air)).sample.value
-
-        val userAnswers = emptyUserAnswers
-          .setValue(ProcedureTypePage, procedureType)
-          .setValue(DeclarationTypePage, nonTIRDeclarationType)
-          .setValue(ApprovedOperatorPage, true)
-          .setValue(InlandModePage, inlandMode)
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, authorisationReferenceNumberRoute)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[AuthorisationReferenceNumberView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form(authorisationType), lrn, authorisationType.forDisplay, mode, authorisationIndex)(request, messages).toString
-      }
-
-      "when using reduced data set and Inland Mode is not one of Maritime, Rail or Road and Procedure type is simplified" in {
-        val authorisationType = AuthorisationType.ACR
-
-        val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, nonTIRDeclarationType)
-          .setValue(ApprovedOperatorPage, true)
-          .setValue(InlandModePage, firstInlandMode)
-          .setValue(ProcedureTypePage, Simplified)
-
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, authorisationReferenceNumberRoute)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[AuthorisationReferenceNumberView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form(authorisationType), lrn, authorisationType.forDisplay, mode, authorisationIndex)(request, messages).toString
-      }
-
-      "when using reduced data set and Inland Mode is not one of Maritime, Rail or Road and Procedure type is normal" in {
-        val authorisationType = AuthorisationType.SSE
-
-        val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, nonTIRDeclarationType)
-          .setValue(ApprovedOperatorPage, true)
-          .setValue(InlandModePage, firstInlandMode)
-          .setValue(ProcedureTypePage, Normal)
-          .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
-
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, authorisationReferenceNumberRoute)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[AuthorisationReferenceNumberView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form(authorisationType), lrn, authorisationType.forDisplay, mode, authorisationIndex)(request, messages).toString
-      }
-
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" - {
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+      forAll(arbitrary[AuthorisationType], authorisationTypePageGen, arbitrary[Boolean]) {
+        (authorisationType, page, isReducedDataset) =>
+          when(mockInferenceService.inferIsReducedDataset(any())).thenReturn(Some(isReducedDataset))
 
-      "when it is the first authorisation index" in {
-        val authorisationType = AuthorisationType.TRD
+          val userAnswers = emptyUserAnswers
+            .setValue(page, authorisationType)
+            .setValue(AuthorisationReferenceNumberPage(authorisationIndex), validAnswer)
+          setExistingUserAnswers(userAnswers)
 
-        val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, nonTIRDeclarationType)
-          .setValue(ApprovedOperatorPage, true)
-          .setValue(InlandModePage, firstInlandMode)
-          .setValue(ProcedureTypePage, Normal)
-          .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
-          .setValue(AuthorisationReferenceNumberPage(authorisationIndex), validAnswer)
+          val request = FakeRequest(GET, authorisationReferenceNumberRoute)
 
-        setExistingUserAnswers(userAnswers)
+          val result = route(app, request).value
 
-        val request = FakeRequest(GET, authorisationReferenceNumberRoute)
+          val filledForm = form(authorisationType).bind(Map("value" -> validAnswer))
 
-        val result = route(app, request).value
+          val view = injector.instanceOf[AuthorisationReferenceNumberView]
 
-        val filledForm = form(authorisationType).bind(Map("value" -> validAnswer))
+          status(result) mustEqual OK
 
-        val view = injector.instanceOf[AuthorisationReferenceNumberView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(filledForm, lrn, authorisationType.forDisplay, mode, authorisationIndex)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(filledForm, lrn, authorisationType.forDisplay, mode, index, isReducedDataset)(request, messages).toString
       }
-
-      "when it is not the first authorisation index" in {
-        val authorisationType  = AuthorisationType.TRD
-        val authorisationType1 = AuthorisationType.SSE
-
-        val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, nonTIRDeclarationType)
-          .setValue(ApprovedOperatorPage, true)
-          .setValue(InlandModePage, firstInlandMode)
-          .setValue(ProcedureTypePage, Normal)
-          .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
-          .setValue(AuthorisationReferenceNumberPage(authorisationIndex), validAnswer)
-          .setValue(AuthorisationTypePage(Index(1)), authorisationType1)
-          .setValue(AuthorisationReferenceNumberPage(Index(1)), validAnswer)
-
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, routes.AuthorisationReferenceNumberController.onPageLoad(lrn, mode, Index(1)).url)
-
-        val result = route(app, request).value
-
-        val filledForm = form(authorisationType).bind(Map("value" -> validAnswer))
-
-        val view = injector.instanceOf[AuthorisationReferenceNumberView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(filledForm, lrn, authorisationType1.forDisplay, mode, Index(1))(request, messages).toString
-      }
-
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      val inlandMode = Gen.oneOf(Seq(InlandMode.Maritime, InlandMode.Rail, InlandMode.Air)).sample.value
+      forAll(arbitrary[AuthorisationType], authorisationTypePageGen, arbitrary[Boolean]) {
+        (authorisationType, page, isReducedDataset) =>
+          when(mockInferenceService.inferIsReducedDataset(any())).thenReturn(Some(isReducedDataset))
 
-      val userAnswers = emptyUserAnswers
-        .setValue(ProcedureTypePage, procedureType)
-        .setValue(DeclarationTypePage, nonTIRDeclarationType)
-        .setValue(ApprovedOperatorPage, true)
-        .setValue(InlandModePage, inlandMode)
-      setExistingUserAnswers(userAnswers)
+          val userAnswers = emptyUserAnswers.setValue(page, authorisationType)
+          setExistingUserAnswers(userAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, authorisationReferenceNumberRoute)
-        .withFormUrlEncodedBody(("value", validAnswer))
+          val request = FakeRequest(POST, authorisationReferenceNumberRoute)
+            .withFormUrlEncodedBody(("value", validAnswer))
 
-      val result = route(app, request).value
+          val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+          status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+          redirectLocation(result).value mustEqual onwardRoute.url
+      }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      val authorisationType = AuthorisationType.TRD
-      val inlandMode        = Gen.oneOf(Seq(InlandMode.Maritime, InlandMode.Rail, InlandMode.Air)).sample.value
+      forAll(arbitrary[AuthorisationType], authorisationTypePageGen, arbitrary[Boolean]) {
+        (authorisationType, page, isReducedDataset) =>
+          when(mockInferenceService.inferIsReducedDataset(any())).thenReturn(Some(isReducedDataset))
 
-      val userAnswers = emptyUserAnswers
-        .setValue(ProcedureTypePage, procedureType)
-        .setValue(DeclarationTypePage, nonTIRDeclarationType)
-        .setValue(ApprovedOperatorPage, true)
-        .setValue(InlandModePage, inlandMode)
-      setExistingUserAnswers(userAnswers)
+          val userAnswers = emptyUserAnswers.setValue(page, authorisationType)
+          setExistingUserAnswers(userAnswers)
 
-      val invalidAnswer = ""
+          val invalidAnswer = ""
 
-      val request    = FakeRequest(POST, authorisationReferenceNumberRoute).withFormUrlEncodedBody(("value", invalidAnswer))
-      val filledForm = form(authorisationType).bind(Map("value" -> invalidAnswer))
+          val request    = FakeRequest(POST, authorisationReferenceNumberRoute).withFormUrlEncodedBody(("value", invalidAnswer))
+          val filledForm = form(authorisationType).bind(Map("value" -> invalidAnswer))
 
-      val result = route(app, request).value
+          val result = route(app, request).value
 
-      status(result) mustEqual BAD_REQUEST
+          status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AuthorisationReferenceNumberView]
+          val view = injector.instanceOf[AuthorisationReferenceNumberView]
 
-      contentAsString(result) mustEqual
-        view(filledForm, lrn, authorisationType.forDisplay, mode, authorisationIndex)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(filledForm, lrn, authorisationType.forDisplay, mode, authorisationIndex, isReducedDataset)(request, messages).toString
+      }
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
