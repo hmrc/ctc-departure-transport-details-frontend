@@ -342,7 +342,6 @@ authorisations.addAuthorisationsYesNo.heading = Do you want to add an authorisat
 authorisations.addAuthorisationsYesNo.checkYourAnswersLabel = Do you want to add an authorisation?
 authorisations.addAuthorisationsYesNo.change.hidden = if you want to add an authorisation
 authorisations.addAuthorisationsYesNo.error.required = Select yes if you want to add an authorisation
-authorisations.addAuthorisationsYesNo.paragraph = This is someone who helps move the goods to their destination. They can be a consolidator, freight forwarder, manufacturer or warehouse keeper.
 
 authorisations.index.removeAuthorisationYesNo.title = Are you sure you want to remove {0} authorisation {1}?
 authorisations.index.removeAuthorisationYesNo.heading = Are you sure you want to remove {0} authorisation {1}?
