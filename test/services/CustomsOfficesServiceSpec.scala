@@ -17,17 +17,14 @@
 package services
 
 import base.SpecBase
-import connectors.ReferenceDataConnector
 import models.reference.CustomsOffice
 import models.{CustomsOfficeList, Index}
-import org.mockito.Mockito.reset
 import org.scalatest.BeforeAndAfterEach
 import pages.external.{OfficeOfDestinationPage, OfficeOfExitPage, OfficeOfTransitPage}
 
 class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
-  val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
-  val service                                      = new CustomsOfficesService(mockRefDataConnector)
+  val service = new CustomsOfficesService()
 
   val gbCustomsOffice1: CustomsOffice     = CustomsOffice("GB1", "BOSTON", None)
   val gbCustomsOffice2: CustomsOffice     = CustomsOffice("GB2", "Appledore", None)
@@ -35,11 +32,6 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
   val gbCustomsOffices: CustomsOfficeList = CustomsOfficeList(Seq(gbCustomsOffice1, gbCustomsOffice2))
   val xiCustomsOffices: CustomsOfficeList = CustomsOfficeList(Seq(xiCustomsOffice1))
   val customsOffices: CustomsOfficeList   = CustomsOfficeList(gbCustomsOffices.getAll ++ xiCustomsOffices.getAll)
-
-  override def beforeEach(): Unit = {
-    reset(mockRefDataConnector)
-    super.beforeEach()
-  }
 
   "CustomsOfficesService" - {
 
@@ -83,14 +75,16 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
         result mustBe CustomsOfficeList(Seq(exitOffice2, exitOffice1))
       }
 
-      "must return a list of sorted customs offices of exit, transit and destination" in {
+      "must return a list of sorted customs offices of exit, transit and destination with no duplicates" in {
 
         val userAnswers = emptyUserAnswers
           .setValue(OfficeOfDestinationPage, destinationOffice)
           .setValue(OfficeOfExitPage(Index(0)), exitOffice1)
           .setValue(OfficeOfExitPage(Index(1)), exitOffice2)
+          .setValue(OfficeOfExitPage(Index(2)), exitOffice2)
           .setValue(OfficeOfTransitPage(Index(0)), transitOffice1)
           .setValue(OfficeOfTransitPage(Index(1)), transitOffice2)
+          .setValue(OfficeOfTransitPage(Index(2)), transitOffice2)
 
         val result = service.getCustomsOffices(userAnswers)
 

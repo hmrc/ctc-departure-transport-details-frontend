@@ -16,7 +16,6 @@
 
 package services
 
-import connectors.ReferenceDataConnector
 import models.CustomsOfficeList.{officesOfExitReads, officesOfTransitReads}
 import models.reference.CustomsOffice
 import models.{CustomsOfficeList, RichOptionalJsArray, UserAnswers}
@@ -25,12 +24,10 @@ import pages.sections.external.{OfficesOfExitSection, OfficesOfTransitSection}
 
 import javax.inject.Inject
 
-class CustomsOfficesService @Inject() (
-  referenceDataConnector: ReferenceDataConnector
-) {
+class CustomsOfficesService @Inject() () {
 
   private def sort(customsOffices: Seq[CustomsOffice]): CustomsOfficeList =
-    CustomsOfficeList(customsOffices.sortBy(_.name.toLowerCase))
+    CustomsOfficeList(customsOffices.distinctBy(_.id).sortBy(_.name.toLowerCase))
 
   def getCustomsOffices(userAnswers: UserAnswers): CustomsOfficeList = {
     val officesOfExit       = userAnswers.get(OfficesOfExitSection).validate(officesOfExitReads).getCustomsOffices
