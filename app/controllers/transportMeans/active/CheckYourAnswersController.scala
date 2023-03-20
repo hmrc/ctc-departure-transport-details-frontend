@@ -22,7 +22,7 @@ import navigation.TransportMeansActiveListNavigatorProvider
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.transportMeans.active.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
+import viewModels.transportMeans.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 import views.html.transportMeans.active.CheckYourAnswersView
 
 import javax.inject.Inject
@@ -33,7 +33,7 @@ class CheckYourAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   navigatorProvider: TransportMeansActiveListNavigatorProvider,
   view: CheckYourAnswersView,
-  viewModelProvider: CheckYourAnswersViewModelProvider
+  viewModelProvider: ActiveBorderAnswersViewModelProvider
 ) extends FrontendBaseController
     with I18nSupport {
 
