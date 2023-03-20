@@ -28,20 +28,20 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.Section
-import viewModels.transportMeans.active.CheckYourAnswersViewModel
-import viewModels.transportMeans.active.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
+import viewModels.transportMeans.active.ActiveBorderAnswersViewModel
+import viewModels.transportMeans.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 import views.html.transportMeans.active.CheckYourAnswersView
 
 class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val mockViewModelProvider = mock[CheckYourAnswersViewModelProvider]
+  private lazy val mockViewModelProvider = mock[ActiveBorderAnswersViewModelProvider]
 
   private val mode = NormalMode
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[CheckYourAnswersViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(bind[ActiveBorderAnswersViewModelProvider].toInstance(mockViewModelProvider))
       .overrides(bind(classOf[TransportMeansActiveListNavigatorProvider]).toInstance(fakeTransportMeansActiveListNavigatorProvider))
 
   "CheckYourAnswers Controller" - {
@@ -53,7 +53,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with AppWithDefaultMockFix
       val sampleSections = arbitrary[List[Section]].sample.value
 
       when(mockViewModelProvider.apply(any(), any(), any())(any()))
-        .thenReturn(CheckYourAnswersViewModel(sampleSections))
+        .thenReturn(ActiveBorderAnswersViewModel(sampleSections))
 
       val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad(lrn, mode, index).url)
       val result  = route(app, request).value

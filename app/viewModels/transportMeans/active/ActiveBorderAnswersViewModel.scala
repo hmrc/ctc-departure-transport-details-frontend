@@ -24,13 +24,13 @@ import viewModels.Section
 
 import javax.inject.Inject
 
-case class CheckYourAnswersViewModel(sections: Seq[Section])
+case class ActiveBorderAnswersViewModel(sections: Seq[Section])
 
-object CheckYourAnswersViewModel {
+object ActiveBorderAnswersViewModel {
 
-  class CheckYourAnswersViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
+  class ActiveBorderAnswersViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
-    def apply(userAnswers: UserAnswers, mode: Mode, index: Index)(implicit messages: Messages): CheckYourAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, mode: Mode, index: Index)(implicit messages: Messages): ActiveBorderAnswersViewModel = {
       val helper = new ActiveBorderTransportAnswersHelper(userAnswers, mode, index)
 
       val activeBorderSection = Section(
@@ -44,7 +44,7 @@ object CheckYourAnswersViewModel {
           helper.conveyanceReferenceNumber
         ).flatten
       )
-      new CheckYourAnswersViewModel(Seq(activeBorderSection))
+      new ActiveBorderAnswersViewModel(Seq(activeBorderSection))
     }
   }
 }

@@ -29,7 +29,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.active._
-import viewModels.transportMeans.active.CheckYourAnswersViewModel.CheckYourAnswersViewModelProvider
+import viewModels.transportMeans.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 
 class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -40,7 +40,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
   "must return 1 section" in {
     forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex), arbitrary[Mode]) {
       (userAnswers, mode) =>
-        val sections = new CheckYourAnswersViewModelProvider().apply(userAnswers, mode, activeIndex).sections
+        val sections = new ActiveBorderAnswersViewModelProvider().apply(userAnswers, mode, activeIndex).sections
         sections.size mustBe 1
     }
   }
@@ -60,7 +60,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
               .setValue(CustomsOfficeActiveBorderPage(activeIndex), office)
               .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceNumber)
 
-            val viewModelProvider   = injector.instanceOf[CheckYourAnswersViewModelProvider]
+            val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
             val sections            = viewModelProvider.apply(answers, mode, activeIndex).sections
             val activeBorderSection = sections.head
 
@@ -87,7 +87,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
               .setValue(ConveyanceReferenceNumberYesNoPage(activeIndex), true)
               .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceNumber)
 
-            val viewModelProvider   = injector.instanceOf[CheckYourAnswersViewModelProvider]
+            val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
             val sections            = viewModelProvider.apply(answers, mode, activeIndex).sections
             val activeBorderSection = sections.head
 
@@ -116,7 +116,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
               .setValue(ConveyanceReferenceNumberYesNoPage(activeIndex), true)
               .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceNumber)
 
-            val viewModelProvider   = injector.instanceOf[CheckYourAnswersViewModelProvider]
+            val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
             val sections            = viewModelProvider.apply(answers, mode, activeIndex).sections
             val activeBorderSection = sections.head
 
@@ -143,7 +143,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
               .setValue(ConveyanceReferenceNumberYesNoPage(activeIndex), true)
               .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceNumber)
 
-            val viewModelProvider   = injector.instanceOf[CheckYourAnswersViewModelProvider]
+            val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
             val sections            = viewModelProvider.apply(answers, mode, activeIndex).sections
             val activeBorderSection = sections.head
 
