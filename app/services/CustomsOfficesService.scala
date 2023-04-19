@@ -16,9 +16,9 @@
 
 package services
 
-import models.CustomsOfficeList.{officesOfExitReads, officesOfTransitReads}
+import models.SelectableList.{officesOfExitReads, officesOfTransitReads}
 import models.reference.CustomsOffice
-import models.{CustomsOfficeList, RichOptionalJsArray, UserAnswers}
+import models.{RichOptionalJsArray, SelectableList, UserAnswers}
 import pages.external.OfficeOfDestinationPage
 import pages.sections.external.{OfficesOfExitSection, OfficesOfTransitSection}
 
@@ -26,13 +26,13 @@ import javax.inject.Inject
 
 class CustomsOfficesService @Inject() () {
 
-  private def sort(customsOffices: Seq[CustomsOffice]): CustomsOfficeList =
-    CustomsOfficeList(customsOffices.distinctBy(_.id).sortBy(_.name.toLowerCase))
+  private def sort(customsOffices: Seq[CustomsOffice]): SelectableList[CustomsOffice] =
+    SelectableList(customsOffices.distinctBy(_.id).sortBy(_.name.toLowerCase))
 
-  def getCustomsOffices(userAnswers: UserAnswers): CustomsOfficeList = {
-    val officesOfExit       = userAnswers.get(OfficesOfExitSection).validate(officesOfExitReads).getCustomsOffices
-    val officesOfTransit    = userAnswers.get(OfficesOfTransitSection).validate(officesOfTransitReads).getCustomsOffices
-    val officeOfDestination = userAnswers.get(OfficeOfDestinationPage).toList
+  def getCustomsOffices(userAnswers: UserAnswers): SelectableList[CustomsOffice] = {
+    val officesOfExit       = userAnswers.get(OfficesOfExitSection).validate(officesOfExitReads).map(_.values).getOrElse(Nil)
+    val officesOfTransit    = userAnswers.get(OfficesOfTransitSection).validate(officesOfTransitReads).map(_.values).getOrElse(Nil)
+    val officeOfDestination = userAnswers.get(OfficeOfDestinationPage).toSeq
 
     sort(officesOfExit ++ officesOfTransit ++ officeOfDestination)
   }

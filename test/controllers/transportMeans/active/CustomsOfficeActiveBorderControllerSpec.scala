@@ -17,10 +17,10 @@
 package controllers.transportMeans.active
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.CustomsOfficeFormProvider
+import forms.SelectableFormProvider
 import generators.Generators
 import models.reference.CustomsOffice
-import models.{CustomsOfficeList, NormalMode}
+import models.{NormalMode, SelectableList}
 import navigation.TransportMeansActiveNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -41,11 +41,12 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
   private val transitOffice     = arbitrary[CustomsOffice].sample.value
   private val destinationOffice = arbitrary[CustomsOffice].sample.value
 
-  private val allCustomOfficesList = CustomsOfficeList(List(exitOffice, transitOffice, destinationOffice))
+  private val allCustomOfficesList = SelectableList(List(exitOffice, transitOffice, destinationOffice))
 
-  private val formProvider                                     = new CustomsOfficeFormProvider()
-  private val form                                             = formProvider("transportMeans.active.customsOfficeActiveBorder", allCustomOfficesList)
-  private val mode                                             = NormalMode
+  private val formProvider = new SelectableFormProvider()
+  private val form         = formProvider("transportMeans.active.customsOfficeActiveBorder", allCustomOfficesList)
+  private val mode         = NormalMode
+
   private val mockCustomsOfficesService: CustomsOfficesService = mock[CustomsOfficesService]
 
   private lazy val customsOfficeActiveBorderRoute = routes.CustomsOfficeActiveBorderController.onPageLoad(lrn, mode, activeIndex).url
@@ -74,7 +75,7 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, allCustomOfficesList, mode, index)(request, messages).toString
+        view(form, lrn, allCustomOfficesList.values, mode, index)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -99,7 +100,7 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, allCustomOfficesList, mode, index)(request, messages).toString
+        view(filledForm, lrn, allCustomOfficesList.values, mode, index)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -140,7 +141,7 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, allCustomOfficesList, mode, index)(request, messages).toString
+        view(boundForm, lrn, allCustomOfficesList.values, mode, index)(request, messages).toString
     }
   }
 

@@ -18,10 +18,9 @@ package controllers.transportMeans.departure
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.NationalityFormProvider
+import forms.SelectableFormProvider
 import models.{LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.TransportMeansNavigatorProvider
+import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.departure.VehicleCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,7 +37,7 @@ class VehicleCountryController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
   actions: Actions,
-  formProvider: NationalityFormProvider,
+  formProvider: SelectableFormProvider,
   service: NationalitiesService,
   val controllerComponents: MessagesControllerComponents,
   view: VehicleCountryView
@@ -56,7 +55,7 @@ class VehicleCountryController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, nationalityList.nationalities, mode))
+          Ok(view(preparedForm, lrn, nationalityList.values, mode))
       }
   }
 
@@ -68,7 +67,7 @@ class VehicleCountryController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, nationalityList.nationalities, mode))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, nationalityList.values, mode))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 VehicleCountryPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()

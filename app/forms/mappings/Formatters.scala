@@ -16,8 +16,7 @@
 
 package forms.mappings
 
-import models.reference.{Country, CustomsOffice, Nationality}
-import models.{CountryList, CustomsOfficeList, Enumerable, NationalityList, RichString}
+import models.{Enumerable, RichString, Selectable, SelectableList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -142,69 +141,26 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString())
     }
 
-  private[mappings] def countryFormatter(
-    countryList: CountryList,
+  private[mappings] def selectableFormatter[T <: Selectable](
+    selectableList: SelectableList[T],
     errorKey: String,
     args: Seq[Any] = Seq.empty
-  ): Formatter[Country] = new Formatter[Country] {
+  ): Formatter[T] = new Formatter[T] {
 
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Country] = {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], T] = {
       lazy val error = Left(Seq(FormError(key, errorKey, args)))
       data.get(key) match {
-        case None => error
-        case Some(code) =>
-          countryList.countries.find(_.code.code == code) match {
-            case Some(country) => Right(country)
-            case None          => error
+        case None =>
+          error
+        case Some(value) =>
+          selectableList.values.find(_.value == value) match {
+            case Some(selectable) => Right(selectable)
+            case None             => error
           }
       }
     }
 
-    override def unbind(key: String, country: Country): Map[String, String] =
-      Map(key -> country.code.code)
-  }
-
-  private[mappings] def customsOfficeFormatter(
-    customsOfficeList: CustomsOfficeList,
-    errorKey: String,
-    args: Seq[Any] = Seq.empty
-  ): Formatter[CustomsOffice] = new Formatter[CustomsOffice] {
-
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], CustomsOffice] = {
-      lazy val error = Left(Seq(FormError(key, errorKey, args)))
-      data.get(key) match {
-        case None => error
-        case Some(id) =>
-          customsOfficeList.customsOffices.find(_.id == id) match {
-            case Some(customsOffice) => Right(customsOffice)
-            case None                => error
-          }
-      }
-    }
-
-    override def unbind(key: String, customsOffice: CustomsOffice): Map[String, String] =
-      Map(key -> customsOffice.id)
-  }
-
-  private[mappings] def nationalityFormatter(
-    nationalityList: NationalityList,
-    errorKey: String,
-    args: Seq[Any] = Seq.empty
-  ): Formatter[Nationality] = new Formatter[Nationality] {
-
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Nationality] = {
-      lazy val error = Left(Seq(FormError(key, errorKey, args)))
-      data.get(key) match {
-        case None => error
-        case Some(code) =>
-          nationalityList.getNationality(code) match {
-            case Some(nationality: Nationality) => Right(nationality)
-            case None                           => error
-          }
-      }
-    }
-
-    override def unbind(key: String, nationality: Nationality): Map[String, String] =
-      Map(key -> nationality.code)
+    override def unbind(key: String, selectable: T): Map[String, String] =
+      Map(key -> selectable.value)
   }
 }

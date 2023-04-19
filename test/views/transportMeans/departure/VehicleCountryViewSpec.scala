@@ -16,9 +16,9 @@
 
 package views.transportMeans.departure
 
-import forms.NationalityFormProvider
-import models.{NationalityList, NormalMode}
+import forms.SelectableFormProvider
 import models.reference.Nationality
+import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -27,7 +27,7 @@ import views.html.transportMeans.departure.VehicleCountryView
 
 class VehicleCountryViewSpec extends InputSelectViewBehaviours[Nationality] {
 
-  override def form: Form[Nationality] = new NationalityFormProvider()(prefix, NationalityList(values))
+  override def form: Form[Nationality] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[Nationality]): HtmlFormat.Appendable =
     injector.instanceOf[VehicleCountryView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
