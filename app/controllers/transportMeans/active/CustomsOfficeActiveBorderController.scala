@@ -18,10 +18,9 @@ package controllers.transportMeans.active
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.CustomsOfficeFormProvider
+import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.TransportMeansActiveNavigatorProvider
+import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.active.CustomsOfficeActiveBorderPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,7 +37,7 @@ class CustomsOfficeActiveBorderController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   actions: Actions,
-  formProvider: CustomsOfficeFormProvider,
+  formProvider: SelectableFormProvider,
   customsOfficeService: CustomsOfficesService,
   val controllerComponents: MessagesControllerComponents,
   view: CustomsOfficeActiveBorderView
@@ -55,7 +54,7 @@ class CustomsOfficeActiveBorderController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, customsOffices, mode, activeIndex))
+      Ok(view(preparedForm, lrn, customsOffices.values, mode, activeIndex))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
@@ -65,7 +64,7 @@ class CustomsOfficeActiveBorderController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, customsOffices, mode, activeIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, customsOffices.values, mode, activeIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
             CustomsOfficeActiveBorderPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

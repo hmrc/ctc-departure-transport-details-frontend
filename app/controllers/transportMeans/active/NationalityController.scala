@@ -18,10 +18,9 @@ package controllers.transportMeans.active
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.NationalityFormProvider
+import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.TransportMeansActiveNavigatorProvider
+import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.active.NationalityPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -38,7 +37,7 @@ class NationalityController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   actions: Actions,
-  formProvider: NationalityFormProvider,
+  formProvider: SelectableFormProvider,
   service: NationalitiesService,
   val controllerComponents: MessagesControllerComponents,
   view: NationalityView
@@ -56,7 +55,7 @@ class NationalityController @Inject() (
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, nationalityList.nationalities, mode, index))
+          Ok(view(preparedForm, lrn, nationalityList.values, mode, index))
       }
   }
 
@@ -68,7 +67,7 @@ class NationalityController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, nationalityList.nationalities, mode, index))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, nationalityList.values, mode, index))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
                 NationalityPage(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()

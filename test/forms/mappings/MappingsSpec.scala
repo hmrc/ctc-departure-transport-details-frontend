@@ -16,35 +16,13 @@
 
 package forms.mappings
 
-import models.reference.{Country, CountryCode, CustomsOffice, Nationality}
-import models.{CountryList, CustomsOfficeList, Enumerable, NationalityList}
+import models.{Enumerable, Selectable, SelectableList}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.data.{Form, FormError}
 
-object MappingsSpec {
-
-  sealed trait Foo
-  case object Bar extends Foo
-  case object Baz extends Foo
-
-  object Foo {
-
-    val values: Set[Foo] = Set(Bar, Baz)
-
-    implicit val fooEnumerable: Enumerable[Foo] =
-      Enumerable(
-        values.toSeq.map(
-          v => v.toString -> v
-        ): _*
-      )
-  }
-}
-
 class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mappings {
-
-  import MappingsSpec._
 
   "text" - {
 
@@ -206,6 +184,17 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
 
   "enumerable" - {
 
+    sealed trait Foo
+    case object Bar extends Foo
+    case object Baz extends Foo
+
+    implicit val fooEnumerable: Enumerable[Foo] =
+      Enumerable(
+        Seq(Bar, Baz).map(
+          v => v.toString -> v
+        ): _*
+      )
+
     val testForm = Form(
       "value" -> enumerable[Foo]()
     )
@@ -226,19 +215,21 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     }
   }
 
-  "country" - {
+  "selectable" - {
 
-    val spain       = Country(CountryCode("ES"), "Spain")
-    val countryList = CountryList(Seq(spain))
+    case class Foo(value: String) extends Selectable
 
-    val testForm: Form[Country] =
+    val foo            = Foo("foo")
+    val selectableList = SelectableList(Seq(foo))
+
+    val testForm: Form[Foo] =
       Form(
-        "value" -> country(countryList)
+        "value" -> selectable[Foo](selectableList)
       )
 
     "must bind a valid string" in {
-      val result = testForm.bind(Map("value" -> "ES"))
-      result.get mustEqual spain
+      val result = testForm.bind(Map("value" -> "foo"))
+      result.get mustEqual foo
     }
 
     "must not bind an empty string" in {
@@ -257,80 +248,8 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     }
 
     "must unbind a valid value" in {
-      val result = testForm.fill(spain)
-      result.apply("value").value.value mustEqual "ES"
-    }
-  }
-
-  "customsOffice" - {
-
-    val office            = CustomsOffice("id", "name", None)
-    val customsOfficeList = CustomsOfficeList(Seq(office))
-
-    val testForm: Form[CustomsOffice] =
-      Form(
-        "value" -> customsOffice(customsOfficeList)
-      )
-
-    "must bind a valid string" in {
-      val result = testForm.bind(Map("value" -> "id"))
-      result.get mustEqual office
-    }
-
-    "must not bind an empty string" in {
-      val result = testForm.bind(Map("value" -> ""))
-      result.errors must contain(FormError("value", "error.required"))
-    }
-
-    "must not bind an empty map" in {
-      val result = testForm.bind(Map.empty[String, String])
-      result.errors must contain(FormError("value", "error.required"))
-    }
-
-    "must not bind a customs office not in the list" in {
-      val result = testForm.bind(Map("value" -> "another_id"))
-      result.errors must contain(FormError("value", "error.required"))
-    }
-
-    "must unbind a valid value" in {
-      val result = testForm.fill(office)
-      result.apply("value").value.value mustEqual "id"
-    }
-  }
-
-  "nationality" - {
-
-    val nationalityValue = Nationality("code", "description")
-    val nationalityList  = NationalityList(Seq(nationalityValue))
-
-    val testForm: Form[Nationality] =
-      Form(
-        "value" -> nationality(nationalityList)
-      )
-
-    "must bind a valid string" in {
-      val result = testForm.bind(Map("value" -> "code"))
-      result.get mustEqual nationalityValue
-    }
-
-    "must not bind an empty string" in {
-      val result = testForm.bind(Map("value" -> ""))
-      result.errors must contain(FormError("value", "error.required"))
-    }
-
-    "must not bind an empty map" in {
-      val result = testForm.bind(Map.empty[String, String])
-      result.errors must contain(FormError("value", "error.required"))
-    }
-
-    "must not bind a nationality not in the list" in {
-      val result = testForm.bind(Map("value" -> "another_code"))
-      result.errors must contain(FormError("value", "error.required"))
-    }
-
-    "must unbind a valid value" in {
-      val result = testForm.fill(nationalityValue)
-      result.apply("value").value.value mustEqual "code"
+      val result = testForm.fill(foo)
+      result.apply("value").value.value mustEqual "foo"
     }
   }
 }

@@ -118,10 +118,10 @@ trait ModelGenerators {
       } yield Nationality(code, desc)
     }
 
-  implicit lazy val arbitraryCountryList: Arbitrary[CountryList] = Arbitrary {
+  implicit def arbitrarySelectableList[T <: Selectable](implicit arbitrary: Arbitrary[T]): Arbitrary[SelectableList[T]] = Arbitrary {
     for {
-      countries <- listWithMaxLength[Country]()
-    } yield CountryList(countries)
+      values <- listWithMaxLength[T]()
+    } yield SelectableList(values.distinctBy(_.value))
   }
 
   implicit lazy val arbitraryInlandMode: Arbitrary[InlandMode] =

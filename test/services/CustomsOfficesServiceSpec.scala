@@ -18,20 +18,13 @@ package services
 
 import base.SpecBase
 import models.reference.CustomsOffice
-import models.{CustomsOfficeList, Index}
+import models.{Index, SelectableList}
 import org.scalatest.BeforeAndAfterEach
 import pages.external.{OfficeOfDestinationPage, OfficeOfExitPage, OfficeOfTransitPage}
 
 class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   val service = new CustomsOfficesService()
-
-  val gbCustomsOffice1: CustomsOffice     = CustomsOffice("GB1", "BOSTON", None)
-  val gbCustomsOffice2: CustomsOffice     = CustomsOffice("GB2", "Appledore", None)
-  val xiCustomsOffice1: CustomsOffice     = CustomsOffice("XI1", "Belfast", None)
-  val gbCustomsOffices: CustomsOfficeList = CustomsOfficeList(Seq(gbCustomsOffice1, gbCustomsOffice2))
-  val xiCustomsOffices: CustomsOfficeList = CustomsOfficeList(Seq(xiCustomsOffice1))
-  val customsOffices: CustomsOfficeList   = CustomsOfficeList(gbCustomsOffices.getAll ++ xiCustomsOffices.getAll)
 
   "CustomsOfficesService" - {
 
@@ -50,7 +43,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = service.getCustomsOffices(userAnswers)
 
-        result mustBe CustomsOfficeList(Seq(destinationOffice))
+        result mustBe SelectableList(Seq(destinationOffice))
       }
 
       "must return a list of sorted customs offices of transit" in {
@@ -61,7 +54,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = service.getCustomsOffices(userAnswers)
 
-        result mustBe CustomsOfficeList(Seq(transitOffice2, transitOffice1))
+        result mustBe SelectableList(Seq(transitOffice2, transitOffice1))
       }
 
       "must return a list of sorted customs offices of exit" in {
@@ -72,7 +65,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = service.getCustomsOffices(userAnswers)
 
-        result mustBe CustomsOfficeList(Seq(exitOffice2, exitOffice1))
+        result mustBe SelectableList(Seq(exitOffice2, exitOffice1))
       }
 
       "must return a list of sorted customs offices of exit, transit and destination with no duplicates" in {
@@ -88,7 +81,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = service.getCustomsOffices(userAnswers)
 
-        result mustBe CustomsOfficeList(Seq(exitOffice2, transitOffice2, exitOffice1, transitOffice1, destinationOffice))
+        result mustBe SelectableList(Seq(exitOffice2, transitOffice2, exitOffice1, transitOffice1, destinationOffice))
       }
 
     }

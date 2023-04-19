@@ -18,21 +18,23 @@ package forms
 
 import forms.behaviours.StringFieldBehaviours
 import generators.Generators
-import models.NationalityList
+import models.SelectableList
+import models.reference.Country
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class NationalityFormProviderSpec extends StringFieldBehaviours with Generators {
+class SelectableFormProviderSpec extends StringFieldBehaviours with Generators {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"
-  private val maxLength   = 8
 
-  private val nationality1    = arbitraryNationality.arbitrary.sample.get
-  private val nationality2    = arbitraryNationality.arbitrary.sample.get
-  private val nationalityList = NationalityList(Seq(nationality1, nationality2))
+  private val selectable1    = arbitrary[Country].sample.value
+  private val selectable2    = arbitrary[Country].sample.value
+  private val selectableList = SelectableList(Seq(selectable1, selectable2))
+  private val arg            = Gen.alphaNumStr.sample.value
 
-  private val form = new NationalityFormProvider()(prefix, nationalityList)
+  private val form = new SelectableFormProvider()(prefix, selectableList, arg)
 
   ".value" - {
 
@@ -41,23 +43,23 @@ class NationalityFormProviderSpec extends StringFieldBehaviours with Generators 
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(maxLength)
+      nonEmptyString
     )
 
     behave like mandatoryField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKey, Seq(arg))
     )
 
-    "not bind if customs office id does not exist in the nationalityList" in {
+    "not bind if value does not exist in the list" in {
       val boundForm = form.bind(Map("value" -> "foobar"))
       val field     = boundForm("value")
       field.errors mustNot be(empty)
     }
 
-    "bind a nationality id which is in the list" in {
-      val boundForm = form.bind(Map("value" -> nationality1.code))
+    "bind a value which is in the list" in {
+      val boundForm = form.bind(Map("value" -> selectable1.value))
       val field     = boundForm("value")
       field.errors must be(empty)
     }

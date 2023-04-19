@@ -16,10 +16,10 @@
 
 package views.preRequisites
 
-import forms.CountryFormProvider
+import forms.SelectableFormProvider
 import generators.Generators
-import models.{CountryList, NormalMode}
 import models.reference.Country
+import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -28,7 +28,7 @@ import views.html.preRequisites.ItemsDestinationCountryView
 
 class ItemsDestinationCountryViewSpec extends InputSelectViewBehaviours[Country] with Generators {
 
-  override def form: Form[Country] = new CountryFormProvider()(prefix, CountryList(values))
+  override def form: Form[Country] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
     injector.instanceOf[ItemsDestinationCountryView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)

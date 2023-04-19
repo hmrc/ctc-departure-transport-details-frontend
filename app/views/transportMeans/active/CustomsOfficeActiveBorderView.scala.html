@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[CustomsOffice], lrn: LocalReferenceNumber, customsOfficeList: CustomsOfficeList, mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[CustomsOffice], lrn: LocalReferenceNumber, customsOffices: Seq[CustomsOffice], mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transportMeans.active.customsOfficeActiveBorder.title"),
@@ -50,7 +50,7 @@
                 caption = Some(messages("activeBorderMeansOfTransport.caption")),
                 additionalHtml = messages("transportMeans.active.customsOfficeActiveBorder.paragraph").toParagraph
             ),
-            selectItems = customsOfficeList.customsOffices.toSelectItems(form.value),
+            selectItems = customsOffices.toSelectItems(form.value),
             placeholder = messages("transportMeans.active.customsOfficeActiveBorder.placeholder")
         )
 
