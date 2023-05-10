@@ -21,6 +21,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
 import play.twirl.api.HtmlFormat
+import play.twirl.api.TwirlHelperImports._
 import views.base.ViewSpecAssertions
 
 import scala.jdk.CollectionConverters._
@@ -36,8 +37,6 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
   val prefix: String
 
   val hasSignOutLink: Boolean = true
-
-  val urlContainsLrn: Boolean = false
 
   if (hasSignOutLink) {
     "must render sign out link in header" in {
@@ -151,8 +150,7 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
 
   private def pageWithButton(doc: Document, expectedText: String)(additionalAssertions: Element => Assertion*): Unit =
     s"must render $expectedText button" in {
-      val button = getElementByClass(doc, "govuk-button")
-      assertElementContainsText(button, expectedText)
+      val button = doc.getElementsByClass("govuk-button").toList.find(_.text() == expectedText).value
       additionalAssertions.map(_(button))
     }
 
