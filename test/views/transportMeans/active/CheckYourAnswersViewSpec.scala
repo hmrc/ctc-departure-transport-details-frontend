@@ -25,7 +25,6 @@ import views.html.transportMeans.active.CheckYourAnswersView
 
 class CheckYourAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
-  override val urlContainsLrn: Boolean     = true
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
   private val mode                         = arbitrary[Mode].sample.value
 
