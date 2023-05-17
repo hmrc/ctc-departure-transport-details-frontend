@@ -273,6 +273,7 @@ supplyChainActors.caption = Transport details - Supply chain actor
 supplyChainActors.supplyChainActorYesNo.title = Do you want to add a supply chain actor?
 supplyChainActors.supplyChainActorYesNo.heading = Do you want to add a supply chain actor?
 supplyChainActors.supplyChainActorYesNo.paragraph = This is someone who helps move the goods to their destination. They can be a consolidator, freight forwarder, manufacturer or warehouse keeper.
+supplyChainActors.supplyChainActorYesNo.hint = You can add supply chain actors for specific items in your Items section.
 supplyChainActors.supplyChainActorYesNo.checkYourAnswersLabel = Do you want to add a supply chain actor?
 supplyChainActors.supplyChainActorYesNo.change.hidden = if you want to add a supply chain actor
 supplyChainActors.supplyChainActorYesNo.error.required = Select yes if you want to add a supply chain actor

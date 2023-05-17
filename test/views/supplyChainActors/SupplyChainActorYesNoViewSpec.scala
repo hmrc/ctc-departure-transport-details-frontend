@@ -40,6 +40,8 @@ class SupplyChainActorYesNoViewSpec extends YesNoViewBehaviours {
     "This is someone who helps move the goods to their destination. They can be a consolidator, freight forwarder, manufacturer or warehouse keeper."
   )
 
+  behave like pageWithHint("You can add supply chain actors for specific items in your Items section.")
+
   behave like pageWithHeading()
 
   behave like pageWithRadioItems()
