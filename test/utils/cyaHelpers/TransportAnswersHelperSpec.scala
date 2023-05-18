@@ -314,14 +314,14 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addSupplyChainActor.get
 
-              result.key.value mustBe "Do you want to add a supply chain actor?"
+              result.key.value mustBe "Do you want to add a supply chain actor for all items?"
               result.value.value mustBe "Yes"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe supplyChainActorsRoutes.SupplyChainActorYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add a supply chain actor"
+              action.visuallyHiddenText.get mustBe "if you want to add a supply chain actor for all items"
               action.id mustBe "change-add-supply-chain-actor"
           }
         }

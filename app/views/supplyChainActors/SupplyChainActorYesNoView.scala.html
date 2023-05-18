@@ -45,7 +45,8 @@
                 heading = messages("supplyChainActors.supplyChainActorYesNo.heading"),
                 caption = Option(messages("supplyChainActors.caption")),
                 additionalHtml = messages("supplyChainActors.supplyChainActorYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("supplyChainActors.supplyChainActorYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))
