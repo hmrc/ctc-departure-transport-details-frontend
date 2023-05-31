@@ -63,8 +63,3 @@ class FakeSealNavigator(desiredRoute: Call, equipmentIndex: Index, sealIndex: In
     extends SealNavigator(mode, equipmentIndex, sealIndex) {
   override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
 }
-
-class FakeItemNumberNavigator(desiredRoute: Call, equipmentIndex: Index, itemNumberIndex: Index, mode: Mode)(implicit config: FrontendAppConfig)
-    extends ItemNumberNavigator(mode, equipmentIndex, itemNumberIndex) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
-}

@@ -168,25 +168,16 @@ trait UserAnswersEntryGenerators {
       case AddContainerIdentificationNumberYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
       case ContainerIdentificationNumberPage(_)         => Gen.alphaNumStr.map(JsString)
       case AddSealYesNoPage(_)                          => arbitrary[Boolean].map(JsBoolean)
-      case AddGoodsItemNumberYesNoPage(_)               => arbitrary[Boolean].map(JsBoolean)
     }
 
     pf orElse
-      generateSealAnswers orElse
-      generateItemNumberAnswers
+      generateSealAnswers
   }
 
   private def generateSealAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.equipment.index.seals._
     {
       case IdentificationNumberPage(_, _) => Gen.alphaNumStr.map(JsString)
-    }
-  }
-
-  private def generateItemNumberAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
-    import pages.equipment.index.itemNumber._
-    {
-      case ItemNumberPage(_, _) => Gen.alphaNumStr.map(JsString)
     }
   }
 }

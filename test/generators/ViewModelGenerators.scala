@@ -25,7 +25,6 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import viewModels.authorisations.AddAnotherAuthorisationViewModel
 import viewModels.equipment.{AddAnotherEquipmentViewModel, AddAnotherSealViewModel}
-import viewModels.equipment.index.AddAnotherGoodsItemNumberViewModel
 import viewModels.supplyChainActors.AddAnotherSupplyChainActorViewModel
 import viewModels.transportMeans.active.AddAnotherBorderTransportViewModel
 import viewModels.{Link, ListItem, Section}
@@ -179,13 +178,6 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
     } yield AddAnotherAuthorisationViewModel(listItems, onSubmitCall)
-  }
-
-  implicit lazy val arbitraryAddAnotherGoodsItemNumberViewModel: Arbitrary[AddAnotherGoodsItemNumberViewModel] = Arbitrary {
-    for {
-      listItems    <- arbitrary[Seq[ListItem]]
-      onSubmitCall <- arbitrary[Call]
-    } yield AddAnotherGoodsItemNumberViewModel(listItems, onSubmitCall)
   }
 
   implicit lazy val arbitraryAddAnotherSealViewModel: Arbitrary[AddAnotherSealViewModel] = Arbitrary {

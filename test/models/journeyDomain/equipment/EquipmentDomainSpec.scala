@@ -18,146 +18,73 @@ package models.journeyDomain.equipment
 
 import base.SpecBase
 import generators.Generators
-import models.domain.{EitherType, UserAnswersReader}
-import models.journeyDomain.equipment.index.itemNumber.{ItemNumberDomain, ItemNumbersDomain}
-import models.journeyDomain.equipment.seal.{SealDomain, SealsDomain}
 import models.authorisations.AuthorisationType
+import models.domain.{EitherType, UserAnswersReader}
+import models.journeyDomain.equipment.seal.{SealDomain, SealsDomain}
 import models.{Index, ProcedureType}
-import pages.sections.equipment.EquipmentSection
 import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
 import pages.equipment.AddTransportEquipmentYesNoPage
 import pages.equipment.index._
-import pages.equipment.index.itemNumber.ItemNumberPage
 import pages.equipment.index.seals.IdentificationNumberPage
 import pages.external.ProcedureTypePage
 import pages.preRequisites.ContainerIndicatorPage
+import pages.sections.equipment.EquipmentSection
 import play.api.libs.json.Json
 
 class EquipmentDomainSpec extends SpecBase with Generators {
 
-  private val containerId     = nonEmptyString.sample.value
-  private val sealId          = nonEmptyString.sample.value
-  private val goodsItemNumber = nonEmptyString.sample.value
+  private val containerId = nonEmptyString.sample.value
+  private val sealId      = nonEmptyString.sample.value
 
   "Equipment domain" - {
 
     "userAnswersReader" - {
       "can be parsed from user answers" - {
-        "when there are seals" - {
-          "and there are goods item numbers" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ProcedureTypePage, ProcedureType.Normal)
-              .setValue(ContainerIndicatorPage, true)
-              .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
-              .setValue(AddSealYesNoPage(equipmentIndex), true)
-              .setValue(IdentificationNumberPage(equipmentIndex, sealIndex), sealId)
-              .setValue(AddGoodsItemNumberYesNoPage(equipmentIndex), true)
-              .setValue(ItemNumberPage(equipmentIndex, itemNumberIndex), goodsItemNumber)
+        "when there are seals" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ProcedureTypePage, ProcedureType.Normal)
+            .setValue(ContainerIndicatorPage, true)
+            .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
+            .setValue(AddSealYesNoPage(equipmentIndex), true)
+            .setValue(IdentificationNumberPage(equipmentIndex, sealIndex), sealId)
 
-            val expectedResult = EquipmentDomain(
-              containerId = Some(containerId),
-              seals = Some(
-                SealsDomain(
-                  Seq(
-                    SealDomain(sealId)(equipmentIndex, sealIndex)
-                  )
-                )
-              ),
-              goodsItemNumbers = Some(
-                ItemNumbersDomain(
-                  Seq(
-                    ItemNumberDomain(goodsItemNumber)(equipmentIndex, itemNumberIndex)
-                  )
+          val expectedResult = EquipmentDomain(
+            containerId = Some(containerId),
+            seals = Some(
+              SealsDomain(
+                Seq(
+                  SealDomain(sealId)(equipmentIndex, sealIndex)
                 )
               )
-            )(equipmentIndex)
+            )
+          )(equipmentIndex)
 
-            val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](
-              EquipmentDomain.userAnswersReader(index)
-            ).run(userAnswers)
+          val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](
+            EquipmentDomain.userAnswersReader(index)
+          ).run(userAnswers)
 
-            result.value mustBe expectedResult
-          }
-
-          "and there are no goods item numbers" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ProcedureTypePage, ProcedureType.Normal)
-              .setValue(ContainerIndicatorPage, true)
-              .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
-              .setValue(AddSealYesNoPage(equipmentIndex), true)
-              .setValue(IdentificationNumberPage(equipmentIndex, sealIndex), sealId)
-              .setValue(AddGoodsItemNumberYesNoPage(equipmentIndex), false)
-
-            val expectedResult = EquipmentDomain(
-              containerId = Some(containerId),
-              seals = Some(
-                SealsDomain(
-                  Seq(
-                    SealDomain(sealId)(equipmentIndex, sealIndex)
-                  )
-                )
-              ),
-              goodsItemNumbers = None
-            )(equipmentIndex)
-
-            val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](
-              EquipmentDomain.userAnswersReader(index)
-            ).run(userAnswers)
-
-            result.value mustBe expectedResult
-          }
+          result.value mustBe expectedResult
         }
 
-        "when there are no seals" - {
-          "and there are goods item numbers" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ProcedureTypePage, ProcedureType.Normal)
-              .setValue(ContainerIndicatorPage, true)
-              .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
-              .setValue(AddSealYesNoPage(equipmentIndex), false)
-              .setValue(AddGoodsItemNumberYesNoPage(equipmentIndex), true)
-              .setValue(ItemNumberPage(equipmentIndex, itemNumberIndex), goodsItemNumber)
+        "when there are no seals" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ProcedureTypePage, ProcedureType.Normal)
+            .setValue(ContainerIndicatorPage, true)
+            .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
+            .setValue(AddSealYesNoPage(equipmentIndex), false)
 
-            val expectedResult = EquipmentDomain(
-              containerId = Some(containerId),
-              seals = None,
-              goodsItemNumbers = Some(
-                ItemNumbersDomain(
-                  Seq(
-                    ItemNumberDomain(goodsItemNumber)(equipmentIndex, itemNumberIndex)
-                  )
-                )
-              )
-            )(equipmentIndex)
+          val expectedResult = EquipmentDomain(
+            containerId = Some(containerId),
+            seals = None
+          )(equipmentIndex)
 
-            val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](
-              EquipmentDomain.userAnswersReader(index)
-            ).run(userAnswers)
+          val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](
+            EquipmentDomain.userAnswersReader(index)
+          ).run(userAnswers)
 
-            result.value mustBe expectedResult
-          }
-
-          "and there are no goods item numbers" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ProcedureTypePage, ProcedureType.Normal)
-              .setValue(ContainerIndicatorPage, true)
-              .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
-              .setValue(AddSealYesNoPage(equipmentIndex), false)
-              .setValue(AddGoodsItemNumberYesNoPage(equipmentIndex), false)
-
-            val expectedResult = EquipmentDomain(
-              containerId = Some(containerId),
-              seals = None,
-              goodsItemNumbers = None
-            )(equipmentIndex)
-
-            val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](
-              EquipmentDomain.userAnswersReader(index)
-            ).run(userAnswers)
-
-            result.value mustBe expectedResult
-          }
+          result.value mustBe expectedResult
         }
+
       }
 
       "cannot be parsed from user answers" - {
@@ -393,132 +320,6 @@ class EquipmentDomainSpec extends SpecBase with Generators {
             ).run(userAnswers)
 
             result.left.value.page mustBe AddSealYesNoPage(equipmentIndex)
-          }
-        }
-      }
-    }
-
-    "goodsItemNumbersReads" - {
-      "can be read form user answers" - {
-        "when at index 0" - {
-          val index = Index(0)
-
-          "and container id is answered" - {
-            "and add goods item numbers yes/no is no" in {
-              val userAnswers = emptyUserAnswers
-                .setValue(ContainerIdentificationNumberPage(index), containerId)
-                .setValue(AddGoodsItemNumberYesNoPage(index), false)
-
-              val expectedResult = None
-
-              val result: EitherType[Option[ItemNumbersDomain]] = UserAnswersReader[Option[ItemNumbersDomain]](
-                EquipmentDomain.goodsItemNumbersReads(index)
-              ).run(userAnswers)
-
-              result.value mustBe expectedResult
-            }
-
-            "and add goods item numbers yes/no is yes" in {
-              val userAnswers = emptyUserAnswers
-                .setValue(ContainerIdentificationNumberPage(index), containerId)
-                .setValue(AddGoodsItemNumberYesNoPage(index), true)
-                .setValue(ItemNumberPage(index, itemNumberIndex), goodsItemNumber)
-
-              val expectedResult = Some(
-                ItemNumbersDomain(
-                  Seq(
-                    ItemNumberDomain(goodsItemNumber)(index, itemNumberIndex)
-                  )
-                )
-              )
-
-              val result: EitherType[Option[ItemNumbersDomain]] = UserAnswersReader[Option[ItemNumbersDomain]](
-                EquipmentDomain.goodsItemNumbersReads(index)
-              ).run(userAnswers)
-
-              result.value mustBe expectedResult
-            }
-          }
-
-          "and container id is unanswered" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ItemNumberPage(index, itemNumberIndex), goodsItemNumber)
-
-            val expectedResult = Some(
-              ItemNumbersDomain(
-                Seq(
-                  ItemNumberDomain(goodsItemNumber)(index, itemNumberIndex)
-                )
-              )
-            )
-
-            val result: EitherType[Option[ItemNumbersDomain]] = UserAnswersReader[Option[ItemNumbersDomain]](
-              EquipmentDomain.goodsItemNumbersReads(index)
-            ).run(userAnswers)
-
-            result.value mustBe expectedResult
-          }
-        }
-
-        "when not at index 0" - {
-          val index = Index(1)
-
-          "and container id is answered" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(EquipmentSection(Index(0)), Json.obj("foo" -> "bar"))
-              .setValue(ContainerIdentificationNumberPage(index), containerId)
-              .setValue(ItemNumberPage(index, itemNumberIndex), goodsItemNumber)
-
-            val expectedResult = Some(
-              ItemNumbersDomain(
-                Seq(
-                  ItemNumberDomain(goodsItemNumber)(index, itemNumberIndex)
-                )
-              )
-            )
-
-            val result: EitherType[Option[ItemNumbersDomain]] = UserAnswersReader[Option[ItemNumbersDomain]](
-              EquipmentDomain.goodsItemNumbersReads(index)
-            ).run(userAnswers)
-
-            result.value mustBe expectedResult
-          }
-
-          "and container id is unanswered" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(EquipmentSection(Index(0)), Json.obj("foo" -> "bar"))
-              .setValue(ItemNumberPage(index, itemNumberIndex), goodsItemNumber)
-
-            val expectedResult = Some(
-              ItemNumbersDomain(
-                Seq(
-                  ItemNumberDomain(goodsItemNumber)(index, itemNumberIndex)
-                )
-              )
-            )
-
-            val result: EitherType[Option[ItemNumbersDomain]] = UserAnswersReader[Option[ItemNumbersDomain]](
-              EquipmentDomain.goodsItemNumbersReads(index)
-            ).run(userAnswers)
-
-            result.value mustBe expectedResult
-          }
-        }
-      }
-
-      "cannot be read from user answers" - {
-        "when at index 0 and container id is answered" - {
-          val index = Index(0)
-
-          "and add goods item numbers yes/no is unanswered" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIdentificationNumberPage(index), containerId)
-
-            val result: EitherType[Option[ItemNumbersDomain]] = UserAnswersReader[Option[ItemNumbersDomain]](
-              EquipmentDomain.goodsItemNumbersReads(index)
-            ).run(userAnswers)
-
-            result.left.value.page mustBe AddGoodsItemNumberYesNoPage(equipmentIndex)
           }
         }
       }

@@ -34,7 +34,7 @@ class EquipmentViewModelSpec extends SpecBase with Generators {
         val viewModelProvider = injector.instanceOf[EquipmentViewModelProvider]
         val sections          = viewModelProvider.apply(answers, mode, index).sections
 
-        sections.size mustBe 3
+        sections.size mustBe 2
 
         sections.head.sectionTitle must not be defined
         sections.head.rows must be(empty)
@@ -43,10 +43,6 @@ class EquipmentViewModelSpec extends SpecBase with Generators {
         sections(1).sectionTitle.get mustBe "Seals"
         sections(1).rows must be(empty)
         sections(1).addAnotherLink must not be defined
-
-        sections(2).sectionTitle.get mustBe "Goods item numbers"
-        sections(2).rows must be(empty)
-        sections(2).addAnotherLink must not be defined
       }
     }
 
@@ -65,11 +61,6 @@ class EquipmentViewModelSpec extends SpecBase with Generators {
                 acc.setValue(seals.IdentificationNumberPage(index, Index(i)), nonEmptyString.sample.value)
             }
 
-          def setGoodsItemNumberValues(): UserAnswers =
-            (0 until numberOfGoodsItemNumbers).foldLeft(userAnswers) {
-              (acc, i) =>
-                acc.setValue(itemNumber.ItemNumberPage(index, Index(i)), nonEmptyString.sample.value)
-            }
         }
 
         val answers = emptyUserAnswers
@@ -77,14 +68,12 @@ class EquipmentViewModelSpec extends SpecBase with Generators {
           .setValue(ContainerIdentificationNumberPage(index), containerId)
           .setValue(AddSealYesNoPage(index), true)
           .setSealsValues()
-          .setValue(AddGoodsItemNumberYesNoPage(index), true)
-          .setGoodsItemNumberValues()
 
         val mode              = arbitrary[Mode].sample.value
         val viewModelProvider = injector.instanceOf[EquipmentViewModelProvider]
         val sections          = viewModelProvider.apply(answers, mode, index).sections
 
-        sections.size mustBe 3
+        sections.size mustBe 2
 
         sections.head.sectionTitle must not be defined
         sections.head.rows.size mustBe 2
@@ -97,10 +86,6 @@ class EquipmentViewModelSpec extends SpecBase with Generators {
         sections(1).rows.head.value.value mustBe "Yes"
         sections(1).addAnotherLink must be(defined)
 
-        sections(2).sectionTitle.get mustBe "Goods item numbers"
-        sections(2).rows.size mustBe 1 + numberOfGoodsItemNumbers
-        sections(2).rows.head.value.value mustBe "Yes"
-        sections(2).addAnotherLink must be(defined)
       }
     }
   }

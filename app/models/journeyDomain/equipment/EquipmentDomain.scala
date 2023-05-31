@@ -19,7 +19,6 @@ package models.journeyDomain.equipment
 import cats.implicits._
 import controllers.equipment.index.routes
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.journeyDomain.equipment.index.itemNumber.ItemNumbersDomain
 import models.journeyDomain.equipment.seal.SealsDomain
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.authorisations.AuthorisationType
@@ -34,8 +33,7 @@ import play.api.mvc.Call
 
 case class EquipmentDomain(
   containerId: Option[String],
-  seals: Option[SealsDomain],
-  goodsItemNumbers: Option[ItemNumbersDomain]
+  seals: Option[SealsDomain]
 )(index: Index)
     extends JourneyDomainModel {
 
@@ -58,8 +56,7 @@ object EquipmentDomain {
   implicit def userAnswersReader(equipmentIndex: Index): UserAnswersReader[EquipmentDomain] =
     (
       containerIdReads(equipmentIndex),
-      sealsReads(equipmentIndex),
-      goodsItemNumbersReads(equipmentIndex)
+      sealsReads(equipmentIndex)
     ).tupled.map((EquipmentDomain.apply _).tupled).map(_(equipmentIndex))
 
   def containerIdReads(equipmentIndex: Index): UserAnswersReader[Option[String]] =
@@ -88,13 +85,4 @@ object EquipmentDomain {
     }
   } yield reader
 
-  def goodsItemNumbersReads(equipmentIndex: Index): UserAnswersReader[Option[ItemNumbersDomain]] =
-    ContainerIdentificationNumberPage(equipmentIndex).optionalReader.flatMap {
-      case Some(_) if equipmentIndex.isFirst =>
-        AddGoodsItemNumberYesNoPage(equipmentIndex).filterOptionalDependent(identity) {
-          UserAnswersReader[ItemNumbersDomain](ItemNumbersDomain.userAnswersReader(equipmentIndex))
-        }
-      case _ =>
-        UserAnswersReader[ItemNumbersDomain](ItemNumbersDomain.userAnswersReader(equipmentIndex)).map(Option(_))
-    }
 }

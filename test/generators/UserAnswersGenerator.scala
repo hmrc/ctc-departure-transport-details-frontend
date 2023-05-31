@@ -20,7 +20,6 @@ import models.domain.UserAnswersReader
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
-import models.journeyDomain.equipment.index.itemNumber.ItemNumberDomain
 import models.journeyDomain.equipment.seal.SealDomain
 import models.journeyDomain.equipment.{EquipmentDomain, EquipmentsDomain}
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
@@ -96,8 +95,5 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
 
   def arbitrarySealAnswers(userAnswers: UserAnswers, equipmentIndex: Index, sealIndex: Index): Gen[UserAnswers] =
     buildUserAnswers[SealDomain](userAnswers)(SealDomain.userAnswersReader(equipmentIndex, sealIndex))
-
-  def arbitraryGoodsItemNumberAnswers(userAnswers: UserAnswers, equipmentIndex: Index, itemNumberIndex: Index): Gen[UserAnswers] =
-    buildUserAnswers[ItemNumberDomain](userAnswers)(ItemNumberDomain.userAnswersReader(equipmentIndex, itemNumberIndex))
 
 }
