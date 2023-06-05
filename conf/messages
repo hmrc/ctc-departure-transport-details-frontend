@@ -450,24 +450,6 @@ equipment.index.addAnotherSeal.error.required = Select yes if you want to add an
 equipment.index.addAnotherSeal.label = Do you want to add another seal?
 equipment.index.addAnotherSeal.maxLimit.label = You cannot add any more seals. To add another, you need to remove one first.
 
-equipment.index.itemNumber.title = What is the goods item number?
-equipment.index.itemNumber.heading = What is the goods item number?
-equipment.index.itemNumber.hint = This can be up to 4 numbers long.
-equipment.index.itemNumber.error.required = Enter the goods item number
-equipment.index.itemNumber.error.length = The goods item number must be 4 numbers or less
-equipment.index.itemNumber.error.invalidCharacters = The goods item number must only include numbers 0 to 9
-equipment.index.itemNumber.error.range = The goods item number must be more than 0 and less than 2000
-
-equipment.index.addGoodsItemNumberYesNo.title = Do you want to add a goods item number?
-equipment.index.addGoodsItemNumberYesNo.heading = Do you want to add a goods item number?
-equipment.index.addGoodsItemNumberYesNo.checkYourAnswersLabel = Do you want to add a goods item number?
-equipment.index.addGoodsItemNumberYesNo.change.hidden = if you want to add a goods item number
-equipment.index.addGoodsItemNumberYesNo.error.required = Select yes if you want to add a goods item number
-
-equipment.index.itemNumber.removeItemNumberYesNo.title = Are you sure you want to remove goods item number {0}?
-equipment.index.itemNumber.removeItemNumberYesNo.heading = Are you sure you want to remove goods item number {0}?
-equipment.index.itemNumber.removeItemNumberYesNo.error.required = Select yes if you want to remove goods item number {0}
-
 equipment.index.seals.removeSealYesNo.title = Are you sure you want to remove seal {0}?
 equipment.index.seals.removeSealYesNo.heading = Are you sure you want to remove seal {0}?
 equipment.index.seals.removeSealYesNo.error.required = Select yes if you want to remove seal {0}
@@ -482,14 +464,6 @@ equipment.index.checkYourAnswers.seal.label = Seal {0}
 equipment.index.checkYourAnswers.seal.change.hidden = seal {0}
 equipment.index.checkYourAnswers.itemNumber.label = Goods item number {0}
 equipment.index.checkYourAnswers.itemNumber.change.hidden = goods item number {0}
-
-equipment.index.addAnotherGoodsItemNumber.singular.title = You have added 1 goods item number
-equipment.index.addAnotherGoodsItemNumber.plural.title = You have added {0} goods item numbers
-equipment.index.addAnotherGoodsItemNumber.singular.heading = You have added 1 goods item number
-equipment.index.addAnotherGoodsItemNumber.plural.heading = You have added {0} goods item numbers
-equipment.index.addAnotherGoodsItemNumber.label = Do you want to add another goods item number?
-equipment.index.addAnotherGoodsItemNumber.maxLimit.label = You cannot add any more goods item numbers. To add another, you need to remove one first.
-equipment.index.addAnotherGoodsItemNumber.error.required = Select yes if you want to add another goods item number
 
 equipment.addAnotherEquipment.singular.title = You have added 1 transport equipment
 equipment.addAnotherEquipment.plural.title = You have added {0} transport equipment

@@ -18,11 +18,10 @@ package utils.cyaHelpers.equipment
 
 import config.FrontendAppConfig
 import controllers.equipment.index.routes
-import models.journeyDomain.equipment.index.itemNumber.ItemNumberDomain
 import models.journeyDomain.equipment.seal.SealDomain
 import models.{Index, Mode, UserAnswers}
-import pages.sections.equipment.{ItemNumbersSection, SealsSection}
 import pages.equipment.index._
+import pages.sections.equipment.SealsSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
@@ -71,31 +70,6 @@ class EquipmentAnswersHelper(
       id = "add-or-remove-seals",
       text = messages("equipment.index.checkYourAnswers.seals.addOrRemove"),
       href = routes.AddAnotherSealController.onPageLoad(userAnswers.lrn, mode, equipmentIndex).url
-    )
-  }
-
-  def itemNumbersYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddGoodsItemNumberYesNoPage(equipmentIndex),
-    formatAnswer = formatAsYesOrNo,
-    prefix = "equipment.index.addGoodsItemNumberYesNo",
-    id = Some("change-add-item-numbers")
-  )
-
-  def itemNumbers: Seq[SummaryListRow] =
-    getAnswersAndBuildSectionRows(ItemNumbersSection(equipmentIndex))(itemNumber)
-
-  def itemNumber(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[ItemNumberDomain](
-    formatAnswer = formatAsText,
-    prefix = "equipment.index.checkYourAnswers.itemNumber",
-    id = Some(s"change-goods-item-number-${index.display}"),
-    args = index.display
-  )(ItemNumberDomain.userAnswersReader(equipmentIndex, index))
-
-  def addOrRemoveItemNumbers: Option[Link] = buildLink(ItemNumbersSection(equipmentIndex)) {
-    Link(
-      id = "add-or-remove-goods-item-numbers",
-      text = messages("equipment.index.checkYourAnswers.itemNumbers.addOrRemove"),
-      href = routes.AddAnotherGoodsItemNumberController.onPageLoad(userAnswers.lrn, mode, equipmentIndex).url
     )
   }
 }

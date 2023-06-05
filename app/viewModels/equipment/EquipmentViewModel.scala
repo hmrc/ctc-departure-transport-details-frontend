@@ -46,13 +46,7 @@ object EquipmentViewModel {
         addAnotherLink = helper.addOrRemoveSeals
       )
 
-      val itemNumbersSection = Section(
-        sectionTitle = messages("equipment.index.checkYourAnswers.itemNumbers"),
-        rows = helper.itemNumbersYesNo.toList ++ helper.itemNumbers,
-        addAnotherLink = helper.addOrRemoveItemNumbers
-      )
-
-      new EquipmentViewModel(Seq(preSection, sealsSection, itemNumbersSection))
+      new EquipmentViewModel(Seq(preSection, sealsSection))
     }
   }
 }
