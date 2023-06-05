@@ -39,24 +39,24 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
 
-  private val countriesResponseJson: String =
-    """
-      |[
-      | {
-      |   "code":"GB",
-      |   "description":"United Kingdom"
-      | },
-      | {
-      |   "code":"AD",
-      |   "description":"Andorra"
-      | }
-      |]
-      |""".stripMargin
-
   "Reference Data" - {
 
     "getCountries" - {
       "must return Seq of Country when successful" in {
+        val countriesResponseJson: String =
+          """
+            |[
+            | {
+            |   "code":"GB",
+            |   "description":"United Kingdom"
+            | },
+            | {
+            |   "code":"AD",
+            |   "description":"Andorra"
+            | }
+            |]
+            |""".stripMargin
+
         server.stubFor(
           get(urlEqualTo(s"/$baseUrl/countries?customsOfficeRole=ANY&exclude=IT&exclude=DE&membership=ctc"))
             .willReturn(okJson(countriesResponseJson))
@@ -79,6 +79,40 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(s"/$baseUrl/countries?customsOfficeRole=ANY", connector.getCountries(Nil))
+      }
+    }
+
+    "getNationalities" - {
+      "must return Seq of Country when successful" in {
+        val nationalitiesResponseJson: String =
+          """
+            |[
+            | {
+            |   "code":"AR",
+            |   "description":"Argentina"
+            | },
+            | {
+            |   "code":"AU",
+            |   "description":"Australia"
+            | }
+            |]
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/nationalities"))
+            .willReturn(okJson(nationalitiesResponseJson))
+        )
+
+        val expectedResult: Seq[Nationality] = Seq(
+          Nationality("AR", "Argentina"),
+          Nationality("AU", "Australia")
+        )
+
+        connector.getNationalities().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$baseUrl/nationalities", connector.getNationalities())
       }
     }
   }

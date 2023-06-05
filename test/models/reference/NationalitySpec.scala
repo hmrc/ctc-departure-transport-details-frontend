@@ -34,7 +34,7 @@ class NationalitySpec extends SpecBase with ScalaCheckPropertyChecks {
           Json.toJson(nationality) mustBe Json.parse(s"""
               |{
               |  "code": "$code",
-              |  "desc": "$description"
+              |  "description": "$description"
               |}
               |""".stripMargin)
       }
@@ -48,7 +48,7 @@ class NationalitySpec extends SpecBase with ScalaCheckPropertyChecks {
             .parse(s"""
               |{
               |  "code": "$code",
-              |  "desc": "$description"
+              |  "description": "$description"
               |}
               |""".stripMargin)
             .as[Nationality] mustBe nationality

@@ -17,8 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.TransportAggregateData
-import models.reference.Country
+import models.reference.{Country, Nationality}
 import sttp.model.HeaderNames
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -33,9 +32,9 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[Country]](serviceUrl, queryParameters, headers = version2Header)
   }
 
-  def getTransportData()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[TransportAggregateData] = {
-    val serviceUrl = s"${config.referenceDataUrl}/transport"
-    http.GET[TransportAggregateData](serviceUrl, headers = version2Header)
+  def getNationalities()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Nationality]] = {
+    val serviceUrl = s"${config.referenceDataUrl}/nationalities"
+    http.GET[Seq[Nationality]](serviceUrl, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(
