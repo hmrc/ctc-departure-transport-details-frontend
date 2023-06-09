@@ -18,17 +18,20 @@ package controllers.equipment.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.ContainerIdentificationNumberFormProvider
-import models.{Index, NormalMode}
+import models.{Index, NormalMode, UserAnswers}
 import navigation.EquipmentNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
-import pages.equipment.index.ContainerIdentificationNumberPage
+import org.mockito.Mockito.{verify, when}
+import org.scalacheck.Arbitrary.arbitrary
+import pages.equipment.index.{ContainerIdentificationNumberPage, UuidPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.equipment.index.ContainerIdentificationNumberView
 
+import java.util.UUID
 import scala.concurrent.Future
 
 class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
@@ -81,20 +84,49 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
         view(filledForm, lrn, mode, equipmentIndex)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid data is submitted" - {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      "and UUID not populated" in {
+        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, identificationNumberRoute(equipmentIndex))
-        .withFormUrlEncodedBody(("value", validAnswer))
+        val request = FakeRequest(POST, identificationNumberRoute(equipmentIndex))
+          .withFormUrlEncodedBody(("value", validAnswer))
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual onwardRoute.url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+
+        userAnswersCaptor.getValue.get(UuidPage(equipmentIndex)) must be(defined)
+      }
+
+      "and UUID populated" in {
+        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+        val uuid        = arbitrary[UUID].sample.value
+        val userAnswers = emptyUserAnswers.setValue(UuidPage(equipmentIndex), uuid)
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(POST, identificationNumberRoute(equipmentIndex))
+          .withFormUrlEncodedBody(("value", validAnswer))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual onwardRoute.url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+
+        userAnswersCaptor.getValue.get(UuidPage(equipmentIndex)).value mustBe uuid
+      }
     }
 
     "when duplicate value is submitted" in {

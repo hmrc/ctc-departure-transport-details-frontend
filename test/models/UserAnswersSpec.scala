@@ -18,8 +18,9 @@ package models
 
 import base.SpecBase
 import pages.QuestionPage
-import play.api.libs.json.{JsPath, Json}
+import play.api.libs.json.{JsObject, JsPath, Json}
 
+import java.util.UUID
 import scala.util.Try
 
 class UserAnswersSpec extends SpecBase {
@@ -118,6 +119,60 @@ class UserAnswersSpec extends SpecBase {
             ".traderDetails" -> TaskStatus.CannotStartYet
           )
         }
+      }
+    }
+
+    "removeTransportEquipmentFromItems" - {
+
+      val uuid = "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
+
+      "must remove any transport equipment from items with given UUID" in {
+        val data = Json
+          .parse(s"""
+            |{
+            |  "items" : [
+            |    {
+            |      "description" : "item1",
+            |      "transportEquipment" : "$uuid"
+            |    },
+            |    {
+            |      "description" : "item2",
+            |      "transportEquipment" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+            |    },
+            |    {
+            |      "description" : "item3",
+            |      "transportEquipment" : "ac50154c-cad1-4320-8def-d282eea63b2e"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin)
+          .as[JsObject]
+
+        val userAnswers = emptyUserAnswers.copy(data = data)
+
+        val result = userAnswers.removeTransportEquipmentFromItems(Some(UUID.fromString(uuid))).data
+
+        val expectedResult = Json
+          .parse(s"""
+            |{
+            |  "items" : [
+            |    {
+            |      "description" : "item1"
+            |    },
+            |    {
+            |      "description" : "item2",
+            |      "transportEquipment" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+            |    },
+            |    {
+            |      "description" : "item3",
+            |      "transportEquipment" : "ac50154c-cad1-4320-8def-d282eea63b2e"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin)
+          .as[JsObject]
+
+        result mustBe expectedResult
       }
     }
   }

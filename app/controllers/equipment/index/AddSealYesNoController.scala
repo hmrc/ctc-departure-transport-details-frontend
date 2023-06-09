@@ -68,7 +68,12 @@ class AddSealYesNoController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, equipmentIndex))),
             value => {
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, equipmentIndex)
-              AddSealYesNoPage(equipmentIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              AddSealYesNoPage(equipmentIndex)
+                .writeToUserAnswers(value)
+                .appendTransportEquipmentUuidIfNotPresent(equipmentIndex)
+                .updateTask()
+                .writeToSession()
+                .navigate()
             }
           )
     }

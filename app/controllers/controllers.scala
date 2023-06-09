@@ -16,13 +16,14 @@
 
 import cats.data.ReaderT
 import models.TaskStatus.{Completed, InProgress}
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.domain.UserAnswersReader
 import models.journeyDomain.TransportDomain
 import models.journeyDomain.OpsError.WriterError
 import models.requests.MandatoryDataRequest
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
+import pages.equipment.index.UuidPage
 import play.api.libs.json.Format
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Call, Result}
@@ -30,6 +31,7 @@ import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpVerbs.GET
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
@@ -61,6 +63,28 @@ package object controllers {
   }
 
   implicit class SettableOpsRunner[A](userAnswersWriter: UserAnswersWriter[Write[A]]) {
+
+    def appendTransportEquipmentUuidIfNotPresent(equipmentIndex: Index): UserAnswersWriter[Write[A]] =
+      appendValueIfNotPresent(UuidPage(equipmentIndex), UUID.randomUUID())
+
+    def appendValueIfNotPresent[B](subPage: QuestionPage[B], value: B)(implicit format: Format[B]): UserAnswersWriter[Write[A]] =
+      userAnswersWriter.flatMapF {
+        case (page, userAnswers) =>
+          userAnswers.get(subPage) match {
+            case Some(_) => Right((page, userAnswers))
+            case None =>
+              userAnswers.set(subPage, value) match {
+                case Success(value)     => Right((page, value))
+                case Failure(exception) => Left(WriterError(page, Some(s"Failed to append value to answer: ${exception.getMessage}")))
+              }
+          }
+      }
+
+    def removeTransportEquipmentFromItems(uuid: Option[UUID]): UserAnswersWriter[Write[A]] =
+      userAnswersWriter.flatMapF {
+        case (page, userAnswers) =>
+          Right((page, userAnswers.removeTransportEquipmentFromItems(uuid)))
+      }
 
     def updateTask(): UserAnswersWriter[Write[A]] =
       userAnswersWriter.flatMapF {

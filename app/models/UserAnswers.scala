@@ -17,9 +17,12 @@
 package models
 
 import pages.QuestionPage
+import pages.external.TransportEquipmentPage
+import pages.sections.external.ItemsSection
 import play.api.libs.json._
 import queries.Gettable
 
+import java.util.UUID
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
@@ -31,6 +34,8 @@ final case class UserAnswers(
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+
+  def getArraySize(array: Gettable[JsArray]): Int = get(array).map(_.value.size).getOrElse(0)
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A], reads: Reads[A]): Try[UserAnswers] = {
     lazy val updatedData = data.setObject(page.path, Json.toJson(value)) match {
@@ -60,6 +65,20 @@ final case class UserAnswers(
   def updateTask(section: String, status: TaskStatus): UserAnswers = {
     val tasks = this.tasks.updated(section, status)
     this.copy(tasks = tasks)
+  }
+
+  def removeTransportEquipmentFromItems(uuid: Option[UUID]): UserAnswers = uuid match {
+    case Some(transportEquipmentUuid) =>
+      val numberOfItems = this.getArraySize(ItemsSection)
+      (0 until numberOfItems).map(Index(_)).foldLeft(this) {
+        (acc, itemIndex) =>
+          acc.get(TransportEquipmentPage(itemIndex)) match {
+            case Some(`transportEquipmentUuid`) => acc.remove(TransportEquipmentPage(itemIndex)).getOrElse(acc)
+            case _                              => acc
+          }
+      }
+    case None =>
+      this
   }
 }
 

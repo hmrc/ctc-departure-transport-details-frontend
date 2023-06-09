@@ -21,6 +21,7 @@ import controllers.equipment.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
+import pages.equipment.index.UuidPage
 import pages.sections.equipment.EquipmentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -61,6 +62,7 @@ class RemoveTransportEquipmentController @Inject() (
             case true =>
               EquipmentSection(equipmentIndex)
                 .removeFromUserAnswers()
+                .removeTransportEquipmentFromItems(request.userAnswers.get(UuidPage(equipmentIndex)))
                 .updateTask()
                 .writeToSession()
                 .navigateTo(redirect)
