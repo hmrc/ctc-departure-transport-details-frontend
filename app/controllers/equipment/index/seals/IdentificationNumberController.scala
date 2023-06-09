@@ -21,10 +21,9 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SealIdentificationNumberFormProvider
 import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode, RichOptionalJsArray}
-import navigation.UserAnswersNavigator
-import navigation.SealNavigatorProvider
-import pages.sections.equipment.SealsSection
+import navigation.{SealNavigatorProvider, UserAnswersNavigator}
 import pages.equipment.index.seals.IdentificationNumberPage
+import pages.sections.equipment.SealsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -76,6 +75,7 @@ class IdentificationNumberController @Inject() (
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, equipmentIndex, sealIndex)
             IdentificationNumberPage(equipmentIndex: Index, sealIndex: Index)
               .writeToUserAnswers(value)
+              .appendTransportEquipmentUuidIfNotPresent(equipmentIndex)
               .updateTask()
               .writeToSession()
               .navigate()
