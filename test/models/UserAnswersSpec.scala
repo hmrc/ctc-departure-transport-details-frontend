@@ -122,7 +122,7 @@ class UserAnswersSpec extends SpecBase {
       }
     }
 
-    "removeDocumentFromItems" - {
+    "removeTransportEquipmentFromItems" - {
 
       val uuid = "1794d93b-17d5-44fe-a18d-aaa2059d06fe"
 
