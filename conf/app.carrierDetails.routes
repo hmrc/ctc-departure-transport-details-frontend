@@ -1,4 +1,9 @@
 
+GET        /carrier/add/:lrn                                             controllers.carrierDetails.CarrierDetailYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /carrier/add/:lrn                                             controllers.carrierDetails.CarrierDetailYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /carrier/change-add/:lrn                                      controllers.carrierDetails.CarrierDetailYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /carrier/change-add/:lrn                                      controllers.carrierDetails.CarrierDetailYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
 GET        /carrier/eori-tin/:lrn                                        controllers.carrierDetails.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /carrier/eori-tin/:lrn                                        controllers.carrierDetails.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /carrier/change-eori-tin/:lrn                                 controllers.carrierDetails.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

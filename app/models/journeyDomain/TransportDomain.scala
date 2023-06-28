@@ -22,7 +22,6 @@ import models.journeyDomain.carrierDetails.CarrierDetailsDomain
 import models.journeyDomain.equipment.EquipmentsAndChargesDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
-import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.{Mode, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.external.ApprovedOperatorPage
