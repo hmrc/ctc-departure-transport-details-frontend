@@ -207,7 +207,7 @@ transportMeans.active.addNationalityYesNo.title = Do you want to add the registe
 transportMeans.active.addNationalityYesNo.heading = Do you want to add the registered country for this vehicle?
 transportMeans.active.addNationalityYesNo.checkYourAnswersLabel = Do you want to add the registered country for this vehicle?
 transportMeans.active.addNationalityYesNo.change.hidden = if you want to add the registered country for the border means of transport
-transportMeans.active.addNationalityYesNo.error.required = Select yes if you want to add the registered country for the vehicle crossing the border
+transportMeans.active.addNationalityYesNo.error.required = Select yes if you want to add the registered country for this vehicle
 
 transportMeans.active.identificationNumber.title = What is the {0}?
 transportMeans.active.identificationNumber.heading = What is the {0}?
