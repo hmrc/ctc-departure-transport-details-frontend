@@ -24,6 +24,7 @@ import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
 import models.{Mode, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
+import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.ApprovedOperatorPage
 import pages.supplyChainActors.SupplyChainActorYesNoPage
 import play.api.mvc.Call
@@ -33,7 +34,7 @@ case class TransportDomain(
   transportMeans: TransportMeansDomain,
   supplyChainActors: Option[SupplyChainActorsDomain],
   authorisationsAndLimit: Option[AuthorisationsAndLimitDomain],
-  carrierDetails: CarrierDetailsDomain,
+  carrierDetails: Option[CarrierDetailsDomain],
   equipmentsAndCharges: EquipmentsAndChargesDomain
 ) extends JourneyDomainModel {
 
@@ -56,7 +57,7 @@ object TransportDomain {
       transportMeans         <- UserAnswersReader[TransportMeansDomain]
       supplyChainActors      <- SupplyChainActorYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[SupplyChainActorsDomain])
       authorisationsAndLimit <- authorisationsAndLimitReads
-      carrierDetails         <- UserAnswersReader[CarrierDetailsDomain]
+      carrierDetails         <- CarrierDetailYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[CarrierDetailsDomain])
       equipmentsAndCharges   <- UserAnswersReader[EquipmentsAndChargesDomain]
     } yield TransportDomain(preRequisites, transportMeans, supplyChainActors, authorisationsAndLimit, carrierDetails, equipmentsAndCharges)
   }
