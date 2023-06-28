@@ -23,6 +23,8 @@ import pages.sections.transportMeans.TransportMeansDepartureSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
+import scala.util.Try
+
 case object AddIdentificationNumberYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = TransportMeansDepartureSection.path \ toString
@@ -31,4 +33,10 @@ case object AddIdentificationNumberYesNoPage extends QuestionPage[Boolean] {
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddIdentificationNumberYesNoController.onPageLoad(userAnswers.lrn, mode))
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(MeansIdentificationNumberPage)
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

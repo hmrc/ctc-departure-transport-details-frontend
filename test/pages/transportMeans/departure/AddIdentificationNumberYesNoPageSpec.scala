@@ -28,5 +28,22 @@ class AddIdentificationNumberYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AddIdentificationNumberYesNoPage)
 
+    "cleanup" - {
+      "when NO selected" - {
+        "must clean up IdentificationNumberPage" in {
+          forAll(nonEmptyString) {
+            identificationNumber =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddIdentificationNumberYesNoPage, true)
+                .setValue(MeansIdentificationNumberPage, identificationNumber)
+
+              val result = userAnswers.setValue(AddIdentificationNumberYesNoPage, false)
+
+              result.get(MeansIdentificationNumberPage) must not be defined
+          }
+        }
+      }
+    }
+
   }
 }
