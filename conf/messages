@@ -140,6 +140,12 @@ transportMeans.departure.identification.checkYourAnswersLabel = Identification t
 transportMeans.departure.identification.change.hidden = identification type for the departure means of transport
 transportMeans.departure.identification.error.required = Select which identification you want to use for this vehicle
 
+transportMeans.departure.addIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
+transportMeans.departure.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
+transportMeans.departure.addIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add an identification number for this vehicle?
+transportMeans.departure.addIdentificationNumberYesNo.change.hidden = if you want to add an identification number for this vehicle
+transportMeans.departure.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
+
 transportMeans.departure.meansIdentificationNumber.title = What is the {0}?
 transportMeans.departure.meansIdentificationNumber.heading = What is the {0}?
 transportMeans.departure.meansIdentificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.

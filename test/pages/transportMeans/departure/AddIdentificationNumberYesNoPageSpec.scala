@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package config
+package pages.transportMeans.departure
 
-import models.Phase
-import models.Phase.{PostTransition, Transition}
+import pages.behaviours.PageBehaviours
 
-trait PhaseConfig {
-  val phase: Phase
-}
+class AddIdentificationNumberYesNoPageSpec extends PageBehaviours {
 
-class TransitionConfig() extends PhaseConfig {
-  override val phase: Phase = Transition
-}
+  "AddIdentificationNumberYesNo Page Spec" - {
 
-class PostTransitionConfig() extends PhaseConfig {
-  override val phase: Phase = PostTransition
+    beRetrievable[Boolean](AddIdentificationNumberYesNoPage)
+
+    beSettable[Boolean](AddIdentificationNumberYesNoPage)
+
+    beRemovable[Boolean](AddIdentificationNumberYesNoPage)
+
+  }
 }
