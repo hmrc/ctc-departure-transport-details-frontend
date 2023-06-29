@@ -146,14 +146,19 @@ transportMeans.departure.addIdentificationNumberYesNo.checkYourAnswersLabel = Do
 transportMeans.departure.addIdentificationNumberYesNo.change.hidden = if you want to add an identification number for this vehicle
 transportMeans.departure.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
 
-transportMeans.departure.meansIdentificationNumber.title = What is the {0}?
-transportMeans.departure.meansIdentificationNumber.heading = What is the {0}?
-transportMeans.departure.meansIdentificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
+transportMeans.departure.meansIdentificationNumber.withIDType.title = What is the {0}?
+transportMeans.departure.meansIdentificationNumber.withNoIDType.title = What is the identification number?
+transportMeans.departure.meansIdentificationNumber.withIDType.heading = What is the {0}?
+transportMeans.departure.meansIdentificationNumber.withNoIDType.heading = What is the identification number?
+transportMeans.departure.meansIdentificationNumber.hint = This can be up to 27 characters long and include both letters and numbers.
 transportMeans.departure.meansIdentificationNumber.checkYourAnswersLabel = Identification number
 transportMeans.departure.meansIdentificationNumber.change.hidden = identification number for the departure means of transport
-transportMeans.departure.meansIdentificationNumber.error.required = Enter the {0}
-transportMeans.departure.meansIdentificationNumber.error.invalid = The {0} must only include letters a to z and numbers 0 to 9
-transportMeans.departure.meansIdentificationNumber.error.length = The {0} must be 35 characters or less
+transportMeans.departure.meansIdentificationNumber.withIDType.error.required = Enter the {0}
+transportMeans.departure.meansIdentificationNumber.withIDType.error.invalid = The {0} must only include letters a to z and numbers 0 to 9
+transportMeans.departure.meansIdentificationNumber.withIDType.error.length = The {0} must be 27 characters or less
+transportMeans.departure.meansIdentificationNumber.withNoIDType.error.required = Enter the identification number
+transportMeans.departure.meansIdentificationNumber.withNoIDType.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+transportMeans.departure.meansIdentificationNumber.withNoIDType.error.length = The identification number must be 27 characters or less
 
 transportMeans.departure.addVehicleCountryYesNo.title = Do you want to add the registered country for this vehicle?
 transportMeans.departure.addVehicleCountryYesNo.heading = Do you want to add the registered country for this vehicle?
