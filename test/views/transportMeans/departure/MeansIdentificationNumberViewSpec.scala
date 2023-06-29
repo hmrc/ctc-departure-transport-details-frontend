@@ -29,14 +29,16 @@ import views.html.transportMeans.departure.MeansIdentificationNumberView
 
 class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
-  override val prefix: String = "transportMeans.departure.meansIdentificationNumber"
+  override val prefix: String = "transportMeans.departure.meansIdentificationNumber.withIDType"
 
   private val identificationType = arbitrary[Identification].sample.value
 
-  override def form: Form[String] = new MeansIdentificationNumberFormProvider()(prefix)
+  private val formProvider = new MeansIdentificationNumberFormProvider()
+
+  override def form: Form[String] = formProvider(prefix, identificationType.arg)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, identificationType.arg)(fakeRequest, messages)
+    injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, prefix, identificationType.arg)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
@@ -49,10 +51,22 @@ class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] 
   behave like pageWithHeading(identificationType.arg)
 
   behave like pageWithHint(
-    "This can be up to 35 characters long and include both letters and numbers."
+    "This can be up to 27 characters long and include both letters and numbers."
   )
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Save and continue")
+
+  "when no identification type is present in user answers" - {
+
+    val withNoIDTypePrefix: String = "transportMeans.departure.meansIdentificationNumber.withNoIDType"
+    val form                       = formProvider(withNoIDTypePrefix, identificationType.arg)
+    val view                       = injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, withNoIDTypePrefix)(fakeRequest, messages)
+    val doc                        = parseView(view)
+
+    behave like pageWithTitle(doc, withNoIDTypePrefix)
+
+    behave like pageWithHeading(doc, withNoIDTypePrefix)
+  }
 }
