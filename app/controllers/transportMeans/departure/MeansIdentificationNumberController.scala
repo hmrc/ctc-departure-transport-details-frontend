@@ -20,7 +20,6 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.MeansIdentificationNumberFormProvider
 import models.requests.DataRequest
-import models.transportMeans.departure.Identification
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.departure.{IdentificationPage, MeansIdentificationNumberPage}

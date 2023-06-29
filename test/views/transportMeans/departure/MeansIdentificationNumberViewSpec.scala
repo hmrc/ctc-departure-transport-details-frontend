@@ -36,7 +36,7 @@ class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] 
   override def form: Form[String] = new MeansIdentificationNumberFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, identificationType)(fakeRequest, messages)
+    injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, identificationType.arg)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 

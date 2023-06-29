@@ -29,4 +29,5 @@ object Constants {
   lazy val itemNumberMax: Int                   = 1999
   lazy val maxContainerIdNumberLength: Int      = 17
   lazy val identificationNumberLength: Int      = 35
+  lazy val meansIdentificationNumberLength: Int = 27
 }

@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.Constants.identificationNumberLength
+import forms.Constants.{identificationNumberLength, meansIdentificationNumberLength}
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
@@ -36,13 +36,13 @@ class MeansIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(
       form,
       fieldName,
-      stringsWithMaxLength(identificationNumberLength)
+      stringsWithMaxLength(meansIdentificationNumberLength)
     )
 
     behave like fieldWithMaxLength(
       form,
       fieldName,
-      maxLength = identificationNumberLength,
+      maxLength = meansIdentificationNumberLength,
       lengthError = FormError(fieldName, lengthKey)
     )
 
@@ -56,7 +56,7 @@ class MeansIdentificationNumberFormProviderSpec extends StringFieldBehaviours {
       form,
       fieldName,
       error = FormError(fieldName, invalidKey),
-      identificationNumberLength
+      meansIdentificationNumberLength
     )
   }
 }
