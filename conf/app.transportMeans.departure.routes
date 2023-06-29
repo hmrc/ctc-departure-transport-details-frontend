@@ -9,6 +9,11 @@ POST       /departure-means-of-transport/identification/:lrn                    
 GET        /departure-means-of-transport/change-identification/:lrn               controllers.transportMeans.departure.IdentificationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /departure-means-of-transport/change-identification/:lrn               controllers.transportMeans.departure.IdentificationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
+GET        /departure-means-of-transport/add-identification-number/:lrn           controllers.transportMeans.departure.AddIdentificationNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /departure-means-of-transport/add-identification-number/:lrn           controllers.transportMeans.departure.AddIdentificationNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /departure-means-of-transport/change-add-identification-number/:lrn    controllers.transportMeans.departure.AddIdentificationNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /departure-means-of-transport/change-add-identification-number/:lrn    controllers.transportMeans.departure.AddIdentificationNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
 GET        /departure-means-of-transport/identification-number/:lrn               controllers.transportMeans.departure.MeansIdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /departure-means-of-transport/identification-number/:lrn               controllers.transportMeans.departure.MeansIdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /departure-means-of-transport/change-identification-number/:lrn        controllers.transportMeans.departure.MeansIdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
