@@ -155,6 +155,12 @@ transportMeans.departure.meansIdentificationNumber.error.required = Enter the {0
 transportMeans.departure.meansIdentificationNumber.error.invalid = The {0} must only include letters a to z and numbers 0 to 9
 transportMeans.departure.meansIdentificationNumber.error.length = The {0} must be 35 characters or less
 
+transportMeans.departure.addVehicleCountryYesNo.title = Do you want to add the registered country for this vehicle?
+transportMeans.departure.addVehicleCountryYesNo.heading = Do you want to add the registered country for this vehicle?
+transportMeans.departure.addVehicleCountryYesNo.checkYourAnswersLabel = Do you want to add the registered country for this vehicle?
+transportMeans.departure.addVehicleCountryYesNo.change.hidden = if you want to add the registered country for the border means of transport
+transportMeans.departure.addVehicleCountryYesNo.error.required = Select yes if you want to add the registered country for this vehicle
+
 transportMeans.departure.vehicleCountry.title = What country is this vehicle registered to?
 transportMeans.departure.vehicleCountry.heading = What country is this vehicle registered to?
 transportMeans.departure.vehicleCountry.hint = Enter the country or code, like AT or Austria.
