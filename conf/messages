@@ -364,13 +364,14 @@ authorisationsAndLimit.limit.limitDate.error.max.date = The limit date must be b
 
 carrierDetails.caption = Transport details - Carrier
 
-carrierDetails.identificationNumber.title = What is the carrier’s EORI number or Trader Identification Number (TIN)?
-carrierDetails.identificationNumber.heading = What is the carrier’s EORI number or Trader Identification Number (TIN)?
+carrierDetails.identificationNumber.title = What is the carrier’s EORI number or Third Country Unique Identification Number (TCUIN)?
+carrierDetails.identificationNumber.heading = What is the carrier’s EORI number or Third Country Unique Identification Number (TCUIN)?
 carrierDetails.identificationNumber.hint = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
-carrierDetails.identificationNumber.checkYourAnswersLabel = EORI number or Trader Identification Number (TIN)
-carrierDetails.identificationNumber.change.hidden = carrier EORI number or Trader Identification Number (TIN)
-carrierDetails.identificationNumber.error.required = Enter the carrier’s EORI number or Trader Identification Number (TIN)
-carrierDetails.identificationNumber.error.length = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
+carrierDetails.identificationNumber.checkYourAnswersLabel = EORI number or Third Country Unique Identification Number (TCUIN)
+carrierDetails.identificationNumber.change.hidden = carrier EORI number or Third Country Unique Identification Number (TCUIN)
+carrierDetails.identificationNumber.error.required = Enter the carrier’s EORI number or Third Country Unique Identification Number
+carrierDetails.identificationNumber.error.maxLength = The EORI number or Third Country Unique Identification Number must be 17 characters or less
+carrierDetails.identificationNumber.error.minLength = The EORI number or Third Country Unique Identification Number must be 3 characters or more
 carrierDetails.identificationNumber.error.invalid = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
 
 carrierDetails.addContactYesNo.title = Do you want to add a contact for the carrier?
