@@ -63,14 +63,14 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(IdentificationNumberPage, "test string")
+      val userAnswers = emptyUserAnswers.setValue(IdentificationNumberPage, "GB123456")
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, identificationNumberRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "test string"))
+      val filledForm = form.bind(Map("value" -> "GB123456"))
 
       val view = injector.instanceOf[IdentificationNumberView]
 
@@ -87,7 +87,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val request = FakeRequest(POST, identificationNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+        .withFormUrlEncodedBody(("value", "GB123456"))
 
       val result = route(app, request).value
 
