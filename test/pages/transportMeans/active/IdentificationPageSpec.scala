@@ -32,21 +32,45 @@ class IdentificationPageSpec extends PageBehaviours {
     beRemovable[Identification](IdentificationPage(activeIndex))
 
     "cleanup" - {
-      "when answer changes" - {
-        "must remove identification number" in {
-          forAll(arbitrary[Identification], Gen.alphaNumStr) {
-            (identification, identificationNumber) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(IdentificationPage(index), identification)
-                .setValue(IdentificationNumberPage(index), identificationNumber)
+      "must remove identification number and inferred value" in {
+        forAll(arbitrary[Identification], Gen.alphaNumStr) {
+          (identification, identificationNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InferredIdentificationPage(index), identification)
+              .setValue(IdentificationNumberPage(index), identificationNumber)
 
-              forAll(arbitrary[Identification].retryUntil(_ != identification)) {
-                differentIdentification =>
-                  val result = userAnswers.setValue(IdentificationPage(index), differentIdentification)
+            val result = userAnswers.setValue(IdentificationPage(index), identification)
 
-                  result.get(IdentificationNumberPage(index)) must not be defined
-              }
-          }
+            result.get(InferredIdentificationPage(index)) must not be defined
+            result.get(IdentificationNumberPage(index)) must not be defined
+        }
+      }
+    }
+  }
+}
+
+class InferredIdentificationPageSpec extends PageBehaviours {
+
+  "InferredIdentificationPage" - {
+
+    beRetrievable[Identification](InferredIdentificationPage(activeIndex))
+
+    beSettable[Identification](InferredIdentificationPage(activeIndex))
+
+    beRemovable[Identification](InferredIdentificationPage(activeIndex))
+
+    "cleanup" - {
+      "must remove identification number and non-inferred value" in {
+        forAll(arbitrary[Identification], Gen.alphaNumStr) {
+          (identification, identificationNumber) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(IdentificationPage(index), identification)
+              .setValue(IdentificationNumberPage(index), identificationNumber)
+
+            val result = userAnswers.setValue(InferredIdentificationPage(index), identification)
+
+            result.get(IdentificationPage(index)) must not be defined
+            result.get(IdentificationNumberPage(index)) must not be defined
         }
       }
     }

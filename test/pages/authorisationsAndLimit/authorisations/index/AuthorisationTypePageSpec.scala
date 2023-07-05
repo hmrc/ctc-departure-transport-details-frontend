@@ -31,39 +31,45 @@ class AuthorisationTypePageSpec extends PageBehaviours {
     beRemovable[AuthorisationType](AuthorisationTypePage(index))
 
     "cleanup" - {
-      val referenceNumber = arbitrary[String].sample.value
+      "must remove authorisation number and inferred value" in {
+        forAll(arbitrary[AuthorisationType]) {
+          authorisationType =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InferredAuthorisationTypePage(authorisationIndex), authorisationType)
+              .setValue(AuthorisationReferenceNumberPage(authorisationIndex), arbitrary[String].sample.value)
 
-      "when answer changes" - {
-        "must remove Authorisation number" in {
-          forAll(arbitrary[AuthorisationType]) {
-            authorisationType =>
-              val userAnswers = emptyUserAnswers
-                .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
-                .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
+            val result = userAnswers.setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
 
-              forAll(arbitrary[AuthorisationType].retryUntil(_ != authorisationType)) {
-                differentAuthorisationType =>
-                  val result = userAnswers.setValue(AuthorisationTypePage(authorisationIndex), differentAuthorisationType)
-
-                  result.get(AuthorisationReferenceNumberPage(authorisationIndex)) must not be defined
-              }
-          }
+            result.get(InferredAuthorisationTypePage(authorisationIndex)) must not be defined
+            result.get(AuthorisationReferenceNumberPage(authorisationIndex)) must not be defined
         }
       }
+    }
+  }
+}
 
-      "when answer has not changed" - {
-        "must not remove Authorisation reference number" in {
-          forAll(arbitrary[AuthorisationType]) {
-            authorisationType =>
-              val userAnswers = emptyUserAnswers
-                .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
-                .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
+class InferredAuthorisationTypePageSpec extends PageBehaviours {
 
-              val result = userAnswers.setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
+  "InferredAuthorisationTypePage" - {
 
-              result.get(AuthorisationReferenceNumberPage(authorisationIndex)) must be(defined)
+    beRetrievable[AuthorisationType](InferredAuthorisationTypePage(index))
 
-          }
+    beSettable[AuthorisationType](InferredAuthorisationTypePage(index))
+
+    beRemovable[AuthorisationType](InferredAuthorisationTypePage(index))
+
+    "cleanup" - {
+      "must remove authorisation number and non-inferred value" in {
+        forAll(arbitrary[AuthorisationType]) {
+          authorisationType =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
+              .setValue(AuthorisationReferenceNumberPage(authorisationIndex), arbitrary[String].sample.value)
+
+            val result = userAnswers.setValue(InferredAuthorisationTypePage(authorisationIndex), authorisationType)
+
+            result.get(AuthorisationTypePage(authorisationIndex)) must not be defined
+            result.get(AuthorisationReferenceNumberPage(authorisationIndex)) must not be defined
         }
       }
     }
