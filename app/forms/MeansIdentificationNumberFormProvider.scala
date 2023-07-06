@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.Constants.identificationNumberLength
+import forms.Constants.meansIdentificationNumberLength
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
@@ -30,7 +30,7 @@ class MeansIdentificationNumberFormProvider @Inject() extends Mappings {
       "value" -> text(s"$prefix.error.required", args)
         .verifying(
           StopOnFirstFail[String](
-            maxLength(identificationNumberLength, s"$prefix.error.length", args),
+            maxLength(meansIdentificationNumberLength, s"$prefix.error.length", args),
             regexp(alphaNumericRegex, s"$prefix.error.invalid", args)
           )
         )
