@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.Constants.{identificationNumberLength, meansIdentificationNumberLength}
+import forms.Constants.meansIdentificationNumberLength
 import forms.behaviours.StringFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
