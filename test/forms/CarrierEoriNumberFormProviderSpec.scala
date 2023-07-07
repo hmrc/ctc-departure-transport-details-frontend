@@ -28,6 +28,7 @@ class CarrierEoriNumberFormProviderSpec extends StringFieldBehaviours with Field
 
   private val requiredKey          = s"$prefix.error.required"
   private val maxLengthKey         = s"$prefix.error.maxLength"
+  private val minLengthKey         = s"$prefix.error.minLength"
   private val invalidCharactersKey = s"$prefix.error.invalidCharacters"
   private val invalidFormatKey     = s"$prefix.error.invalidFormat"
 
@@ -56,19 +57,19 @@ class CarrierEoriNumberFormProviderSpec extends StringFieldBehaviours with Field
       length = maxEoriNumberLength
     )
 
-    "must not bind strings over max length" in {
-      val expectedError = FormError(fieldName, maxLengthKey, Seq(maxEoriNumberLength))
+    behave like fieldWithMaxLength(
+      form = form,
+      fieldName = fieldName,
+      maxLength = maxEoriNumberLength,
+      lengthError = FormError(fieldName, maxLengthKey, Seq(maxEoriNumberLength))
+    )
 
-      val gen = for {
-        eori <- stringsLongerThan(maxEoriNumberLength, Gen.alphaNumChar)
-      } yield eori
-
-      forAll(gen) {
-        invalidString =>
-          val result: Field = form.bind(Map(fieldName -> invalidString)).apply(fieldName)
-          result.errors must contain(expectedError)
-      }
-    }
+    behave like fieldWithMinLength(
+      form = form,
+      fieldName = fieldName,
+      minLength = minLengthCarrierEori,
+      lengthError = FormError(fieldName, minLengthKey, Seq(minLengthCarrierEori))
+    )
 
     "must remove spaces on bound strings" in {
       val result = form.bind(Map(fieldName -> " GB 123 456 789 123 "))
@@ -76,13 +77,16 @@ class CarrierEoriNumberFormProviderSpec extends StringFieldBehaviours with Field
       result.get mustEqual "GB123456789123"
     }
 
+    "must capitalise first two letters on bound strings" in {
+      val result = form.bind(Map(fieldName -> "gb123"))
+      result.errors mustEqual Nil
+      result.get mustEqual "GB123"
+    }
+
     "must not bind strings that do not match format regex" in {
-
       val expectedError = FormError("value", invalidFormatKey, Seq(carrierEoriRegex.toString))
-
       val result: Field = form.bind(Map(fieldName -> "123456")).apply(fieldName)
       result.errors must contain(expectedError)
     }
   }
-
 }
