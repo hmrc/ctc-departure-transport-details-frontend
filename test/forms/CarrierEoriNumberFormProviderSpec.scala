@@ -28,7 +28,8 @@ class CarrierEoriNumberFormProviderSpec extends StringFieldBehaviours with Field
 
   private val requiredKey          = s"$prefix.error.required"
   private val maxLengthKey         = s"$prefix.error.maxLength"
-  private val invalidCharactersKey = s"$prefix.error.invalid"
+  private val invalidCharactersKey = s"$prefix.error.invalidCharacters"
+  private val invalidFormatKey     = s"$prefix.error.invalidFormat"
 
   private val form = new CarrierEoriNumberFormProvider()(prefix)
 
@@ -51,7 +52,7 @@ class CarrierEoriNumberFormProviderSpec extends StringFieldBehaviours with Field
     behave like fieldWithInvalidCharacters(
       form = form,
       fieldName = fieldName,
-      error = FormError(fieldName, invalidCharactersKey, Seq(carrierEoriRegex.regex)),
+      error = FormError(fieldName, invalidCharactersKey, Seq(alphaNumericRegex.regex)),
       length = maxEoriNumberLength
     )
 
@@ -75,5 +76,13 @@ class CarrierEoriNumberFormProviderSpec extends StringFieldBehaviours with Field
       result.get mustEqual "GB123456789123"
     }
 
+    "must not bind strings that do not match format regex" in {
+
+      val expectedError = FormError("value", invalidFormatKey, Seq(carrierEoriRegex.toString))
+
+      val result: Field = form.bind(Map(fieldName -> "123456")).apply(fieldName)
+      result.errors must contain(expectedError)
+    }
   }
+
 }
