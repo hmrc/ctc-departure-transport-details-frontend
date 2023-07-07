@@ -33,18 +33,26 @@ abstract class BaseAuthorisationTypePage(authorisationIndex: Index) extends Ques
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AuthorisationTypeController.onPageLoad(userAnswers.lrn, mode, authorisationIndex))
 
+  def cleanup(userAnswers: UserAnswers): Try[UserAnswers]
+
   // TODO - if user adds or removes a SSE type authorisation this affects the transport equipment seals and goods item numbers nav.
   override def cleanup(value: Option[AuthorisationType], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(_) => userAnswers.remove(AuthorisationReferenceNumberPage(authorisationIndex))
+      case Some(_) => userAnswers.remove(AuthorisationReferenceNumberPage(authorisationIndex)).flatMap(cleanup)
       case _       => super.cleanup(value, userAnswers)
     }
 }
 
 case class AuthorisationTypePage(authorisationIndex: Index) extends BaseAuthorisationTypePage(authorisationIndex) {
   override def toString: String = "authorisationType"
+
+  override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.remove(InferredAuthorisationTypePage(authorisationIndex))
 }
 
 case class InferredAuthorisationTypePage(authorisationIndex: Index) extends BaseAuthorisationTypePage(authorisationIndex) {
   override def toString: String = "inferredAuthorisationType"
+
+  override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.remove(AuthorisationTypePage(authorisationIndex))
 }
