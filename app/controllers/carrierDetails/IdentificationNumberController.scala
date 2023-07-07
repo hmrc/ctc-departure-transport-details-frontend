@@ -18,10 +18,9 @@ package controllers.carrierDetails
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.EoriNumberFormProvider
+import forms.CarrierEoriNumberFormProvider
 import models.{LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.TransportNavigatorProvider
+import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.carrierDetails.IdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +35,7 @@ class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
-  formProvider: EoriNumberFormProvider,
+  formProvider: CarrierEoriNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationNumberView

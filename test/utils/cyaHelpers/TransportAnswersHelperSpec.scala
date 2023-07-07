@@ -541,14 +541,14 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.eoriNumber.get
 
-              result.key.value mustBe "EORI number or Trader Identification Number (TIN)"
+              result.key.value mustBe "EORI number or Third Country Unique Identification Number (TCUIN)"
               result.value.value mustBe eoriNumber
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe carrierDetailsRoutes.IdentificationNumberController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "carrier EORI number or Trader Identification Number (TIN)"
+              action.visuallyHiddenText.get mustBe "carrier EORI number or Third Country Unique Identification Number (TCUIN)"
               action.id mustBe "change-eori-number"
           }
         }
