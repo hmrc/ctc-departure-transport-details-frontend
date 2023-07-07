@@ -83,6 +83,12 @@ class CarrierEoriNumberFormProviderSpec extends StringFieldBehaviours with Field
       val result: Field = form.bind(Map(fieldName -> "123456")).apply(fieldName)
       result.errors must contain(expectedError)
     }
+
+    "must capitalise first 2 letters on bound strings" in {
+      val result = form.bind(Map(fieldName -> "gb12345"))
+      result.errors mustEqual Nil
+      result.get mustEqual "GB12345"
+    }
   }
 
 }
