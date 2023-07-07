@@ -372,7 +372,7 @@ carrierDetails.identificationNumber.change.hidden = carrier EORI number or Third
 carrierDetails.identificationNumber.error.required = Enter the carrier’s EORI number or Third Country Unique Identification Number
 carrierDetails.identificationNumber.error.maxLength = The EORI number or Third Country Unique Identification Number must be 17 characters or less
 carrierDetails.identificationNumber.error.minLength = The EORI number or Third Country Unique Identification Number must be 3 characters or more
-carrierDetails.identificationNumber.error.invalid = This will start with 2 letters, such as GB or XI, followed by up to 15 letters or numbers. For example, GB123456789000.
+carrierDetails.identificationNumber.error.invalid = The EORI number or Third Country Unique Identification Number must start with 2 letters, such as GB or XI, followed by up to 15 letters or numbers
 
 carrierDetails.addContactYesNo.title = Do you want to add a contact for the carrier?
 carrierDetails.addContactYesNo.heading = Do you want to add a contact for the carrier?
