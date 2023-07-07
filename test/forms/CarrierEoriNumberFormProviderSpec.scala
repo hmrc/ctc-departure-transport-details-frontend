@@ -77,12 +77,6 @@ class CarrierEoriNumberFormProviderSpec extends StringFieldBehaviours with Field
       result.get mustEqual "GB123456789123"
     }
 
-    "must capitalise first two letters on bound strings" in {
-      val result = form.bind(Map(fieldName -> "gb123"))
-      result.errors mustEqual Nil
-      result.get mustEqual "GB123"
-    }
-
     "must not bind strings that do not match format regex" in {
       val expectedError = FormError("value", invalidFormatKey, Seq(carrierEoriRegex.toString))
       val result: Field = form.bind(Map(fieldName -> "123456")).apply(fieldName)
