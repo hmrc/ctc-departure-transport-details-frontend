@@ -16,22 +16,24 @@
 
 package forms
 
-import forms.Constants.meansIdentificationNumberLength
+import forms.Constants.{maxEoriNumberLength, minLengthCarrierEori}
 import forms.mappings.Mappings
-import models.domain.StringFieldRegex.alphaNumericRegex
+import models.domain.StringFieldRegex._
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class MeansIdentificationNumberFormProvider @Inject() extends Mappings {
+class CarrierEoriNumberFormProvider @Inject() extends Mappings {
 
-  def apply(prefix: String, args: String*): Form[String] =
+  def apply(prefix: String): Form[String] =
     Form(
-      "value" -> text(s"$prefix.error.required", args)
+      "value" -> eoriFormat(s"$prefix.error.required")
         .verifying(
-          StopOnFirstFail[String](
-            maxLength(meansIdentificationNumberLength, s"$prefix.error.length", args),
-            regexp(alphaNumericRegex, s"$prefix.error.invalid", args)
+          forms.StopOnFirstFail[String](
+            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
+            maxLength(maxEoriNumberLength, s"$prefix.error.maxLength"),
+            minLength(minLengthCarrierEori, s"$prefix.error.minLength"),
+            regexp(carrierEoriRegex, s"$prefix.error.invalidFormat")
           )
         )
     )
