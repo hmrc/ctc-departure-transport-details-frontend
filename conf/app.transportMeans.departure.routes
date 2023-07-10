@@ -9,12 +9,27 @@ POST       /departure-means-of-transport/identification/:lrn                    
 GET        /departure-means-of-transport/change-identification/:lrn               controllers.transportMeans.departure.IdentificationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /departure-means-of-transport/change-identification/:lrn               controllers.transportMeans.departure.IdentificationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
+GET        /departure-means-of-transport/add-identification-number/:lrn           controllers.transportMeans.departure.AddIdentificationNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /departure-means-of-transport/add-identification-number/:lrn           controllers.transportMeans.departure.AddIdentificationNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /departure-means-of-transport/change-add-identification-number/:lrn    controllers.transportMeans.departure.AddIdentificationNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /departure-means-of-transport/change-add-identification-number/:lrn    controllers.transportMeans.departure.AddIdentificationNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
 GET        /departure-means-of-transport/identification-number/:lrn               controllers.transportMeans.departure.MeansIdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /departure-means-of-transport/identification-number/:lrn               controllers.transportMeans.departure.MeansIdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /departure-means-of-transport/change-identification-number/:lrn        controllers.transportMeans.departure.MeansIdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /departure-means-of-transport/change-identification-number/:lrn        controllers.transportMeans.departure.MeansIdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
+GET        /departure-means-of-transport/add-country/:lrn                         controllers.transportMeans.departure.AddVehicleCountryYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /departure-means-of-transport/add-country/:lrn                         controllers.transportMeans.departure.AddVehicleCountryYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /departure-means-of-transport/change-add-country/:lrn                  controllers.transportMeans.departure.AddVehicleCountryYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /departure-means-of-transport/change-add-country/:lrn                  controllers.transportMeans.departure.AddVehicleCountryYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
 GET        /departure-means-of-transport/country/:lrn                             controllers.transportMeans.departure.VehicleCountryController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /departure-means-of-transport/country/:lrn                             controllers.transportMeans.departure.VehicleCountryController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /departure-means-of-transport/change-country/:lrn                      controllers.transportMeans.departure.VehicleCountryController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /departure-means-of-transport/change-country/:lrn                      controllers.transportMeans.departure.VehicleCountryController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /departure-means-of-transport/add-identification-type/:lrn             controllers.transportMeans.departure.AddIdentificationTypeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /departure-means-of-transport/add-identification-type/:lrn             controllers.transportMeans.departure.AddIdentificationTypeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /departure-means-of-transport/change-add-identification-type/:lrn      controllers.transportMeans.departure.AddIdentificationTypeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /departure-means-of-transport/change-add-identification-type/:lrn      controllers.transportMeans.departure.AddIdentificationTypeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

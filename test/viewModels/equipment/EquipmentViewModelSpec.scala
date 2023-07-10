@@ -51,8 +51,7 @@ class EquipmentViewModelSpec extends SpecBase with Generators {
 
       "must return row for each answer" in {
 
-        val numberOfSeals            = Gen.choose(1, 10: Int).sample.value
-        val numberOfGoodsItemNumbers = Gen.choose(1, 10: Int).sample.value
+        val numberOfSeals = Gen.choose(1, 10: Int).sample.value
 
         implicit class TestRichUserAnswers(userAnswers: UserAnswers) {
           def setSealsValues(): UserAnswers =
