@@ -33,17 +33,25 @@ abstract class BaseIdentificationPage(index: Index) extends QuestionPage[Identif
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.IdentificationController.onPageLoad(userAnswers.lrn, mode, index))
 
+  def cleanup(userAnswers: UserAnswers): Try[UserAnswers]
+
   override def cleanup(value: Option[Identification], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(_) => userAnswers.remove(IdentificationNumberPage(index))
+      case Some(_) => userAnswers.remove(IdentificationNumberPage(index)).flatMap(cleanup)
       case _       => super.cleanup(value, userAnswers)
     }
 }
 
 case class IdentificationPage(index: Index) extends BaseIdentificationPage(index) {
   override def toString: String = "identification"
+
+  override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.remove(InferredIdentificationPage(index))
 }
 
 case class InferredIdentificationPage(index: Index) extends BaseIdentificationPage(index) {
   override def toString: String = "inferredIdentification"
+
+  override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers.remove(IdentificationPage(index))
 }
