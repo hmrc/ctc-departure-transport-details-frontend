@@ -202,6 +202,12 @@ transportMeans.active.addVehicleIdentificationNumberYesNo.heading = Do you want 
 transportMeans.active.addVehicleIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
 transportMeans.active.addVehicleIdentificationNumberYeeNo.checkYourAnswersLabel= Do you want to add an identification number for this vehicle?
 
+transportMeans.active.addIdentificationYesNo.title = Do you want to add the type of identification?
+transportMeans.active.addIdentificationYesNo.heading = Do you want to add the type of identification?
+transportMeans.active.addIdentificationYesNo.checkYourAnswersLabel = Do you want to add the type of identification?
+transportMeans.active.addIdentificationYesNo.change.hidden = if you want to add the identification type
+transportMeans.active.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification
+
 transportMeans.active.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.active.identification.heading = Which identification do you want to use for this vehicle?
 transportMeans.active.identification.imoShipIdNumber = IMO ship identification number
