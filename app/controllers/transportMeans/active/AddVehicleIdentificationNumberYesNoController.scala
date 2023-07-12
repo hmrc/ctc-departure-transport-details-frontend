@@ -22,27 +22,28 @@ import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.active.AddVehicleIdentificationNumberYesNoPage
-import play.api.i18n.I18nSupport
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transportMeans.active.AddVehicleIdentificationNumberYesNoView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class AddVehicleIdentificationNumberYesNoController @Inject() (implicit
-  val sessionRepository: SessionRepository,
+class AddVehicleIdentificationNumberYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddVehicleIdentificationNumberYesNoView
-) extends FrontendBaseController
+)(implicit executionContext: ExecutionContext)
+    extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transportMeans.active.addVehicleIdentification NumberYesNo")
+  private val form = formProvider("transportMeans.active.addVehicleIdentificationNumberYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

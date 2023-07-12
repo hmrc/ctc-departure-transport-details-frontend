@@ -16,35 +16,17 @@
 
 package pages.transportMeans.active
 
-import models.reference.Nationality
-import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
-class AddVehicleIdentifcationNumberYesNoPageSpec extends PageBehaviours {
+class AddVehicleIdentificationNumberYesNoPageSpec extends PageBehaviours {
 
-  "AddNationalityYesNoPage" - {
+  "AddVehicleIdentificationNumberYesNoPage" - {
 
-    beRetrievable[Boolean](AddNationalityYesNoPage(activeIndex))
+    beRetrievable[Boolean](AddVehicleIdentificationNumberYesNoPage(activeIndex))
 
-    beSettable[Boolean](AddNationalityYesNoPage(activeIndex))
+    beSettable[Boolean](AddVehicleIdentificationNumberYesNoPage(activeIndex))
 
-    beRemovable[Boolean](AddNationalityYesNoPage(activeIndex))
+    beRemovable[Boolean](AddVehicleIdentificationNumberYesNoPage(activeIndex))
 
-    "cleanup" - {
-      "when NO selected" - {
-        "must clean up NationalityPage" in {
-          forAll(arbitrary[Nationality]) {
-            nationality =>
-              val userAnswers = emptyUserAnswers
-                .setValue(AddNationalityYesNoPage(index), true)
-                .setValue(NationalityPage(index), nationality)
-
-              val result = userAnswers.setValue(AddNationalityYesNoPage(index), false)
-
-              result.get(NationalityPage(index)) must not be defined
-          }
-        }
-      }
-    }
   }
 }

@@ -23,37 +23,37 @@ import navigation.TransportMeansActiveNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transportMeans.active.AddNationalityYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transportMeans.active.AddNationalityYesNoView
+import views.html.transportMeans.active.{AddNationalityYesNoView, AddVehicleIdentificationNumberYesNoView}
+import pages.transportMeans.active.AddVehicleIdentificationNumberYesNoPage
 
 import scala.concurrent.Future
 
 class AddVehicleIdentificationNumberYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider                  = new YesNoFormProvider()
-  private val form                          = formProvider("transportMeans.active.addNationalityYesNo")
-  private val mode                          = NormalMode
-  private lazy val addNationalityYesNoRoute = routes.AddNationalityYesNoController.onPageLoad(lrn, mode, activeIndex).url
+  private val formProvider                                  = new YesNoFormProvider()
+  private val form                                          = formProvider("transportMeans.active.addVehicleIdentificationNumberYesNo")
+  private val mode                                          = NormalMode
+  private lazy val addVehicleIdentificationNumberYesNoRoute = routes.AddVehicleIdentificationNumberYesNoController.onPageLoad(lrn, mode, activeIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[TransportMeansActiveNavigatorProvider]).toInstance(fakeTransportMeansActiveNavigatorProvider))
 
-  "AddNationalityYesNo Controller" - {
+  "AddVehicleIdentificationNumberYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addNationalityYesNoRoute)
+      val request = FakeRequest(GET, addVehicleIdentificationNumberYesNoRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[AddNationalityYesNoView]
+      val view = injector.instanceOf[AddVehicleIdentificationNumberYesNoView]
 
       status(result) mustEqual OK
 
@@ -63,16 +63,16 @@ class AddVehicleIdentificationNumberYesNoControllerSpec extends SpecBase with Ap
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddNationalityYesNoPage(activeIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(AddVehicleIdentificationNumberYesNoPage(activeIndex), true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addNationalityYesNoRoute)
+      val request = FakeRequest(GET, addVehicleIdentificationNumberYesNoRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddNationalityYesNoView]
+      val view = injector.instanceOf[AddVehicleIdentificationNumberYesNoView]
 
       status(result) mustEqual OK
 
@@ -86,7 +86,7 @@ class AddVehicleIdentificationNumberYesNoControllerSpec extends SpecBase with Ap
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, addNationalityYesNoRoute)
+      val request = FakeRequest(POST, addVehicleIdentificationNumberYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -100,14 +100,14 @@ class AddVehicleIdentificationNumberYesNoControllerSpec extends SpecBase with Ap
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, addNationalityYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, addVehicleIdentificationNumberYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddNationalityYesNoView]
+      val view = injector.instanceOf[AddVehicleIdentificationNumberYesNoView]
 
       contentAsString(result) mustEqual
         view(boundForm, lrn, mode, activeIndex)(request, messages).toString
@@ -117,7 +117,7 @@ class AddVehicleIdentificationNumberYesNoControllerSpec extends SpecBase with Ap
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addNationalityYesNoRoute)
+      val request = FakeRequest(GET, addVehicleIdentificationNumberYesNoRoute)
 
       val result = route(app, request).value
 
@@ -130,7 +130,7 @@ class AddVehicleIdentificationNumberYesNoControllerSpec extends SpecBase with Ap
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addNationalityYesNoRoute)
+      val request = FakeRequest(POST, addVehicleIdentificationNumberYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
