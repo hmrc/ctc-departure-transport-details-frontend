@@ -16,6 +16,8 @@
 
 package pages.transportMeans
 
+import models.transportMeans.BorderModeOfTransport
+import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
 class AddBorderModeOfTransportYesNoPageSpec extends PageBehaviours {
@@ -27,5 +29,37 @@ class AddBorderModeOfTransportYesNoPageSpec extends PageBehaviours {
     beSettable[Boolean](AddBorderModeOfTransportYesNoPage)
 
     beRemovable[Boolean](AddBorderModeOfTransportYesNoPage)
+
+    "cleanup" - {
+      "when no selected" - {
+        "must remove border mode of transport" in {
+          forAll(arbitrary[BorderModeOfTransport]) {
+            borderModeOfTransport =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddBorderModeOfTransportYesNoPage, true)
+                .setValue(BorderModeOfTransportPage, borderModeOfTransport)
+
+              val result = userAnswers.setValue(AddBorderModeOfTransportYesNoPage, false)
+
+              result.get(BorderModeOfTransportPage) must not be defined
+          }
+        }
+      }
+
+      "when yes selected" - {
+        "must not remove border mode of transport" in {
+          forAll(arbitrary[BorderModeOfTransport]) {
+            borderModeOfTransport =>
+              val userAnswers = emptyUserAnswers
+                .setValue(AddBorderModeOfTransportYesNoPage, true)
+                .setValue(BorderModeOfTransportPage, borderModeOfTransport)
+
+              val result = userAnswers.setValue(AddBorderModeOfTransportYesNoPage, true)
+
+              result.get(BorderModeOfTransportPage) must be(defined)
+          }
+        }
+      }
+    }
   }
 }
