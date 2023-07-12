@@ -197,6 +197,12 @@ transportMeans.borderModeOfTransport.checkYourAnswersLabel = Border mode of tran
 transportMeans.borderModeOfTransport.change.hidden = border mode of transport
 transportMeans.borderModeOfTransport.error.required = Select how the transit is crossing the border
 
+transportMeans.active.addIdentificationYesNo.title = Do you want to add the type of identification?
+transportMeans.active.addIdentificationYesNo.heading = Do you want to add the type of identification?
+transportMeans.active.addIdentificationYesNo.checkYourAnswersLabel = Do you want to add the type of identification?
+transportMeans.active.addIdentificationYesNo.change.hidden = if you want to add the identification type
+transportMeans.active.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification
+
 transportMeans.active.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.active.identification.heading = Which identification do you want to use for this vehicle?
 transportMeans.active.identification.imoShipIdNumber = IMO ship identification number
