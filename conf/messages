@@ -114,6 +114,12 @@ transportMeans.departure.inlandMode.checkYourAnswersLabel = Mode
 transportMeans.departure.inlandMode.error.required = Select which inland mode of transport you’re using
 transportMeans.departure.inlandMode.change.hidden = inland mode of transport
 
+transportMeans.departure.addIdentificationTypeYesNo.title = Do you want to add the type of identification?
+transportMeans.departure.addIdentificationTypeYesNo.heading = Do you want to add the type of identification?
+transportMeans.departure.addIdentificationTypeYesNo.checkYourAnswersLabel = Do you want to add a type of identification?
+transportMeans.departure.addIdentificationTypeYesNo.change.hidden = if you want to add a type of identification
+transportMeans.departure.addIdentificationTypeYesNo.error.required = Select yes if you want to add a type of identification
+
 transportMeans.departure.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.departure.identification.heading = Which identification do you want to use for this vehicle?
 transportMeans.departure.identification.seaGoingVessel = Name of a sea-going vessel
@@ -140,14 +146,31 @@ transportMeans.departure.identification.checkYourAnswersLabel = Identification t
 transportMeans.departure.identification.change.hidden = identification type for the departure means of transport
 transportMeans.departure.identification.error.required = Select which identification you want to use for this vehicle
 
-transportMeans.departure.meansIdentificationNumber.title = What is the {0}?
-transportMeans.departure.meansIdentificationNumber.heading = What is the {0}?
-transportMeans.departure.meansIdentificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
+transportMeans.departure.addIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
+transportMeans.departure.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
+transportMeans.departure.addIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add an identification number for this vehicle?
+transportMeans.departure.addIdentificationNumberYesNo.change.hidden = if you want to add an identification number for this vehicle
+transportMeans.departure.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
+
+transportMeans.departure.meansIdentificationNumber.withIDType.title = What is the {0}?
+transportMeans.departure.meansIdentificationNumber.withNoIDType.title = What is the identification number?
+transportMeans.departure.meansIdentificationNumber.withIDType.heading = What is the {0}?
+transportMeans.departure.meansIdentificationNumber.withNoIDType.heading = What is the identification number?
+transportMeans.departure.meansIdentificationNumber.hint = This can be up to 27 characters long and include both letters and numbers.
 transportMeans.departure.meansIdentificationNumber.checkYourAnswersLabel = Identification number
 transportMeans.departure.meansIdentificationNumber.change.hidden = identification number for the departure means of transport
-transportMeans.departure.meansIdentificationNumber.error.required = Enter the {0}
-transportMeans.departure.meansIdentificationNumber.error.invalid = The {0} must only include letters a to z and numbers 0 to 9
-transportMeans.departure.meansIdentificationNumber.error.length = The {0} must be 35 characters or less
+transportMeans.departure.meansIdentificationNumber.withIDType.error.required = Enter the {0}
+transportMeans.departure.meansIdentificationNumber.withIDType.error.invalid = The {0} must only include letters a to z and numbers 0 to 9
+transportMeans.departure.meansIdentificationNumber.withIDType.error.length = The {0} must be 27 characters or less
+transportMeans.departure.meansIdentificationNumber.withNoIDType.error.required = Enter the identification number
+transportMeans.departure.meansIdentificationNumber.withNoIDType.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+transportMeans.departure.meansIdentificationNumber.withNoIDType.error.length = The identification number must be 27 characters or less
+
+transportMeans.departure.addVehicleCountryYesNo.title = Do you want to add the registered country for this vehicle?
+transportMeans.departure.addVehicleCountryYesNo.heading = Do you want to add the registered country for this vehicle?
+transportMeans.departure.addVehicleCountryYesNo.checkYourAnswersLabel = Do you want to add the registered country for this vehicle?
+transportMeans.departure.addVehicleCountryYesNo.change.hidden = if you want to add the registered country for the border means of transport
+transportMeans.departure.addVehicleCountryYesNo.error.required = Select yes if you want to add the registered country for this vehicle
 
 transportMeans.departure.vehicleCountry.title = What country is this vehicle registered to?
 transportMeans.departure.vehicleCountry.heading = What country is this vehicle registered to?
@@ -371,14 +394,16 @@ carrierDetails.carrierDetailYesNo.checkYourAnswersLabel = Do you want to add a c
 carrierDetails.carrierDetailYesNo.change.hidden = if you want to add a carrier
 carrierDetails.carrierDetailYesNo.error.required = Select yes if you want to add a carrier
 
-carrierDetails.identificationNumber.title = What is the carrier’s EORI number or Trader Identification Number (TIN)?
-carrierDetails.identificationNumber.heading = What is the carrier’s EORI number or Trader Identification Number (TIN)?
-carrierDetails.identificationNumber.hint = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
-carrierDetails.identificationNumber.checkYourAnswersLabel = EORI number or Trader Identification Number (TIN)
-carrierDetails.identificationNumber.change.hidden = carrier EORI number or Trader Identification Number (TIN)
-carrierDetails.identificationNumber.error.required = Enter the carrier’s EORI number or Trader Identification Number (TIN)
-carrierDetails.identificationNumber.error.length = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
-carrierDetails.identificationNumber.error.invalid = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
+carrierDetails.identificationNumber.title = What is the carrier’s EORI number or Third Country Unique Identification Number (TCUIN)?
+carrierDetails.identificationNumber.heading = What is the carrier’s EORI number or Third Country Unique Identification Number (TCUIN)?
+carrierDetails.identificationNumber.hint = This will start with 2 letters, such as GB or XI, followed by up to 15 letters or numbers. For example, GB123456789000.
+carrierDetails.identificationNumber.checkYourAnswersLabel = EORI number or Third Country Unique Identification Number (TCUIN)
+carrierDetails.identificationNumber.change.hidden = carrier EORI number or Third Country Unique Identification Number (TCUIN)
+carrierDetails.identificationNumber.error.required = Enter the carrier’s EORI number or Third Country Unique Identification Number
+carrierDetails.identificationNumber.error.maxLength = The EORI number or Third Country Unique Identification Number must be 17 characters or less
+carrierDetails.identificationNumber.error.minLength = The EORI number or Third Country Unique Identification Number must be 3 characters or more
+carrierDetails.identificationNumber.error.invalidFormat = The EORI number or Third Country Unique Identification Number must start with 2 letters, such as GB or XI, followed by up to 15 letters or numbers
+carrierDetails.identificationNumber.error.invalidCharacters = The EORI number or Third Country Unique Identification Number must only include letters a to z and numbers 0 to 9
 
 carrierDetails.addContactYesNo.title = Do you want to add a contact for the carrier?
 carrierDetails.addContactYesNo.heading = Do you want to add a contact for the carrier?

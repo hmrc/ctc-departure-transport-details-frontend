@@ -14,46 +14,46 @@
  * limitations under the License.
  */
 
-package controllers.carrierDetails
+package controllers.transportMeans.departure
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.EoriNumberFormProvider
+import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.TransportNavigatorProvider
+import navigation.TransportMeansNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.carrierDetails.IdentificationNumberPage
+import org.scalatestplus.mockito.MockitoSugar
+import pages.transportMeans.departure.AddIdentificationNumberYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.carrierDetails.IdentificationNumberView
+import views.html.transportMeans.departure.AddIdentificationNumberYesNoView
 
 import scala.concurrent.Future
 
-class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddIdentificationNumberYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider                   = new EoriNumberFormProvider()
-  private val form                           = formProvider("carrierDetails.identificationNumber")
-  private val mode                           = NormalMode
-  private lazy val identificationNumberRoute = routes.IdentificationNumberController.onPageLoad(lrn, mode).url
+  private val formProvider                           = new YesNoFormProvider()
+  private val form                                   = formProvider("transportMeans.departure.addIdentificationNumberYesNo")
+  private val mode                                   = NormalMode
+  private lazy val addIdentificationNumberYesNoRoute = routes.AddIdentificationNumberYesNoController.onPageLoad(lrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
+      .overrides(bind(classOf[TransportMeansNavigatorProvider]).toInstance(fakeTransportMeansNavigatorProvider))
 
-  "IdentificationNumber Controller" - {
+  "AddIdentificationNumberYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, identificationNumberRoute)
+      val request = FakeRequest(GET, addIdentificationNumberYesNoRoute)
+      val result  = route(app, request).value
 
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[IdentificationNumberView]
+      val view = injector.instanceOf[AddIdentificationNumberYesNoView]
 
       status(result) mustEqual OK
 
@@ -63,16 +63,16 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(IdentificationNumberPage, "GB123456")
+      val userAnswers = emptyUserAnswers.setValue(AddIdentificationNumberYesNoPage, true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, identificationNumberRoute)
+      val request = FakeRequest(GET, addIdentificationNumberYesNoRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "GB123456"))
+      val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[IdentificationNumberView]
+      val view = injector.instanceOf[AddIdentificationNumberYesNoView]
 
       status(result) mustEqual OK
 
@@ -82,12 +82,12 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
-
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      val request = FakeRequest(POST, identificationNumberRoute)
-        .withFormUrlEncodedBody(("value", "GB123456"))
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, addIdentificationNumberYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
@@ -100,26 +100,24 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val invalidAnswer = ""
-
-      val request    = FakeRequest(POST, identificationNumberRoute).withFormUrlEncodedBody(("value", ""))
-      val filledForm = form.bind(Map("value" -> invalidAnswer))
+      val request   = FakeRequest(POST, addIdentificationNumberYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[IdentificationNumberView]
+      val view = injector.instanceOf[AddIdentificationNumberYesNoView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(boundForm, lrn, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, identificationNumberRoute)
+      val request = FakeRequest(GET, addIdentificationNumberYesNoRoute)
 
       val result = route(app, request).value
 
@@ -132,8 +130,8 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, identificationNumberRoute)
-        .withFormUrlEncodedBody(("value", "test string"))
+      val request = FakeRequest(POST, addIdentificationNumberYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

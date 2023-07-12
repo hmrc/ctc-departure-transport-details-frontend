@@ -22,6 +22,7 @@ object Constants {
   lazy val minTelephoneNumberLength: Int        = 6
   lazy val maxNameLength: Int                   = 70
   lazy val maxEoriNumberLength: Int             = 17
+  lazy val minLengthCarrierEori                 = 3
   lazy val conveyanceRefNumberLength: Int       = 17
   lazy val maxUCRLength: Int                    = 35
   lazy val maxSealIdNumberLength: Int           = 20
@@ -29,4 +30,5 @@ object Constants {
   lazy val itemNumberMax: Int                   = 1999
   lazy val maxContainerIdNumberLength: Int      = 17
   lazy val identificationNumberLength: Int      = 35
+  lazy val meansIdentificationNumberLength: Int = 27
 }
