@@ -199,8 +199,8 @@ transportMeans.borderModeOfTransport.error.required = Select how the transit is 
 
 transportMeans.active.addVehicleIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
 transportMeans.active.addVehicleIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
-transportMeans.active.addVehicleIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
-
+transportMeans.active.addVehicleIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
+transportMeans.active.addVehicleIdentificationNumberYeeNo.checkYourAnswersLabel= Do you want to add an identification number for this vehicle?
 
 transportMeans.active.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.active.identification.heading = Which identification do you want to use for this vehicle?
