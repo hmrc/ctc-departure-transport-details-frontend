@@ -31,30 +31,44 @@ import views.html.transportMeans.active.IdentificationNumberView
 
 class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] with Generators with SpecBase {
 
-  override val prefix: String = "transportMeans.active.identificationNumber"
+  override val prefix: String = "transportMeans.active.identificationNumber.withIDType"
 
   private val identificationType = arbitrary[Identification].sample.value
 
-  private val dynamicText = s"$prefix.${identificationType.toString}"
+  private val formProvider = new IdentificationNumberFormProvider()
 
-  override def form: Form[String] = new IdentificationNumberFormProvider()(prefix, dynamicText)
+  override def form: Form[String] = formProvider(prefix, identificationType.forDisplay)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[IdentificationNumberView].apply(form, lrn, dynamicText, NormalMode, activeIndex)(fakeRequest, messages)
+    injector.instanceOf[IdentificationNumberView].apply(form, lrn, NormalMode, activeIndex, prefix, identificationType.forDisplay)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle(messages(dynamicText))
+  behave like pageWithTitle(identificationType.forDisplay)
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Transport details - Border means of transport")
 
-  behave like pageWithHeading(messages(dynamicText))
+  behave like pageWithHeading(identificationType.forDisplay)
 
-  behave like pageWithoutHint()
+  behave like pageWithHint(
+    "This can be up to 27 characters long and include both letters and numbers."
+  )
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Save and continue")
+
+  "when no identification type is present in user answers" - {
+
+    val withNoIDTypePrefix: String = "transportMeans.active.identificationNumber.withNoIDType"
+    val form                       = formProvider(withNoIDTypePrefix)
+    val view                       = injector.instanceOf[IdentificationNumberView].apply(form, lrn, NormalMode, activeIndex, withNoIDTypePrefix)(fakeRequest, messages)
+    val doc                        = parseView(view)
+
+    behave like pageWithTitle(doc, withNoIDTypePrefix)
+
+    behave like pageWithHeading(doc, withNoIDTypePrefix)
+  }
 }
