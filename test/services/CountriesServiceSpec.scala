@@ -48,13 +48,13 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
     "getCountries" - {
       "must return a list of sorted countries" in {
 
-        when(mockRefDataConnector.getCountries(any())(any(), any()))
+        when(mockRefDataConnector.getCountries()(any(), any()))
           .thenReturn(Future.successful(countries))
 
         service.getCountries().futureValue mustBe
           SelectableList(Seq(country2, country3, country1))
 
-        verify(mockRefDataConnector).getCountries(eqTo(Nil))(any(), any())
+        verify(mockRefDataConnector).getCountries()(any(), any())
       }
     }
 
