@@ -17,18 +17,16 @@
 package forms
 
 object Constants {
-  lazy val maxAuthorisationRefNumberLength: Int             = 35
-  lazy val maxTelephoneNumberLength: Int                    = 35
-  lazy val minTelephoneNumberLength: Int                    = 6
-  lazy val maxNameLength: Int                               = 70
-  lazy val maxEoriNumberLength: Int                         = 17
-  lazy val minLengthCarrierEori                             = 3
-  lazy val conveyanceRefNumberLength: Int                   = 17
-  lazy val maxUCRLength: Int                                = 35
-  lazy val maxSealIdNumberLength: Int                       = 20
-  lazy val itemNumberLength: Int                            = 4
-  lazy val itemNumberMax: Int                               = 1999
-  lazy val maxContainerIdNumberLength: Int                  = 17
-  lazy val maxIdentificationNumberTransitionLength: Int     = 27
-  lazy val maxIdentificationNumberPostTransitionLength: Int = 35
+  lazy val maxAuthorisationRefNumberLength: Int = 35
+  lazy val maxTelephoneNumberLength: Int        = 35
+  lazy val minTelephoneNumberLength: Int        = 6
+  lazy val maxNameLength: Int                   = 70
+  lazy val maxEoriNumberLength: Int             = 17
+  lazy val minLengthCarrierEori                 = 3
+  lazy val conveyanceRefNumberLength: Int       = 17
+  lazy val maxUCRLength: Int                    = 35
+  lazy val maxSealIdNumberLength: Int           = 20
+  lazy val itemNumberLength: Int                = 4
+  lazy val itemNumberMax: Int                   = 1999
+  lazy val maxContainerIdNumberLength: Int      = 17
 }
