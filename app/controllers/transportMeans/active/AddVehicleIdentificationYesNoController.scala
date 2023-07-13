@@ -21,33 +21,33 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
-import pages.transportMeans.active.AddIdentificationYesNoPage
+import pages.transportMeans.active.AddVehicleIdentificationYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transportMeans.active.AddIdentificationYesNoView
+import views.html.transportMeans.active.AddVehicleIdentificationYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddIdentificationYesNoController @Inject() (
+class AddVehicleIdentificationYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddIdentificationYesNoView
+  view: AddVehicleIdentificationYesNoView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transportMeans.active.addIdentificationYesNo")
+  private val form = formProvider("transportMeans.active.addVehicleIdentificationYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddIdentificationYesNoPage(activeIndex)) match {
+      val preparedForm = request.userAnswers.get(AddVehicleIdentificationYesNoPage(activeIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -63,7 +63,7 @@ class AddIdentificationYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
-            AddIdentificationYesNoPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            AddVehicleIdentificationYesNoPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }
