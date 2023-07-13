@@ -16,21 +16,19 @@
 
 package forms
 
-import forms.Constants.meansIdentificationNumberLength
+import config.PhaseConfig
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 
-import javax.inject.Inject
-
-class MeansIdentificationNumberFormProvider @Inject() extends Mappings {
+case class MeansIdentificationNumberFormProvider(phaseConfig: PhaseConfig) extends Mappings {
 
   def apply(prefix: String, args: String*): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required", args)
         .verifying(
           StopOnFirstFail[String](
-            maxLength(meansIdentificationNumberLength, s"$prefix.error.length", args),
+            maxLength(phaseConfig.maxIdentificationNumberLength, phaseConfig.lengthError(prefix), args),
             regexp(alphaNumericRegex, s"$prefix.error.invalid", args)
           )
         )
