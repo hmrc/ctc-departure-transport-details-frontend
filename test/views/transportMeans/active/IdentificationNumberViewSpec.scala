@@ -48,7 +48,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] with 
   }
 
   private def applyView(app: Application, form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[IdentificationNumberView].apply(form, lrn, NormalMode, activeIndex, prefix, identificationType.forDisplay)(fakeRequest, messages)
+    app.injector.instanceOf[IdentificationNumberView].apply(form, lrn, NormalMode, activeIndex, prefix, identificationType.forDisplay)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
