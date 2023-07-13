@@ -17,7 +17,6 @@
 package forms
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.Constants.{maxIdentificationNumberPostTransitionLength, maxIdentificationNumberTransitionLength}
 import forms.behaviours.StringFieldBehaviours
 import models.transportMeans.active.Identification
 import org.scalacheck.Arbitrary.arbitrary
@@ -33,6 +32,9 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with Sp
   private val dynamicTitle = s"$prefix.${identificationType.toString}"
   private val requiredKey  = s"$prefix.error.required"
   private val invalidKey   = s"$prefix.error.invalid"
+
+  private val maxIdentificationNumberTransitionLength: Int     = 27
+  private val maxIdentificationNumberPostTransitionLength: Int = 35
 
   "TransitionIdentificationNumberFormProvider" - {
 
