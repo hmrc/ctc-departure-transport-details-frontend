@@ -68,6 +68,7 @@ object TransportAnswersViewModel {
       val carrierDetailsSection = Section(
         sectionTitle = messages("checkYourAnswers.carrierDetails"),
         rows = Seq(
+          helper.addCarrierDetail,
           helper.eoriNumber,
           helper.addContactPerson,
           helper.contactName,
