@@ -16,7 +16,6 @@
 
 package config
 
-import forms.Constants.{maxIdentificationNumberPostTransitionLength, maxIdentificationNumberTransitionLength}
 import models.Phase
 import models.Phase.{PostTransition, Transition}
 
@@ -38,7 +37,7 @@ class TransitionConfig() extends PhaseConfig {
 
   override def amendMessageKey(key: String): String = s"$key.transition"
 
-  override val maxIdentificationNumberLength: Int = maxIdentificationNumberTransitionLength
+  override val maxIdentificationNumberLength: Int = 27
 }
 
 class PostTransitionConfig() extends PhaseConfig {
@@ -46,5 +45,5 @@ class PostTransitionConfig() extends PhaseConfig {
 
   override def amendMessageKey(key: String): String = s"$key.postTransition"
 
-  override val maxIdentificationNumberLength: Int = maxIdentificationNumberPostTransitionLength
+  override val maxIdentificationNumberLength: Int = 35
 }
