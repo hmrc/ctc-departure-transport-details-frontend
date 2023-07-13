@@ -29,7 +29,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
 import pages.transportMeans.departure.InlandModePage
-import pages.transportMeans.{departure, BorderModeOfTransportPage}
+import pages.transportMeans.{departure, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import play.api.libs.json.{JsArray, Json}
 import viewModels.transportMeans.TransportMeansAnswersViewModel.TransportMeansAnswersViewModelProvider
 
@@ -71,6 +71,7 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
 
     "must render a border mode section" in {
       val userAnswers = emptyUserAnswers
+        .setValue(AddBorderModeOfTransportYesNoPage, true)
         .setValue(BorderModeOfTransportPage, arbitrary[BorderModeOfTransport].sample.value)
 
       val viewModelProvider = new TransportMeansAnswersViewModelProvider()
@@ -78,7 +79,7 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
 
       val section = result.sections(2)
       section.sectionTitle.get mustBe "Border mode of transport"
-      section.rows.size mustBe 1
+      section.rows.size mustBe 2
       section.addAnotherLink must not be defined
     }
 

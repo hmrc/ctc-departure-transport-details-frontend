@@ -32,11 +32,11 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
 import pages.sections.transportMeans.TransportMeansActiveSection
 import pages.transportMeans.departure._
-import pages.transportMeans.BorderModeOfTransportPage
+import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import play.api.libs.json.{JsArray, Json}
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryListRow, Value}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 
 class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -276,6 +276,51 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                           href = controllers.transportMeans.departure.routes.VehicleCountryController.onPageLoad(answers.lrn, mode).url,
                           visuallyHiddenText = Some("registered country for the departure means of transport"),
                           attributes = Map("id" -> "change-transport-means-departure-vehicle-nationality")
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+          }
+        }
+      }
+    }
+
+    "addModeCrossingBorderYesNo" - {
+      "must return None" - {
+        "when AddBorderModeOfTransportYesNoPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addModeCrossingBorder()
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AddBorderModeOfTransportYesNoPage defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers
+                .setValue(AddBorderModeOfTransportYesNoPage, true)
+
+              val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
+              val result = helper.addModeCrossingBorder()
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("Do you want to add a border mode of transport?".toText),
+                  value = Value("Yes".toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = controllers.transportMeans.routes.AddBorderModeOfTransportYesNoController.onPageLoad(answers.lrn, mode).url,
+                          visuallyHiddenText = Some("if you want to add a border mode of transport"),
+                          attributes = Map("id" -> "change-add-border-mode-of-transport")
                         )
                       )
                     )

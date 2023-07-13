@@ -51,7 +51,10 @@ object TransportMeansAnswersViewModel {
 
       val borderModeSection = Section(
         sectionTitle = messages("transportMeans.borderMode.subheading"),
-        rows = Seq(helper.modeCrossingBorder).flatten
+        rows = Seq(
+          helper.modeCrossingBorder,
+          helper.addModeCrossingBorder()
+        ).flatten
       )
 
       val borderMeansSection =
