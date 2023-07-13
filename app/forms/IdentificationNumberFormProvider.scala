@@ -20,8 +20,9 @@ import config.PhaseConfig
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
+import javax.inject.Inject
 
-case class IdentificationNumberFormProvider(phaseConfig: PhaseConfig) extends Mappings {
+class IdentificationNumberFormProvider @Inject() (phaseConfig: PhaseConfig) extends Mappings {
 
   def apply(prefix: String, args: String*): Form[String] =
     Form(

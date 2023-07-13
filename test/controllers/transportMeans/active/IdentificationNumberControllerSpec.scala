@@ -38,15 +38,14 @@ import scala.concurrent.Future
 
 class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val formProvider = new IdentificationNumberFormProvider()
-
   private val withNoIDTypePrefix: String = "transportMeans.departure.meansIdentificationNumber.withNoIDType"
   private val withIDTypePrefix: String   = "transportMeans.departure.meansIdentificationNumber.withIDType"
+
+  private val formProvider = app.injector.instanceOf[IdentificationNumberFormProvider]
 
   private def withNoIDTypeForm                               = formProvider(withNoIDTypePrefix)
   private def withIDTypeForm(identification: Identification) = formProvider(withIDTypePrefix, identification.forDisplay)
 
-  private val identification: Identification = arbitrary[Identification].sample.value
   private val mode                           = NormalMode
   private lazy val identificationNumberRoute = routes.IdentificationNumberController.onPageLoad(lrn, mode, index).url
 
