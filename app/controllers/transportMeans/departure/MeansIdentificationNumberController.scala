@@ -18,7 +18,7 @@ package controllers.transportMeans.departure
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.MeansIdentificationNumberFormProvider
+import forms.IdentificationNumberFormProvider
 import models.requests.DataRequest
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
@@ -36,7 +36,7 @@ class MeansIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
-  formProvider: MeansIdentificationNumberFormProvider,
+  formProvider: IdentificationNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   getMandatoryPage: SpecificDataRequiredActionProvider,

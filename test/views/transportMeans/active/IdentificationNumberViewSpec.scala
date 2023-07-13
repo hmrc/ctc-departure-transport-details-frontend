@@ -16,30 +16,38 @@
 
 package views.transportMeans.active
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.IdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import models.transportMeans.active.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.Application
 import play.api.data.Form
+import play.api.test.Helpers.running
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.transportMeans.active.IdentificationNumberView
 
-class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] with Generators with SpecBase {
+class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] with Generators with SpecBase with AppWithDefaultMockFixtures {
 
   override val prefix: String = "transportMeans.active.identificationNumber.withIDType"
 
   private val identificationType = arbitrary[Identification].sample.value
 
-  private val formProvider = new IdentificationNumberFormProvider()
-
-  override def form: Form[String] = formProvider(prefix, identificationType.forDisplay)
+  override def form: Form[String] = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
+    applyView(app, form)
+
+  private def applyView(app: Application): HtmlFormat.Appendable = {
+    val form = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
+    applyView(app, form)
+  }
+
+  private def applyView(app: Application, form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[IdentificationNumberView].apply(form, lrn, NormalMode, activeIndex, prefix, identificationType.forDisplay)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
@@ -52,18 +60,30 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] with 
 
   behave like pageWithHeading(identificationType.forDisplay)
 
-  behave like pageWithHint(
-    "This can be up to 27 characters long and include both letters and numbers."
-  )
-
   behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Save and continue")
 
+  "when during transition" - {
+    val app = transitionApplicationBuilder().build()
+    running(app) {
+      val doc = parseView(applyView(app))
+      behave like pageWithHint(doc, "This can be up to 27 characters long and include both letters and numbers.")
+    }
+  }
+
+  "when post transition" - {
+    val app = postTransitionApplicationBuilder().build()
+    running(app) {
+      val doc = parseView(applyView(app))
+      behave like pageWithHint(doc, "This can be up to 35 characters long and include both letters and numbers.")
+    }
+  }
+
   "when no identification type is present in user answers" - {
 
     val withNoIDTypePrefix: String = "transportMeans.active.identificationNumber.withNoIDType"
-    val form                       = formProvider(withNoIDTypePrefix)
+    val form                       = app.injector.instanceOf[IdentificationNumberFormProvider].apply(withNoIDTypePrefix, identificationType.forDisplay)
     val view                       = injector.instanceOf[IdentificationNumberView].apply(form, lrn, NormalMode, activeIndex, withNoIDTypePrefix)(fakeRequest, messages)
     val doc                        = parseView(view)
 
