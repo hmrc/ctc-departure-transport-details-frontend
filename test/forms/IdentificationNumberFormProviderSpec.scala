@@ -36,34 +36,41 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with Sp
 
   val form = new IdentificationNumberFormProvider()(prefix, dynamicTitle)
 
-  ".value" - {
+  "TransitionIdentificationNumberFormProvider" - {
 
-    val fieldName = "value"
+    val lengthKey = s"$prefix.error.length.transition"
+    val app = transitionApplicationBuilder().build()
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(identificationNumberLength)
-    )
+    ".value" - {
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = identificationNumberLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(dynamicTitle))
-    )
+      val fieldName = "value"
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(dynamicTitle))
-    )
+      behave like fieldThatBindsValidData(
+        form,
+        fieldName,
+        stringsWithMaxLength(identificationNumberLength)
+      )
 
-    behave like fieldWithInvalidCharacters(
-      form,
-      fieldName,
-      error = FormError(fieldName, invalidKey, Seq(dynamicTitle)),
-      identificationNumberLength
-    )
+      behave like fieldWithMaxLength(
+        form,
+        fieldName,
+        maxLength = identificationNumberLength,
+        lengthError = FormError(fieldName, lengthKey, Seq(dynamicTitle))
+      )
+
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredKey, Seq(dynamicTitle))
+      )
+
+      behave like fieldWithInvalidCharacters(
+        form,
+        fieldName,
+        error = FormError(fieldName, invalidKey, Seq(dynamicTitle)),
+        identificationNumberLength
+      )
+    }
+
   }
 }
