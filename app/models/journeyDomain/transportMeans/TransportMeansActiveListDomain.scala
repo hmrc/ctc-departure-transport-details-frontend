@@ -27,14 +27,14 @@ import play.api.mvc.Call
 
 case class TransportMeansActiveListDomain(
   transportMeansActiveListDomain: Seq[TransportMeansActiveDomain]
-)(implicit phaseConfig: PhaseConfig)
-    extends JourneyDomainModel {
+) extends JourneyDomainModel {
 
 <<<<<<< HEAD
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Some(routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode))
 =======
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+<<<<<<< HEAD
     phaseConfig.phase match {
       case Phase.PostTransition =>
         Some(routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode))
@@ -42,6 +42,9 @@ case class TransportMeansActiveListDomain(
     }
 
 >>>>>>> 7c2ee49... CTCP-3468: Add phaseConfig implicits
+=======
+    Some(routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode))
+>>>>>>> a149937... CTCP-3468: Add tests for nav & viewmodel transition/post-transition toggle
 }
 
 object TransportMeansActiveListDomain {

@@ -63,10 +63,14 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
           .setValue(OfficesOfTransitSection, officesOfTransit)
           .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Sea)
 
-        forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index), arbitrary[Mode]) {
+        forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index)(mockPhaseConfig), arbitrary[Mode]) {
           (userAnswers, mode) =>
             val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
+<<<<<<< HEAD
             val active = TransportMeansActiveDomain.userAnswersReader(index).run(userAnswers).value
+=======
+            val active = TransportMeansActiveDomain.userAnswersReader(index)(mockPhaseConfig).run(userAnswers).value
+>>>>>>> a149937... CTCP-3468: Add tests for nav & viewmodel transition/post-transition toggle
             helper.listItems mustBe Seq(
               Right(
                 ListItem(

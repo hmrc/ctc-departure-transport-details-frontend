@@ -66,7 +66,11 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index), arbitrary[Mode]) {
               (userAnswers, mode) =>
                 val abtm = UserAnswersReader[TransportMeansActiveDomain](
+<<<<<<< HEAD
                   TransportMeansActiveDomain.userAnswersReader(index)
+=======
+                  TransportMeansActiveDomain.userAnswersReader(index)(mockPhaseConfig)
+>>>>>>> a149937... CTCP-3468: Add tests for nav & viewmodel transition/post-transition toggle
                 ).run(userAnswers).value
 
                 val helper = new TransportMeansCheckYourAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)

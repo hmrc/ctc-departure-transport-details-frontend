@@ -94,10 +94,9 @@ object TransportMeansAnswersViewModel {
             }
 
           case Phase.Transition =>
-            val helper = new ActiveBorderTransportAnswersHelper(userAnswers, mode, Index(0))
-
             Section(
               sectionTitle = messages("transportMeans.borderMeans.subheading"),
+<<<<<<< HEAD
               rows = Seq(
                 helper.activeBorderIdentificationType,
                 helper.activeBorderIdentificationNumber,
@@ -108,6 +107,9 @@ object TransportMeansAnswersViewModel {
                 helper.conveyanceReferenceNumber
               ).flatten
 >>>>>>> 085b1a1... CTCP-3468: Add transition logic for section cya
+=======
+              rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
+>>>>>>> a149937... CTCP-3468: Add tests for nav & viewmodel transition/post-transition toggle
             )
         }
 
