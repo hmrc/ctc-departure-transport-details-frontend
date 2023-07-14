@@ -16,6 +16,7 @@
 
 package models.journeyDomain
 
+import config.PhaseConfig
 import models.domain.{GettableAsFilterForNextReaderOps, UserAnswersReader}
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
 import models.journeyDomain.carrierDetails.CarrierDetailsDomain
@@ -44,7 +45,7 @@ case class TransportDomain(
 
 object TransportDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[TransportDomain] = {
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportDomain] = {
 
     implicit lazy val authorisationsAndLimitReads: UserAnswersReader[Option[AuthorisationsAndLimitDomain]] =
       ApprovedOperatorPage.inferredReader.flatMap {

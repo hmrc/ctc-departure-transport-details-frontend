@@ -16,11 +16,11 @@
 
 package navigation
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.domain.UserAnswersReader
-import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.Stage.CompletingJourney
+import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.{Mode, UserAnswers}
 import play.api.Logging
 import play.api.mvc.Call
@@ -28,7 +28,8 @@ import uk.gov.hmrc.http.HttpVerbs.GET
 
 trait UserAnswersNavigator extends Navigator {
 
-  implicit val config: FrontendAppConfig
+  implicit val appConfig: FrontendAppConfig
+  implicit val phaseConfig: PhaseConfig
 
   type T <: JourneyDomainModel
 

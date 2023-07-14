@@ -15,12 +15,13 @@
  */
 
 import cats.data.ReaderT
+import config.PhaseConfig
 import models.TaskStatus.{Completed, InProgress}
-import models.{Index, UserAnswers}
 import models.domain.UserAnswersReader
-import models.journeyDomain.TransportDomain
 import models.journeyDomain.OpsError.WriterError
+import models.journeyDomain.TransportDomain
 import models.requests.MandatoryDataRequest
+import models.{Index, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
 import pages.equipment.index.UuidPage
@@ -86,7 +87,7 @@ package object controllers {
           Right((page, userAnswers.removeTransportEquipmentFromItems(uuid)))
       }
 
-    def updateTask(): UserAnswersWriter[Write[A]] =
+    def updateTask()(implicit phaseConfig: PhaseConfig): UserAnswersWriter[Write[A]] =
       userAnswersWriter.flatMapF {
         case (page, userAnswers) =>
           page.path.path.headOption.map(_.toJsonString) match {

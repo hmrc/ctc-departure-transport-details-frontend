@@ -16,6 +16,7 @@
 
 package controllers.preRequisites
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
@@ -41,7 +42,7 @@ class ItemsDestinationCountryController @Inject() (
   service: CountriesService,
   val controllerComponents: MessagesControllerComponents,
   view: ItemsDestinationCountryView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
