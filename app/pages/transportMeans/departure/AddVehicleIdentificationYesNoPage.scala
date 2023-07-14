@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package pages.transportMeans.active
+package pages.transportMeans.departure
 
-import controllers.transportMeans.active.routes
-import models.{Index, Mode, UserAnswers}
+import controllers.transportMeans.departure.routes
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transportMeans.TransportMeansActiveSection
+import pages.sections.transportMeans.TransportMeansDepartureSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AddVehicleIdentificationYesNoPage(index: Index) extends QuestionPage[Boolean] {
+case object AddVehicleIdentificationYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = TransportMeansActiveSection(index).path \ toString
+  override def path: JsPath = TransportMeansDepartureSection.path \ toString
 
   override def toString: String = "addVehicleIdentificationYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddVehicleIdentificationYesNoController.onPageLoad(userAnswers.lrn, mode, index))
+    Some(routes.AddVehicleIdentificationYesNoController.onPageLoad(userAnswers.lrn, mode))
 
 }

@@ -120,6 +120,12 @@ transportMeans.departure.addIdentificationTypeYesNo.checkYourAnswersLabel = Do y
 transportMeans.departure.addIdentificationTypeYesNo.change.hidden = if you want to add a type of identification
 transportMeans.departure.addIdentificationTypeYesNo.error.required = Select yes if you want to add a type of identification
 
+transportMeans.departure.addVehicleIdentificationYesNo.title = Do you want to add identification for this vehicle?
+transportMeans.departure.addVehicleIdentificationYesNo.heading = Do you want to add identification for this vehicle?
+transportMeans.departure.addVehicleIdentificationYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
+transportMeans.departure.addVehicleIdentificationYesNo.change.hidden = if you want to add identification for this vehicle
+transportMeans.departure.addVehicleIdentificationYesNo.error.required = Select yes if you want to add identification for this vehicle
+
 transportMeans.departure.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.departure.identification.heading = Which identification do you want to use for this vehicle?
 transportMeans.departure.identification.seaGoingVessel = Name of a sea-going vessel
@@ -210,12 +216,6 @@ transportMeans.active.addIdentificationYesNo.heading = Do you want to add the ty
 transportMeans.active.addIdentificationYesNo.checkYourAnswersLabel = Do you want to add the type of identification?
 transportMeans.active.addIdentificationYesNo.change.hidden = if you want to add the identification type
 transportMeans.active.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification
-
-transportMeans.active.addVehicleIdentificationYesNo.title = Do you want to add identification for this vehicle?
-transportMeans.active.addVehicleIdentificationYesNo.heading = Do you want to add identification for this vehicle?
-transportMeans.active.addVehicleIdentificationYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
-transportMeans.active.addVehicleIdentificationYesNo.change.hidden = if you want to add identification for this vehicle
-transportMeans.active.addVehicleIdentificationYesNo.error.required = Select yes if you want to add identification for this vehicle
 
 transportMeans.active.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.active.identification.heading = Which identification do you want to use for this vehicle?
