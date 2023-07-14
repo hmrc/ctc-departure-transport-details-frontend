@@ -18,19 +18,33 @@ package models.journeyDomain.transportMeans
 
 import base.SpecBase
 import generators.Generators
-import models.Index
+import models.SecurityDetailsType._
 import models.domain.{EitherType, UserAnswersReader}
-import models.reference.Nationality
+import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.BorderModeOfTransport._
+import models.transportMeans.active.Identification
 import models.transportMeans.departure.{InlandMode, Identification => DepartureIdentification}
+import models.{Index, SecurityDetailsType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transportMeans.departure.InlandModePage
-import pages.transportMeans.{active, departure, BorderModeOfTransportPage}
+import pages.external.SecurityDetailsTypePage
+import pages.transportMeans.active._
+import pages.transportMeans.departure.{InlandModePage, MeansIdentificationNumberPage, VehicleCountryPage}
+import pages.transportMeans.{active, departure, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val borderModeOfTransport     = arbitrary[BorderModeOfTransport].sample.value
+  private val departureIdentification   = arbitrary[DepartureIdentification].sample.value
+  private val meansIdentificationNumber = Gen.alphaNumStr.sample.value
+  private val vehicleCountry            = arbitrary[Nationality].sample.value
+  private val activeIdentification      = arbitrary[Identification].sample.value
+  private val identificationNumber      = Gen.alphaNumStr.sample.value
+  private val nationality               = arbitrary[Nationality].sample.value
+  private val customsOffice             = arbitrary[CustomsOffice].sample.value
+  private val conveyanceReferenceNumber = Gen.alphaNumStr.sample.value
 
   "TransportMeansDomain" - {
     "can be parsed from user answers" - {
@@ -43,24 +57,96 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
           TransportMeansDomain.userAnswersReader
         ).run(answers)
 
-        result.value.inlandMode mustBe inlandMode
+        result.value mustBe TransportMeansDomainWithMailInlandMode
       }
 
       "when inland mode is not 5 (mail)" - {
-        forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode), arbitrary[BorderModeOfTransport]) {
-          (inlandMode, borderModeOfTransport) =>
-            val initialAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(BorderModeOfTransportPage, borderModeOfTransport)
+        "and security type is not 4 (EntryAndExitSummaryDeclarationSecurityDetails)" in {
+          forAll(
+            arbitrary[InlandMode](arbitraryNonMailInlandMode),
+            arbitrary[SecurityDetailsType](arbitraryNonEntryAndExitSummaryDeclarationSecurityDetailsType)
+          ) {
+            (inlandMode, securityDetailsType) =>
+              val initialAnswers = emptyUserAnswers
+                .setValue(SecurityDetailsTypePage, securityDetailsType)
+                .setValue(InlandModePage, inlandMode)
+                .setValue(departure.IdentificationPage, departureIdentification)
+                .setValue(MeansIdentificationNumberPage, meansIdentificationNumber)
+                .setValue(VehicleCountryPage, vehicleCountry)
+                .setValue(BorderModeOfTransportPage, borderModeOfTransport)
+                .setValue(active.IdentificationPage(index), activeIdentification)
+                .setValue(IdentificationNumberPage(index), identificationNumber)
+                .setValue(AddNationalityYesNoPage(index), true)
+                .setValue(NationalityPage(index), nationality)
+                .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
+                .setValue(ConveyanceReferenceNumberYesNoPage(index), true)
+                .setValue(ConveyanceReferenceNumberPage(index), conveyanceReferenceNumber)
 
-            forAll(arbitraryTransportMeansAnswers(initialAnswers)) {
-              answers =>
-                val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                  TransportMeansDomain.userAnswersReader
-                ).run(answers)
+              val expectedResult = TransportMeansDomainWithOtherInlandMode(
+                inlandMode = inlandMode,
+                transportMeansDeparture = TransportMeansDepartureDomain(departureIdentification, meansIdentificationNumber, vehicleCountry),
+                borderModeOfTransport = Some(borderModeOfTransport),
+                transportMeansActiveList = TransportMeansActiveListDomain(
+                  Seq(
+                    TransportMeansActiveDomain(activeIdentification, identificationNumber, Some(nationality), customsOffice, Some(conveyanceReferenceNumber))(
+                      index
+                    )
+                  )
+                )
+              )
 
-                result.value.inlandMode mustBe inlandMode
-            }
+              forAll(arbitraryTransportMeansAnswers(initialAnswers)) {
+                answers =>
+                  val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                    TransportMeansDomain.userAnswersReader
+                  ).run(answers)
+
+                  result.value mustBe expectedResult
+              }
+          }
+        }
+
+        "and security type is 4 (EntryAndExitSummaryDeclarationSecurityDetails)" in {
+          forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode)) {
+            inlandMode =>
+              val initialAnswers = emptyUserAnswers
+                .setValue(SecurityDetailsTypePage, EntryAndExitSummaryDeclarationSecurityDetails)
+                .setValue(InlandModePage, inlandMode)
+                .setValue(departure.IdentificationPage, departureIdentification)
+                .setValue(MeansIdentificationNumberPage, meansIdentificationNumber)
+                .setValue(VehicleCountryPage, vehicleCountry)
+                .setValue(AddBorderModeOfTransportYesNoPage, true)
+                .setValue(BorderModeOfTransportPage, borderModeOfTransport)
+                .setValue(active.IdentificationPage(index), activeIdentification)
+                .setValue(IdentificationNumberPage(index), identificationNumber)
+                .setValue(AddNationalityYesNoPage(index), true)
+                .setValue(NationalityPage(index), nationality)
+                .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
+                .setValue(ConveyanceReferenceNumberYesNoPage(index), true)
+                .setValue(ConveyanceReferenceNumberPage(index), conveyanceReferenceNumber)
+
+              val expectedResult = TransportMeansDomainWithOtherInlandMode(
+                inlandMode = inlandMode,
+                transportMeansDeparture = TransportMeansDepartureDomain(departureIdentification, meansIdentificationNumber, vehicleCountry),
+                borderModeOfTransport = Some(borderModeOfTransport),
+                transportMeansActiveList = TransportMeansActiveListDomain(
+                  Seq(
+                    TransportMeansActiveDomain(activeIdentification, identificationNumber, Some(nationality), customsOffice, Some(conveyanceReferenceNumber))(
+                      index
+                    )
+                  )
+                )
+              )
+
+              forAll(arbitraryTransportMeansAnswers(initialAnswers)) {
+                answers =>
+                  val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                    TransportMeansDomain.userAnswersReader
+                  ).run(answers)
+
+                  result.value mustBe expectedResult
+              }
+          }
         }
       }
     }
@@ -74,14 +160,34 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
         result.left.value.page mustBe InlandModePage
       }
 
-      "when border mode of transport is unanswered" in {
+      "when add border mode of transport yes no is unanswered" in {
         forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode)) {
           inlandMode =>
             val userAnswers = emptyUserAnswers
+              .setValue(SecurityDetailsTypePage, EntryAndExitSummaryDeclarationSecurityDetails)
               .setValue(InlandModePage, inlandMode)
               .setValue(departure.IdentificationPage, arbitrary[DepartureIdentification].sample.value)
               .setValue(departure.MeansIdentificationNumberPage, nonEmptyString.sample.value)
               .setValue(departure.VehicleCountryPage, arbitrary[Nationality].sample.value)
+
+            val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+              TransportMeansDomain.userAnswersReader
+            ).run(userAnswers)
+
+            result.left.value.page mustBe AddBorderModeOfTransportYesNoPage
+        }
+      }
+
+      "when border mode of transport is unanswered" in {
+        forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode)) {
+          inlandMode =>
+            val userAnswers = emptyUserAnswers
+              .setValue(SecurityDetailsTypePage, EntryAndExitSummaryDeclarationSecurityDetails)
+              .setValue(InlandModePage, inlandMode)
+              .setValue(departure.IdentificationPage, arbitrary[DepartureIdentification].sample.value)
+              .setValue(departure.MeansIdentificationNumberPage, nonEmptyString.sample.value)
+              .setValue(departure.VehicleCountryPage, arbitrary[Nationality].sample.value)
+              .setValue(AddBorderModeOfTransportYesNoPage, true)
 
             val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
               TransportMeansDomain.userAnswersReader
@@ -92,9 +198,14 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
       }
 
       "when no active border means answered" in {
-        forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode), Gen.oneOf(Sea, Air)) {
-          (inlandMode, borderMode) =>
+        forAll(
+          arbitrary[InlandMode](arbitraryNonMailInlandMode),
+          Gen.oneOf(Sea, Air),
+          arbitrary[SecurityDetailsType](arbitraryNonEntryAndExitSummaryDeclarationSecurityDetailsType)
+        ) {
+          (inlandMode, borderMode, securityDetailsType) =>
             val userAnswers = emptyUserAnswers
+              .setValue(SecurityDetailsTypePage, securityDetailsType)
               .setValue(InlandModePage, inlandMode)
               .setValue(departure.IdentificationPage, arbitrary[DepartureIdentification].sample.value)
               .setValue(departure.MeansIdentificationNumberPage, nonEmptyString.sample.value)
