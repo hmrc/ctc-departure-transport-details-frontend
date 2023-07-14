@@ -59,21 +59,13 @@ object TransportMeansAnswersViewModel {
 
       val borderMeansSection =
         phaseConfig.phase match {
-          case Phase.PostTransition =>
-            if (userAnswers.get(OfficesOfTransitSection).isDefined) {
-              Section(
-                sectionTitle = messages("transportMeans.borderMeans.subheading"),
-                rows = helper.activeBorderTransportsMeans,
-                addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans()
-              )
-            } else {
-              Section(
-                sectionTitle = messages("transportMeans.borderMeans.subheading"),
-                rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
-              )
-            }
-
-          case Phase.Transition =>
+          case Phase.PostTransition if userAnswers.get(OfficesOfTransitSection).isDefined =>
+            Section(
+              sectionTitle = messages("transportMeans.borderMeans.subheading"),
+              rows = helper.activeBorderTransportsMeans,
+              addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans()
+            )
+          case _ =>
             Section(
               sectionTitle = messages("transportMeans.borderMeans.subheading"),
               rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
