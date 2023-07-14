@@ -140,6 +140,17 @@ trait UserAnswersEntryGenerators {
 
   private def generateCarrierDetailsAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.carrierDetails._
+
+    val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
+      case CarrierDetailYesNoPage => arbitrary[Boolean].map(JsBoolean)
+    }
+
+    pf orElse
+      generateCarrierDetailAnswers
+  }
+
+  private def generateCarrierDetailAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.carrierDetails._
     import pages.carrierDetails.contact._
     {
       case IdentificationNumberPage => Gen.alphaNumStr.map(JsString)

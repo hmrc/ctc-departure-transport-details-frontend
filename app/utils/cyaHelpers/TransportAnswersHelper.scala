@@ -32,7 +32,7 @@ import pages.sections.supplyChainActors.SupplyChainActorsSection
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.authorisationsAndLimit.limit.LimitDatePage
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
-import pages.carrierDetails.{AddContactYesNoPage, IdentificationNumberPage}
+import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
 import pages.equipment.{AddPaymentMethodYesNoPage, AddTransportEquipmentYesNoPage, PaymentMethodPage}
 import pages.preRequisites._
 import pages.supplyChainActors.SupplyChainActorYesNoPage
@@ -151,6 +151,13 @@ class TransportAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit mess
     formatAnswer = formatAsDate,
     prefix = "authorisationsAndLimit.limit.limitDate",
     id = Some("change-limit-date")
+  )
+
+  def addCarrierDetail: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = CarrierDetailYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "carrierDetails.carrierDetailYesNo",
+    id = Some("change-add-carrier-detail")
   )
 
   def eoriNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
