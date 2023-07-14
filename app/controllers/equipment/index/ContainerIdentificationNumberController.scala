@@ -16,6 +16,7 @@
 
 package controllers.equipment.index
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.ContainerIdentificationNumberFormProvider
@@ -43,7 +44,7 @@ class ContainerIdentificationNumberController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: ContainerIdentificationNumberView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

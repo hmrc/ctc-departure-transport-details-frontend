@@ -16,6 +16,7 @@
 
 package controllers.equipment.index
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.equipment.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -40,7 +41,7 @@ class RemoveTransportEquipmentController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveTransportEquipmentView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

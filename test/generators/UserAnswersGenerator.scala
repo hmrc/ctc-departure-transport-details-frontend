@@ -16,6 +16,7 @@
 
 package generators
 
+import config.PhaseConfig
 import models.domain.UserAnswersReader
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
@@ -32,7 +33,7 @@ import org.scalacheck.{Arbitrary, Gen}
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryUserAnswers: Arbitrary[UserAnswers] =
+  implicit def arbitraryUserAnswers(implicit phaseConfig: PhaseConfig): Arbitrary[UserAnswers] =
     Arbitrary {
       for {
         lrn        <- arbitrary[LocalReferenceNumber]
@@ -63,16 +64,16 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
     rec(initialUserAnswers)
   }
 
-  def arbitraryTransportAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
+  def arbitraryTransportAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
     buildUserAnswers[TransportDomain](userAnswers)
 
   def arbitraryPreRequisitesAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[PreRequisitesDomain](userAnswers)
 
-  def arbitraryTransportMeansAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
+  def arbitraryTransportMeansAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
     buildUserAnswers[TransportMeansDomain](userAnswers)
 
-  def arbitraryTransportMeansDepartureAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
+  def arbitraryTransportMeansDepartureAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
     buildUserAnswers[TransportMeansDepartureDomain](userAnswers)
 
   def arbitraryTransportMeansActiveAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =

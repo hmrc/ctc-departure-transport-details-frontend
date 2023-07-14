@@ -17,20 +17,24 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
+import config.PhaseConfig
 import controllers.transportMeans.routes
-import models.SecurityDetailsType.EntryAndExitSummaryDeclarationSecurityDetails
-import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
+import models.SecurityDetailsType.NoSecurityDetails
+import models.domain._
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.departure.InlandMode
-import models.{Mode, UserAnswers}
+import models.{Mode, Phase, UserAnswers}
 import pages.external.SecurityDetailsTypePage
-import pages.transportMeans.departure.InlandModePage
+import pages.preRequisites.ContainerIndicatorPage
+import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
 import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import play.api.mvc.Call
 
-sealed trait TransportMeansDomain extends JourneyDomainModel {
-  val inlandMode: InlandMode
+case class TransportMeansDomain(
+  transportMeansDeparture: Option[TransportMeansDepartureDomain],
+  borderModeOfTransport: Option[BorderModeOfTransport],
+  transportMeansActiveList: TransportMeansActiveListDomain
+) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     Option(routes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
@@ -38,44 +42,37 @@ sealed trait TransportMeansDomain extends JourneyDomainModel {
 
 object TransportMeansDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[TransportMeansDomain] =
-    InlandModePage.reader.flatMap {
-      case InlandMode.Mail =>
-        UserAnswersReader(TransportMeansDomainWithMailInlandMode).widen[TransportMeansDomain]
-      case x =>
-        UserAnswersReader[TransportMeansDomainWithOtherInlandMode](
-          TransportMeansDomainWithOtherInlandMode.userAnswersReader(x)
-        ).widen[TransportMeansDomain]
-    }
-}
-
-case object TransportMeansDomainWithMailInlandMode extends TransportMeansDomain {
-  override val inlandMode: InlandMode = InlandMode.Mail
-}
-
-case class TransportMeansDomainWithOtherInlandMode(
-  override val inlandMode: InlandMode,
-  transportMeansDeparture: TransportMeansDepartureDomain,
-  borderModeOfTransport: Option[BorderModeOfTransport],
-  transportMeansActiveList: TransportMeansActiveListDomain
-) extends TransportMeansDomain
-
-object TransportMeansDomainWithOtherInlandMode {
-
-  implicit val borderModeOfTransportReader: UserAnswersReader[Option[BorderModeOfTransport]] =
-    // additional declaration type is part of pre-lodge so for time being always set to 'A'
-    SecurityDetailsTypePage.reader.flatMap {
-      case securityType if securityType != EntryAndExitSummaryDeclarationSecurityDetails =>
-        BorderModeOfTransportPage.reader.map(Some(_))
-      case _ =>
-        AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity)(BorderModeOfTransportPage.reader)
-    }
-
-  implicit def userAnswersReader(inlandMode: InlandMode): UserAnswersReader[TransportMeansDomainWithOtherInlandMode] =
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDomain] =
     (
-      UserAnswersReader(inlandMode),
-      UserAnswersReader[TransportMeansDepartureDomain],
+      transportMeansDepartureReader,
       borderModeOfTransportReader,
-      UserAnswersReader[TransportMeansActiveListDomain]
-    ).tupled.map((TransportMeansDomainWithOtherInlandMode.apply _).tupled)
+      transportMeansActiveReader
+    ).tupled.map((TransportMeansDomain.apply _).tupled)
+
+  def transportMeansDepartureReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[TransportMeansDepartureDomain]] =
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        ContainerIndicatorPage.reader.flatMap {
+          case true =>
+            AddVehicleIdentificationYesNoPage.filterOptionalDependent(identity) {
+              UserAnswersReader[TransitionTransportMeansDepartureDomain].widen[TransportMeansDepartureDomain]
+            }
+          case false =>
+            UserAnswersReader[TransitionTransportMeansDepartureDomain].widen[TransportMeansDepartureDomain].map(Some(_))
+        }
+      case Phase.PostTransition =>
+        UserAnswersReader[PostTransitionTransportMeansDepartureDomain].map(Some(_))
+    }
+
+  // additional declaration type is part of pre-lodge so for time being always set to 'A'
+  implicit val borderModeOfTransportReader: UserAnswersReader[Option[BorderModeOfTransport]] =
+    SecurityDetailsTypePage.reader.flatMap {
+      case NoSecurityDetails =>
+        AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity)(BorderModeOfTransportPage.reader)
+      case _ =>
+        BorderModeOfTransportPage.reader.map(Some(_))
+    }
+
+  implicit val transportMeansActiveReader: UserAnswersReader[TransportMeansActiveListDomain] =
+    TransportMeansActiveListDomain.userAnswersReader
 }

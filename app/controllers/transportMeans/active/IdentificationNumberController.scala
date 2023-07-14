@@ -16,9 +16,11 @@
 
 package controllers.transportMeans.active
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.IdentificationNumberFormProvider
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.active.{IdentificationNumberPage, IdentificationPage, InferredIdentificationPage}
@@ -37,40 +39,51 @@ class IdentificationNumberController @Inject() (
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   formProvider: IdentificationNumberFormProvider,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationNumberView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix = "transportMeans.active.identificationNumber"
+  private case class DynamicHeading(prefix: String, args: String*)
+
+  private def dynamicHeading(activeIndex: Index)(implicit request: DataRequest[_]): DynamicHeading = {
+    val prefix = "transportMeans.active.identificationNumber"
+
+    val identificationType = request.userAnswers
+      .get(IdentificationPage(activeIndex))
+      .orElse(request.userAnswers.get(InferredIdentificationPage(activeIndex)))
+
+    identificationType match {
+      case Some(identificationType) => DynamicHeading(s"$prefix.withIDType", identificationType.forDisplay)
+      case None                     => DynamicHeading(s"$prefix.withNoIDType")
+    }
+  }
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
-    .andThen(getMandatoryPage(IdentificationPage(activeIndex), InferredIdentificationPage(activeIndex))) {
+    .requireData(lrn) {
       implicit request =>
-        val form = formProvider(prefix, request.arg.forDisplay)
-
+        val dynamicHeadingValue = dynamicHeading(activeIndex)(request)
+        val form                = formProvider(dynamicHeadingValue.prefix, dynamicHeadingValue.args: _*)
         val preparedForm = request.userAnswers.get(IdentificationNumberPage(activeIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
-
-        Ok(view(preparedForm, lrn, request.arg.forDisplay, mode, activeIndex))
+        Ok(view(preparedForm, lrn, mode, activeIndex, dynamicHeadingValue.prefix, dynamicHeadingValue.args: _*))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] =
     actions
       .requireData(lrn)
-      .andThen(getMandatoryPage(IdentificationPage(activeIndex), InferredIdentificationPage(activeIndex)))
       .async {
         implicit request =>
-          val form = formProvider(prefix, request.arg.forDisplay)
+          val dynamicHeadingValue = dynamicHeading(activeIndex)(request)
+          val form                = formProvider(dynamicHeadingValue.prefix, dynamicHeadingValue.args: _*)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, request.arg.forDisplay, mode, activeIndex))),
+              formWithErrors =>
+                Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex, dynamicHeadingValue.prefix, dynamicHeadingValue.args: _*))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
                 IdentificationNumberPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

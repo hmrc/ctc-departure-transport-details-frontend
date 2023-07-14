@@ -16,9 +16,10 @@
 
 package controllers.transportMeans.departure
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.MeansIdentificationNumberFormProvider
+import forms.IdentificationNumberFormProvider
 import models.requests.DataRequest
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
@@ -36,12 +37,11 @@ class MeansIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
-  formProvider: MeansIdentificationNumberFormProvider,
+  formProvider: IdentificationNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   view: MeansIdentificationNumberView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
   private case class DynamicHeading(prefix: String, args: String*)

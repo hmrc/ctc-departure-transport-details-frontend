@@ -16,6 +16,7 @@
 
 package controllers.equipment.index.seals
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.equipment.index.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -42,7 +43,7 @@ class RemoveSealYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveSealYesNoView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

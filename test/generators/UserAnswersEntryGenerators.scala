@@ -83,10 +83,14 @@ trait UserAnswersEntryGenerators {
   private def generateTransportMeansDepartureAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.transportMeans.departure._
     {
-      case InlandModePage                => arbitrary[InlandMode].map(Json.toJson(_))
-      case IdentificationPage            => arbitrary[Identification].map(Json.toJson(_))
-      case MeansIdentificationNumberPage => Gen.alphaNumStr.map(JsString)
-      case VehicleCountryPage            => arbitrary[Nationality].map(Json.toJson(_))
+      case InlandModePage                    => arbitrary[InlandMode].map(Json.toJson(_))
+      case AddVehicleIdentificationYesNoPage => arbitrary[Boolean].map(JsBoolean)
+      case AddIdentificationTypeYesNoPage    => arbitrary[Boolean].map(JsBoolean)
+      case IdentificationPage                => arbitrary[Identification].map(Json.toJson(_))
+      case AddIdentificationNumberYesNoPage  => arbitrary[Boolean].map(JsBoolean)
+      case MeansIdentificationNumberPage     => Gen.alphaNumStr.map(JsString)
+      case AddVehicleCountryYesNoPage        => arbitrary[Boolean].map(JsBoolean)
+      case VehicleCountryPage                => arbitrary[Nationality].map(Json.toJson(_))
     }
   }
 
@@ -140,6 +144,17 @@ trait UserAnswersEntryGenerators {
   }
 
   private def generateCarrierDetailsAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.carrierDetails._
+
+    val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
+      case CarrierDetailYesNoPage => arbitrary[Boolean].map(JsBoolean)
+    }
+
+    pf orElse
+      generateCarrierDetailAnswers
+  }
+
+  private def generateCarrierDetailAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.carrierDetails._
     import pages.carrierDetails.contact._
     {

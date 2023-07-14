@@ -16,7 +16,7 @@
 
 package navigation
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.domain.UserAnswersReader
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.{CheckMode, Index, Mode, NormalMode}
@@ -24,7 +24,7 @@ import models.{CheckMode, Index, Mode, NormalMode}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class AuthorisationNavigatorProviderImpl @Inject() (implicit config: FrontendAppConfig) extends AuthorisationNavigatorProvider {
+class AuthorisationNavigatorProviderImpl @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) extends AuthorisationNavigatorProvider {
 
   override def apply(mode: Mode, index: Index): UserAnswersNavigator =
     mode match {
@@ -37,7 +37,8 @@ trait AuthorisationNavigatorProvider {
   def apply(mode: Mode, index: Index): UserAnswersNavigator
 }
 
-class AuthorisationNavigator(override val mode: Mode, index: Index)(implicit override val config: FrontendAppConfig) extends UserAnswersNavigator {
+class AuthorisationNavigator(override val mode: Mode, index: Index)(implicit override val appConfig: FrontendAppConfig, override val phaseConfig: PhaseConfig)
+    extends UserAnswersNavigator {
 
   override type T = AuthorisationDomain
 
