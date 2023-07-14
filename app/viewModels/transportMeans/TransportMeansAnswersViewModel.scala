@@ -17,7 +17,7 @@
 package viewModels.transportMeans
 
 import config.{FrontendAppConfig, PhaseConfig}
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, Phase, UserAnswers}
 import pages.sections.external.OfficesOfTransitSection
 import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.TransportMeansCheckYourAnswersHelper
@@ -57,20 +57,38 @@ object TransportMeansAnswersViewModel {
         ).flatten
       )
 
-      val borderMeansSection = {
-        if (userAnswers.get(OfficesOfTransitSection).isDefined) {
-          Section(
-            sectionTitle = messages("transportMeans.borderMeans.subheading"),
-            rows = helper.activeBorderTransportsMeans,
-            addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans()
-          )
-        } else {
-          Section(
-            sectionTitle = messages("transportMeans.borderMeans.subheading"),
-            rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
-          )
+      val borderMeansSection =
+        phaseConfig.phase match {
+          case Phase.PostTransition =>
+            if (userAnswers.get(OfficesOfTransitSection).isDefined) {
+              Section(
+                sectionTitle = messages("transportMeans.borderMeans.subheading"),
+                rows = helper.activeBorderTransportsMeans,
+                addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans()
+              )
+            } else {
+              Section(
+                sectionTitle = messages("transportMeans.borderMeans.subheading"),
+                rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
+              )
+            }
+
+          case Phase.Transition =>
+            val helper = new ActiveBorderTransportAnswersHelper(userAnswers, mode, Index(0))
+
+            Section(
+              sectionTitle = messages("transportMeans.borderMeans.subheading"),
+              rows = Seq(
+                helper.activeBorderIdentificationType,
+                helper.activeBorderIdentificationNumber,
+                helper.activeBorderAddNationality,
+                helper.activeBorderNationality,
+                helper.customsOfficeAtBorder,
+                helper.activeBorderConveyanceReferenceNumberYesNo,
+                helper.conveyanceReferenceNumber
+              ).flatten
+            )
         }
-      }
 
       new TransportMeansAnswersViewModel(Seq(inlandModeSection, departureMeansSection, borderModeSection, borderMeansSection))
     }
