@@ -16,7 +16,7 @@
 
 package viewModels.transportMeans.active
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -42,7 +42,7 @@ object AddAnotherBorderTransportViewModel {
 
   class AddAnotherBorderTransportViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
-    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherBorderTransportViewModel = {
+    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig): AddAnotherBorderTransportViewModel = {
       val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)
 
       val listItems = helper.listItems.collect {

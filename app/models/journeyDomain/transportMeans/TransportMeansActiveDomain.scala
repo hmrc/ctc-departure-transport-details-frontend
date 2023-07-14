@@ -17,6 +17,7 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
+import config.PhaseConfig
 import controllers.transportMeans.active.{routes => activeRoutes}
 import controllers.transportMeans.{routes => transportMeansRoutes}
 import models.SecurityDetailsType.NoSecurityDetails
@@ -25,7 +26,7 @@ import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.BorderModeOfTransport._
 import models.transportMeans.active.Identification
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, Phase, UserAnswers}
 import pages.external.SecurityDetailsTypePage
 import pages.sections.external.OfficesOfTransitSection
 import pages.transportMeans.BorderModeOfTransportPage
@@ -39,18 +40,24 @@ case class TransportMeansActiveDomain(
   nationality: Option[Nationality],
   customsOffice: CustomsOffice,
   conveyanceReferenceNumber: Option[String]
-)(index: Index)
+)(index: Index)(implicit phaseConfig: PhaseConfig)
     extends JourneyDomainModel {
 
   def asString(implicit messages: Messages): String =
     TransportMeansActiveDomain.asString(identification, identificationNumber)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
-    userAnswers.get(OfficesOfTransitSection) match {
-      case Some(_) => activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index)
-      case None    => transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode)
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+    phaseConfig.phase match {
+      case Phase.PostTransition =>
+        Some(
+          userAnswers.get(OfficesOfTransitSection) match {
+            case Some(_) => activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index)
+            case None    => transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode)
+          }
+        )
+      case Phase.Transition => None
+
     }
-  )
 }
 
 object TransportMeansActiveDomain {
@@ -58,7 +65,7 @@ object TransportMeansActiveDomain {
   def asString(identification: Identification, identificationNumber: String)(implicit messages: Messages): String =
     s"${identification.asString} - $identificationNumber"
 
-  def userAnswersReader(index: Index): UserAnswersReader[TransportMeansActiveDomain] = {
+  implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansActiveDomain] = {
     lazy val conveyanceReads: UserAnswersReader[Option[String]] =
       for {
         securityDetails <- SecurityDetailsTypePage.reader
