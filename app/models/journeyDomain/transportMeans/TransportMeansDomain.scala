@@ -18,13 +18,15 @@ package models.journeyDomain.transportMeans
 
 import cats.implicits._
 import controllers.transportMeans.routes
-import models.domain.{GettableAsReaderOps, UserAnswersReader}
+import models.SecurityDetailsType.EntryAndExitSummaryDeclarationSecurityDetails
+import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.departure.InlandMode
 import models.{Mode, UserAnswers}
-import pages.transportMeans.BorderModeOfTransportPage
+import pages.external.SecurityDetailsTypePage
 import pages.transportMeans.departure.InlandModePage
+import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import play.api.mvc.Call
 
 sealed trait TransportMeansDomain extends JourneyDomainModel {
@@ -54,17 +56,26 @@ case object TransportMeansDomainWithMailInlandMode extends TransportMeansDomain 
 case class TransportMeansDomainWithOtherInlandMode(
   override val inlandMode: InlandMode,
   transportMeansDeparture: TransportMeansDepartureDomain,
-  borderModeOfTransport: BorderModeOfTransport,
+  borderModeOfTransport: Option[BorderModeOfTransport],
   transportMeansActiveList: TransportMeansActiveListDomain
 ) extends TransportMeansDomain
 
 object TransportMeansDomainWithOtherInlandMode {
 
+  implicit val borderModeOfTransportReader: UserAnswersReader[Option[BorderModeOfTransport]] =
+    // additional declaration type is part of pre-lodge so for time being always set to 'A'
+    SecurityDetailsTypePage.reader.flatMap {
+      case securityType if securityType != EntryAndExitSummaryDeclarationSecurityDetails =>
+        BorderModeOfTransportPage.reader.map(Some(_))
+      case _ =>
+        AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity)(BorderModeOfTransportPage.reader)
+    }
+
   implicit def userAnswersReader(inlandMode: InlandMode): UserAnswersReader[TransportMeansDomainWithOtherInlandMode] =
     (
       UserAnswersReader(inlandMode),
       UserAnswersReader[TransportMeansDepartureDomain],
-      BorderModeOfTransportPage.reader,
+      borderModeOfTransportReader,
       UserAnswersReader[TransportMeansActiveListDomain]
     ).tupled.map((TransportMeansDomainWithOtherInlandMode.apply _).tupled)
 }
