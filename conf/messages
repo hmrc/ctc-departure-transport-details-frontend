@@ -200,6 +200,23 @@ transportMeans.borderModeOfTransport.checkYourAnswersLabel = Border mode of tran
 transportMeans.borderModeOfTransport.change.hidden = border mode of transport
 transportMeans.borderModeOfTransport.error.required = Select how the transit is crossing the border
 
+transportMeans.active.addVehicleIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
+transportMeans.active.addVehicleIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
+transportMeans.active.addVehicleIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
+transportMeans.active.addVehicleIdentificationNumberYeeNo.checkYourAnswersLabel= Do you want to add an identification number for this vehicle?
+
+transportMeans.active.addIdentificationYesNo.title = Do you want to add the type of identification?
+transportMeans.active.addIdentificationYesNo.heading = Do you want to add the type of identification?
+transportMeans.active.addIdentificationYesNo.checkYourAnswersLabel = Do you want to add the type of identification?
+transportMeans.active.addIdentificationYesNo.change.hidden = if you want to add the identification type
+transportMeans.active.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification
+
+transportMeans.active.addVehicleIdentificationYesNo.title = Do you want to add identification for this vehicle?
+transportMeans.active.addVehicleIdentificationYesNo.heading = Do you want to add identification for this vehicle?
+transportMeans.active.addVehicleIdentificationYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
+transportMeans.active.addVehicleIdentificationYesNo.change.hidden = if you want to add identification for this vehicle
+transportMeans.active.addVehicleIdentificationYesNo.error.required = Select yes if you want to add identification for this vehicle
+
 transportMeans.active.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.active.identification.heading = Which identification do you want to use for this vehicle?
 transportMeans.active.identification.imoShipIdNumber = IMO ship identification number
@@ -398,6 +415,13 @@ authorisationsAndLimit.limit.limitDate.error.max.date = The limit date must be b
 # Transport details - Carrier details
 
 carrierDetails.caption = Transport details - Carrier
+
+carrierDetails.carrierDetailYesNo.title = Do you want to add a carrier?
+carrierDetails.carrierDetailYesNo.heading = Do you want to add a carrier?
+carrierDetails.carrierDetailYesNo.paragraph = This is the company that transports the goods to the office of destination.
+carrierDetails.carrierDetailYesNo.checkYourAnswersLabel = Do you want to add a carrier?
+carrierDetails.carrierDetailYesNo.change.hidden = if you want to add a carrier
+carrierDetails.carrierDetailYesNo.error.required = Select yes if you want to add a carrier
 
 carrierDetails.identificationNumber.title = What is the carrier’s EORI number or Third Country Unique Identification Number (TCUIN)?
 carrierDetails.identificationNumber.heading = What is the carrier’s EORI number or Third Country Unique Identification Number (TCUIN)?

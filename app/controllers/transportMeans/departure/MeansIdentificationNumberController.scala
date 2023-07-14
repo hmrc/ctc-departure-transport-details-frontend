@@ -16,6 +16,7 @@
 
 package controllers.transportMeans.departure
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.IdentificationNumberFormProvider
@@ -39,9 +40,8 @@ class MeansIdentificationNumberController @Inject() (
   formProvider: IdentificationNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   view: MeansIdentificationNumberView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
   private case class DynamicHeading(prefix: String, args: String*)

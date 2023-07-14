@@ -23,6 +23,7 @@ import models.domain.{EitherType, UserAnswersReader}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
+import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.{ApprovedOperatorPage, DeclarationTypePage}
 import pages.supplyChainActors.SupplyChainActorYesNoPage
 
@@ -121,6 +122,24 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
         userAnswers =>
           val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
           result.value.supplyChainActors must not be defined
+      }
+    }
+
+    "when adding carrier details" in {
+      val initialUserAnswers = emptyUserAnswers.setValue(CarrierDetailYesNoPage, true)
+      forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+        userAnswers =>
+          val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+          result.value.carrierDetails must be(defined)
+      }
+    }
+
+    "when not adding carrier details" in {
+      val initialUserAnswers = emptyUserAnswers.setValue(CarrierDetailYesNoPage, false)
+      forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+        userAnswers =>
+          val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+          result.value.carrierDetails must not be defined
       }
     }
   }
