@@ -48,15 +48,10 @@ case class TransportMeansActiveDomain(
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     phaseConfig.phase match {
-      case Phase.PostTransition =>
-        Some(
-          userAnswers.get(OfficesOfTransitSection) match {
-            case Some(_) => activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index)
-            case None    => transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode)
-          }
-        )
-      case Phase.Transition => Some(transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
-
+      case Phase.PostTransition if userAnswers.get(OfficesOfTransitSection).isDefined =>
+        Some(activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index))
+      case _ =>
+        Some(transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
     }
 }
 
