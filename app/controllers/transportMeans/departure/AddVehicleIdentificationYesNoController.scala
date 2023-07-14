@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans.active
+package controllers.transportMeans.departure
 
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
-import pages.transportMeans.active.AddVehicleIdentificationYesNoPage
+import models.{LocalReferenceNumber, Mode}
+import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
+import pages.transportMeans.departure
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transportMeans.active.AddVehicleIdentificationYesNoView
+import views.html.transportMeans.departure.AddVehicleIdentificationYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddVehicleIdentificationYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: TransportMeansActiveNavigatorProvider,
+  navigatorProvider: TransportMeansNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -44,27 +44,27 @@ class AddVehicleIdentificationYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transportMeans.active.addVehicleIdentificationYesNo")
+  private val form = formProvider("transportMeans.departure.addVehicleIdentificationYesNo")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddVehicleIdentificationYesNoPage(activeIndex)) match {
+      val preparedForm = request.userAnswers.get(departure.AddVehicleIdentificationYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, mode, activeIndex))
+      Ok(view(preparedForm, lrn, mode))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
-            AddVehicleIdentificationYesNoPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            departure.AddVehicleIdentificationYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }
