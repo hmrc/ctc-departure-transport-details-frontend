@@ -55,7 +55,7 @@ case class TransportMeansActiveDomain(
             case None    => transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode)
           }
         )
-      case Phase.Transition => None
+      case Phase.Transition => Some(transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
 
     }
 }

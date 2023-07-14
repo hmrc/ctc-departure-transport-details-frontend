@@ -27,16 +27,10 @@ import play.api.mvc.Call
 
 case class TransportMeansActiveListDomain(
   transportMeansActiveListDomain: Seq[TransportMeansActiveDomain]
-)(implicit phaseConfig: PhaseConfig)
-    extends JourneyDomainModel {
+) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    phaseConfig.phase match {
-      case Phase.PostTransition =>
-        Some(routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode))
-      case Phase.Transition => None
-    }
-
+    Some(routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode))
 }
 
 object TransportMeansActiveListDomain {
