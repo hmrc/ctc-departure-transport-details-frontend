@@ -49,7 +49,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
             .setValue(MeansIdentificationNumberPage, identificationNumber)
             .setValue(VehicleCountryPage, nationality)
 
-          val expectedResult = PostTransitionTransportMeansDepartureDomain(
+          val expectedResult = TransportMeansDepartureDomain(
             identification = identification,
             identificationNumber = identificationNumber,
             nationality = nationality
@@ -69,6 +69,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
       "when post-transition" - {
         val mockPhaseConfig = mock[PhaseConfig]
         when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
         "when identification page is missing" in {
           val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
             TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
