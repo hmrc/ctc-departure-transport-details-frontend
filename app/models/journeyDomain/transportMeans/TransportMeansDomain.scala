@@ -20,6 +20,7 @@ import cats.implicits._
 import config.PhaseConfig
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import controllers.transportMeans.routes
 import models.SecurityDetailsType.EntryAndExitSummaryDeclarationSecurityDetails
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
@@ -67,17 +68,28 @@ import models.Phase
 import models.domain._
 >>>>>>> 9cdc46d... CTCP-3213: Departure means of transport transition nav.
 import models.journeyDomain.JourneyDomainModel
+=======
+import controllers.transportMeans.routes
+import models.domain._
+import models.journeyDomain.{JourneyDomainModel, Stage}
+>>>>>>> 8acc0d6... CTCP-3213: Updated UserAnswersEntryGenerators.
 import models.transportMeans.BorderModeOfTransport
+import models.{Mode, Phase, UserAnswers}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
+import play.api.mvc.Call
 
 case class TransportMeansDomain(
   transportMeansDeparture: Option[TransportMeansDepartureDomain],
   borderModeOfTransport: BorderModeOfTransport,
 >>>>>>> e6e6e14... CTCP-3213: Initial refactoring to move inland mode to parent domain.
   transportMeansActiveList: TransportMeansActiveListDomain
-) extends JourneyDomainModel
+) extends JourneyDomainModel {
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+    Option(routes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
+}
 
 object TransportMeansDomain {
 
