@@ -20,6 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.SecurityDetailsType._
 import models.domain.{EitherType, UserAnswersReader}
+<<<<<<< HEAD
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.BorderModeOfTransport._
@@ -33,6 +34,15 @@ import pages.external.SecurityDetailsTypePage
 import pages.transportMeans.active._
 import pages.transportMeans.departure.{InlandModePage, MeansIdentificationNumberPage, VehicleCountryPage}
 import pages.transportMeans.{active, departure, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+=======
+import models.reference.Nationality
+import models.transportMeans.BorderModeOfTransport._
+import models.transportMeans.departure.{Identification => DepartureIdentification}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transportMeans.{active, departure, BorderModeOfTransportPage}
+>>>>>>> e6e6e14... CTCP-3213: Initial refactoring to move inland mode to parent domain.
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -47,6 +57,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
   private val conveyanceReferenceNumber = Gen.alphaNumStr.sample.value
 
   "TransportMeansDomain" - {
+<<<<<<< HEAD
     "can be parsed from user answers" - {
       "when inland mode is 5 (mail)" in {
         val inlandMode = InlandMode.Mail
@@ -150,15 +161,11 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
         }
       }
     }
+=======
+    "can be parsed from user answers" - {}
+>>>>>>> e6e6e14... CTCP-3213: Initial refactoring to move inland mode to parent domain.
 
     "cannot be parsed from user answers" - {
-      "when inland mode is unanswered" in {
-        val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-          TransportMeansDomain.userAnswersReader
-        ).run(emptyUserAnswers)
-
-        result.left.value.page mustBe InlandModePage
-      }
 
       "when add border mode of transport yes no is unanswered" in {
         forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode)) {
@@ -179,6 +186,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
       }
 
       "when border mode of transport is unanswered" in {
+<<<<<<< HEAD
         forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode)) {
           inlandMode =>
             val userAnswers = emptyUserAnswers
@@ -188,16 +196,22 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
               .setValue(departure.MeansIdentificationNumberPage, nonEmptyString.sample.value)
               .setValue(departure.VehicleCountryPage, arbitrary[Nationality].sample.value)
               .setValue(AddBorderModeOfTransportYesNoPage, true)
+=======
+        val userAnswers = emptyUserAnswers
+          .setValue(departure.IdentificationPage, arbitrary[DepartureIdentification].sample.value)
+          .setValue(departure.MeansIdentificationNumberPage, nonEmptyString.sample.value)
+          .setValue(departure.VehicleCountryPage, arbitrary[Nationality].sample.value)
+>>>>>>> e6e6e14... CTCP-3213: Initial refactoring to move inland mode to parent domain.
 
-            val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-              TransportMeansDomain.userAnswersReader
-            ).run(userAnswers)
+        val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+          TransportMeansDomain.userAnswersReader
+        ).run(userAnswers)
 
-            result.left.value.page mustBe BorderModeOfTransportPage
-        }
+        result.left.value.page mustBe BorderModeOfTransportPage
       }
 
       "when no active border means answered" in {
+<<<<<<< HEAD
         forAll(
           arbitrary[InlandMode](arbitraryNonMailInlandMode),
           Gen.oneOf(Sea, Air),
@@ -207,6 +221,11 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, securityDetailsType)
               .setValue(InlandModePage, inlandMode)
+=======
+        forAll(Gen.oneOf(Sea, Air)) {
+          borderMode =>
+            val userAnswers = emptyUserAnswers
+>>>>>>> e6e6e14... CTCP-3213: Initial refactoring to move inland mode to parent domain.
               .setValue(departure.IdentificationPage, arbitrary[DepartureIdentification].sample.value)
               .setValue(departure.MeansIdentificationNumberPage, nonEmptyString.sample.value)
               .setValue(departure.VehicleCountryPage, arbitrary[Nationality].sample.value)

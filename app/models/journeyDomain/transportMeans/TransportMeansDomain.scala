@@ -18,6 +18,7 @@ package models.journeyDomain.transportMeans
 
 import cats.implicits._
 import config.PhaseConfig
+<<<<<<< HEAD
 import controllers.transportMeans.routes
 import models.SecurityDetailsType.EntryAndExitSummaryDeclarationSecurityDetails
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
@@ -58,11 +59,22 @@ case class TransportMeansDomainWithOtherInlandMode(
   override val inlandMode: InlandMode,
   transportMeansDeparture: TransportMeansDepartureDomain,
   borderModeOfTransport: Option[BorderModeOfTransport],
+=======
+import models.domain.{GettableAsReaderOps, UserAnswersReader}
+import models.journeyDomain.JourneyDomainModel
+import models.transportMeans.BorderModeOfTransport
+import pages.transportMeans.BorderModeOfTransportPage
+
+case class TransportMeansDomain(
+  transportMeansDeparture: Option[TransportMeansDepartureDomain],
+  borderModeOfTransport: BorderModeOfTransport,
+>>>>>>> e6e6e14... CTCP-3213: Initial refactoring to move inland mode to parent domain.
   transportMeansActiveList: TransportMeansActiveListDomain
-) extends TransportMeansDomain
+) extends JourneyDomainModel
 
-object TransportMeansDomainWithOtherInlandMode {
+object TransportMeansDomain {
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
   implicit def userAnswersReader(inlandMode: InlandMode)(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDomainWithOtherInlandMode] =
@@ -85,6 +97,12 @@ object TransportMeansDomainWithOtherInlandMode {
       UserAnswersReader(inlandMode),
       UserAnswersReader[TransportMeansDepartureDomain],
       borderModeOfTransportReader,
+=======
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDomain] =
+    (
+      UserAnswersReader[TransportMeansDepartureDomain].map(Some(_)),
+      BorderModeOfTransportPage.reader,
+>>>>>>> e6e6e14... CTCP-3213: Initial refactoring to move inland mode to parent domain.
       UserAnswersReader[TransportMeansActiveListDomain]
-    ).tupled.map((TransportMeansDomainWithOtherInlandMode.apply _).tupled)
+    ).tupled.map((TransportMeansDomain.apply _).tupled)
 }
