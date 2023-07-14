@@ -18,10 +18,14 @@ package viewModels.transportMeans
 
 import config.{FrontendAppConfig, PhaseConfig}
 <<<<<<< HEAD
+<<<<<<< HEAD
 import models.{Index, Mode, Phase, UserAnswers}
 =======
 import models.{Index, Mode, UserAnswers}
 >>>>>>> 7c2ee49... CTCP-3468: Add phaseConfig implicits
+=======
+import models.{Index, Mode, Phase, UserAnswers}
+>>>>>>> 085b1a1... CTCP-3468: Add transition logic for section cya
 import pages.sections.external.OfficesOfTransitSection
 import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.TransportMeansCheckYourAnswersHelper
@@ -63,6 +67,7 @@ object TransportMeansAnswersViewModel {
 
       val borderMeansSection =
         phaseConfig.phase match {
+<<<<<<< HEAD
           case Phase.PostTransition if userAnswers.get(OfficesOfTransitSection).isDefined =>
             Section(
               sectionTitle = messages("transportMeans.borderMeans.subheading"),
@@ -73,6 +78,36 @@ object TransportMeansAnswersViewModel {
             Section(
               sectionTitle = messages("transportMeans.borderMeans.subheading"),
               rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
+=======
+          case Phase.PostTransition =>
+            if (userAnswers.get(OfficesOfTransitSection).isDefined) {
+              Section(
+                sectionTitle = messages("transportMeans.borderMeans.subheading"),
+                rows = helper.activeBorderTransportsMeans,
+                addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans()
+              )
+            } else {
+              Section(
+                sectionTitle = messages("transportMeans.borderMeans.subheading"),
+                rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
+              )
+            }
+
+          case Phase.Transition =>
+            val helper = new ActiveBorderTransportAnswersHelper(userAnswers, mode, Index(0))
+
+            Section(
+              sectionTitle = messages("transportMeans.borderMeans.subheading"),
+              rows = Seq(
+                helper.activeBorderIdentificationType,
+                helper.activeBorderIdentificationNumber,
+                helper.activeBorderAddNationality,
+                helper.activeBorderNationality,
+                helper.customsOfficeAtBorder,
+                helper.activeBorderConveyanceReferenceNumberYesNo,
+                helper.conveyanceReferenceNumber
+              ).flatten
+>>>>>>> 085b1a1... CTCP-3468: Add transition logic for section cya
             )
         }
 
