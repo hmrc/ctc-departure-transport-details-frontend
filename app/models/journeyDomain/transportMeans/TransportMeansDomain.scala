@@ -17,18 +17,22 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
+import config.PhaseConfig
 import controllers.transportMeans.routes
-import models.domain.{GettableAsReaderOps, UserAnswersReader}
+import models.domain._
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.departure.InlandMode
-import models.{Mode, UserAnswers}
+import models.{Mode, Phase, UserAnswers}
+import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.BorderModeOfTransportPage
-import pages.transportMeans.departure.InlandModePage
+import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
 import play.api.mvc.Call
 
-sealed trait TransportMeansDomain extends JourneyDomainModel {
-  val inlandMode: InlandMode
+case class TransportMeansDomain(
+  transportMeansDeparture: Option[TransportMeansDepartureDomain],
+  borderModeOfTransport: BorderModeOfTransport,
+  transportMeansActiveList: TransportMeansActiveListDomain
+) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     Option(routes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
@@ -36,35 +40,25 @@ sealed trait TransportMeansDomain extends JourneyDomainModel {
 
 object TransportMeansDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[TransportMeansDomain] =
-    InlandModePage.reader.flatMap {
-      case InlandMode.Mail =>
-        UserAnswersReader(TransportMeansDomainWithMailInlandMode).widen[TransportMeansDomain]
-      case x =>
-        UserAnswersReader[TransportMeansDomainWithOtherInlandMode](
-          TransportMeansDomainWithOtherInlandMode.userAnswersReader(x)
-        ).widen[TransportMeansDomain]
-    }
-}
-
-case object TransportMeansDomainWithMailInlandMode extends TransportMeansDomain {
-  override val inlandMode: InlandMode = InlandMode.Mail
-}
-
-case class TransportMeansDomainWithOtherInlandMode(
-  override val inlandMode: InlandMode,
-  transportMeansDeparture: TransportMeansDepartureDomain,
-  borderModeOfTransport: BorderModeOfTransport,
-  transportMeansActiveList: TransportMeansActiveListDomain
-) extends TransportMeansDomain
-
-object TransportMeansDomainWithOtherInlandMode {
-
-  implicit def userAnswersReader(inlandMode: InlandMode): UserAnswersReader[TransportMeansDomainWithOtherInlandMode] =
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDomain] =
     (
-      UserAnswersReader(inlandMode),
-      UserAnswersReader[TransportMeansDepartureDomain],
+      transportMeansDepartureReader,
       BorderModeOfTransportPage.reader,
       UserAnswersReader[TransportMeansActiveListDomain]
-    ).tupled.map((TransportMeansDomainWithOtherInlandMode.apply _).tupled)
+    ).tupled.map((TransportMeansDomain.apply _).tupled)
+
+  def transportMeansDepartureReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[TransportMeansDepartureDomain]] =
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        ContainerIndicatorPage.reader.flatMap {
+          case true =>
+            AddVehicleIdentificationYesNoPage.filterOptionalDependent(identity) {
+              UserAnswersReader[TransitionTransportMeansDepartureDomain].widen[TransportMeansDepartureDomain]
+            }
+          case false =>
+            UserAnswersReader[TransitionTransportMeansDepartureDomain].widen[TransportMeansDepartureDomain].map(Some(_))
+        }
+      case Phase.PostTransition =>
+        UserAnswersReader[PostTransitionTransportMeansDepartureDomain].map(Some(_))
+    }
 }
