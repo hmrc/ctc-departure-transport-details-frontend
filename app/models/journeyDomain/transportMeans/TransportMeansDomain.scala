@@ -18,10 +18,13 @@ package models.journeyDomain.transportMeans
 
 import cats.implicits._
 import config.PhaseConfig
-import models.domain.{GettableAsReaderOps, UserAnswersReader}
+import models.Phase
+import models.domain._
 import models.journeyDomain.JourneyDomainModel
 import models.transportMeans.BorderModeOfTransport
+import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.BorderModeOfTransportPage
+import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
 
 case class TransportMeansDomain(
   transportMeansDeparture: Option[TransportMeansDepartureDomain],
@@ -33,8 +36,23 @@ object TransportMeansDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDomain] =
     (
-      UserAnswersReader[TransportMeansDepartureDomain].map(Some(_)),
+      transportMeansDepartureReader,
       BorderModeOfTransportPage.reader,
       UserAnswersReader[TransportMeansActiveListDomain]
     ).tupled.map((TransportMeansDomain.apply _).tupled)
+
+  def transportMeansDepartureReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[TransportMeansDepartureDomain]] =
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        ContainerIndicatorPage.reader.flatMap {
+          case true =>
+            AddVehicleIdentificationYesNoPage.filterOptionalDependent(identity) {
+              UserAnswersReader[TransitionTransportMeansDepartureDomain].widen[TransportMeansDepartureDomain]
+            }
+          case false =>
+            UserAnswersReader[TransitionTransportMeansDepartureDomain].widen[TransportMeansDepartureDomain].map(Some(_))
+        }
+      case Phase.PostTransition =>
+        UserAnswersReader[PostTransitionTransportMeansDepartureDomain].map(Some(_))
+    }
 }
