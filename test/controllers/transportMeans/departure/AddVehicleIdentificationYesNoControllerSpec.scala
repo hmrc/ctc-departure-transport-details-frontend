@@ -14,35 +14,35 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans.active
+package controllers.transportMeans.departure
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.TransportMeansActiveNavigatorProvider
+import navigation.TransportMeansNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transportMeans.active.AddVehicleIdentificationYesNoPage
+import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transportMeans.active.AddVehicleIdentificationYesNoView
+import views.html.transportMeans.departure.AddVehicleIdentificationYesNoView
 
 import scala.concurrent.Future
 
-class AddVehicleIdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AddVehicleIdentificationYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider                            = new YesNoFormProvider()
-  private val form                                    = formProvider("transportMeans.active.addVehicleIdentificationYesNo")
+  private val form                                    = formProvider("transportMeans.departure.addVehicleIdentificationYesNo")
   private val mode                                    = NormalMode
-  private lazy val addVehicleIdentificationYesNoRoute = routes.AddVehicleIdentificationYesNoController.onPageLoad(lrn, mode, activeIndex).url
+  private lazy val addVehicleIdentificationYesNoRoute = routes.AddVehicleIdentificationYesNoController.onPageLoad(lrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[TransportMeansActiveNavigatorProvider]).toInstance(fakeTransportMeansActiveNavigatorProvider))
+      .overrides(bind(classOf[TransportMeansNavigatorProvider]).toInstance(fakeTransportMeansNavigatorProvider))
 
   "AddVehicleIdentificationYesNo Controller" - {
 
@@ -58,12 +58,12 @@ class AddVehicleIdentificationControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, activeIndex)(request, messages).toString
+        view(form, lrn, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddVehicleIdentificationYesNoPage(activeIndex), true)
+      val userAnswers = emptyUserAnswers.setValue(AddVehicleIdentificationYesNoPage, true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addVehicleIdentificationYesNoRoute)
@@ -77,7 +77,7 @@ class AddVehicleIdentificationControllerSpec extends SpecBase with AppWithDefaul
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, activeIndex)(request, messages).toString
+        view(filledForm, lrn, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -110,7 +110,7 @@ class AddVehicleIdentificationControllerSpec extends SpecBase with AppWithDefaul
       val view = injector.instanceOf[AddVehicleIdentificationYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, activeIndex)(request, messages).toString
+        view(boundForm, lrn, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

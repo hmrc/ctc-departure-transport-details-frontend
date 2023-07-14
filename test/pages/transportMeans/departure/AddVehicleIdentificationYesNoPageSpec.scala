@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package pages.transportMeans.active
+package pages.transportMeans.departure
 
 import pages.behaviours.PageBehaviours
+import pages.transportMeans.departure
 
 class AddVehicleIdentificationYesNoPageSpec extends PageBehaviours {
 
-  "AddNationalityYesNoPage" - {
+  "AddVehicleIdentificationYesNoPage" - {
 
-    beRetrievable[Boolean](AddVehicleIdentificationYesNoPage(activeIndex))
+    beRetrievable[Boolean](AddVehicleIdentificationYesNoPage)
 
-    beSettable[Boolean](AddVehicleIdentificationYesNoPage(activeIndex))
+    beSettable[Boolean](departure.AddVehicleIdentificationYesNoPage)
 
-    beRemovable[Boolean](AddVehicleIdentificationYesNoPage(activeIndex))
+    beRemovable[Boolean](departure.AddVehicleIdentificationYesNoPage)
 
   }
 }
