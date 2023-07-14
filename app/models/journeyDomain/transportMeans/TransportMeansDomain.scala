@@ -64,6 +64,7 @@ case class TransportMeansDomainWithOtherInlandMode(
 object TransportMeansDomainWithOtherInlandMode {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   implicit def userAnswersReader(inlandMode: InlandMode)(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDomainWithOtherInlandMode] =
 =======
   implicit val borderModeOfTransportReader: UserAnswersReader[Option[BorderModeOfTransport]] =
@@ -77,6 +78,9 @@ object TransportMeansDomainWithOtherInlandMode {
 
   implicit def userAnswersReader(inlandMode: InlandMode): UserAnswersReader[TransportMeansDomainWithOtherInlandMode] =
 >>>>>>> de17bb0... CTCP-3463: Added AddBorderModeOfTransportYesNo to nav
+=======
+  implicit def userAnswersReader(inlandMode: InlandMode)(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDomainWithOtherInlandMode] =
+>>>>>>> ead852e... CTCP-3213: Initial refactor.
     (
       UserAnswersReader(inlandMode),
       UserAnswersReader[TransportMeansDepartureDomain],

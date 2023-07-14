@@ -17,24 +17,39 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
+import config.PhaseConfig
+import models.Phase
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.JourneyDomainModel
 import models.reference.Nationality
 import models.transportMeans.departure.Identification
 import pages.transportMeans.departure._
 
-case class TransportMeansDepartureDomain(
-  identification: Identification,
-  identificationNumber: String,
-  nationality: Nationality
-) extends JourneyDomainModel
+sealed trait TransportMeansDepartureDomain extends JourneyDomainModel
 
 object TransportMeansDepartureDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[TransportMeansDepartureDomain] =
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDepartureDomain] =
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        ???
+      case Phase.PostTransition =>
+        PostTransitionTransportMeansDepartureDomain.userAnswersReader.widen[TransportMeansDepartureDomain]
+    }
+}
+
+case class PostTransitionTransportMeansDepartureDomain(
+  identification: Identification,
+  identificationNumber: String,
+  nationality: Nationality
+) extends TransportMeansDepartureDomain
+
+object PostTransitionTransportMeansDepartureDomain {
+
+  implicit val userAnswersReader: UserAnswersReader[PostTransitionTransportMeansDepartureDomain] =
     (
       IdentificationPage.reader,
       MeansIdentificationNumberPage.reader,
       VehicleCountryPage.reader
-    ).tupled.map((TransportMeansDepartureDomain.apply _).tupled)
+    ).tupled.map((PostTransitionTransportMeansDepartureDomain.apply _).tupled)
 }
