@@ -74,19 +74,9 @@ object TransportMeansAnswersViewModel {
             }
 
           case Phase.Transition =>
-            val helper = new ActiveBorderTransportAnswersHelper(userAnswers, mode, Index(0))
-
             Section(
               sectionTitle = messages("transportMeans.borderMeans.subheading"),
-              rows = Seq(
-                helper.activeBorderIdentificationType,
-                helper.activeBorderIdentificationNumber,
-                helper.activeBorderAddNationality,
-                helper.activeBorderNationality,
-                helper.customsOfficeAtBorder,
-                helper.activeBorderConveyanceReferenceNumberYesNo,
-                helper.conveyanceReferenceNumber
-              ).flatten
+              rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
             )
         }
 

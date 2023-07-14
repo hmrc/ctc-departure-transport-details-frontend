@@ -73,7 +73,7 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
     "redirect to border mode of transport page" - {
       "when 0 active border transports" in {
-        when(mockViewModelProvider.apply(any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any())(any(), any()))
           .thenReturn(viewModelWithNoItems)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -93,7 +93,7 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
 
-        when(mockViewModelProvider.apply(any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -112,7 +112,7 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
       "when max limit reached" in {
 
-        when(mockViewModelProvider.apply(any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -133,7 +133,7 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to identification type page at next index" in {
-          when(mockViewModelProvider.apply(any(), any())(any()))
+          when(mockViewModelProvider.apply(any(), any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -152,7 +152,7 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
       "when no submitted" - {
         "must redirect to CYA" in {
-          when(mockViewModelProvider.apply(any(), any())(any()))
+          when(mockViewModelProvider.apply(any(), any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -172,7 +172,7 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
     "when max limit reached" - {
       "must redirect to CYA" in {
-        when(mockViewModelProvider.apply(any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -191,7 +191,7 @@ class AddAnotherBorderTransportControllerSpec extends SpecBase with AppWithDefau
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any())(any()))
+        when(mockViewModelProvider.apply(any(), any())(any(), any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)

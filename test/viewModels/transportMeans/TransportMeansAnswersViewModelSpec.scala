@@ -17,11 +17,13 @@
 package viewModels.transportMeans
 
 import base.SpecBase
+import config.PhaseConfig
 import generators.Generators
 import models.reference.Nationality
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.departure.{InlandMode, Identification => DepartureIdentification}
-import models.{Index, Mode}
+import models.{Index, Mode, Phase}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -85,65 +87,91 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
 
       val sectionTitle = "Border means of transport"
 
-      "when customs office of transit is present" - {
+      "during transition" - {
+        val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+        when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
 
-        val baseAnswers = emptyUserAnswers.setValue(OfficesOfTransitSection, officesOfTransit)
-
-        "when none were added" in {
-          val userAnswers       = baseAnswers
-          val viewModelProvider = new TransportMeansAnswersViewModelProvider()
-          val result            = viewModelProvider.apply(userAnswers, mode)
-          val section           = result.sections(3)
-          section.sectionTitle.get mustBe sectionTitle
-          section.rows.size mustBe 0
-          section.addAnotherLink must not be defined
-        }
-
-        "when 1 or more were added" in {
-          forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxActiveBorderTransports)) {
-            (mode, amount) =>
-              val userAnswersGen = (0 until amount).foldLeft(Gen.const(baseAnswers)) {
-                (acc, i) =>
-                  acc.flatMap(arbitraryTransportMeansActiveAnswers(_, Index(i)))
-              }
-              forAll(userAnswersGen) {
-                userAnswers =>
-                  val viewModelProvider = new TransportMeansAnswersViewModelProvider()
-                  val result            = viewModelProvider.apply(userAnswers, mode)
-                  val section           = result.sections(3)
-                  section.sectionTitle.get mustBe sectionTitle
-                  section.rows.size mustBe amount
-                  section.addAnotherLink must be(defined)
-              }
-          }
-        }
-      }
-
-      "when customs office of transit is not present" - {
-
-        "when none were added" in {
-          val userAnswers       = emptyUserAnswers
-          val viewModelProvider = new TransportMeansAnswersViewModelProvider()
-          val result            = viewModelProvider.apply(userAnswers, mode)
-          val section           = result.sections(3)
-          section.sectionTitle.get mustBe sectionTitle
-          section.rows.size mustBe 0
-          section.addAnotherLink must not be defined
-        }
-
-        "when 1 was added" in {
+        "when multiplicity is 1" in {
           val userAnswersGen = arbitraryTransportMeansActiveAnswers(emptyUserAnswers, index)
           forAll(arbitrary[Mode], userAnswersGen) {
             (mode, userAnswers) =>
               val viewModelProvider = new TransportMeansAnswersViewModelProvider()
-              val result            = viewModelProvider.apply(userAnswers, mode)
+              val result            = viewModelProvider.apply(userAnswers, mode)(messages, mockPhaseConfig)
               val section           = result.sections(3)
               section.sectionTitle.get mustBe sectionTitle
               section.rows.size must be > 1
               section.addAnotherLink must not be defined
           }
         }
+
       }
+
+      "during post-transition" - {
+        val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+        when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
+        "when customs office of transit is present" - {
+
+          val baseAnswers = emptyUserAnswers.setValue(OfficesOfTransitSection, officesOfTransit)
+
+          "when none were added" in {
+            val userAnswers       = baseAnswers
+            val viewModelProvider = new TransportMeansAnswersViewModelProvider()
+            val result            = viewModelProvider.apply(userAnswers, mode)(messages, mockPhaseConfig)
+            val section           = result.sections(3)
+            section.sectionTitle.get mustBe sectionTitle
+            section.rows.size mustBe 0
+            section.addAnotherLink must not be defined
+          }
+
+          "when 1 or more were added" in {
+            forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxActiveBorderTransports)) {
+              (mode, amount) =>
+                val userAnswersGen = (0 until amount).foldLeft(Gen.const(baseAnswers)) {
+                  (acc, i) =>
+                    acc.flatMap(arbitraryTransportMeansActiveAnswers(_, Index(i)))
+                }
+                forAll(userAnswersGen) {
+                  userAnswers =>
+                    val viewModelProvider = new TransportMeansAnswersViewModelProvider()
+                    val result            = viewModelProvider.apply(userAnswers, mode)(messages, mockPhaseConfig)
+                    val section           = result.sections(3)
+                    section.sectionTitle.get mustBe sectionTitle
+                    section.rows.size mustBe amount
+                    section.addAnotherLink must be(defined)
+                }
+            }
+          }
+        }
+
+        "when customs office of transit is not present" - {
+
+          "when none were added" in {
+            val userAnswers       = emptyUserAnswers
+            val viewModelProvider = new TransportMeansAnswersViewModelProvider()
+            val result            = viewModelProvider.apply(userAnswers, mode)(messages, mockPhaseConfig)
+            val section           = result.sections(3)
+            section.sectionTitle.get mustBe sectionTitle
+            section.rows.size mustBe 0
+            section.addAnotherLink must not be defined
+          }
+
+          "when 1 was added" in {
+            val userAnswersGen = arbitraryTransportMeansActiveAnswers(emptyUserAnswers, index)
+            forAll(arbitrary[Mode], userAnswersGen) {
+              (mode, userAnswers) =>
+                val viewModelProvider = new TransportMeansAnswersViewModelProvider()
+                val result            = viewModelProvider.apply(userAnswers, mode)(messages, mockPhaseConfig)
+                val section           = result.sections(3)
+                section.sectionTitle.get mustBe sectionTitle
+                section.rows.size must be > 1
+                section.addAnotherLink must not be defined
+            }
+          }
+        }
+
+      }
+
     }
   }
 }
