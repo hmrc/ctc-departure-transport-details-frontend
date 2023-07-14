@@ -32,11 +32,19 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
 import viewModels.Link
 
+<<<<<<< HEAD
 class TransportMeansCheckYourAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode
 )(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
+=======
+class TransportMeansCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit
+  messages: Messages,
+  config: FrontendAppConfig,
+  phaseConfig: PhaseConfig
+) extends AnswersHelper(userAnswers, mode) {
+>>>>>>> 7c2ee49... CTCP-3468: Add phaseConfig implicits
 
   def activeBorderTransportsMeans: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(TransportMeansActiveListSection)(activeBorderTransportMeans)

@@ -17,6 +17,7 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
+import config.PhaseConfig
 import controllers.transportMeans.active.{routes => activeRoutes}
 import controllers.transportMeans.{routes => transportMeansRoutes}
 import models.SecurityDetailsType.NoSecurityDetails
@@ -39,18 +40,32 @@ case class TransportMeansActiveDomain(
   nationality: Option[Nationality],
   customsOffice: CustomsOffice,
   conveyanceReferenceNumber: Option[String]
-)(index: Index)
+)(index: Index)(implicit phaseConfig: PhaseConfig)
     extends JourneyDomainModel {
 
   def asString(implicit messages: Messages): String =
     TransportMeansActiveDomain.asString(identification, identificationNumber)
 
+<<<<<<< HEAD
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     phase match {
       case Phase.PostTransition if userAnswers.get(OfficesOfTransitSection).isDefined =>
         Some(activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index))
       case _ =>
         Some(transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
+=======
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+    phaseConfig.phase match {
+      case Phase.PostTransition =>
+        Some(
+          userAnswers.get(OfficesOfTransitSection) match {
+            case Some(_) => activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index)
+            case None    => transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode)
+          }
+        )
+      case Phase.Transition => None
+
+>>>>>>> 7c2ee49... CTCP-3468: Add phaseConfig implicits
     }
 }
 
@@ -59,7 +74,11 @@ object TransportMeansActiveDomain {
   def asString(identification: Identification, identificationNumber: String)(implicit messages: Messages): String =
     s"${identification.asString} - $identificationNumber"
 
+<<<<<<< HEAD
   implicit def userAnswersReader(index: Index): UserAnswersReader[TransportMeansActiveDomain] = {
+=======
+  implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansActiveDomain] = {
+>>>>>>> 7c2ee49... CTCP-3468: Add phaseConfig implicits
     lazy val conveyanceReads: UserAnswersReader[Option[String]] =
       for {
         securityDetails <- SecurityDetailsTypePage.reader

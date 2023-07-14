@@ -17,7 +17,11 @@
 package viewModels.transportMeans
 
 import config.{FrontendAppConfig, PhaseConfig}
+<<<<<<< HEAD
 import models.{Index, Mode, Phase, UserAnswers}
+=======
+import models.{Index, Mode, UserAnswers}
+>>>>>>> 7c2ee49... CTCP-3468: Add phaseConfig implicits
 import pages.sections.external.OfficesOfTransitSection
 import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.TransportMeansCheckYourAnswersHelper
