@@ -17,6 +17,7 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
+import config.PhaseConfig
 import controllers.transportMeans.routes
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
@@ -36,7 +37,7 @@ sealed trait TransportMeansDomain extends JourneyDomainModel {
 
 object TransportMeansDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[TransportMeansDomain] =
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDomain] =
     InlandModePage.reader.flatMap {
       case InlandMode.Mail =>
         UserAnswersReader(TransportMeansDomainWithMailInlandMode).widen[TransportMeansDomain]
@@ -60,7 +61,7 @@ case class TransportMeansDomainWithOtherInlandMode(
 
 object TransportMeansDomainWithOtherInlandMode {
 
-  implicit def userAnswersReader(inlandMode: InlandMode): UserAnswersReader[TransportMeansDomainWithOtherInlandMode] =
+  implicit def userAnswersReader(inlandMode: InlandMode)(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDomainWithOtherInlandMode] =
     (
       UserAnswersReader(inlandMode),
       UserAnswersReader[TransportMeansDepartureDomain],
