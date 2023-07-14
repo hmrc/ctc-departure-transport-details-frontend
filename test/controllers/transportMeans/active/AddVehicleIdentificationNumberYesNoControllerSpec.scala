@@ -23,12 +23,20 @@ import navigation.TransportMeansActiveNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+<<<<<<< HEAD
 import pages.transportMeans.active.AddNationalityYesNoPage
+=======
+import pages.transportMeans.active.AddVehicleIdentificationNumberYesNoPage
+>>>>>>> 82cd329... Added phase config where needed.
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+<<<<<<< HEAD
 import views.html.transportMeans.active.AddNationalityYesNoView
+=======
+import views.html.transportMeans.active.AddVehicleIdentificationNumberYesNoView
+>>>>>>> 82cd329... Added phase config where needed.
 
 import scala.concurrent.Future
 
