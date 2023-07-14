@@ -17,7 +17,7 @@
 package controllers.transportMeans.departure
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.MeansIdentificationNumberFormProvider
+import forms.IdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import models.transportMeans.departure.{Identification, InlandMode}
@@ -27,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import pages.transportMeans.departure.{IdentificationPage, InlandModePage, MeansIdentificationNumberPage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -37,16 +38,16 @@ import scala.concurrent.Future
 
 class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider = new MeansIdentificationNumberFormProvider()
-
   private val identification: Identification = arbitrary[Identification].sample.value
   private val inlandMode: InlandMode         = arbitrary[InlandMode].sample.value
 
   private val withNoIDTypePrefix: String = "transportMeans.departure.meansIdentificationNumber.withNoIDType"
   private val withIDTypePrefix: String   = "transportMeans.departure.meansIdentificationNumber.withIDType"
 
-  private def withNoIDTypeForm                               = formProvider(withNoIDTypePrefix)
-  private def withIDTypeForm(identification: Identification) = formProvider(withIDTypePrefix, identification.arg)
+  private def withNoIDTypeForm: Form[String] = app.injector.instanceOf[IdentificationNumberFormProvider].apply(withNoIDTypePrefix)
+
+  private def withIDTypeForm(identification: Identification): Form[String] =
+    app.injector.instanceOf[IdentificationNumberFormProvider].apply(withIDTypePrefix, identification.arg)
 
   private val mode                                = NormalMode
   private lazy val meansIdentificationNumberRoute = routes.MeansIdentificationNumberController.onPageLoad(lrn, mode).url
