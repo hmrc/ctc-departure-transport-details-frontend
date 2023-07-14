@@ -16,7 +16,7 @@
 
 package controllers.authorisationsAndLimit.authorisations.index
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AuthorisationReferenceNumberFormProvider
@@ -45,7 +45,7 @@ class AuthorisationReferenceNumberController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AuthorisationReferenceNumberView,
   config: FrontendAppConfig
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
