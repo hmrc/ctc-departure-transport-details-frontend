@@ -56,6 +56,7 @@ case class TransportMeansActiveDomain(
 =======
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     phaseConfig.phase match {
+<<<<<<< HEAD
       case Phase.PostTransition =>
         Some(
           userAnswers.get(OfficesOfTransitSection) match {
@@ -66,6 +67,12 @@ case class TransportMeansActiveDomain(
       case Phase.Transition => Some(transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
 
 >>>>>>> 7c2ee49... CTCP-3468: Add phaseConfig implicits
+=======
+      case Phase.PostTransition if userAnswers.get(OfficesOfTransitSection).isDefined =>
+        Some(activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index))
+      case _ =>
+        Some(transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
+>>>>>>> 72b83dd... CTCP-3468: Remove duplication in routeIfCompleted for TransportMeansActiveDomain
     }
 }
 

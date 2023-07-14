@@ -21,7 +21,7 @@ import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, Phase, RichJsArray, UserAnswers}
+import models.{Index, Mode, RichJsArray, UserAnswers}
 import pages.sections.transportMeans.TransportMeansActiveListSection
 import play.api.mvc.Call
 
