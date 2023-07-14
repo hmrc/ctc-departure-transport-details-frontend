@@ -68,6 +68,9 @@ object TransportMeansAnswersViewModel {
       val borderMeansSection =
         phaseConfig.phase match {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> d659ba1... CTCP-3468: Remove duplication from TransportMeansAnswersViewModel
           case Phase.PostTransition if userAnswers.get(OfficesOfTransitSection).isDefined =>
             Section(
               sectionTitle = messages("transportMeans.borderMeans.subheading"),
@@ -75,6 +78,7 @@ object TransportMeansAnswersViewModel {
               addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans()
             )
           case _ =>
+<<<<<<< HEAD
             Section(
               sectionTitle = messages("transportMeans.borderMeans.subheading"),
               rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
@@ -94,6 +98,8 @@ object TransportMeansAnswersViewModel {
             }
 
           case Phase.Transition =>
+=======
+>>>>>>> d659ba1... CTCP-3468: Remove duplication from TransportMeansAnswersViewModel
             Section(
               sectionTitle = messages("transportMeans.borderMeans.subheading"),
 <<<<<<< HEAD
