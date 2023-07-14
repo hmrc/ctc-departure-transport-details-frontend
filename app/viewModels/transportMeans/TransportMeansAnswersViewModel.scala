@@ -16,7 +16,7 @@
 
 package viewModels.transportMeans
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{Index, Mode, UserAnswers}
 import pages.sections.external.OfficesOfTransitSection
 import play.api.i18n.Messages
@@ -32,7 +32,7 @@ object TransportMeansAnswersViewModel {
 
   class TransportMeansAnswersViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
-    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): TransportMeansAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig): TransportMeansAnswersViewModel = {
       val helper = new TransportMeansCheckYourAnswersHelper(userAnswers, mode)
 
       val inlandModeSection = Section(
