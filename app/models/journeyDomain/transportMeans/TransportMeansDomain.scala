@@ -18,19 +18,25 @@ package models.journeyDomain.transportMeans
 
 import cats.implicits._
 import config.PhaseConfig
-import models.Phase
+import controllers.transportMeans.routes
 import models.domain._
-import models.journeyDomain.JourneyDomainModel
+import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.transportMeans.BorderModeOfTransport
+import models.{Mode, Phase, UserAnswers}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
+import play.api.mvc.Call
 
 case class TransportMeansDomain(
   transportMeansDeparture: Option[TransportMeansDepartureDomain],
   borderModeOfTransport: BorderModeOfTransport,
   transportMeansActiveList: TransportMeansActiveListDomain
-) extends JourneyDomainModel
+) extends JourneyDomainModel {
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+    Option(routes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
+}
 
 object TransportMeansDomain {
 
