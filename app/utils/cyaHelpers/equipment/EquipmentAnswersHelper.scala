@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.equipment
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.equipment.index.routes
 import models.journeyDomain.equipment.seal.SealDomain
 import models.{Index, Mode, UserAnswers}
@@ -31,7 +31,7 @@ class EquipmentAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   equipmentIndex: Index
-)(implicit messages: Messages, config: FrontendAppConfig)
+)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def containerIdentificationNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](

@@ -33,7 +33,7 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
         mode =>
           val userAnswers = arbitrarySealAnswers(emptyUserAnswers, equipmentIndex, sealIndex).sample.value
 
-          val result = new AddAnotherSealViewModelProvider()(frontendAppConfig)(userAnswers, mode, equipmentIndex)
+          val result = new AddAnotherSealViewModelProvider().apply(userAnswers, mode, equipmentIndex)
 
           result.listItems.length mustBe 1
           result.title mustBe "You have added 1 seal"
@@ -53,7 +53,7 @@ class AddAnotherSealViewModelSpec extends SpecBase with Generators with ScalaChe
               arbitrarySealAnswers(acc, equipmentIndex, Index(i)).sample.value
           }
 
-          val result = new AddAnotherSealViewModelProvider()(frontendAppConfig)(userAnswers, mode, equipmentIndex)
+          val result = new AddAnotherSealViewModelProvider().apply(userAnswers, mode, equipmentIndex)
           result.listItems.length mustBe seals
           result.title mustBe s"You have added ${formatter.format(seals)} seals"
           result.heading mustBe s"You have added ${formatter.format(seals)} seals"

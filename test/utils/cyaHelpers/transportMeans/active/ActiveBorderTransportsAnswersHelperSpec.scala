@@ -17,6 +17,7 @@
 package utils.cyaHelpers.transportMeans.active
 
 import base.SpecBase
+import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import generators.Generators
 import models.SecurityDetailsType.NoSecurityDetails
@@ -24,7 +25,8 @@ import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.active.Identification
 import models.transportMeans.active.Identification.TrainNumber
-import models.{Mode, NormalMode}
+import models.{Mode, NormalMode, Phase}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
@@ -52,7 +54,10 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
     }
 
     "when user answers populated with a complete active border transport" - {
-      "and AnotherVehicleCrossingBorder has been answered" in {
+      val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+      when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+      "and AnotherVehicleCrossingBorder has been answered during post transition" in {
+
         val initialAnswers = emptyUserAnswers
           .setValue(SecurityDetailsTypePage, NoSecurityDetails)
           .setValue(OfficesOfTransitSection, officesOfTransit)
@@ -60,7 +65,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
 
         forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index), arbitrary[Mode]) {
           (userAnswers, mode) =>
-            val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)
+            val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
             val active = TransportMeansActiveDomain.userAnswersReader(index).run(userAnswers).value
             helper.listItems mustBe Seq(
               Right(
