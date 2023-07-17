@@ -18,13 +18,13 @@ package models.journeyDomain.authorisationsAndLimit.authorisations
 
 import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, RichJsArray, UserAnswers}
+import models.{Index, Mode, Phase, RichJsArray, UserAnswers}
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import play.api.mvc.Call
 
 case class AuthorisationsDomain(authorisations: Seq[AuthorisationDomain]) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Some(controllers.authorisationsAndLimit.authorisations.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.lrn, mode))
 }
 

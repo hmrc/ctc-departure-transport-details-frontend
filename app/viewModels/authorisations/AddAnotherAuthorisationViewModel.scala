@@ -16,7 +16,7 @@
 
 package viewModels.authorisations
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.authorisationsAndLimit.authorisations.routes
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
@@ -38,7 +38,7 @@ case class AddAnotherAuthorisationViewModel(
 
 object AddAnotherAuthorisationViewModel {
 
-  class AddAnotherAuthorisationViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
+  class AddAnotherAuthorisationViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherAuthorisationViewModel = {
       val helper = new AuthorisationsAnswersHelper(userAnswers, mode)

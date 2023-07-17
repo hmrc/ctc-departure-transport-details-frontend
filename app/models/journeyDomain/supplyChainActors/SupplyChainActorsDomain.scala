@@ -19,7 +19,7 @@ package models.journeyDomain.supplyChainActors
 import cats.implicits._
 import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, RichJsArray, UserAnswers}
+import models.{Index, Mode, Phase, RichJsArray, UserAnswers}
 import pages.sections.supplyChainActors.SupplyChainActorsSection
 import play.api.mvc.Call
 
@@ -27,7 +27,7 @@ case class SupplyChainActorsDomain(
   SupplyChainActorsDomain: Seq[SupplyChainActorDomain]
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Some(controllers.supplyChainActors.routes.AddAnotherSupplyChainActorController.onPageLoad(userAnswers.lrn, mode))
 }
 

@@ -36,7 +36,7 @@ case class TransportMeansDomain(
   transportMeansActiveList: TransportMeansActiveListDomain
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Option(routes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
 }
 

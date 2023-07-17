@@ -33,7 +33,7 @@ class AddAnotherSupplyChainActorViewModelSpec extends SpecBase with Generators w
         mode =>
           val userAnswers = arbitrarySupplyChainActorAnswers(emptyUserAnswers, activeIndex).sample.value
 
-          val result = new AddAnotherSupplyChainActorViewModelProvider()(frontendAppConfig)(userAnswers, mode)
+          val result = new AddAnotherSupplyChainActorViewModelProvider().apply(userAnswers, mode)
 
           result.listItems.length mustBe 1
           result.title mustBe "You have added 1 supply chain actor"
@@ -53,7 +53,7 @@ class AddAnotherSupplyChainActorViewModelSpec extends SpecBase with Generators w
               arbitrarySupplyChainActorAnswers(acc, Index(i)).sample.value
           }
 
-          val result = new AddAnotherSupplyChainActorViewModelProvider()(frontendAppConfig)(userAnswers, mode)
+          val result = new AddAnotherSupplyChainActorViewModelProvider().apply(userAnswers, mode)
           result.listItems.length mustBe supplyChainActors
           result.title mustBe s"You have added ${formatter.format(supplyChainActors)} supply chain actors"
           result.heading mustBe s"You have added ${formatter.format(supplyChainActors)} supply chain actors"

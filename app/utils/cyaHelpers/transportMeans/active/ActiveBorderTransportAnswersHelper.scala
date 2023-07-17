@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.transportMeans.active
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.active.Identification
 import models.{Index, Mode, UserAnswers}
@@ -29,7 +29,7 @@ class ActiveBorderTransportAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   index: Index
-)(implicit messages: Messages, config: FrontendAppConfig)
+)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def activeBorderIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
@@ -85,7 +85,11 @@ class ActiveBorderTransportAnswersHelper(
 
 object ActiveBorderTransportAnswersHelper {
 
-  def apply(userAnswers: UserAnswers, mode: Mode, index: Index)(implicit messages: Messages, config: FrontendAppConfig): Seq[SummaryListRow] = {
+  def apply(
+    userAnswers: UserAnswers,
+    mode: Mode,
+    index: Index
+  )(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig): Seq[SummaryListRow] = {
     val helper = new ActiveBorderTransportAnswersHelper(userAnswers, mode, index)
     Seq(
       helper.activeBorderIdentificationType,

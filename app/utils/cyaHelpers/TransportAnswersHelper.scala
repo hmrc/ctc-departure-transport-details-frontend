@@ -16,35 +16,37 @@
 
 package utils.cyaHelpers
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.authorisationsAndLimit.authorisations.{routes => authorisationsRoutes}
 import controllers.equipment.{routes => equipmentsRoutes}
 import controllers.supplyChainActors.{routes => supplyChainActorsRoutes}
+import models.equipment.PaymentMethod
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
-import models.equipment.PaymentMethod
 import models.{Index, Mode, UserAnswers}
-import pages.sections.authorisationsAndLimit.AuthorisationsSection
-import pages.sections.equipment.EquipmentsSection
-import pages.sections.supplyChainActors.SupplyChainActorsSection
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.authorisationsAndLimit.limit.LimitDatePage
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
 import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
 import pages.equipment.{AddPaymentMethodYesNoPage, AddTransportEquipmentYesNoPage, PaymentMethodPage}
 import pages.preRequisites._
+import pages.sections.authorisationsAndLimit.AuthorisationsSection
+import pages.sections.equipment.EquipmentsSection
+import pages.sections.supplyChainActors.SupplyChainActorsSection
 import pages.supplyChainActors.SupplyChainActorYesNoPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import utils.cyaHelpers.AnswersHelper
 import viewModels.Link
 
 import java.time.LocalDate
 
-class TransportAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig)
+class TransportAnswersHelper(
+  userAnswers: UserAnswers,
+  mode: Mode
+)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def usingSameUcr: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
