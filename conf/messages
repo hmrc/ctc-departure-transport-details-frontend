@@ -219,7 +219,7 @@ transportMeans.borderModeOfTransport.error.required = Select how the transit is 
 transportMeans.active.addVehicleIdentificationYesNo.title = Do you want to add identification for this vehicle?
 transportMeans.active.addVehicleIdentificationYesNo.heading = Do you want to add identification for this vehicle?
 transportMeans.active.addVehicleIdentificationYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
-transportMeans.active.addVehicleIdentificationYesNo.change.hidden = if you want to add identification for this vehicle
+transportMeans.active.addVehicleIdentificationYesNo.change.hidden = if you want to add identification for the border means of transport
 transportMeans.active.addVehicleIdentificationYesNo.error.required = Select yes if you want to add identification for this vehicle
 
 transportMeans.active.addVehicleIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
