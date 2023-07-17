@@ -22,7 +22,7 @@ import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
 import models.authorisations.AuthorisationType
 import models.domain.{EitherType, UserAnswersReader}
-import models.transportMeans.departure.InlandMode
+import models.transportMeans.InlandMode
 import models.{DeclarationType, ProcedureType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -30,7 +30,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
 import pages.external._
-import pages.transportMeans.departure.InlandModePage
+import pages.transportMeans.InlandModePage
 
 class AuthorisationDomainSpec extends SpecBase with Generators {
 

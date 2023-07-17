@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.transportMeans.departure
+package models.transportMeans
 
 import models.{EnumerableType, Radioable, WithName}
 
@@ -54,7 +54,7 @@ object InlandMode extends EnumerableType[InlandMode] {
     override val inlandModeType: Int = 8
   }
 
-  val messageKeyPrefix: String = "transportMeans.departure.inlandMode"
+  val messageKeyPrefix: String = "transportMeans.inlandMode"
 
   val values: Seq[InlandMode] = Seq(
     Maritime,
