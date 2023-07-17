@@ -30,7 +30,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.departure._
-import pages.transportMeans.{active, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import pages.transportMeans.{active, AddBorderModeOfTransportYesNoPage, AddDepartureTransportMeansYesNoPage, BorderModeOfTransportPage}
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -49,14 +49,14 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             TransportMeansDomain.transportMeansDepartureReader(mockPhaseConfig)
           ).run(userAnswers)
 
-          result.left.value.page mustBe AddVehicleIdentificationYesNoPage
+          result.left.value.page mustBe AddDepartureTransportMeansYesNoPage
         }
 
         "and add departures transport means yes/no is yes" - {
           "and add type of identification yes/no is unanswered" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, true)
-              .setValue(AddVehicleIdentificationYesNoPage, true)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             val result = UserAnswersReader[Option[TransportMeansDepartureDomain]](
               TransportMeansDomain.transportMeansDepartureReader(mockPhaseConfig)

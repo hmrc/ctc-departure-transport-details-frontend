@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans.departure
+package controllers.transportMeans
 
 import config.PhaseConfig
 import controllers.actions._
@@ -22,33 +22,33 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
-import pages.transportMeans.departure
+import pages.transportMeans.AddDepartureTransportMeansYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transportMeans.departure.AddVehicleIdentificationYesNoView
+import views.html.transportMeans.AddDepartureTransportMeansYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddVehicleIdentificationYesNoController @Inject() (
+class AddDepartureTransportMeansYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddVehicleIdentificationYesNoView
+  view: AddDepartureTransportMeansYesNoView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transportMeans.departure.addVehicleIdentificationYesNo")
+  private val form = formProvider("transportMeans.addDepartureTransportMeansYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(departure.AddVehicleIdentificationYesNoPage) match {
+      val preparedForm = request.userAnswers.get(AddDepartureTransportMeansYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -64,7 +64,7 @@ class AddVehicleIdentificationYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            departure.AddVehicleIdentificationYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            AddDepartureTransportMeansYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

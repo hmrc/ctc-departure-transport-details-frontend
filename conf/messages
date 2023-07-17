@@ -120,11 +120,11 @@ transportMeans.departure.addIdentificationTypeYesNo.checkYourAnswersLabel = Do y
 transportMeans.departure.addIdentificationTypeYesNo.change.hidden = if you want to add a type of identification
 transportMeans.departure.addIdentificationTypeYesNo.error.required = Select yes if you want to add a type of identification
 
-transportMeans.departure.addVehicleIdentificationYesNo.title = Do you want to add identification for this vehicle?
-transportMeans.departure.addVehicleIdentificationYesNo.heading = Do you want to add identification for this vehicle?
-transportMeans.departure.addVehicleIdentificationYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
-transportMeans.departure.addVehicleIdentificationYesNo.change.hidden = if you want to add identification for this vehicle
-transportMeans.departure.addVehicleIdentificationYesNo.error.required = Select yes if you want to add identification for this vehicle
+transportMeans.addDepartureTransportMeansYesNo.title = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.heading = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.change.hidden = if you want to add identification for this vehicle
+transportMeans.addDepartureTransportMeansYesNo.error.required = Select yes if you want to add identification for this vehicle
 
 transportMeans.departure.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.departure.identification.heading = Which identification do you want to use for this vehicle?

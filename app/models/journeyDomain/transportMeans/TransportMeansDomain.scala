@@ -26,8 +26,7 @@ import models.transportMeans.BorderModeOfTransport
 import models.{Mode, Phase, UserAnswers}
 import pages.external.SecurityDetailsTypePage
 import pages.preRequisites.ContainerIndicatorPage
-import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
-import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, AddDepartureTransportMeansYesNoPage, BorderModeOfTransportPage}
 import play.api.mvc.Call
 
 case class TransportMeansDomain(
@@ -54,7 +53,7 @@ object TransportMeansDomain {
       case Phase.Transition =>
         ContainerIndicatorPage.reader.flatMap {
           case true =>
-            AddVehicleIdentificationYesNoPage.filterOptionalDependent(identity) {
+            AddDepartureTransportMeansYesNoPage.filterOptionalDependent(identity) {
               UserAnswersReader[TransitionTransportMeansDepartureDomain].widen[TransportMeansDepartureDomain]
             }
           case false =>
