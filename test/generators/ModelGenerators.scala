@@ -173,9 +173,4 @@ trait ModelGenerators {
       Gen.oneOf(SecurityDetailsType.values.filterNot(_ == SecurityDetailsType.NoSecurityDetails))
     }
 
-  lazy val arbitraryNonEntryAndExitSummaryDeclarationSecurityDetailsType: Arbitrary[SecurityDetailsType] =
-    Arbitrary {
-      Gen.oneOf(SecurityDetailsType.values.filterNot(_ == SecurityDetailsType.EntryAndExitSummaryDeclarationSecurityDetails))
-    }
-
 }
