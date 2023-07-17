@@ -49,8 +49,12 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.departure._
+<<<<<<< HEAD
 import pages.transportMeans.{active, departure, BorderModeOfTransportPage}
 >>>>>>> e6e6e14... CTCP-3213: Initial refactoring to move inland mode to parent domain.
+=======
+import pages.transportMeans.{active, AddBorderModeOfTransportYesNoPage, AddDepartureTransportMeansYesNoPage, BorderModeOfTransportPage}
+>>>>>>> f5b23fa... CTCP-3434: Moved 'Add departure transport means?' page.
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -79,6 +83,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
         result.value mustBe TransportMeansDomainWithMailInlandMode
       }
 
+<<<<<<< HEAD
       "when inland mode is not 5 (mail)" - {
         "and security type is not 4 (EntryAndExitSummaryDeclarationSecurityDetails)" in {
           forAll(
@@ -113,6 +118,16 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
                   )
                 )
               )
+=======
+          result.left.value.page mustBe AddDepartureTransportMeansYesNoPage
+        }
+
+        "and add departures transport means yes/no is yes" - {
+          "and add type of identification yes/no is unanswered" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(ContainerIndicatorPage, true)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
+>>>>>>> f5b23fa... CTCP-3434: Moved 'Add departure transport means?' page.
 
               forAll(arbitraryTransportMeansAnswers(initialAnswers)) {
                 answers =>

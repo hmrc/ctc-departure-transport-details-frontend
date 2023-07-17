@@ -76,8 +76,12 @@ import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.transportMeans.BorderModeOfTransport
 import models.{Mode, Phase, UserAnswers}
 import pages.preRequisites.ContainerIndicatorPage
+<<<<<<< HEAD
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
+=======
+import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, AddDepartureTransportMeansYesNoPage, BorderModeOfTransportPage}
+>>>>>>> f5b23fa... CTCP-3434: Moved 'Add departure transport means?' page.
 import play.api.mvc.Call
 
 case class TransportMeansDomain(
@@ -130,7 +134,7 @@ object TransportMeansDomain {
       case Phase.Transition =>
         ContainerIndicatorPage.reader.flatMap {
           case true =>
-            AddVehicleIdentificationYesNoPage.filterOptionalDependent(identity) {
+            AddDepartureTransportMeansYesNoPage.filterOptionalDependent(identity) {
               UserAnswersReader[TransitionTransportMeansDepartureDomain].widen[TransportMeansDepartureDomain]
             }
           case false =>

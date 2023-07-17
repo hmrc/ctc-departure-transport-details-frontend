@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package pages.transportMeans.departure
+package pages.transportMeans
 
-import controllers.transportMeans.departure.routes
+import controllers.transportMeans.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transportMeans.TransportMeansDepartureSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddVehicleIdentificationYesNoPage extends QuestionPage[Boolean] {
+import scala.util.Try
+
+case object AddDepartureTransportMeansYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = TransportMeansDepartureSection.path \ toString
 
-  override def toString: String = "addVehicleIdentificationYesNo"
+  override def toString: String = "addDepartureTransportMeansYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddVehicleIdentificationYesNoController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.AddDepartureTransportMeansYesNoController.onPageLoad(userAnswers.lrn, mode))
 
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    super.cleanup(value, userAnswers) // TODO
 }
