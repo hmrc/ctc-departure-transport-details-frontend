@@ -17,6 +17,8 @@
 package pages.transportMeans
 
 import pages.behaviours.PageBehaviours
+import pages.sections.transportMeans.TransportMeansActiveListSection
+import play.api.libs.json.{JsArray, Json}
 
 class AddActiveBorderTransportMeansYesNoPageSpec extends PageBehaviours {
 
@@ -28,5 +30,17 @@ class AddActiveBorderTransportMeansYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](AddActiveBorderTransportMeansYesNoPage)
 
+    "cleanup" - {
+      "when no selected" - {
+        "must remove active border means of transport" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(TransportMeansActiveListSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+
+          val result = userAnswers.setValue(AddActiveBorderTransportMeansYesNoPage, false)
+
+          result.get(TransportMeansActiveListSection) must not be defined
+        }
+      }
+    }
   }
 }

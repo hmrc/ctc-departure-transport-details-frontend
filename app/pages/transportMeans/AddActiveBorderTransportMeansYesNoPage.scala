@@ -20,6 +20,7 @@ import controllers.transportMeans.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.TransportSection
+import pages.sections.transportMeans.TransportMeansActiveListSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -34,6 +35,8 @@ case object AddActiveBorderTransportMeansYesNoPage extends QuestionPage[Boolean]
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddActiveBorderTransportMeansYesNoController.onPageLoad(userAnswers.lrn, mode))
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    super.cleanup(value, userAnswers) // TODO
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(false) => userAnswers.remove(TransportMeansActiveListSection)
+    case _           => super.cleanup(value, userAnswers)
+  }
 }
