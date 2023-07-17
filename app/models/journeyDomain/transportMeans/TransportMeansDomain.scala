@@ -87,7 +87,7 @@ case class TransportMeansDomain(
   transportMeansActiveList: TransportMeansActiveListDomain
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Option(routes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
 }
 
@@ -139,4 +139,19 @@ object TransportMeansDomain {
       case Phase.PostTransition =>
         UserAnswersReader[PostTransitionTransportMeansDepartureDomain].map(Some(_))
     }
+<<<<<<< HEAD
+=======
+
+  // additional declaration type is part of pre-lodge so for time being always set to 'A'
+  implicit val borderModeOfTransportReader: UserAnswersReader[Option[BorderModeOfTransport]] =
+    SecurityDetailsTypePage.reader.flatMap {
+      case NoSecurityDetails =>
+        AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity)(BorderModeOfTransportPage.reader)
+      case _ =>
+        BorderModeOfTransportPage.reader.map(Some(_))
+    }
+
+  implicit val transportMeansActiveReader: UserAnswersReader[TransportMeansActiveListDomain] =
+    TransportMeansActiveListDomain.userAnswersReader
+>>>>>>> 1d4687d... Using phase in routeIfCompleted.
 }

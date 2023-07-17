@@ -66,7 +66,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index), arbitrary[Mode]) {
               (userAnswers, mode) =>
                 val abtm = UserAnswersReader[TransportMeansActiveDomain](
-                  TransportMeansActiveDomain.userAnswersReader(index)(mockPhaseConfig)
+                  TransportMeansActiveDomain.userAnswersReader(index)
                 ).run(userAnswers).value
 
                 val helper = new TransportMeansCheckYourAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)

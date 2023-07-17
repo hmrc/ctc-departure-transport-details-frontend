@@ -17,11 +17,10 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
-import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, RichJsArray, UserAnswers}
+import models.{Index, Mode, Phase, RichJsArray, UserAnswers}
 import pages.sections.transportMeans.TransportMeansActiveListSection
 import play.api.mvc.Call
 
@@ -29,13 +28,13 @@ case class TransportMeansActiveListDomain(
   transportMeansActiveListDomain: Seq[TransportMeansActiveDomain]
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Some(routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode))
 }
 
 object TransportMeansActiveListDomain {
 
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansActiveListDomain] = {
+  implicit val userAnswersReader: UserAnswersReader[TransportMeansActiveListDomain] = {
 
     val activeListReader: UserAnswersReader[Seq[TransportMeansActiveDomain]] =
       TransportMeansActiveListSection.arrayReader.flatMap {

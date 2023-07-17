@@ -17,7 +17,6 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
-import config.PhaseConfig
 import controllers.transportMeans.active.{routes => activeRoutes}
 import controllers.transportMeans.{routes => transportMeansRoutes}
 import models.SecurityDetailsType.NoSecurityDetails
@@ -40,14 +39,14 @@ case class TransportMeansActiveDomain(
   nationality: Option[Nationality],
   customsOffice: CustomsOffice,
   conveyanceReferenceNumber: Option[String]
-)(index: Index)(implicit phaseConfig: PhaseConfig)
+)(index: Index)
     extends JourneyDomainModel {
 
   def asString(implicit messages: Messages): String =
     TransportMeansActiveDomain.asString(identification, identificationNumber)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
-    phaseConfig.phase match {
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
+    phase match {
       case Phase.PostTransition if userAnswers.get(OfficesOfTransitSection).isDefined =>
         Some(activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index))
       case _ =>
@@ -60,7 +59,7 @@ object TransportMeansActiveDomain {
   def asString(identification: Identification, identificationNumber: String)(implicit messages: Messages): String =
     s"${identification.asString} - $identificationNumber"
 
-  implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansActiveDomain] = {
+  implicit def userAnswersReader(index: Index): UserAnswersReader[TransportMeansActiveDomain] = {
     lazy val conveyanceReads: UserAnswersReader[Option[String]] =
       for {
         securityDetails <- SecurityDetailsTypePage.reader
