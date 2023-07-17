@@ -17,8 +17,8 @@
 package viewModels.transportMeans
 
 import config.{FrontendAppConfig, PhaseConfig}
-import models.{Index, Mode, Phase, UserAnswers}
-import pages.sections.external.OfficesOfTransitSection
+import models.journeyDomain.transportMeans.TransportMeansActiveDomain
+import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.TransportMeansCheckYourAnswersHelper
 import utils.cyaHelpers.transportMeans.active.ActiveBorderTransportAnswersHelper
@@ -57,20 +57,18 @@ object TransportMeansAnswersViewModel {
         ).flatten
       )
 
-      val borderMeansSection =
-        phaseConfig.phase match {
-          case Phase.PostTransition if userAnswers.get(OfficesOfTransitSection).isDefined =>
-            Section(
-              sectionTitle = messages("transportMeans.borderMeans.subheading"),
-              rows = helper.activeBorderTransportsMeans,
-              addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans()
-            )
-          case _ =>
-            Section(
-              sectionTitle = messages("transportMeans.borderMeans.subheading"),
-              rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
-            )
-        }
+      val borderMeansSection = if (TransportMeansActiveDomain.hasMultiplicity(userAnswers, phaseConfig.phase)) {
+        Section(
+          sectionTitle = messages("transportMeans.borderMeans.subheading"),
+          rows = helper.activeBorderTransportsMeans,
+          addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans()
+        )
+      } else {
+        Section(
+          sectionTitle = messages("transportMeans.borderMeans.subheading"),
+          rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
+        )
+      }
 
       new TransportMeansAnswersViewModel(Seq(inlandModeSection, departureMeansSection, borderModeSection, borderMeansSection))
     }

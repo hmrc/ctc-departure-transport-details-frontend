@@ -46,11 +46,10 @@ case class TransportMeansActiveDomain(
     TransportMeansActiveDomain.asString(identification, identificationNumber)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
-    phase match {
-      case Phase.PostTransition if userAnswers.get(OfficesOfTransitSection).isDefined =>
-        Some(activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index))
-      case _ =>
-        Some(transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
+    if (TransportMeansActiveDomain.hasMultiplicity(userAnswers, phase)) {
+      Some(activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index))
+    } else {
+      Some(transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
     }
 }
 
@@ -58,6 +57,11 @@ object TransportMeansActiveDomain {
 
   def asString(identification: Identification, identificationNumber: String)(implicit messages: Messages): String =
     s"${identification.asString} - $identificationNumber"
+
+  def hasMultiplicity(userAnswers: UserAnswers, phase: Phase): Boolean = phase match {
+    case Phase.PostTransition if userAnswers.get(OfficesOfTransitSection).isDefined => true
+    case _                                                                          => false
+  }
 
   implicit def userAnswersReader(index: Index): UserAnswersReader[TransportMeansActiveDomain] = {
     lazy val conveyanceReads: UserAnswersReader[Option[String]] =
