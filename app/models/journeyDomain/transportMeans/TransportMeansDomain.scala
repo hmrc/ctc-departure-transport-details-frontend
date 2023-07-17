@@ -77,18 +77,32 @@ import models.transportMeans.BorderModeOfTransport
 import models.{Mode, Phase, UserAnswers}
 import pages.preRequisites.ContainerIndicatorPage
 <<<<<<< HEAD
+<<<<<<< HEAD
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
 =======
 import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, AddDepartureTransportMeansYesNoPage, BorderModeOfTransportPage}
 >>>>>>> f5b23fa... CTCP-3434: Moved 'Add departure transport means?' page.
+=======
+import pages.transportMeans.{
+  AddActiveBorderTransportMeansYesNoPage,
+  AddBorderModeOfTransportYesNoPage,
+  AddDepartureTransportMeansYesNoPage,
+  BorderModeOfTransportPage
+}
+>>>>>>> 745890b... CTCP-3434: Updated nav.
 import play.api.mvc.Call
 
 case class TransportMeansDomain(
   transportMeansDeparture: Option[TransportMeansDepartureDomain],
+<<<<<<< HEAD
   borderModeOfTransport: BorderModeOfTransport,
 >>>>>>> e6e6e14... CTCP-3213: Initial refactoring to move inland mode to parent domain.
   transportMeansActiveList: TransportMeansActiveListDomain
+=======
+  borderModeOfTransport: Option[BorderModeOfTransport],
+  transportMeansActiveList: Option[TransportMeansActiveListDomain]
+>>>>>>> 745890b... CTCP-3434: Updated nav.
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
@@ -155,7 +169,19 @@ object TransportMeansDomain {
         BorderModeOfTransportPage.reader.map(Some(_))
     }
 
+<<<<<<< HEAD
   implicit val transportMeansActiveReader: UserAnswersReader[TransportMeansActiveListDomain] =
     TransportMeansActiveListDomain.userAnswersReader
 >>>>>>> 1d4687d... Using phase in routeIfCompleted.
+=======
+  implicit val transportMeansActiveReader: UserAnswersReader[Option[TransportMeansActiveListDomain]] =
+    SecurityDetailsTypePage.reader.flatMap {
+      case NoSecurityDetails =>
+        AddActiveBorderTransportMeansYesNoPage.filterOptionalDependent(identity) {
+          UserAnswersReader[TransportMeansActiveListDomain]
+        }
+      case _ =>
+        UserAnswersReader[TransportMeansActiveListDomain].map(Some(_))
+    }
+>>>>>>> 745890b... CTCP-3434: Updated nav.
 }

@@ -48,6 +48,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.preRequisites.ContainerIndicatorPage
+<<<<<<< HEAD
 import pages.transportMeans.departure._
 <<<<<<< HEAD
 import pages.transportMeans.{active, departure, BorderModeOfTransportPage}
@@ -55,6 +56,9 @@ import pages.transportMeans.{active, departure, BorderModeOfTransportPage}
 =======
 import pages.transportMeans.{active, AddBorderModeOfTransportYesNoPage, AddDepartureTransportMeansYesNoPage, BorderModeOfTransportPage}
 >>>>>>> f5b23fa... CTCP-3434: Moved 'Add departure transport means?' page.
+=======
+import pages.transportMeans._
+>>>>>>> 745890b... CTCP-3434: Updated nav.
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -135,8 +139,12 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
                     TransportMeansDomain.userAnswersReader
                   ).run(answers)
 
+<<<<<<< HEAD
                   result.value mustBe expectedResult
               }
+=======
+            result.left.value.page mustBe departure.AddIdentificationTypeYesNoPage
+>>>>>>> 745890b... CTCP-3434: Updated nav.
           }
         }
 
@@ -172,6 +180,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
                 )
               )
 
+<<<<<<< HEAD
               forAll(arbitraryTransportMeansAnswers(initialAnswers)) {
                 answers =>
                   val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
@@ -181,6 +190,9 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
                   result.value mustBe expectedResult
               }
           }
+=======
+          result.left.value.page mustBe departure.IdentificationPage
+>>>>>>> 745890b... CTCP-3434: Updated nav.
         }
       }
     }
@@ -264,6 +276,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
       }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       "when no active border means answered" in {
 <<<<<<< HEAD
         forAll(
@@ -328,6 +341,55 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
             result.left.value.page mustBe IdentificationPage
           }
+=======
+    "transportMeansActiveReader" - {
+      "when there is no security" - {
+        "and add active border transport means yes/no is missing" in {
+          val userAnswers = emptyUserAnswers.setValue(SecurityDetailsTypePage, NoSecurityDetails)
+
+          val result = UserAnswersReader[Option[TransportMeansActiveListDomain]](
+            TransportMeansDomain.transportMeansActiveReader
+          ).run(userAnswers)
+
+          result.left.value.page mustBe AddActiveBorderTransportMeansYesNoPage
+        }
+
+        "and add active border transport means yes/no is yes" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+            .setValue(AddActiveBorderTransportMeansYesNoPage, true)
+
+          val result = UserAnswersReader[Option[TransportMeansActiveListDomain]](
+            TransportMeansDomain.transportMeansActiveReader
+          ).run(userAnswers)
+
+          result.left.value.page mustBe active.IdentificationPage(Index(0))
+        }
+
+        "and add active border transport means yes/no is no" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+            .setValue(AddActiveBorderTransportMeansYesNoPage, false)
+
+          val result = UserAnswersReader[Option[TransportMeansActiveListDomain]](
+            TransportMeansDomain.transportMeansActiveReader
+          ).run(userAnswers)
+
+          result.value mustBe None
+        }
+      }
+
+      "when there is security" in {
+        forAll(arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType)) {
+          security =>
+            val userAnswers = emptyUserAnswers.setValue(SecurityDetailsTypePage, security)
+
+            val result = UserAnswersReader[Option[TransportMeansActiveListDomain]](
+              TransportMeansDomain.transportMeansActiveReader
+            ).run(userAnswers)
+
+            result.left.value.page mustBe active.IdentificationPage(Index(0))
+>>>>>>> 745890b... CTCP-3434: Updated nav.
         }
       }
     }
