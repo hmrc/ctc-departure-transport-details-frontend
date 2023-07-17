@@ -22,8 +22,10 @@ import models.Phase
 import models.domain._
 import models.journeyDomain.JourneyDomainModel
 import models.reference.Nationality
-import models.transportMeans.departure.{Identification, InlandMode}
+import models.transportMeans.InlandMode
+import models.transportMeans.departure.Identification
 import pages.preRequisites.ContainerIndicatorPage
+import pages.transportMeans.InlandModePage
 import pages.transportMeans.departure._
 
 sealed trait TransportMeansDepartureDomain extends JourneyDomainModel

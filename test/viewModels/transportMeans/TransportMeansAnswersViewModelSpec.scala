@@ -20,16 +20,15 @@ import base.SpecBase
 import config.PhaseConfig
 import generators.Generators
 import models.reference.Nationality
-import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.departure.{InlandMode, Identification => DepartureIdentification}
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
+import models.transportMeans.departure.{Identification => DepartureIdentification}
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
-import pages.transportMeans.departure.InlandModePage
-import pages.transportMeans.{departure, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import pages.transportMeans.{departure, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage, InlandModePage}
 import play.api.libs.json.{JsArray, Json}
 import viewModels.transportMeans.TransportMeansAnswersViewModel.TransportMeansAnswersViewModelProvider
 

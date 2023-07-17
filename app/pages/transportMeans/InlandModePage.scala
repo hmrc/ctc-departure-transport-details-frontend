@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package pages.transportMeans.departure
+package pages.transportMeans
 
-import controllers.transportMeans.departure.routes
-import models.transportMeans.departure.InlandMode
-import models.transportMeans.departure.InlandMode.Mail
+import controllers.transportMeans.routes
+import models.transportMeans.InlandMode
+import models.transportMeans.InlandMode.Mail
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.TransportSection

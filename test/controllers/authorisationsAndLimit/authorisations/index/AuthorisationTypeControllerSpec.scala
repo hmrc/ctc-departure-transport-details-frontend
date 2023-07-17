@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.authorisations.AuthorisationType
-import models.transportMeans.departure.InlandMode.Maritime
+import models.transportMeans.InlandMode.Maritime
 import models.{DeclarationType, NormalMode, ProcedureType, UserAnswers}
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentCaptor
@@ -29,7 +29,7 @@ import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
 import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
-import pages.transportMeans.departure.InlandModePage
+import pages.transportMeans.InlandModePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest

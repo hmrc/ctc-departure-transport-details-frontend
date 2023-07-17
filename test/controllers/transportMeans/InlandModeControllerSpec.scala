@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans.departure
+package controllers.transportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.transportMeans.departure.InlandMode
+import models.transportMeans.InlandMode
 import navigation.TransportMeansNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.transportMeans.departure.InlandModePage
+import pages.transportMeans.InlandModePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transportMeans.departure.InlandModeView
+import views.html.transportMeans.InlandModeView
 
 import scala.concurrent.Future
 
 class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
   private val formProvider         = new EnumerableFormProvider()
-  private val form                 = formProvider[InlandMode]("transportMeans.departure.inlandMode")
+  private val form                 = formProvider[InlandMode]("transportMeans.inlandMode")
   private val mode                 = NormalMode
   private lazy val inlandModeRoute = routes.InlandModeController.onPageLoad(lrn, mode).url
 

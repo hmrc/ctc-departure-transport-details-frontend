@@ -21,9 +21,9 @@ import models.authorisations.AuthorisationType
 import models.equipment.PaymentMethod
 import models.reference._
 import models.supplyChainActors.SupplyChainActorType
-import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.active.{Identification => ActiveIdentification}
-import models.transportMeans.departure.{Identification, InlandMode}
+import models.transportMeans.departure.Identification
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -75,6 +75,7 @@ trait UserAnswersEntryGenerators {
     import pages.transportMeans._
     generateTransportMeansDepartureAnswer orElse
       generateTransportMeansActiveAnswer orElse {
+        case InlandModePage                         => arbitrary[InlandMode].map(Json.toJson(_))
         case AddDepartureTransportMeansYesNoPage    => arbitrary[Boolean].map(JsBoolean)
         case AddBorderModeOfTransportYesNoPage      => arbitrary[Boolean].map(JsBoolean)
         case BorderModeOfTransportPage              => arbitrary[BorderModeOfTransport].map(Json.toJson(_))
@@ -85,7 +86,6 @@ trait UserAnswersEntryGenerators {
   private def generateTransportMeansDepartureAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.transportMeans.departure._
     {
-      case InlandModePage                   => arbitrary[InlandMode].map(Json.toJson(_))
       case AddIdentificationTypeYesNoPage   => arbitrary[Boolean].map(JsBoolean)
       case IdentificationPage               => arbitrary[Identification].map(Json.toJson(_))
       case AddIdentificationNumberYesNoPage => arbitrary[Boolean].map(JsBoolean)

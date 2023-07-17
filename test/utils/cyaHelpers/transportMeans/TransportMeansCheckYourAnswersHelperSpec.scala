@@ -23,8 +23,8 @@ import generators.Generators
 import models.domain.UserAnswersReader
 import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.reference.Nationality
-import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.departure.{InlandMode, Identification => DepartureIdentification}
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
+import models.transportMeans.departure.{Identification => DepartureIdentification}
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -32,7 +32,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
 import pages.sections.transportMeans.TransportMeansActiveSection
 import pages.transportMeans.departure._
-import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage, InlandModePage}
 import play.api.libs.json.{JsArray, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -142,13 +142,13 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Mode".toText),
-                  value = Value(messages(s"${"transportMeans.departure.inlandMode"}.$inlandMode").toText),
+                  value = Value(messages(s"${"transportMeans.inlandMode"}.$inlandMode").toText),
                   actions = Some(
                     Actions(
                       items = List(
                         ActionItem(
                           content = "Change".toText,
-                          href = controllers.transportMeans.departure.routes.InlandModeController.onPageLoad(answers.lrn, mode).url,
+                          href = controllers.transportMeans.routes.InlandModeController.onPageLoad(answers.lrn, mode).url,
                           visuallyHiddenText = Some("inland mode of transport"),
                           attributes = Map("id" -> "change-transport-means-inland-mode")
                         )

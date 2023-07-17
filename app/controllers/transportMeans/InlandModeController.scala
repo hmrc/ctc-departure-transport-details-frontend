@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans.departure
+package controllers.transportMeans
 
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.transportMeans.departure.InlandMode
+import models.transportMeans.InlandMode
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
-import pages.transportMeans.departure.InlandModePage
+import pages.transportMeans.InlandModePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transportMeans.departure.InlandModeView
+import views.html.transportMeans.InlandModeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,7 +45,7 @@ class InlandModeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[InlandMode]("transportMeans.departure.inlandMode")
+  private val form = formProvider[InlandMode]("transportMeans.inlandMode")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
