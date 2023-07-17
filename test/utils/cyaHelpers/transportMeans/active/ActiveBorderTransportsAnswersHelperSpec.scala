@@ -63,10 +63,10 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
           .setValue(OfficesOfTransitSection, officesOfTransit)
           .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Sea)
 
-        forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index)(mockPhaseConfig), arbitrary[Mode]) {
+        forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index), arbitrary[Mode]) {
           (userAnswers, mode) =>
             val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
-            val active = TransportMeansActiveDomain.userAnswersReader(index)(mockPhaseConfig).run(userAnswers).value
+            val active = TransportMeansActiveDomain.userAnswersReader(index).run(userAnswers).value
             helper.listItems mustBe Seq(
               Right(
                 ListItem(

@@ -25,7 +25,7 @@ import models.journeyDomain.equipment.EquipmentsAndChargesDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
 import models.transportMeans.departure.InlandMode
-import models.{Mode, UserAnswers}
+import models.{Mode, Phase, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.ApprovedOperatorPage
@@ -43,7 +43,7 @@ case class TransportDomain(
   equipmentsAndCharges: EquipmentsAndChargesDomain
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Some(controllers.routes.TransportAnswersController.onPageLoad(userAnswers.lrn))
 }
 

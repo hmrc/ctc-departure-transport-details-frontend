@@ -36,7 +36,7 @@ case class TransportMeansDomain(
   transportMeansActiveList: TransportMeansActiveListDomain
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Option(routes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
 }
 
@@ -73,6 +73,6 @@ object TransportMeansDomain {
         BorderModeOfTransportPage.reader.map(Some(_))
     }
 
-  implicit def transportMeansActiveReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansActiveListDomain] =
+  implicit val transportMeansActiveReader: UserAnswersReader[TransportMeansActiveListDomain] =
     TransportMeansActiveListDomain.userAnswersReader
 }
