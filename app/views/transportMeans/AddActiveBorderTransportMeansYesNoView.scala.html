@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.transportMeans.active.routes
+@import controllers.transportMeans.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
@@ -27,22 +27,22 @@
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportMeans.active.addVehicleIdentificationYesNo.title"),
+    title = messages("transportMeans.addActiveBorderTransportMeansYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.AddVehicleIdentificationYesNoController.onSubmit(lrn, mode, activeIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddActiveBorderTransportMeansYesNoController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("transportMeans.active.addVehicleIdentificationYesNo.heading"),
+                heading = messages("transportMeans.addActiveBorderTransportMeansYesNo.heading"),
                 caption = Some(messages("activeBorderMeansOfTransport.caption"))
             )
         )

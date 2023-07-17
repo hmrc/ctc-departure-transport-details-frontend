@@ -18,8 +18,8 @@ package generators
 
 import models._
 import models.reference._
-import models.transportMeans.departure.InlandMode
-import models.transportMeans.departure.InlandMode.{Mail, Rail}
+import models.transportMeans.InlandMode
+import models.transportMeans.InlandMode.{Mail, Rail}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call

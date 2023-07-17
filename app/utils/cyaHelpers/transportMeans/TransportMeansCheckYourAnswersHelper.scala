@@ -20,8 +20,8 @@ import config.{FrontendAppConfig, PhaseConfig}
 import controllers.transportMeans.active.routes
 import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.reference.Nationality
-import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.departure.{Identification, InlandMode}
+import models.transportMeans.departure.Identification
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transportMeans.TransportMeansActiveListSection
 import pages.transportMeans._
@@ -73,8 +73,15 @@ class TransportMeansCheckYourAnswersHelper(
   def inlandMode: Option[SummaryListRow] = getAnswerAndBuildRow[InlandMode](
     page = InlandModePage,
     formatAnswer = formatEnumAsText(InlandMode.messageKeyPrefix),
-    prefix = "transportMeans.departure.inlandMode",
+    prefix = "transportMeans.inlandMode",
     id = Some("change-transport-means-inland-mode")
+  )
+
+  def addDepartureTransportMeans: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddDepartureTransportMeansYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transportMeans.addDepartureTransportMeansYesNo",
+    id = Some("change-add-departure-transport-means")
   )
 
   def departureIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
@@ -96,6 +103,13 @@ class TransportMeansCheckYourAnswersHelper(
     formatAnswer = formatAsText,
     prefix = "transportMeans.departure.vehicleCountry",
     id = Some("change-transport-means-departure-vehicle-nationality")
+  )
+
+  def addActiveBorderTransportMeans: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddActiveBorderTransportMeansYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transportMeans.addActiveBorderTransportMeansYesNo",
+    id = Some("change-add-active-border-transport-means")
   )
 
 }

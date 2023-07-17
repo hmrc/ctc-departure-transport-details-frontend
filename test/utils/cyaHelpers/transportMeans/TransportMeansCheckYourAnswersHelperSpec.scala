@@ -23,8 +23,8 @@ import generators.Generators
 import models.domain.UserAnswersReader
 import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.reference.Nationality
-import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.departure.{InlandMode, Identification => DepartureIdentification}
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
+import models.transportMeans.departure.{Identification => DepartureIdentification}
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -32,7 +32,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
 import pages.sections.transportMeans.TransportMeansActiveSection
 import pages.transportMeans.departure._
-import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import pages.transportMeans._
 import play.api.libs.json.{JsArray, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -138,15 +138,60 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Mode".toText),
-                  value = Value(messages(s"${"transportMeans.departure.inlandMode"}.$inlandMode").toText),
+                  value = Value(messages(s"${"transportMeans.inlandMode"}.$inlandMode").toText),
                   actions = Some(
                     Actions(
                       items = List(
                         ActionItem(
                           content = "Change".toText,
-                          href = controllers.transportMeans.departure.routes.InlandModeController.onPageLoad(answers.lrn, mode).url,
+                          href = controllers.transportMeans.routes.InlandModeController.onPageLoad(answers.lrn, mode).url,
                           visuallyHiddenText = Some("inland mode of transport"),
                           attributes = Map("id" -> "change-transport-means-inland-mode")
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+          }
+        }
+      }
+    }
+
+    "addDepartureTransportMeans" - {
+      "must return None" - {
+        "when AddDepartureTransportMeansYesNoPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addDepartureTransportMeans
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AddDepartureTransportMeansYesNoPage defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
+
+              val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
+              val result = helper.addDepartureTransportMeans
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("Do you want to add identification for this vehicle?".toText),
+                  value = Value("Yes".toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = controllers.transportMeans.routes.AddDepartureTransportMeansYesNoController.onPageLoad(answers.lrn, mode).url,
+                          visuallyHiddenText = Some("if you want to add identification for the departure means of transport"),
+                          attributes = Map("id" -> "change-add-departure-transport-means")
                         )
                       )
                     )
@@ -375,6 +420,49 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
       }
     }
 
-  }
+    "addActiveBorderTransportMeans" - {
+      "must return None" - {
+        "when AddActiveBorderTransportMeansYesNoPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addActiveBorderTransportMeans
+              result mustBe None
+          }
+        }
+      }
 
+      "must return Some(Row)" - {
+        "when AddActiveBorderTransportMeansYesNoPage defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers
+                .setValue(AddActiveBorderTransportMeansYesNoPage, true)
+
+              val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
+              val result = helper.addActiveBorderTransportMeans
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("Do you want to add identification for this vehicle?".toText),
+                  value = Value("Yes".toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = controllers.transportMeans.routes.AddActiveBorderTransportMeansYesNoController.onPageLoad(answers.lrn, mode).url,
+                          visuallyHiddenText = Some("if you want to add identification for the border means of transport"),
+                          attributes = Map("id" -> "change-add-active-border-transport-means")
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+          }
+        }
+      }
+    }
+  }
 }

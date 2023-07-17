@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import controllers.transportMeans.departure.routes
+@import controllers.transportMeans.routes
 @import models.LocalReferenceNumber
-@import models.transportMeans.departure.InlandMode
+@import models.transportMeans.InlandMode
 @import views.html.components.{Button, ErrorSummary, InputRadio, Heading}
 @import viewModels.components.InputRadioViewModel
 @import viewModels.components.InputRadioViewModel._
@@ -32,7 +32,7 @@
 @(form: Form[InlandMode], lrn: LocalReferenceNumber, inlandModes: Seq[InlandMode], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportMeans.departure.inlandMode.title"),
+    title = messages("transportMeans.inlandMode.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -44,9 +44,9 @@
         @inputRadio(
             field = form("value"),
             radioType = RadioWithAdditionalHtml(
-                heading = messages("transportMeans.departure.inlandMode.heading"),
+                heading = messages("transportMeans.inlandMode.heading"),
                 caption = Some(messages("inlandMode.caption")),
-                additionalHtml = messages("transportMeans.departure.inlandMode.paragraph").toParagraph
+                additionalHtml = messages("transportMeans.inlandMode.paragraph").toParagraph
             ),
             radioItems = fieldId => inlandModes.toRadioItems(fieldId, form.value)
         )

@@ -29,8 +29,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
 import pages.preRequisites.ContainerIndicatorPage
-import pages.transportMeans.departure._
-import pages.transportMeans.{active, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import pages.transportMeans._
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -49,20 +48,20 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             TransportMeansDomain.transportMeansDepartureReader(mockPhaseConfig)
           ).run(userAnswers)
 
-          result.left.value.page mustBe AddVehicleIdentificationYesNoPage
+          result.left.value.page mustBe AddDepartureTransportMeansYesNoPage
         }
 
         "and add departures transport means yes/no is yes" - {
           "and add type of identification yes/no is unanswered" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, true)
-              .setValue(AddVehicleIdentificationYesNoPage, true)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             val result = UserAnswersReader[Option[TransportMeansDepartureDomain]](
               TransportMeansDomain.transportMeansDepartureReader(mockPhaseConfig)
             ).run(userAnswers)
 
-            result.left.value.page mustBe AddIdentificationTypeYesNoPage
+            result.left.value.page mustBe departure.AddIdentificationTypeYesNoPage
           }
         }
       }
@@ -76,7 +75,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             TransportMeansDomain.transportMeansDepartureReader(mockPhaseConfig)
           ).run(userAnswers)
 
-          result.left.value.page mustBe IdentificationPage
+          result.left.value.page mustBe departure.IdentificationPage
         }
       }
     }
@@ -122,12 +121,53 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
     }
 
     "transportMeansActiveReader" - {
-      "when no active border means answered" in {
-        val result = UserAnswersReader[TransportMeansActiveListDomain](
-          TransportMeansDomain.transportMeansActiveReader
-        ).run(emptyUserAnswers)
+      "when there is no security" - {
+        "and add active border transport means yes/no is missing" in {
+          val userAnswers = emptyUserAnswers.setValue(SecurityDetailsTypePage, NoSecurityDetails)
 
-        result.left.value.page mustBe active.IdentificationPage(Index(0))
+          val result = UserAnswersReader[Option[TransportMeansActiveListDomain]](
+            TransportMeansDomain.transportMeansActiveReader
+          ).run(userAnswers)
+
+          result.left.value.page mustBe AddActiveBorderTransportMeansYesNoPage
+        }
+
+        "and add active border transport means yes/no is yes" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+            .setValue(AddActiveBorderTransportMeansYesNoPage, true)
+
+          val result = UserAnswersReader[Option[TransportMeansActiveListDomain]](
+            TransportMeansDomain.transportMeansActiveReader
+          ).run(userAnswers)
+
+          result.left.value.page mustBe active.IdentificationPage(Index(0))
+        }
+
+        "and add active border transport means yes/no is no" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+            .setValue(AddActiveBorderTransportMeansYesNoPage, false)
+
+          val result = UserAnswersReader[Option[TransportMeansActiveListDomain]](
+            TransportMeansDomain.transportMeansActiveReader
+          ).run(userAnswers)
+
+          result.value mustBe None
+        }
+      }
+
+      "when there is security" in {
+        forAll(arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType)) {
+          security =>
+            val userAnswers = emptyUserAnswers.setValue(SecurityDetailsTypePage, security)
+
+            val result = UserAnswersReader[Option[TransportMeansActiveListDomain]](
+              TransportMeansDomain.transportMeansActiveReader
+            ).run(userAnswers)
+
+            result.left.value.page mustBe active.IdentificationPage(Index(0))
+        }
       }
     }
   }

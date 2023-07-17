@@ -20,14 +20,14 @@ import base.SpecBase
 import generators.Generators
 import models.DeclarationType
 import models.domain.{EitherType, UserAnswersReader}
-import models.transportMeans.departure.InlandMode
+import models.transportMeans.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.{ApprovedOperatorPage, DeclarationTypePage}
 import pages.supplyChainActors.SupplyChainActorYesNoPage
-import pages.transportMeans.departure.InlandModePage
+import pages.transportMeans.InlandModePage
 
 class TransportDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 

@@ -100,31 +100,31 @@ departureMeansOfTransport.caption = Transport details - Departure means of trans
 activeBorderModeOfTransport.caption = Transport details - Border mode of transport
 activeBorderMeansOfTransport.caption = Transport details - Border means of transport
 
-transportMeans.departure.inlandMode.title = Which inland mode of transport are you using?
-transportMeans.departure.inlandMode.heading = Which inland mode of transport are you using?
-transportMeans.departure.inlandMode.paragraph = This is the type of transport used from the UK office of departure to a UK port or airport.
-transportMeans.departure.inlandMode.maritime = Maritime
-transportMeans.departure.inlandMode.rail = Rail
-transportMeans.departure.inlandMode.road = Road
-transportMeans.departure.inlandMode.air = Air
-transportMeans.departure.inlandMode.mail = Mail (active mode of transport unknown)
-transportMeans.departure.inlandMode.fixed = Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods
-transportMeans.departure.inlandMode.waterway = Inland waterway
-transportMeans.departure.inlandMode.checkYourAnswersLabel = Mode
-transportMeans.departure.inlandMode.error.required = Select which inland mode of transport you’re using
-transportMeans.departure.inlandMode.change.hidden = inland mode of transport
+transportMeans.inlandMode.title = Which inland mode of transport are you using?
+transportMeans.inlandMode.heading = Which inland mode of transport are you using?
+transportMeans.inlandMode.paragraph = This is the type of transport used from the UK office of departure to a UK port or airport.
+transportMeans.inlandMode.maritime = Maritime
+transportMeans.inlandMode.rail = Rail
+transportMeans.inlandMode.road = Road
+transportMeans.inlandMode.air = Air
+transportMeans.inlandMode.mail = Mail (active mode of transport unknown)
+transportMeans.inlandMode.fixed = Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods
+transportMeans.inlandMode.waterway = Inland waterway
+transportMeans.inlandMode.checkYourAnswersLabel = Mode
+transportMeans.inlandMode.error.required = Select which inland mode of transport you’re using
+transportMeans.inlandMode.change.hidden = inland mode of transport
+
+transportMeans.addDepartureTransportMeansYesNo.title = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.heading = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.change.hidden = if you want to add identification for the departure means of transport
+transportMeans.addDepartureTransportMeansYesNo.error.required = Select yes if you want to add identification for this vehicle
 
 transportMeans.departure.addIdentificationTypeYesNo.title = Do you want to add the type of identification?
 transportMeans.departure.addIdentificationTypeYesNo.heading = Do you want to add the type of identification?
 transportMeans.departure.addIdentificationTypeYesNo.checkYourAnswersLabel = Do you want to add a type of identification?
 transportMeans.departure.addIdentificationTypeYesNo.change.hidden = if you want to add a type of identification
 transportMeans.departure.addIdentificationTypeYesNo.error.required = Select yes if you want to add a type of identification
-
-transportMeans.departure.addVehicleIdentificationYesNo.title = Do you want to add identification for this vehicle?
-transportMeans.departure.addVehicleIdentificationYesNo.heading = Do you want to add identification for this vehicle?
-transportMeans.departure.addVehicleIdentificationYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
-transportMeans.departure.addVehicleIdentificationYesNo.change.hidden = if you want to add identification for this vehicle
-transportMeans.departure.addVehicleIdentificationYesNo.error.required = Select yes if you want to add identification for this vehicle
 
 transportMeans.departure.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.departure.identification.heading = Which identification do you want to use for this vehicle?
@@ -213,11 +213,11 @@ transportMeans.borderModeOfTransport.checkYourAnswersLabel = Border mode of tran
 transportMeans.borderModeOfTransport.change.hidden = border mode of transport
 transportMeans.borderModeOfTransport.error.required = Select how the transit is crossing the border
 
-transportMeans.active.addVehicleIdentificationYesNo.title = Do you want to add identification for this vehicle?
-transportMeans.active.addVehicleIdentificationYesNo.heading = Do you want to add identification for this vehicle?
-transportMeans.active.addVehicleIdentificationYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
-transportMeans.active.addVehicleIdentificationYesNo.change.hidden = if you want to add identification for the border means of transport
-transportMeans.active.addVehicleIdentificationYesNo.error.required = Select yes if you want to add identification for this vehicle
+transportMeans.addActiveBorderTransportMeansYesNo.title = Do you want to add identification for this vehicle?
+transportMeans.addActiveBorderTransportMeansYesNo.heading = Do you want to add identification for this vehicle?
+transportMeans.addActiveBorderTransportMeansYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
+transportMeans.addActiveBorderTransportMeansYesNo.change.hidden = if you want to add identification for the border means of transport
+transportMeans.addActiveBorderTransportMeansYesNo.error.required = Select yes if you want to add identification for this vehicle
 
 transportMeans.active.addVehicleIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
 transportMeans.active.addVehicleIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?

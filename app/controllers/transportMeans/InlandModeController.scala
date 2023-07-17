@@ -14,46 +14,47 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans.departure
+package controllers.transportMeans
 
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.YesNoFormProvider
+import forms.EnumerableFormProvider
+import models.transportMeans.InlandMode
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
-import pages.transportMeans.departure
+import pages.transportMeans.InlandModePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transportMeans.departure.AddVehicleIdentificationYesNoView
+import views.html.transportMeans.InlandModeView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddVehicleIdentificationYesNoController @Inject() (
+class InlandModeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
   actions: Actions,
-  formProvider: YesNoFormProvider,
+  formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddVehicleIdentificationYesNoView
+  view: InlandModeView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transportMeans.departure.addVehicleIdentificationYesNo")
+  private val form = formProvider[InlandMode]("transportMeans.inlandMode")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(departure.AddVehicleIdentificationYesNoPage) match {
+      val preparedForm = request.userAnswers.get(InlandModePage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, mode))
+      Ok(view(preparedForm, lrn, InlandMode.values, mode))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
@@ -61,10 +62,10 @@ class AddVehicleIdentificationYesNoController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, InlandMode.values, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            departure.AddVehicleIdentificationYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            InlandModePage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

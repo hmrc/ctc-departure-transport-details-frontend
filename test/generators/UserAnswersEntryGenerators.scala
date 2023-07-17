@@ -21,9 +21,9 @@ import models.authorisations.AuthorisationType
 import models.equipment.PaymentMethod
 import models.reference._
 import models.supplyChainActors.SupplyChainActorType
-import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.active.{Identification => ActiveIdentification}
-import models.transportMeans.departure.{Identification, InlandMode}
+import models.transportMeans.departure.Identification
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -75,29 +75,29 @@ trait UserAnswersEntryGenerators {
     import pages.transportMeans._
     generateTransportMeansDepartureAnswer orElse
       generateTransportMeansActiveAnswer orElse {
-        case AddBorderModeOfTransportYesNoPage => arbitrary[Boolean].map(JsBoolean)
-        case BorderModeOfTransportPage         => arbitrary[BorderModeOfTransport].map(Json.toJson(_))
+        case InlandModePage                         => arbitrary[InlandMode].map(Json.toJson(_))
+        case AddDepartureTransportMeansYesNoPage    => arbitrary[Boolean].map(JsBoolean)
+        case AddBorderModeOfTransportYesNoPage      => arbitrary[Boolean].map(JsBoolean)
+        case BorderModeOfTransportPage              => arbitrary[BorderModeOfTransport].map(Json.toJson(_))
+        case AddActiveBorderTransportMeansYesNoPage => arbitrary[Boolean].map(JsBoolean)
       }
   }
 
   private def generateTransportMeansDepartureAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.transportMeans.departure._
     {
-      case InlandModePage                    => arbitrary[InlandMode].map(Json.toJson(_))
-      case AddVehicleIdentificationYesNoPage => arbitrary[Boolean].map(JsBoolean)
-      case AddIdentificationTypeYesNoPage    => arbitrary[Boolean].map(JsBoolean)
-      case IdentificationPage                => arbitrary[Identification].map(Json.toJson(_))
-      case AddIdentificationNumberYesNoPage  => arbitrary[Boolean].map(JsBoolean)
-      case MeansIdentificationNumberPage     => Gen.alphaNumStr.map(JsString)
-      case AddVehicleCountryYesNoPage        => arbitrary[Boolean].map(JsBoolean)
-      case VehicleCountryPage                => arbitrary[Nationality].map(Json.toJson(_))
+      case AddIdentificationTypeYesNoPage   => arbitrary[Boolean].map(JsBoolean)
+      case IdentificationPage               => arbitrary[Identification].map(Json.toJson(_))
+      case AddIdentificationNumberYesNoPage => arbitrary[Boolean].map(JsBoolean)
+      case MeansIdentificationNumberPage    => Gen.alphaNumStr.map(JsString)
+      case AddVehicleCountryYesNoPage       => arbitrary[Boolean].map(JsBoolean)
+      case VehicleCountryPage               => arbitrary[Nationality].map(Json.toJson(_))
     }
   }
 
   private def generateTransportMeansActiveAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.transportMeans.active._
     {
-      case AddVehicleIdentificationYesNoPage(_)  => arbitrary[Boolean].map(JsBoolean)
       case IdentificationPage(_)                 => arbitrary[ActiveIdentification].map(Json.toJson(_))
       case IdentificationNumberPage(_)           => Gen.alphaNumStr.map(JsString)
       case AddNationalityYesNoPage(_)            => arbitrary[Boolean].map(JsBoolean)

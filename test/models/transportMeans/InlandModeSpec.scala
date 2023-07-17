@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.transportMeans.departure
+package models.transportMeans
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
