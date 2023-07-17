@@ -309,12 +309,12 @@ supplyChainActors.index.supplyChainActorType.manufacturer = Manufacturer
 supplyChainActors.index.supplyChainActorType.warehouseKeeper = Warehouse keeper
 supplyChainActors.index.supplyChainActorType.error.required = Select which type of supply chain actor you want to add
 
-supplyChainActors.index.identificationNumber.title = What is the EORI number or Trader Identification Number (TIN) for the {0}?
-supplyChainActors.index.identificationNumber.heading = What is the EORI number or Trader Identification Number (TIN) for the {0}?
+supplyChainActors.index.identificationNumber.title = What is the EORI number or Third Country Unique Identification Number (TCUIN) for the {0}?
+supplyChainActors.index.identificationNumber.heading = What is the EORI number or Third Country Unique Identification Number (TCUIN) for the {0}?
 supplyChainActors.index.identificationNumber.hint = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
-supplyChainActors.index.identificationNumber.error.required = Enter the EORI number or Trader Identification Number (TIN) for the supply chain actor
-supplyChainActors.index.identificationNumber.error.length = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
-supplyChainActors.index.identificationNumber.error.invalid = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
+supplyChainActors.index.identificationNumber.error.required = Enter the EORI number or Third Country Unique Identification Number for the supply chain actor
+supplyChainActors.index.identificationNumber.error.length = The EORI number or Third Country Unique Identification Number must be 17 characters or less
+supplyChainActors.index.identificationNumber.error.invalid = The EORI number or Third Country Unique Identification Number must only include letters a to z and numbers 0 to 9
 
 supplyChainActors.index.removeSupplyChainActor.title = Are you sure you want to remove this supply chain actor?
 supplyChainActors.index.removeSupplyChainActor.heading = Are you sure you want to remove this supply chain actor?
