@@ -465,6 +465,7 @@ equipment.index.addSealYesNo.heading = Do you want to add a seal?
 equipment.index.addSealYesNo.checkYourAnswersLabel = Do you want to add a seal?
 equipment.index.addSealYesNo.change.hidden = if you want to add a seal
 equipment.index.addSealYesNo.error.required = Select yes if you want to add a seal
+equipment.index.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
 
 equipment.index.seals.identificationNumber.title = What is the seal identification number?
 equipment.index.seals.identificationNumber.heading = What is the seal identification number?

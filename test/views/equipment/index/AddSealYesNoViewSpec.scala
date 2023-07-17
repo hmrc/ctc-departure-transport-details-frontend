@@ -29,6 +29,8 @@ class AddSealYesNoViewSpec extends YesNoViewBehaviours {
 
   override val prefix: String = "equipment.index.addSealYesNo"
 
+  private val paragraph: String = "You can only add a seal if you are authorised to use customs seals."
+
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
@@ -40,4 +42,6 @@ class AddSealYesNoViewSpec extends YesNoViewBehaviours {
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
+
+  behave like pageWithContent(doc, "p", paragraph)
 }
