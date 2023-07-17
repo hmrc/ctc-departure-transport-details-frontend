@@ -214,6 +214,20 @@ transportMeans.borderModeOfTransport.change.hidden = border mode of transport
 transportMeans.borderModeOfTransport.error.required = Select how the transit is crossing the border
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+transportMeans.active.addVehicleIdentificationYesNo.title = Do you want to add identification for this vehicle?
+transportMeans.active.addVehicleIdentificationYesNo.heading = Do you want to add identification for this vehicle?
+transportMeans.active.addVehicleIdentificationYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
+transportMeans.active.addVehicleIdentificationYesNo.change.hidden = if you want to add identification for this vehicle
+transportMeans.active.addVehicleIdentificationYesNo.error.required = Select yes if you want to add identification for this vehicle
+
+transportMeans.active.addVehicleIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
+transportMeans.active.addVehicleIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
+transportMeans.active.addVehicleIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
+transportMeans.active.addVehicleIdentificationNumberYeeNo.checkYourAnswersLabel= Do you want to add an identification number for this vehicle?
+
+>>>>>>> 83f7c06... CTCP-3434: Added 'Do you want to add identification for this vehicle?' page for active.
 transportMeans.active.addIdentificationYesNo.title = Do you want to add the type of identification?
 transportMeans.active.addIdentificationYesNo.heading = Do you want to add the type of identification?
 transportMeans.active.addIdentificationYesNo.checkYourAnswersLabel = Do you want to add the type of identification?
