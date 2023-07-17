@@ -1,3 +1,7 @@
+GET        /border-means-of-transport/:activeIndex/add-identification/:lrn                                 controllers.transportMeans.active.AddVehicleIdentificationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)
+POST       /border-means-of-transport/:activeIndex/add-identification/:lrn                                 controllers.transportMeans.active.AddVehicleIdentificationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)
+GET        /border-means-of-transport/:activeIndex/change-add-identification/:lrn                          controllers.transportMeans.active.AddVehicleIdentificationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, activeIndex: Index)
+POST       /border-means-of-transport/:activeIndex/change-add-identification/:lrn                          controllers.transportMeans.active.AddVehicleIdentificationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, activeIndex: Index)
 
 GET        /border-means-of-transport/:activeIndex/add-country/:lrn                                        controllers.transportMeans.active.AddNationalityYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)
 POST       /border-means-of-transport/:activeIndex/add-country/:lrn                                        controllers.transportMeans.active.AddNationalityYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)

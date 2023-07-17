@@ -75,23 +75,29 @@ trait UserAnswersEntryGenerators {
     import pages.transportMeans._
     generateTransportMeansDepartureAnswer orElse
       generateTransportMeansActiveAnswer orElse {
-        case BorderModeOfTransportPage => arbitrary[BorderModeOfTransport].map(Json.toJson(_))
+        case AddBorderModeOfTransportYesNoPage => arbitrary[Boolean].map(JsBoolean)
+        case BorderModeOfTransportPage         => arbitrary[BorderModeOfTransport].map(Json.toJson(_))
       }
   }
 
   private def generateTransportMeansDepartureAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.transportMeans.departure._
     {
-      case InlandModePage                => arbitrary[InlandMode].map(Json.toJson(_))
-      case IdentificationPage            => arbitrary[Identification].map(Json.toJson(_))
-      case MeansIdentificationNumberPage => Gen.alphaNumStr.map(JsString)
-      case VehicleCountryPage            => arbitrary[Nationality].map(Json.toJson(_))
+      case InlandModePage                    => arbitrary[InlandMode].map(Json.toJson(_))
+      case AddVehicleIdentificationYesNoPage => arbitrary[Boolean].map(JsBoolean)
+      case AddIdentificationTypeYesNoPage    => arbitrary[Boolean].map(JsBoolean)
+      case IdentificationPage                => arbitrary[Identification].map(Json.toJson(_))
+      case AddIdentificationNumberYesNoPage  => arbitrary[Boolean].map(JsBoolean)
+      case MeansIdentificationNumberPage     => Gen.alphaNumStr.map(JsString)
+      case AddVehicleCountryYesNoPage        => arbitrary[Boolean].map(JsBoolean)
+      case VehicleCountryPage                => arbitrary[Nationality].map(Json.toJson(_))
     }
   }
 
   private def generateTransportMeansActiveAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.transportMeans.active._
     {
+      case AddVehicleIdentificationYesNoPage(_)  => arbitrary[Boolean].map(JsBoolean)
       case IdentificationPage(_)                 => arbitrary[ActiveIdentification].map(Json.toJson(_))
       case IdentificationNumberPage(_)           => Gen.alphaNumStr.map(JsString)
       case AddNationalityYesNoPage(_)            => arbitrary[Boolean].map(JsBoolean)
