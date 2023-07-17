@@ -43,6 +43,7 @@ object TransportMeansAnswersViewModel {
       val departureMeansSection = Section(
         sectionTitle = messages("transportMeans.departureMeans.subheading"),
         rows = Seq(
+          helper.addDepartureTransportMeans,
           helper.departureIdentificationType,
           helper.departureIdentificationNumber,
           helper.departureNationality
@@ -57,17 +58,20 @@ object TransportMeansAnswersViewModel {
         ).flatten
       )
 
-      val borderMeansSection = if (TransportMeansActiveDomain.hasMultiplicity(userAnswers, phaseConfig.phase)) {
-        Section(
-          sectionTitle = messages("transportMeans.borderMeans.subheading"),
-          rows = helper.activeBorderTransportsMeans,
-          addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans()
-        )
-      } else {
-        Section(
-          sectionTitle = messages("transportMeans.borderMeans.subheading"),
-          rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
-        )
+      val borderMeansSection = {
+        val row = helper.addActiveBorderTransportMeans.toSeq
+        if (TransportMeansActiveDomain.hasMultiplicity(userAnswers, phaseConfig.phase)) {
+          Section(
+            sectionTitle = messages("transportMeans.borderMeans.subheading"),
+            rows = row ++ helper.activeBorderTransportsMeans,
+            addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans()
+          )
+        } else {
+          Section(
+            sectionTitle = messages("transportMeans.borderMeans.subheading"),
+            rows = row ++ ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
+          )
+        }
       }
 
       new TransportMeansAnswersViewModel(Seq(inlandModeSection, departureMeansSection, borderModeSection, borderMeansSection))
