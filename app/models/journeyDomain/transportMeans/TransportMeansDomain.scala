@@ -151,7 +151,7 @@ object TransportMeansDomain {
         BorderModeOfTransportPage.reader.map(Some(_))
     }
 
-  implicit val transportMeansActiveReader: UserAnswersReader[TransportMeansActiveListDomain] =
+  implicit def transportMeansActiveReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansActiveListDomain] =
     TransportMeansActiveListDomain.userAnswersReader
 >>>>>>> 1d4687d... Using phase in routeIfCompleted.
 }
