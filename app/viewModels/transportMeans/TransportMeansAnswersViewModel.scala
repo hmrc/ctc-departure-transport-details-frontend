@@ -19,6 +19,7 @@ package viewModels.transportMeans
 import config.{FrontendAppConfig, PhaseConfig}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 import models.{Index, Mode, Phase, UserAnswers}
 =======
 import models.{Index, Mode, UserAnswers}
@@ -27,6 +28,10 @@ import models.{Index, Mode, UserAnswers}
 import models.{Index, Mode, Phase, UserAnswers}
 >>>>>>> 085b1a1... CTCP-3468: Add transition logic for section cya
 import pages.sections.external.OfficesOfTransitSection
+=======
+import models.journeyDomain.transportMeans.TransportMeansActiveDomain
+import models.{Index, Mode, UserAnswers}
+>>>>>>> 0db6706... Extracting logic out.
 import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.TransportMeansCheckYourAnswersHelper
 import utils.cyaHelpers.transportMeans.active.ActiveBorderTransportAnswersHelper
@@ -65,6 +70,7 @@ object TransportMeansAnswersViewModel {
         ).flatten
       )
 
+<<<<<<< HEAD
       val borderMeansSection =
         phaseConfig.phase match {
 <<<<<<< HEAD
@@ -118,6 +124,20 @@ object TransportMeansAnswersViewModel {
 >>>>>>> a149937... CTCP-3468: Add tests for nav & viewmodel transition/post-transition toggle
             )
         }
+=======
+      val borderMeansSection = if (TransportMeansActiveDomain.hasMultiplicity(userAnswers, phaseConfig.phase)) {
+        Section(
+          sectionTitle = messages("transportMeans.borderMeans.subheading"),
+          rows = helper.activeBorderTransportsMeans,
+          addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans()
+        )
+      } else {
+        Section(
+          sectionTitle = messages("transportMeans.borderMeans.subheading"),
+          rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
+        )
+      }
+>>>>>>> 0db6706... Extracting logic out.
 
       new TransportMeansAnswersViewModel(Seq(inlandModeSection, departureMeansSection, borderModeSection, borderMeansSection))
     }

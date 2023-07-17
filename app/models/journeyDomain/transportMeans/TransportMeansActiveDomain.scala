@@ -48,6 +48,7 @@ case class TransportMeansActiveDomain(
 
 <<<<<<< HEAD
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
+<<<<<<< HEAD
     phase match {
       case Phase.PostTransition if userAnswers.get(OfficesOfTransitSection).isDefined =>
         Some(activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index))
@@ -73,6 +74,12 @@ case class TransportMeansActiveDomain(
       case _ =>
         Some(transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
 >>>>>>> 72b83dd... CTCP-3468: Remove duplication in routeIfCompleted for TransportMeansActiveDomain
+=======
+    if (TransportMeansActiveDomain.hasMultiplicity(userAnswers, phase)) {
+      Some(activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index))
+    } else {
+      Some(transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
+>>>>>>> 0db6706... Extracting logic out.
     }
 }
 
@@ -82,6 +89,14 @@ object TransportMeansActiveDomain {
     s"${identification.asString} - $identificationNumber"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  def hasMultiplicity(userAnswers: UserAnswers, phase: Phase): Boolean = phase match {
+    case Phase.PostTransition if userAnswers.get(OfficesOfTransitSection).isDefined => true
+    case _                                                                          => false
+  }
+
+>>>>>>> 0db6706... Extracting logic out.
   implicit def userAnswersReader(index: Index): UserAnswersReader[TransportMeansActiveDomain] = {
 =======
   implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansActiveDomain] = {
