@@ -26,13 +26,18 @@ import models.transportMeans.BorderModeOfTransport
 import models.{Mode, Phase, UserAnswers}
 import pages.external.SecurityDetailsTypePage
 import pages.preRequisites.ContainerIndicatorPage
-import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, AddDepartureTransportMeansYesNoPage, BorderModeOfTransportPage}
+import pages.transportMeans.{
+  AddActiveBorderTransportMeansYesNoPage,
+  AddBorderModeOfTransportYesNoPage,
+  AddDepartureTransportMeansYesNoPage,
+  BorderModeOfTransportPage
+}
 import play.api.mvc.Call
 
 case class TransportMeansDomain(
   transportMeansDeparture: Option[TransportMeansDepartureDomain],
   borderModeOfTransport: Option[BorderModeOfTransport],
-  transportMeansActiveList: TransportMeansActiveListDomain
+  transportMeansActiveList: Option[TransportMeansActiveListDomain]
 ) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
@@ -72,6 +77,13 @@ object TransportMeansDomain {
         BorderModeOfTransportPage.reader.map(Some(_))
     }
 
-  implicit val transportMeansActiveReader: UserAnswersReader[TransportMeansActiveListDomain] =
-    TransportMeansActiveListDomain.userAnswersReader
+  implicit val transportMeansActiveReader: UserAnswersReader[Option[TransportMeansActiveListDomain]] =
+    SecurityDetailsTypePage.reader.flatMap {
+      case NoSecurityDetails =>
+        AddActiveBorderTransportMeansYesNoPage.filterOptionalDependent(identity) {
+          UserAnswersReader[TransportMeansActiveListDomain]
+        }
+      case _ =>
+        UserAnswersReader[TransportMeansActiveListDomain].map(Some(_))
+    }
 }
