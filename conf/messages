@@ -215,12 +215,20 @@ transportMeans.borderModeOfTransport.error.required = Select how the transit is 
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 transportMeans.active.addVehicleIdentificationYesNo.title = Do you want to add identification for this vehicle?
 transportMeans.active.addVehicleIdentificationYesNo.heading = Do you want to add identification for this vehicle?
 transportMeans.active.addVehicleIdentificationYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
 transportMeans.active.addVehicleIdentificationYesNo.change.hidden = if you want to add identification for the border means of transport
 transportMeans.active.addVehicleIdentificationYesNo.error.required = Select yes if you want to add identification for this vehicle
+=======
+transportMeans.addActiveBorderTransportMeansYesNo.title = Do you want to add identification for this vehicle?
+transportMeans.addActiveBorderTransportMeansYesNo.heading = Do you want to add identification for this vehicle?
+transportMeans.addActiveBorderTransportMeansYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
+transportMeans.addActiveBorderTransportMeansYesNo.change.hidden = if you want to add identification for the border means of transport
+transportMeans.addActiveBorderTransportMeansYesNo.error.required = Select yes if you want to add identification for this vehicle
+>>>>>>> 426cc32... CTCP-3434: Removed index from 'Add active border transport means?' page.
 
 transportMeans.active.addVehicleIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
 transportMeans.active.addVehicleIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?

@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package pages.transportMeans.active
+package pages.transportMeans
 
-import controllers.transportMeans.active.routes
-import models.{Index, Mode, UserAnswers}
+import controllers.transportMeans.routes
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transportMeans.TransportMeansActiveSection
+import pages.sections.TransportSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AddVehicleIdentificationYesNoPage(index: Index) extends QuestionPage[Boolean] {
+import scala.util.Try
 
-  override def path: JsPath = TransportMeansActiveSection(index).path \ toString
+case object AddActiveBorderTransportMeansYesNoPage extends QuestionPage[Boolean] {
 
-  override def toString: String = "addVehicleIdentificationYesNo"
+  override def path: JsPath = TransportSection.path \ toString
+
+  override def toString: String = "addActiveBorderTransportMeansYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddVehicleIdentificationYesNoController.onPageLoad(userAnswers.lrn, mode, index))
+    Some(routes.AddActiveBorderTransportMeansYesNoController.onPageLoad(userAnswers.lrn, mode))
 
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    super.cleanup(value, userAnswers) // TODO
 }
