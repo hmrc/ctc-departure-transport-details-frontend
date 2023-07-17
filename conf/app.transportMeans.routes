@@ -1,4 +1,3 @@
-# microservice specific routes
 ->         /                                                                             app.transportMeans.departure.Routes
 ->         /                                                                             app.transportMeans.active.Routes
 
