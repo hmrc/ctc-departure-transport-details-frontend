@@ -196,6 +196,13 @@ transportMeans.anotherVehicleCrossingYesNo.checkYourAnswersLabel = Are you using
 transportMeans.anotherVehicleCrossingYesNo.change.hidden = if you are using another vehicle to cross the border
 transportMeans.anotherVehicleCrossingYesNo.error.required = Select yes if the vehicle will change before crossing the border
 
+transportMeans.addBorderModeOfTransportYesNo.title = Do you want to add a border mode of transport?
+transportMeans.addBorderModeOfTransportYesNo.heading = Do you want to add a border mode of transport?
+transportMeans.addBorderModeOfTransportYesNo.paragraph = This is the mode of transport used from a UK port or airport to another customs territory. For example, road, sea or air.
+transportMeans.addBorderModeOfTransportYesNo.checkYourAnswersLabel = Do you want to add a border mode of transport?
+transportMeans.addBorderModeOfTransportYesNo.change.hidden = if you want to add a border mode of transport
+transportMeans.addBorderModeOfTransportYesNo.error.required = Select yes if you want to add a border mode of transport
+
 transportMeans.borderModeOfTransport.title = How is the transit crossing the border?
 transportMeans.borderModeOfTransport.heading = How is the transit crossing the border?
 transportMeans.borderModeOfTransport.maritime = Sea

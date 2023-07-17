@@ -53,6 +53,13 @@ class TransportMeansCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)
     )
   }
 
+  def addModeCrossingBorder(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddBorderModeOfTransportYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transportMeans.addBorderModeOfTransportYesNo",
+    id = Some("change-add-border-mode-of-transport")
+  )
+
   def modeCrossingBorder: Option[SummaryListRow] = getAnswerAndBuildRow[BorderModeOfTransport](
     page = BorderModeOfTransportPage,
     formatAnswer = formatEnumAsText(BorderModeOfTransport.messageKeyPrefix),
