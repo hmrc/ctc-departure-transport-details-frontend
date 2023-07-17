@@ -97,6 +97,7 @@ trait UserAnswersEntryGenerators {
   private def generateTransportMeansActiveAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.transportMeans.active._
     {
+      case AddVehicleIdentificationYesNoPage(_)  => arbitrary[Boolean].map(JsBoolean)
       case IdentificationPage(_)                 => arbitrary[ActiveIdentification].map(Json.toJson(_))
       case IdentificationNumberPage(_)           => Gen.alphaNumStr.map(JsString)
       case AddNationalityYesNoPage(_)            => arbitrary[Boolean].map(JsBoolean)
