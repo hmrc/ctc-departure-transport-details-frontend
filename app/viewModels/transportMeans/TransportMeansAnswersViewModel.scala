@@ -56,6 +56,7 @@ object TransportMeansAnswersViewModel {
       val departureMeansSection = Section(
         sectionTitle = messages("transportMeans.departureMeans.subheading"),
         rows = Seq(
+          helper.addDepartureTransportMeans,
           helper.departureIdentificationType,
           helper.departureIdentificationNumber,
           helper.departureNationality
@@ -70,6 +71,7 @@ object TransportMeansAnswersViewModel {
         ).flatten
       )
 
+<<<<<<< HEAD
 <<<<<<< HEAD
       val borderMeansSection =
         phaseConfig.phase match {
@@ -136,6 +138,22 @@ object TransportMeansAnswersViewModel {
           sectionTitle = messages("transportMeans.borderMeans.subheading"),
           rows = ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
         )
+=======
+      val borderMeansSection = {
+        val row = helper.addActiveBorderTransportMeans.toSeq
+        if (TransportMeansActiveDomain.hasMultiplicity(userAnswers, phaseConfig.phase)) {
+          Section(
+            sectionTitle = messages("transportMeans.borderMeans.subheading"),
+            rows = row ++ helper.activeBorderTransportsMeans,
+            addAnotherLink = helper.addOrRemoveActiveBorderTransportsMeans()
+          )
+        } else {
+          Section(
+            sectionTitle = messages("transportMeans.borderMeans.subheading"),
+            rows = row ++ ActiveBorderTransportAnswersHelper.apply(userAnswers, mode, Index(0))
+          )
+        }
+>>>>>>> 84d5653... CTCP-3434: Including new questions on CYA.
       }
 >>>>>>> 0db6706... Extracting logic out.
 
