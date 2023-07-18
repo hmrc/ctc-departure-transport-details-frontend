@@ -22,16 +22,11 @@ import controllers.transportMeans.routes
 import models.SecurityDetailsType.NoSecurityDetails
 import models.domain._
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.transportMeans.BorderModeOfTransport
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import models.{Mode, Phase, UserAnswers}
 import pages.external.SecurityDetailsTypePage
 import pages.preRequisites.ContainerIndicatorPage
-import pages.transportMeans.{
-  AddActiveBorderTransportMeansYesNoPage,
-  AddBorderModeOfTransportYesNoPage,
-  AddDepartureTransportMeansYesNoPage,
-  BorderModeOfTransportPage
-}
+import pages.transportMeans._
 import play.api.mvc.Call
 
 case class TransportMeansDomain(
@@ -47,11 +42,16 @@ case class TransportMeansDomain(
 object TransportMeansDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDomain] =
-    (
-      transportMeansDepartureReader,
-      borderModeOfTransportReader,
-      transportMeansActiveReader
-    ).tupled.map((TransportMeansDomain.apply _).tupled)
+    InlandModePage.reader.flatMap {
+      case InlandMode.Mail =>
+        UserAnswersReader(TransportMeansDomain(None, None, None))
+      case _ =>
+        (
+          transportMeansDepartureReader,
+          borderModeOfTransportReader,
+          transportMeansActiveReader
+        ).tupled.map((TransportMeansDomain.apply _).tupled)
+    }
 
   def transportMeansDepartureReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[TransportMeansDepartureDomain]] =
     phaseConfig.phase match {

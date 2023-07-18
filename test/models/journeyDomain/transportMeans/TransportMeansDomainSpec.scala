@@ -21,7 +21,7 @@ import config.PhaseConfig
 import generators.Generators
 import models.SecurityDetailsType.NoSecurityDetails
 import models.domain.UserAnswersReader
-import models.transportMeans.BorderModeOfTransport
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import models.transportMeans.BorderModeOfTransport._
 import models.{Index, Phase, SecurityDetailsType}
 import org.mockito.Mockito.when
@@ -34,6 +34,19 @@ import pages.transportMeans._
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "TransportMeansDomain" - {
+
+    "userAnswersReader" - {
+      "when inland mode is mail" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(InlandModePage, InlandMode.Mail)
+
+        val result = UserAnswersReader[TransportMeansDomain](
+          TransportMeansDomain.userAnswersReader
+        ).run(userAnswers)
+
+        result.value mustBe TransportMeansDomain(None, None, None)
+      }
+    }
 
     "transportMeansDepartureReader" - {
       val mockPhaseConfig = mock[PhaseConfig]
