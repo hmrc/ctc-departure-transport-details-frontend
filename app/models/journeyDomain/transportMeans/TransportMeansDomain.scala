@@ -72,10 +72,15 @@ import models.journeyDomain.JourneyDomainModel
 import controllers.transportMeans.routes
 import models.domain._
 import models.journeyDomain.{JourneyDomainModel, Stage}
+<<<<<<< HEAD
 >>>>>>> 8acc0d6... CTCP-3213: Updated UserAnswersEntryGenerators.
 import models.transportMeans.BorderModeOfTransport
+=======
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
+>>>>>>> 34addb0... CTCP-3213: Navigation bug fix.
 import models.{Mode, Phase, UserAnswers}
 import pages.preRequisites.ContainerIndicatorPage
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 import pages.transportMeans.BorderModeOfTransportPage
@@ -91,6 +96,9 @@ import pages.transportMeans.{
   BorderModeOfTransportPage
 }
 >>>>>>> 745890b... CTCP-3434: Updated nav.
+=======
+import pages.transportMeans._
+>>>>>>> 34addb0... CTCP-3213: Navigation bug fix.
 import play.api.mvc.Call
 
 case class TransportMeansDomain(
@@ -136,12 +144,25 @@ object TransportMeansDomain {
       borderModeOfTransportReader,
 =======
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDomain] =
+<<<<<<< HEAD
     (
       transportMeansDepartureReader,
       BorderModeOfTransportPage.reader,
 >>>>>>> e6e6e14... CTCP-3213: Initial refactoring to move inland mode to parent domain.
       UserAnswersReader[TransportMeansActiveListDomain]
     ).tupled.map((TransportMeansDomain.apply _).tupled)
+=======
+    InlandModePage.reader.flatMap {
+      case InlandMode.Mail =>
+        UserAnswersReader(TransportMeansDomain(None, None, None))
+      case _ =>
+        (
+          transportMeansDepartureReader,
+          borderModeOfTransportReader,
+          transportMeansActiveReader
+        ).tupled.map((TransportMeansDomain.apply _).tupled)
+    }
+>>>>>>> 34addb0... CTCP-3213: Navigation bug fix.
 
   def transportMeansDepartureReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[TransportMeansDepartureDomain]] =
     phaseConfig.phase match {

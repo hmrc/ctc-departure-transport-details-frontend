@@ -20,6 +20,7 @@ import base.SpecBase
 import config.PhaseConfig
 import generators.Generators
 <<<<<<< HEAD
+<<<<<<< HEAD
 import models.SecurityDetailsType._
 =======
 >>>>>>> 9cdc46d... CTCP-3213: Departure means of transport transition nav.
@@ -27,6 +28,11 @@ import models.domain.{EitherType, UserAnswersReader}
 <<<<<<< HEAD
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.BorderModeOfTransport
+=======
+import models.SecurityDetailsType.NoSecurityDetails
+import models.domain.UserAnswersReader
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
+>>>>>>> 34addb0... CTCP-3213: Navigation bug fix.
 import models.transportMeans.BorderModeOfTransport._
 import models.transportMeans.active.Identification
 import models.transportMeans.departure.{InlandMode, Identification => DepartureIdentification}
@@ -78,7 +84,26 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
       "when inland mode is 5 (mail)" in {
         val inlandMode = InlandMode.Mail
 
+<<<<<<< HEAD
         val answers = emptyUserAnswers.setValue(InlandModePage, inlandMode)
+=======
+    "userAnswersReader" - {
+      "when inland mode is mail" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(InlandModePage, InlandMode.Mail)
+
+        val result = UserAnswersReader[TransportMeansDomain](
+          TransportMeansDomain.userAnswersReader
+        ).run(userAnswers)
+
+        result.value mustBe TransportMeansDomain(None, None, None)
+      }
+    }
+
+    "transportMeansDepartureReader" - {
+      val mockPhaseConfig = mock[PhaseConfig]
+      when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+>>>>>>> 34addb0... CTCP-3213: Navigation bug fix.
 
         val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
           TransportMeansDomain.userAnswersReader
