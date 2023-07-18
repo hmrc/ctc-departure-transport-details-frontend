@@ -32,20 +32,22 @@ class LimitDateViewSpec extends DateInputViewBehaviours {
 
   private val maxDate = "15 08 2022"
 
+  private val officeOfDestination = "OfficeOfDestination"
+
   override def form: Form[LocalDate] = new DateFormProvider()(prefix, date, date)
 
   override def applyView(form: Form[LocalDate]): HtmlFormat.Appendable =
-    injector.instanceOf[LimitDateView].apply(form, lrn, NormalMode, maxDate)(fakeRequest, messages)
+    injector.instanceOf[LimitDateView].apply(form, lrn, NormalMode, maxDate, officeOfDestination)(fakeRequest, messages)
 
   override val prefix: String = "authorisationsAndLimit.limit.limitDate"
 
-  behave like pageWithTitle()
+  behave like pageWithTitle(officeOfDestination)
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Transport details - Authorisations")
 
-  behave like pageWithHeading()
+  behave like pageWithHeading(officeOfDestination)
 
   behave like pageWithContent("p", "This has to be before 15 08 2022.")
 
