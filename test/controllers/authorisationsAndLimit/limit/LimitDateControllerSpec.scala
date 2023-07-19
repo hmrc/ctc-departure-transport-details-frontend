@@ -59,8 +59,6 @@ class LimitDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       .guiceApplicationBuilder()
       .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
 
-  private val authorisationTypePageGen = Gen.oneOf(AuthorisationTypePage(authorisationIndex), InferredAuthorisationTypePage(authorisationIndex))
-
   "LimitDate Controller" - {
 
     "must return OK and the correct view for a GET" in {
