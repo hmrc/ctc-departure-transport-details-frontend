@@ -21,9 +21,9 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DateFormProvider
 import models.{LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.TransportNavigatorProvider
+import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.authorisationsAndLimit.limit.LimitDatePage
+import pages.external.OfficeOfDestinationPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -43,6 +43,7 @@ class LimitDateController @Inject() (
   navigatorProvider: TransportNavigatorProvider,
   formProvider: DateFormProvider,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   config: FrontendAppConfig,
   val controllerComponents: MessagesControllerComponents,
   view: LimitDateView,
@@ -54,30 +55,35 @@ class LimitDateController @Inject() (
   private lazy val maxDate    = dateTimeService.plusMinusDays(config.limitDateDaysAfter)
   private lazy val maxDateArg = maxDate.plusDays(1).formatForText
 
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage.getFirst(OfficeOfDestinationPage)) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(LimitDatePage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
+        Ok(view(preparedForm, lrn, mode, maxDateArg, request.arg.toString))
+    }
+
   private def form: Form[LocalDate] = {
     val minDate = dateTimeService.plusMinusDays(config.limitDateDaysBefore)
     formProvider("authorisationsAndLimit.limit.limitDate", minDate, maxDate)
   }
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(LimitDatePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(view(preparedForm, lrn, mode, maxDateArg))
-  }
-
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, maxDateArg))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            LimitDatePage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage.getFirst(OfficeOfDestinationPage))
+    .async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, maxDateArg, request.arg.toString))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+              LimitDatePage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            }
+          )
+    }
 }
