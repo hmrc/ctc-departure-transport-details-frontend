@@ -24,7 +24,7 @@ import models.domain._
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.transportMeans.BorderModeOfTransport
 import models.{Mode, Phase, UserAnswers}
-import pages.external.SecurityDetailsTypePage
+import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
 import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
@@ -65,14 +65,23 @@ object TransportMeansDomain {
     }
 
   // additional declaration type is part of pre-lodge so for time being always set to 'A'
-  implicit val borderModeOfTransportReader: UserAnswersReader[Option[BorderModeOfTransport]] =
-    SecurityDetailsTypePage.reader.flatMap {
-      case NoSecurityDetails =>
-        AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity)(BorderModeOfTransportPage.reader)
-      case _ =>
-        BorderModeOfTransportPage.reader.map(Some(_))
-    }
+   def borderModeOfTransportReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[BorderModeOfTransport]] = {
+     for {
+       securityDetails <- SecurityDetailsTypePage.reader
+       isOfficeOfDepartureInCL010 <- OfficeOfDepartureInCL010Page.reader
+       result <- (securityDetails, isOfficeOfDepartureInCL010) match {
+         case (_, true) if  securityDetails != NoSecurityDetails =>
+           BorderModeOfTransportPage.reader.map(Some(_))
+         case (_, false) if phaseConfig.phase == Phase.PostTransition && securityDetails != NoSecurityDetails =>
+           BorderModeOfTransportPage.reader.map(Some(_))
+         case _ =>
+           AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity)(BorderModeOfTransportPage.reader)
+       }
+     } yield result
+
+   }
 
   implicit val transportMeansActiveReader: UserAnswersReader[TransportMeansActiveListDomain] =
     TransportMeansActiveListDomain.userAnswersReader
+
 }
