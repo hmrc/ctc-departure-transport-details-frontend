@@ -100,6 +100,38 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             }
           }
         }
+
+        "and office of departure is in CL010" - {
+          "security type is 0" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+              .setValue(OfficeOfDepartureInCL010Page, true)
+              .setValue(AddVehicleIdentificationYesNoPage, false)
+
+            forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
+              userAnswers =>
+                val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                  TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+                result.left.value.page mustBe AddBorderModeOfTransportYesNoPage
+            }
+          }
+
+          "security type is details (1,2,3)" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
+              .setValue(OfficeOfDepartureInCL010Page, true)
+              .setValue(AddVehicleIdentificationYesNoPage, false)
+
+            forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
+              userAnswers =>
+                val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                  TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+                result.left.value.page mustBe AddBorderModeOfTransportYesNoPage
+            }
+          }
+        }
       }
     }
   }
