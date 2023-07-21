@@ -19,48 +19,60 @@ package models.journeyDomain.transportMeans
 import base.SpecBase
 import config.PhaseConfig
 import generators.Generators
-import models.SecurityDetailsType.NoSecurityDetails
-import models.domain.UserAnswersReader
-import models.transportMeans.BorderModeOfTransport
+import models.Phase
+import models.SecurityDetailsType.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
+import models.domain.{EitherType, UserAnswersReader}
 import models.transportMeans.BorderModeOfTransport._
-import models.{Index, Phase, SecurityDetailsType}
 import org.mockito.Mockito.when
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.external.SecurityDetailsTypePage
+import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
 import pages.preRequisites.ContainerIndicatorPage
+import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 import pages.transportMeans.departure._
-import pages.transportMeans.{active, AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import models.transportMeans.departure.Identification
+import org.scalacheck.Arbitrary.arbitrary
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
+  private val identification: Identification = arbitrary[Identification].sample.value
   "TransportMeansDomain" - {
 
     "when post-transition" - {
       val mockPhaseConfig = mock[PhaseConfig]
       when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
+      "cannot be parsed from user answers" - {
+
+        "when Transition" - {
+          "and office of departure not in CL010" - {
+            "security type is no security details" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(OfficeOfDepartureInCL010Page, false)
+                .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+              forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)) {
+                userAnswers =>
+                  val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                    TransportMeansDomain.userAnswersReader(mockPhaseConfig)
+                  ).run(userAnswers)
+                  result.left.value.page mustBe AddBorderModeOfTransportYesNoPage
+              }
+            }
+
+            "security type is details (1,2, or 3)" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, true)
+                .setValue(OfficeOfDepartureInCL010Page, false)
+                .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
+
+              val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                TransportMeansDomain.userAnswersReader(mockPhaseConfig)
+              ).run(userAnswers)
+
+              result.left.value.page mustBe BorderModeOfTransportPage
+            }
+          }
+        }
+      }
+    }
 
   }
-
-    "can be parsed from user answers" - {
-
-      "when Transition" - {
-      }
-      }
-
-
-      "and container indicator is 1" - {
-        "and add departures transport means yes/no is unanswered" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, true)
-
-          val result = UserAnswersReader[Option[TransportMeansDepartureDomain]](
-            TransportMeansDomain.transportMeansDepartureReader(mockPhaseConfig)
-          ).run(userAnswers)
-
-          result.left.value.page mustBe AddVehicleIdentificationYesNoPage
-        }
-
-      }
 }
