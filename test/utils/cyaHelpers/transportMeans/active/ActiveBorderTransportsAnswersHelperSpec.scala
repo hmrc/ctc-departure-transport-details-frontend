@@ -17,9 +17,9 @@
 package utils.cyaHelpers.transportMeans.active
 
 import base.SpecBase
+import config.Constants._
 import controllers.transportMeans.active.routes
 import generators.Generators
-import models.SecurityDetailsType.NoSecurityDetails
 import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.active.Identification

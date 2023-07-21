@@ -17,7 +17,6 @@
 package config
 
 object Constants {
-  val GB = "GB"
-  val XI = "XI"
-  val AD = "AD"
+  val TIR               = "TIR"
+  val NoSecurityDetails = "0"
 }

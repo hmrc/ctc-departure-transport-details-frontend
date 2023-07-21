@@ -21,11 +21,12 @@ import forms.EnumerableFormProvider
 import generators.Generators
 import models.authorisations.AuthorisationType
 import models.transportMeans.departure.InlandMode.Maritime
-import models.{DeclarationType, NormalMode, ProcedureType, UserAnswers}
+import models.{NormalMode, ProcedureType, UserAnswers}
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
 import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
@@ -56,7 +57,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
       "must redirect to next page" in {
         val userAnswers = emptyUserAnswers
           .setValue(ProcedureTypePage, ProcedureType.Normal)
-          .setValue(DeclarationTypePage, DeclarationType.Option1)
+          .setValue(DeclarationTypePage, arbitrary[String](arbitraryNonTIRDeclarationType).sample.value)
           .setValue(ApprovedOperatorPage, true)
           .setValue(InlandModePage, Maritime)
         setExistingUserAnswers(userAnswers)

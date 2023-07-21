@@ -17,9 +17,10 @@
 package models.authorisations
 
 import base.SpecBase
+import config.Constants.TIR
 import generators.Generators
 import models.transportMeans.departure.InlandMode
-import models.{DeclarationType, Index, ProcedureType}
+import models.{Index, ProcedureType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -66,7 +67,7 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with 
         val index = Index(0)
         "when reduced data set, maritime/rail/air inland mode" - {
           "must infer answer as TRD" in {
-            val declarationTypeGen = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)
+            val declarationTypeGen = arbitrary[String](arbitraryNonTIRDeclarationType)
 
             val inlandModeGen = Gen.oneOf(
               InlandMode.Maritime,
@@ -89,7 +90,7 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         "when reduced data set, road/mail/fixed/waterway inland mode, simplified procedure type" - {
           "must infer answer as ACR" in {
-            val declarationTypeGen = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)
+            val declarationTypeGen = arbitrary[String](arbitraryNonTIRDeclarationType)
 
             val inlandModeGen = Gen.oneOf(
               InlandMode.Road,
@@ -117,7 +118,7 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with 
               (procedureType, inlandMode) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(ProcedureTypePage, procedureType)
-                  .setValue(DeclarationTypePage, DeclarationType.Option4)
+                  .setValue(DeclarationTypePage, TIR)
                   .setValue(InlandModePage, inlandMode)
 
                 AuthorisationType.values(userAnswers, index) mustBe AuthorisationType.values
@@ -127,7 +128,7 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
         "when not using a reduced data set" - {
           "must not infer answer" in {
-            val declarationTypeGen = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)
+            val declarationTypeGen = arbitrary[String](arbitraryNonTIRDeclarationType)
 
             forAll(arbitrary[ProcedureType], declarationTypeGen, arbitrary[InlandMode]) {
               (procedureType, declarationType, inlandMode) =>
@@ -146,7 +147,7 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with 
       "when not first index" - {
         val index = Index(1)
         "must not infer answer" in {
-          forAll(arbitrary[ProcedureType], arbitrary[DeclarationType], arbitrary[Boolean], arbitrary[InlandMode]) {
+          forAll(arbitrary[ProcedureType], arbitrary[String](arbitraryDeclarationType), arbitrary[Boolean], arbitrary[InlandMode]) {
             (procedureType, declarationType, approvedOperator, inlandMode) =>
               val userAnswers = emptyUserAnswers
                 .setValue(ProcedureTypePage, procedureType)

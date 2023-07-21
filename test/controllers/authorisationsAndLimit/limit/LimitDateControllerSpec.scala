@@ -17,15 +17,12 @@
 package controllers.authorisationsAndLimit.limit
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.actions.SpecificDataRequiredActionProvider
 import forms.DateFormProvider
 import models.NormalMode
 import models.reference.CustomsOffice
 import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalacheck.Gen
-import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
 import pages.authorisationsAndLimit.limit.LimitDatePage
 import pages.external.OfficeOfDestinationPage
 import play.api.inject.bind

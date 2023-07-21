@@ -17,9 +17,9 @@
 package viewModels.transportMeans.active
 
 import base.SpecBase
+import config.Constants._
 import generators.Generators
 import models.Mode
-import models.SecurityDetailsType.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.BorderModeOfTransport.{Air, Sea}
 import models.transportMeans.active.Identification
@@ -48,10 +48,10 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
   "when add vehicle nationality is true" - {
     "and security type is either 1,2,3 and mode of transport is air" - {
       "must return 6 rows" in {
-        forAll(arbitrary[Identification], arbitrary[CustomsOffice], arbitrary[Nationality]) {
-          (identification, office, nationality) =>
+        forAll(arbitrary[String](arbitrarySomeSecurityDetailsType), arbitrary[Identification], arbitrary[CustomsOffice], arbitrary[Nationality]) {
+          (securityType, identification, office, nationality) =>
             val answers = emptyUserAnswers
-              .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
+              .setValue(SecurityDetailsTypePage, securityType)
               .setValue(BorderModeOfTransportPage, Air)
               .setValue(IdentificationPage(activeIndex), identification)
               .setValue(IdentificationNumberPage(activeIndex), identificationNumber)

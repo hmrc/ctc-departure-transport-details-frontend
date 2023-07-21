@@ -19,8 +19,8 @@ package controllers.authorisationsAndLimit.authorisations.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AuthorisationReferenceNumberFormProvider
 import generators.Generators
+import models.NormalMode
 import models.authorisations.AuthorisationType
-import models.{DeclarationType, NormalMode}
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -56,7 +56,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
   private val authorisationTypePageGen = Gen.oneOf(AuthorisationTypePage(authorisationIndex), InferredAuthorisationTypePage(authorisationIndex))
 
   private val baseAnswers = {
-    val declarationType = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value
+    val declarationType = arbitrary[String](arbitraryNonTIRDeclarationType).sample.value
     emptyUserAnswers.setValue(DeclarationTypePage, declarationType)
   }
 

@@ -17,8 +17,8 @@
 package models.journeyDomain
 
 import base.SpecBase
+import config.Constants.TIR
 import generators.Generators
-import models.DeclarationType
 import models.domain.{EitherType, UserAnswersReader}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -32,7 +32,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
   "can be parsed from user answers" - {
 
     "when reduced data set indicator is true" in {
-      forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+      forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
         declarationType =>
           val initialUserAnswers = emptyUserAnswers
             .setValue(DeclarationTypePage, declarationType)
@@ -50,7 +50,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
       "and not adding authorisations" in {
 
         val initialUserAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, DeclarationType.Option4)
+          .setValue(DeclarationTypePage, TIR)
           .setValue(AddAuthorisationsYesNoPage, false)
 
         forAll(arbitraryTransportAnswers(initialUserAnswers)) {
@@ -62,7 +62,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
       "and adding authorisations" in {
         val initialUserAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, DeclarationType.Option4)
+          .setValue(DeclarationTypePage, TIR)
           .setValue(AddAuthorisationsYesNoPage, true)
 
         forAll(arbitraryTransportAnswers(initialUserAnswers)) {
@@ -75,7 +75,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
     "when reduced data set indicator is false" - {
       "and not adding authorisations" in {
-        forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+        forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
           declarationType =>
             val initialUserAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
@@ -91,7 +91,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
       }
 
       "and adding authorisations" in {
-        forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+        forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
           declarationType =>
             val initialUserAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)

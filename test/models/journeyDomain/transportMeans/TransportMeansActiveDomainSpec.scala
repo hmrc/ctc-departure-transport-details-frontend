@@ -17,9 +17,8 @@
 package models.journeyDomain.transportMeans
 
 import base.SpecBase
+import config.Constants._
 import generators.Generators
-import models.SecurityDetailsType
-import models.SecurityDetailsType.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.BorderModeOfTransport
@@ -73,30 +72,34 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           result.value mustBe expectedResult
         }
 
-        "and security detail type is 1 and inland mode is Air" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
-            .setValue(BorderModeOfTransportPage, Air)
-            .setValue(IdentificationPage(index), identification)
-            .setValue(IdentificationNumberPage(index), identificationNumber)
-            .setValue(AddNationalityYesNoPage(index), true)
-            .setValue(NationalityPage(index), nationality)
-            .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
-            .setValue(ConveyanceReferenceNumberPage(index), conveyanceNumber)
+        "and security detail type is not 0 and inland mode is Air" in {
+          val securityGen = arbitrary[String](arbitrarySomeSecurityDetailsType)
+          forAll(securityGen) {
+            securityType =>
+              val userAnswers = emptyUserAnswers
+                .setValue(SecurityDetailsTypePage, securityType)
+                .setValue(BorderModeOfTransportPage, Air)
+                .setValue(IdentificationPage(index), identification)
+                .setValue(IdentificationNumberPage(index), identificationNumber)
+                .setValue(AddNationalityYesNoPage(index), true)
+                .setValue(NationalityPage(index), nationality)
+                .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
+                .setValue(ConveyanceReferenceNumberPage(index), conveyanceNumber)
 
-          val expectedResult = TransportMeansActiveDomain(
-            identification = identification,
-            identificationNumber = identificationNumber,
-            nationality = Option(nationality),
-            customsOffice = customsOffice,
-            conveyanceReferenceNumber = Some(conveyanceNumber)
-          )(index)
+              val expectedResult = TransportMeansActiveDomain(
+                identification = identification,
+                identificationNumber = identificationNumber,
+                nationality = Option(nationality),
+                customsOffice = customsOffice,
+                conveyanceReferenceNumber = Some(conveyanceNumber)
+              )(index)
 
-          val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-            TransportMeansActiveDomain.userAnswersReader(index)
-          ).run(userAnswers)
+              val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
+                TransportMeansActiveDomain.userAnswersReader(index)
+              ).run(userAnswers)
 
-          result.value mustBe expectedResult
+              result.value mustBe expectedResult
+          }
         }
       }
 
@@ -206,7 +209,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
       "when security is in set {1,2,3}" - {
         "and border mode of transport is 4 (Air)" - {
-          val securityGen       = arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType)
+          val securityGen       = arbitrary[String](arbitrarySomeSecurityDetailsType)
           val identificationGen = Gen.oneOf(IataFlightNumber, RegNumberAircraft)
           forAll(securityGen, identificationGen) {
             (securityType, identification) =>
@@ -227,7 +230,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         }
 
         "and border mode of transport is not 4 (Air)" in {
-          val securityGen       = arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType)
+          val securityGen       = arbitrary[String](arbitrarySomeSecurityDetailsType)
           val borderModeGen     = Gen.oneOf(BorderModeOfTransport.values.filterNot(_ == Air))
           val identificationGen = Gen.oneOf(IataFlightNumber, RegNumberAircraft)
           forAll(securityGen, borderModeGen, identificationGen) {
