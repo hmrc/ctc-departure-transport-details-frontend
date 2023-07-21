@@ -30,14 +30,16 @@ import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
 import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
   "TransportMeansDomain" - {
 
-    "cannot be parsed from user answers" - {
+    "can be parsed from user answers" - {
+      val mockPostTransitionPhaseConfig = mock[PhaseConfig]
+      when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
+      val mockTransitionPhaseConfig = mock[PhaseConfig]
+      when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
 
       "when in post transition" - {
-        val mockPostTransitionPhaseConfig: PhaseConfig = mock[PhaseConfig]
-        when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
         "and office of departure not in CL010" - {
           "security type is 0" in {
             val userAnswers = emptyUserAnswers
@@ -67,14 +69,12 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
       }
 
       "when in transition" - {
-        val mockTransitionPhaseConfig: PhaseConfig = mock[PhaseConfig]
-        when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
         "and office of departure not in CL010" - {
           "security type is 0" in {
             val userAnswers = emptyUserAnswers
-              .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+              .setValue(AddVehicleIdentificationYesNoPage, true)
               .setValue(OfficeOfDepartureInCL010Page, false)
-              .setValue(AddVehicleIdentificationYesNoPage, false)
+              .setValue(SecurityDetailsTypePage, NoSecurityDetails)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -87,9 +87,9 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
           "security type is details (1,2,3)" in {
             val userAnswers = emptyUserAnswers
-              .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
+              .setValue(AddVehicleIdentificationYesNoPage, true)
               .setValue(OfficeOfDepartureInCL010Page, false)
-              .setValue(AddVehicleIdentificationYesNoPage, false)
+              .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
