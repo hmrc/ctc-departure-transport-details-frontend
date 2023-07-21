@@ -59,13 +59,16 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
         .setValue(departure.IdentificationPage, arbitrary[DepartureIdentification].sample.value)
         .setValue(departure.MeansIdentificationNumberPage, Gen.alphaNumStr.sample.value)
         .setValue(departure.VehicleCountryPage, arbitrary[Nationality].sample.value)
+        .setValue(departure.AddIdentificationNumberYesNoPage, true)
+        .setValue(departure.AddIdentificationTypeYesNoPage, true)
+        .setValue(departure.AddVehicleCountryYesNoPage, true)
 
       val viewModelProvider = new TransportMeansAnswersViewModelProvider()
       val result            = viewModelProvider.apply(userAnswers, mode)
 
       val section = result.sections(1)
       section.sectionTitle.get mustBe "Departure means of transport"
-      section.rows.size mustBe 4
+      section.rows.size mustBe 7
       section.addAnotherLink must not be defined
     }
 
