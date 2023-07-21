@@ -227,7 +227,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("Do you want to add a type of identification?".toText),
+                  key = Key("Do you want to add the type of identification?".toText),
                   value = Value("Yes".toText),
                   actions = Some(
                     Actions(
