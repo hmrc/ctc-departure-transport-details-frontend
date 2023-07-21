@@ -41,11 +41,11 @@ case class TransportMeansDomain(
     Option(routes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
 }
 
-case class TransportMeansPostTransition(
-                                         transportMeansDeparture: TransportMeansDepartureDomain,
-                                         borderModeOfTransport: Option[BorderModeOfTransport],
-                                         transportMeansActiveList: TransportMeansActiveListDomain
-                                       )
+//case class TransportMeansPostTransition(
+//  transportMeansDeparture: TransportMeansDepartureDomain,
+//  borderModeOfTransport: Option[BorderModeOfTransport],
+//  transportMeansActiveList: TransportMeansActiveListDomain
+//)
 
 object TransportMeansDomain {
 

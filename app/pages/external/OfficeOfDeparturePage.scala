@@ -33,4 +33,3 @@ case object OfficeOfDepartureInCL010Page extends ReadOnlyPage[Boolean] {
 
   override def toString: String = "isInCL010"
 }
-
