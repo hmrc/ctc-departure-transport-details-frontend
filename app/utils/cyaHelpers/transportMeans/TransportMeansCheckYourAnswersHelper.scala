@@ -105,6 +105,27 @@ class TransportMeansCheckYourAnswersHelper(
     id = Some("change-transport-means-departure-vehicle-nationality")
   )
 
+  def departureAddTypeYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddIdentificationTypeYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transportMeans.departure.addIdentificationTypeYesNo",
+    id = Some("change-transport-means-departure-add-identification-type")
+  )
+
+  def departureAddIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddIdentificationNumberYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transportMeans.departure.addIdentificationNumberYesNo",
+    id = Some("change-transport-means-departure-add-identification-number")
+  )
+
+  def departureAddNationality: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddVehicleCountryYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transportMeans.departure.addVehicleCountryYesNo",
+    id = Some("change-transport-means-departure-add-nationality")
+  )
+
   def addActiveBorderTransportMeans: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddActiveBorderTransportMeansYesNoPage,
     formatAnswer = formatAsYesOrNo,

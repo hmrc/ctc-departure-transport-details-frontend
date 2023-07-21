@@ -35,7 +35,9 @@ object ActiveBorderAnswersViewModel {
 
       val activeBorderSection = Section(
         rows = Seq(
+          helper.activeBorderAddIdentificationType,
           helper.activeBorderIdentificationType,
+          helper.activeBorderAddIdentificationNumber,
           helper.activeBorderIdentificationNumber,
           helper.activeBorderAddNationality,
           helper.activeBorderNationality,

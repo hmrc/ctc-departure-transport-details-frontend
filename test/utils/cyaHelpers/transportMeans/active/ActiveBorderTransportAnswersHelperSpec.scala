@@ -163,6 +163,94 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
 
     }
 
+    "activeBorderAddIdentificationType" - {
+      "must return None" - {
+        "when add Identification Type is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
+              val result = helper.activeBorderAddIdentificationType
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when add Identification Type is defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddIdentificationYesNoPage(index), true)
+              val helper  = new ActiveBorderTransportAnswersHelper(answers, mode, index)
+              val result  = helper.activeBorderAddIdentificationType
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("Do you want to add the type of identification?".toText),
+                  value = Value("Yes".toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = routes.AddIdentificationYesNoController.onPageLoad(answers.lrn, mode, index).url,
+                          visuallyHiddenText = Some("if you want to add the type of identification for the border means of transport"),
+                          attributes = Map("id" -> "change-add-transport-means-identification-type")
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+          }
+        }
+      }
+
+    }
+
+    "activeBorderAddIdentificationNumber" - {
+      "must return None" - {
+        "when add Identification Number is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
+              val result = helper.activeBorderAddIdentificationNumber
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when add Identification Number is defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddVehicleIdentificationNumberYesNoPage(index), true)
+              val helper  = new ActiveBorderTransportAnswersHelper(answers, mode, index)
+              val result  = helper.activeBorderAddIdentificationNumber
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("Do you want to add an identification number for this vehicle?".toText),
+                  value = Value("Yes".toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = routes.AddVehicleIdentificationNumberYesNoController.onPageLoad(answers.lrn, mode, index).url,
+                          visuallyHiddenText = Some("if you want to add an identification number for the border means of transport"),
+                          attributes = Map("id" -> "change-add-transport-means-identification-number")
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+          }
+        }
+      }
+
+    }
+
     "activeBorderNationality" - {
       "must return None" - {
         "when NationalityPage undefined" in {
