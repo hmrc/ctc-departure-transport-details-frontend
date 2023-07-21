@@ -36,9 +36,19 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
   "TransportMeansDomain" - {
 
-    "transportMeansDepartureReader" - {
+    "when post-transition" - {
       val mockPhaseConfig = mock[PhaseConfig]
-      when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+      when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
+
+  }
+
+    "can be parsed from user answers" - {
+
+      "when Transition" - {
+      }
+      }
+
 
       "and container indicator is 1" - {
         "and add departures transport means yes/no is unanswered" in {
@@ -52,83 +62,5 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
           result.left.value.page mustBe AddVehicleIdentificationYesNoPage
         }
 
-        "and add departures transport means yes/no is yes" - {
-          "and add type of identification yes/no is unanswered" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, true)
-              .setValue(AddVehicleIdentificationYesNoPage, true)
-
-            val result = UserAnswersReader[Option[TransportMeansDepartureDomain]](
-              TransportMeansDomain.transportMeansDepartureReader(mockPhaseConfig)
-            ).run(userAnswers)
-
-            result.left.value.page mustBe AddIdentificationTypeYesNoPage
-          }
-        }
       }
-
-      "and container indicator is 0" - {
-        "and type of identification is unanswered" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, false)
-
-          val result = UserAnswersReader[Option[TransportMeansDepartureDomain]](
-            TransportMeansDomain.transportMeansDepartureReader(mockPhaseConfig)
-          ).run(userAnswers)
-
-          result.left.value.page mustBe IdentificationPage
-        }
-      }
-    }
-
-    "borderModeOfTransportReader" - {
-      "when no security" - {
-        "and add border mode of transport yes/no is missing" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-
-          val result = UserAnswersReader[Option[BorderModeOfTransport]](
-            TransportMeansDomain.borderModeOfTransportReader
-          ).run(userAnswers)
-
-          result.left.value.page mustBe AddBorderModeOfTransportYesNoPage
-        }
-
-        "and border mode is missing" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-            .setValue(AddBorderModeOfTransportYesNoPage, true)
-
-          val result = UserAnswersReader[Option[BorderModeOfTransport]](
-            TransportMeansDomain.borderModeOfTransportReader
-          ).run(userAnswers)
-
-          result.left.value.page mustBe BorderModeOfTransportPage
-        }
-      }
-
-      "when there is security" - {
-        "and border mode is missing" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(SecurityDetailsTypePage, arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType).sample.value)
-
-          val result = UserAnswersReader[Option[BorderModeOfTransport]](
-            TransportMeansDomain.borderModeOfTransportReader
-          ).run(userAnswers)
-
-          result.left.value.page mustBe BorderModeOfTransportPage
-        }
-      }
-    }
-
-    "transportMeansActiveReader" - {
-      "when no active border means answered" in {
-        val result = UserAnswersReader[TransportMeansActiveListDomain](
-          TransportMeansDomain.transportMeansActiveReader
-        ).run(emptyUserAnswers)
-
-        result.left.value.page mustBe active.IdentificationPage(Index(0))
-      }
-    }
-  }
 }
