@@ -26,8 +26,12 @@ import models.transportMeans.BorderModeOfTransport
 import models.{Mode, Phase, UserAnswers}
 import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
 import pages.preRequisites.ContainerIndicatorPage
-import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
-import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import pages.transportMeans.{
+  AddActiveBorderTransportMeansYesNoPage,
+  AddBorderModeOfTransportYesNoPage,
+  AddDepartureTransportMeansYesNoPage,
+  BorderModeOfTransportPage
+}
 import play.api.mvc.Call
 
 sealed trait TransportMeansDomain extends JourneyDomainModel {
@@ -62,7 +66,7 @@ object TransitionTransportMeansDomain {
     val transportMeansDepartureReader: UserAnswersReader[Option[TransportMeansDepartureDomain]] =
       ContainerIndicatorPage.reader.flatMap {
         case true =>
-          AddVehicleIdentificationYesNoPage.filterOptionalDependent(identity) {
+          AddDepartureTransportMeansYesNoPage.filterOptionalDependent(identity) {
             TransportMeansDepartureDomain.userAnswersReader
           }
         case false =>
@@ -96,7 +100,7 @@ object TransitionTransportMeansDomain {
 case class PostTransitionTransportMeansDomain(
   transportMeansDeparture: TransportMeansDepartureDomain,
   borderModeOfTransport: Option[BorderModeOfTransport],
-  transportMeansActiveList: TransportMeansActiveListDomain
+  transportMeansActiveList: Option[TransportMeansActiveListDomain]
 ) extends TransportMeansDomain
 
 object PostTransitionTransportMeansDomain {
@@ -109,10 +113,20 @@ object PostTransitionTransportMeansDomain {
         case _                 => BorderModeOfTransportPage.reader.map(Some(_))
       }
 
+    val transportMeansActiveReader: UserAnswersReader[Option[TransportMeansActiveListDomain]] =
+      SecurityDetailsTypePage.reader.flatMap {
+        case NoSecurityDetails =>
+          AddActiveBorderTransportMeansYesNoPage.filterOptionalDependent(identity) {
+            UserAnswersReader[TransportMeansActiveListDomain]
+          }
+        case _ =>
+          UserAnswersReader[TransportMeansActiveListDomain].map(Some(_))
+      }
+
     (
       TransportMeansDepartureDomain.userAnswersReader,
       borderModeOfTransportOptionalityReader,
-      TransportMeansActiveListDomain.userAnswersReader
+      transportMeansActiveReader
     ).tupled.map((PostTransitionTransportMeansDomain.apply _).tupled)
   }
 

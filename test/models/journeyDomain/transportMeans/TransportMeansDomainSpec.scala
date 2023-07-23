@@ -26,24 +26,74 @@ import models.transportMeans.BorderModeOfTransport._
 import org.mockito.Mockito.when
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
-import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
-import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import pages.preRequisites.ContainerIndicatorPage
+import pages.transportMeans.{
+  AddActiveBorderTransportMeansYesNoPage,
+  AddBorderModeOfTransportYesNoPage,
+  AddDepartureTransportMeansYesNoPage,
+  BorderModeOfTransportPage
+}
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
   "TransportMeansDomain" - {
+    val mockPostTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
-    "can be parsed from user answers" - {
-      val mockPostTransitionPhaseConfig = mock[PhaseConfig]
-      when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
+    val mockTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
 
-      val mockTransitionPhaseConfig = mock[PhaseConfig]
-      when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
+    "transportMeansDepartureReader" - {
+      "when in transition" - {
+        "and container indicator is 1" - {
+          "and add departures transport means yes/no is unanswered" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(ContainerIndicatorPage, true)
 
+            val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+              TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe AddDepartureTransportMeansYesNoPage
+          }
+
+          "and add departures transport means yes/no is yes" - {
+            "and add type of identification yes/no is unanswered" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, true)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
+
+              val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
+              ).run(userAnswers)
+
+              result.left.value.page mustBe pages.transportMeans.departure.AddIdentificationTypeYesNoPage
+            }
+          }
+        }
+
+        "and container indicator is 0" - {
+          "and type of identification is unanswered" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(ContainerIndicatorPage, false)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
+
+            val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+              TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe pages.transportMeans.departure.IdentificationPage
+          }
+        }
+      }
+    }
+
+    "borderModeOfTransportReader" - {
       "when in post transition" - {
         "and office of departure not in CL010" - {
           "security type is 0" in {
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockPostTransitionPhaseConfig)) {
               userAnswers =>
                 val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
@@ -72,9 +122,9 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
         "and office of departure not in CL010" - {
           "security type is 0" in {
             val userAnswers = emptyUserAnswers
-              .setValue(AddVehicleIdentificationYesNoPage, true)
               .setValue(OfficeOfDepartureInCL010Page, false)
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -87,9 +137,9 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
           "security type is details (1,2,3)" in {
             val userAnswers = emptyUserAnswers
-              .setValue(AddVehicleIdentificationYesNoPage, true)
               .setValue(OfficeOfDepartureInCL010Page, false)
               .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -106,7 +156,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
               .setValue(OfficeOfDepartureInCL010Page, true)
-              .setValue(AddVehicleIdentificationYesNoPage, false)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -121,7 +171,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
               .setValue(OfficeOfDepartureInCL010Page, true)
-              .setValue(AddVehicleIdentificationYesNoPage, false)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
