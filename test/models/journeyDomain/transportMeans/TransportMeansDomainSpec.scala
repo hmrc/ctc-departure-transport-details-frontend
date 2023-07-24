@@ -30,7 +30,12 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.active.{IdentificationPage, NationalityPage}
-import pages.transportMeans.{AddActiveBorderTransportMeansYesNoPage, AddBorderModeOfTransportYesNoPage, AddDepartureTransportMeansYesNoPage, BorderModeOfTransportPage}
+import pages.transportMeans.{
+  AddActiveBorderTransportMeansYesNoPage,
+  AddBorderModeOfTransportYesNoPage,
+  AddDepartureTransportMeansYesNoPage,
+  BorderModeOfTransportPage
+}
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
   "TransportMeansDomain" - {
@@ -185,7 +190,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
     "transportMeansActiveReader" - {
       "when in transition" - {
         "borderModeOfTransport present" - {
-          "and not type ChannelTunnel" ignore { // TODO: Once active domain updated
+          "and not type ChannelTunnel" in { // TODO: Once active domain updated
             val borderMode = arbitrary[BorderModeOfTransport].retryUntil(_ != ChannelTunnel).sample.value
 
             val userAnswers = emptyUserAnswers
@@ -199,7 +204,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
                 val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
                   TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
                 ).run(userAnswers)
-                result.left.value.page mustBe NationalityPage
+                result.left.value.page mustBe NationalityPage(index)
             }
           }
 
@@ -222,7 +227,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
           }
         }
 
-        "borderModeOfTransport is not present" - {
+        "borderModeOfTransport is not present" in {
 
           val userAnswers = emptyUserAnswers
             .setValue(OfficeOfDepartureInCL010Page, true)

@@ -17,8 +17,9 @@
 package models.journeyDomain.transportMeans
 
 import base.SpecBase
+import config.PhaseConfig
 import generators.Generators
-import models.SecurityDetailsType
+import models.{Phase, SecurityDetailsType}
 import models.SecurityDetailsType.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.{CustomsOffice, Nationality}
@@ -26,6 +27,7 @@ import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.BorderModeOfTransport._
 import models.transportMeans.active.Identification
 import models.transportMeans.active.Identification._
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -36,6 +38,12 @@ import pages.transportMeans.active._
 class TransportMeansActiveDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
   "TransportMeansActiveDomain" - {
+
+    val mockPostTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
+    val mockTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
 
     val identification: Identification = arbitrary[Identification].sample.value
     val identificationNumber: String   = Gen.alphaNumStr.sample.value
@@ -58,7 +66,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             .setValue(ConveyanceReferenceNumberYesNoPage(index), true)
             .setValue(ConveyanceReferenceNumberPage(index), conveyanceNumber)
 
-          val expectedResult = TransportMeansActiveDomain(
+          val expectedResult = PostTransitionTransportMeansActiveDomain(
             identification = identification,
             identificationNumber = identificationNumber,
             nationality = Option(nationality),
@@ -67,7 +75,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           )(index)
 
           val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-            TransportMeansActiveDomain.userAnswersReader(index)
+            TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
           ).run(userAnswers)
 
           result.value mustBe expectedResult
@@ -84,7 +92,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
             .setValue(ConveyanceReferenceNumberPage(index), conveyanceNumber)
 
-          val expectedResult = TransportMeansActiveDomain(
+          val expectedResult = PostTransitionTransportMeansActiveDomain(
             identification = identification,
             identificationNumber = identificationNumber,
             nationality = Option(nationality),
@@ -93,7 +101,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           )(index)
 
           val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-            TransportMeansActiveDomain.userAnswersReader(index)
+            TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
           ).run(userAnswers)
 
           result.value mustBe expectedResult
@@ -111,7 +119,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
             .setValue(ConveyanceReferenceNumberYesNoPage(index), false)
 
-          val expectedResult = TransportMeansActiveDomain(
+          val expectedResult = PostTransitionTransportMeansActiveDomain(
             identification = identification,
             identificationNumber = identificationNumber,
             nationality = None,
@@ -120,7 +128,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           )(index)
 
           val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-            TransportMeansActiveDomain.userAnswersReader(index)
+            TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
           ).run(userAnswers)
 
           result.value mustBe expectedResult
@@ -138,7 +146,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
 
               val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-                TransportMeansActiveDomain.userAnswersReader(index)
+                TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
               ).run(userAnswers)
 
               result.left.value.page mustBe IdentificationPage(index)
@@ -153,7 +161,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           .setValue(IdentificationNumberPage(index), identificationNumber)
 
         val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-          TransportMeansActiveDomain.userAnswersReader(index)
+          TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
         ).run(userAnswers)
 
         result.left.value.page mustBe AddNationalityYesNoPage(index)
@@ -167,7 +175,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           .setValue(AddNationalityYesNoPage(index), true)
 
         val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-          TransportMeansActiveDomain.userAnswersReader(index)
+          TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
         ).run(userAnswers)
 
         result.left.value.page mustBe NationalityPage(index)
@@ -183,7 +191,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             .setValue(NationalityPage(index), nationality)
 
           val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-            TransportMeansActiveDomain.userAnswersReader(index)
+            TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
           ).run(userAnswers)
 
           result.left.value.page mustBe CustomsOfficeActiveBorderPage(index)
@@ -197,7 +205,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             .setValue(AddNationalityYesNoPage(index), false)
 
           val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-            TransportMeansActiveDomain.userAnswersReader(index)
+            TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
           ).run(userAnswers)
 
           result.left.value.page mustBe CustomsOfficeActiveBorderPage(index)
@@ -205,7 +213,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
       }
 
       "when security is in set {1,2,3}" - {
-        "and border mode of transport is 4 (Air)" - {
+        "and border mode of transport is 4 (Air)" in {
           val securityGen       = arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType)
           val identificationGen = Gen.oneOf(IataFlightNumber, RegNumberAircraft)
           forAll(securityGen, identificationGen) {
@@ -219,7 +227,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
 
               val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-                TransportMeansActiveDomain.userAnswersReader(index)
+                TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
               ).run(userAnswers)
 
               result.left.value.page mustBe ConveyanceReferenceNumberPage(index)
@@ -241,7 +249,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
 
               val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-                TransportMeansActiveDomain.userAnswersReader(index)
+                TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
               ).run(userAnswers)
 
               result.left.value.page mustBe ConveyanceReferenceNumberYesNoPage(index)
@@ -249,7 +257,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         }
       }
 
-      "when security is 0 (No security)" - {
+      "when security is 0 (No security)" in {
         val borderModeGen     = arbitrary[BorderModeOfTransport]
         val identificationGen = arbitrary[Identification]
         forAll(borderModeGen, identificationGen) {
@@ -263,7 +271,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
 
             val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-              TransportMeansActiveDomain.userAnswersReader(index)
+              TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
             ).run(userAnswers)
 
             result.left.value.page mustBe ConveyanceReferenceNumberYesNoPage(index)
@@ -285,7 +293,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               .setValue(ConveyanceReferenceNumberYesNoPage(index), true)
 
             val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-              TransportMeansActiveDomain.userAnswersReader(index)
+              TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
             ).run(userAnswers)
 
             result.left.value.page mustBe ConveyanceReferenceNumberPage(index)

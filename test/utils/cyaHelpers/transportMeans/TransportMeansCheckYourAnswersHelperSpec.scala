@@ -42,11 +42,12 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
 
   "TransportMeansCheckYourAnswersHelper" - {
 
+    val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+    when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
     "activeBorderTransportMeans" - {
 
       "during post transition" - {
-        val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-        when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
         "must return None" - {
           "when active border transport means is undefined" in {
             forAll(arbitrary[Mode]) {
@@ -63,7 +64,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             val prefix         = "transportMeans.active.identification"
             val initialAnswers = emptyUserAnswers.setValue(OfficesOfTransitSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
 
-            forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index), arbitrary[Mode]) {
+            forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index)(mockPhaseConfig), arbitrary[Mode]) {
               (userAnswers, mode) =>
                 val abtm = UserAnswersReader[TransportMeansActiveDomain](
                   TransportMeansActiveDomain.userAnswersReader(index)
