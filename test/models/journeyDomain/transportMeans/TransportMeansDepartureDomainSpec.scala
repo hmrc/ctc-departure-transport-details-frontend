@@ -22,12 +22,14 @@ import generators.Generators
 import models.Phase
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.Nationality
-import models.transportMeans.departure.{Identification, InlandMode}
+import models.transportMeans.InlandMode
+import models.transportMeans.departure.Identification
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.preRequisites.ContainerIndicatorPage
+import pages.transportMeans.InlandModePage
 import pages.transportMeans.departure._
 
 class TransportMeansDepartureDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {

@@ -14,47 +14,46 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans.departure
+package controllers.transportMeans
 
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.EnumerableFormProvider
-import models.transportMeans.departure.InlandMode
+import forms.YesNoFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
-import pages.transportMeans.departure.InlandModePage
+import pages.transportMeans.AddDepartureTransportMeansYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transportMeans.departure.InlandModeView
+import views.html.transportMeans.AddDepartureTransportMeansYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class InlandModeController @Inject() (
+class AddDepartureTransportMeansYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
   actions: Actions,
-  formProvider: EnumerableFormProvider,
+  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: InlandModeView
+  view: AddDepartureTransportMeansYesNoView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[InlandMode]("transportMeans.departure.inlandMode")
+  private val form = formProvider("transportMeans.addDepartureTransportMeansYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(InlandModePage) match {
+      val preparedForm = request.userAnswers.get(AddDepartureTransportMeansYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, InlandMode.values, mode))
+      Ok(view(preparedForm, lrn, mode))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
@@ -62,10 +61,10 @@ class InlandModeController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, InlandMode.values, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            InlandModePage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            AddDepartureTransportMeansYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

@@ -19,29 +19,84 @@ package models.journeyDomain.transportMeans
 import base.SpecBase
 import config.PhaseConfig
 import generators.Generators
-import models.Phase
 import models.SecurityDetailsType.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
 import models.domain.{EitherType, UserAnswersReader}
+import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.BorderModeOfTransport._
+import models.{Phase, SecurityDetailsType}
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
-import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
-import pages.transportMeans.{AddBorderModeOfTransportYesNoPage, BorderModeOfTransportPage}
+import pages.preRequisites.ContainerIndicatorPage
+import pages.transportMeans.active.{IdentificationPage, NationalityPage}
+import pages.transportMeans.{
+  AddActiveBorderTransportMeansYesNoPage,
+  AddBorderModeOfTransportYesNoPage,
+  AddDepartureTransportMeansYesNoPage,
+  BorderModeOfTransportPage
+}
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
   "TransportMeansDomain" - {
+    val mockPostTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
-    "cannot be parsed from user answers" - {
+    val mockTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
 
+    "transportMeansDepartureReader" - {
+      "when in transition" - {
+        "and container indicator is 1" - {
+          "and add departures transport means yes/no is unanswered" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(ContainerIndicatorPage, true)
+
+            val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+              TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe AddDepartureTransportMeansYesNoPage
+          }
+
+          "and add departures transport means yes/no is yes" - {
+            "and add type of identification yes/no is unanswered" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, true)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
+
+              val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
+              ).run(userAnswers)
+
+              result.left.value.page mustBe pages.transportMeans.departure.AddIdentificationTypeYesNoPage
+            }
+          }
+        }
+
+        "and container indicator is 0" - {
+          "and type of identification is unanswered" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(ContainerIndicatorPage, false)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
+
+            val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+              TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
+            ).run(userAnswers)
+
+            result.left.value.page mustBe pages.transportMeans.departure.IdentificationPage
+          }
+        }
+      }
+    }
+
+    "borderModeOfTransportReader" - {
       "when in post transition" - {
-        val mockPostTransitionPhaseConfig: PhaseConfig = mock[PhaseConfig]
-        when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
         "and office of departure not in CL010" - {
           "security type is 0" in {
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockPostTransitionPhaseConfig)) {
               userAnswers =>
                 val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
@@ -67,14 +122,12 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
       }
 
       "when in transition" - {
-        val mockTransitionPhaseConfig: PhaseConfig = mock[PhaseConfig]
-        when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
         "and office of departure not in CL010" - {
           "security type is 0" in {
             val userAnswers = emptyUserAnswers
-              .setValue(SecurityDetailsTypePage, NoSecurityDetails)
               .setValue(OfficeOfDepartureInCL010Page, false)
-              .setValue(AddVehicleIdentificationYesNoPage, false)
+              .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -87,9 +140,9 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
           "security type is details (1,2,3)" in {
             val userAnswers = emptyUserAnswers
-              .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
               .setValue(OfficeOfDepartureInCL010Page, false)
-              .setValue(AddVehicleIdentificationYesNoPage, false)
+              .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -106,7 +159,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
               .setValue(OfficeOfDepartureInCL010Page, true)
-              .setValue(AddVehicleIdentificationYesNoPage, false)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -121,7 +174,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
               .setValue(OfficeOfDepartureInCL010Page, true)
-              .setValue(AddVehicleIdentificationYesNoPage, false)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -130,6 +183,100 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
                 ).run(userAnswers)
                 result.left.value.page mustBe AddBorderModeOfTransportYesNoPage
             }
+          }
+        }
+      }
+    }
+    "transportMeansActiveReader" - {
+      "when in transition" - {
+        "borderModeOfTransport present" - {
+          "and not type ChannelTunnel" in { // TODO: Once active domain updated
+            val borderMode = arbitrary[BorderModeOfTransport].retryUntil(_ != ChannelTunnel).sample.value
+
+            val userAnswers = emptyUserAnswers
+              .setValue(OfficeOfDepartureInCL010Page, false)
+              .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
+              .setValue(BorderModeOfTransportPage, borderMode)
+
+            forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
+              userAnswers =>
+                val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                  TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+                result.left.value.page mustBe NationalityPage(index)
+            }
+          }
+
+          "and type ChannelTunnel" in {
+            val borderMode = ChannelTunnel
+
+            val userAnswers = emptyUserAnswers
+              .setValue(OfficeOfDepartureInCL010Page, false)
+              .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
+              .setValue(BorderModeOfTransportPage, borderMode)
+
+            forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
+              userAnswers =>
+                val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                  TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
+                ).run(userAnswers)
+                result.left.value.page mustBe AddActiveBorderTransportMeansYesNoPage
+            }
+          }
+        }
+
+        "borderModeOfTransport is not present" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(OfficeOfDepartureInCL010Page, true)
+            .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
+            .setValue(AddDepartureTransportMeansYesNoPage, true)
+            .setValue(AddBorderModeOfTransportYesNoPage, false)
+
+          forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
+            userAnswers =>
+              val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
+              ).run(userAnswers)
+              result.left.value.page mustBe AddActiveBorderTransportMeansYesNoPage
+          }
+        }
+      }
+
+      "when in postTransition" - {
+
+        "securityDetails is type NoSecurityDetails" in {
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddDepartureTransportMeansYesNoPage, true)
+            .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+            .setValue(AddBorderModeOfTransportYesNoPage, false)
+
+          forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockPostTransitionPhaseConfig)) {
+            userAnswers =>
+              val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                TransportMeansDomain.userAnswersReader(mockPostTransitionPhaseConfig)
+              ).run(userAnswers)
+              result.left.value.page mustBe AddActiveBorderTransportMeansYesNoPage
+          }
+        }
+
+        "securityDetails is not type NoSecurityDetails" in {
+          val securityType = arbitrary[SecurityDetailsType].retryUntil(_ != NoSecurityDetails).sample.value
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AddDepartureTransportMeansYesNoPage, true)
+            .setValue(SecurityDetailsTypePage, securityType)
+            .setValue(BorderModeOfTransportPage, arbitrary[BorderModeOfTransport].sample.value)
+
+          forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockPostTransitionPhaseConfig)) {
+            userAnswers =>
+              val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+                TransportMeansDomain.userAnswersReader(mockPostTransitionPhaseConfig)
+              ).run(userAnswers)
+              result.left.value.page mustBe IdentificationPage(index)
           }
         }
       }

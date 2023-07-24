@@ -18,25 +18,22 @@ package models.journeyDomain
 
 import cats.implicits._
 import config.PhaseConfig
-import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
+import models.domain.{GettableAsFilterForNextReaderOps, UserAnswersReader}
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
 import models.journeyDomain.carrierDetails.CarrierDetailsDomain
 import models.journeyDomain.equipment.EquipmentsAndChargesDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
-import models.transportMeans.departure.InlandMode
 import models.{Mode, Phase, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.ApprovedOperatorPage
 import pages.supplyChainActors.SupplyChainActorYesNoPage
-import pages.transportMeans.departure.InlandModePage
 import play.api.mvc.Call
 
 case class TransportDomain(
   preRequisites: PreRequisitesDomain,
-  inlandMode: InlandMode,
-  transportMeans: Option[TransportMeansDomain],
+  transportMeans: TransportMeansDomain,
   supplyChainActors: Option[SupplyChainActorsDomain],
   authorisationsAndLimit: Option[AuthorisationsAndLimitDomain],
   carrierDetails: Option[CarrierDetailsDomain],
@@ -58,19 +55,14 @@ object TransportDomain {
       }
 
     for {
-      preRequisites <- UserAnswersReader[PreRequisitesDomain]
-      inlandMode    <- InlandModePage.reader
-      transportMeans <- inlandMode match {
-        case InlandMode.Mail => none[TransportMeansDomain].pure[UserAnswersReader]
-        case _               => UserAnswersReader[TransportMeansDomain].map(Some(_))
-      }
+      preRequisites          <- UserAnswersReader[PreRequisitesDomain]
+      transportMeans         <- UserAnswersReader[TransportMeansDomain]
       supplyChainActors      <- SupplyChainActorYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[SupplyChainActorsDomain])
       authorisationsAndLimit <- authorisationsAndLimitReads
       carrierDetails         <- CarrierDetailYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[CarrierDetailsDomain])
       equipmentsAndCharges   <- UserAnswersReader[EquipmentsAndChargesDomain]
     } yield TransportDomain(
       preRequisites,
-      inlandMode,
       transportMeans,
       supplyChainActors,
       authorisationsAndLimit,

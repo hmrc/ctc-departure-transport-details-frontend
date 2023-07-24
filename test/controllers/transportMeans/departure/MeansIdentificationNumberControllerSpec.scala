@@ -20,13 +20,15 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.IdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
-import models.transportMeans.departure.{Identification, InlandMode}
+import models.transportMeans.InlandMode
+import models.transportMeans.departure.Identification
 import models.transportMeans.departure.Identification._
 import navigation.TransportMeansNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
-import pages.transportMeans.departure.{IdentificationPage, InlandModePage, MeansIdentificationNumberPage}
+import pages.transportMeans.InlandModePage
+import pages.transportMeans.departure.{IdentificationPage, MeansIdentificationNumberPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder

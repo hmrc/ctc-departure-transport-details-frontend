@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans.departure
+package controllers.transportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
@@ -23,21 +23,21 @@ import navigation.TransportMeansNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transportMeans.departure.AddVehicleIdentificationYesNoPage
+import pages.transportMeans.AddActiveBorderTransportMeansYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transportMeans.departure.AddVehicleIdentificationYesNoView
+import views.html.transportMeans.AddActiveBorderTransportMeansYesNoView
 
 import scala.concurrent.Future
 
-class AddVehicleIdentificationYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AddActiveBorderTransportMeansYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider                            = new YesNoFormProvider()
-  private val form                                    = formProvider("transportMeans.departure.addVehicleIdentificationYesNo")
-  private val mode                                    = NormalMode
-  private lazy val addVehicleIdentificationYesNoRoute = routes.AddVehicleIdentificationYesNoController.onPageLoad(lrn, mode).url
+  private val formProvider                                 = new YesNoFormProvider()
+  private val form                                         = formProvider("transportMeans.addActiveBorderTransportMeansYesNo")
+  private val mode                                         = NormalMode
+  private lazy val addActiveBorderTransportMeansYesNoRoute = routes.AddActiveBorderTransportMeansYesNoController.onPageLoad(lrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -50,10 +50,10 @@ class AddVehicleIdentificationYesNoControllerSpec extends SpecBase with AppWithD
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addVehicleIdentificationYesNoRoute)
+      val request = FakeRequest(GET, addActiveBorderTransportMeansYesNoRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[AddVehicleIdentificationYesNoView]
+      val view = injector.instanceOf[AddActiveBorderTransportMeansYesNoView]
 
       status(result) mustEqual OK
 
@@ -63,16 +63,16 @@ class AddVehicleIdentificationYesNoControllerSpec extends SpecBase with AppWithD
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddVehicleIdentificationYesNoPage, true)
+      val userAnswers = emptyUserAnswers.setValue(AddActiveBorderTransportMeansYesNoPage, true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addVehicleIdentificationYesNoRoute)
+      val request = FakeRequest(GET, addActiveBorderTransportMeansYesNoRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddVehicleIdentificationYesNoView]
+      val view = injector.instanceOf[AddActiveBorderTransportMeansYesNoView]
 
       status(result) mustEqual OK
 
@@ -86,7 +86,7 @@ class AddVehicleIdentificationYesNoControllerSpec extends SpecBase with AppWithD
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, addVehicleIdentificationYesNoRoute)
+      val request = FakeRequest(POST, addActiveBorderTransportMeansYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -100,14 +100,14 @@ class AddVehicleIdentificationYesNoControllerSpec extends SpecBase with AppWithD
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, addVehicleIdentificationYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, addActiveBorderTransportMeansYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddVehicleIdentificationYesNoView]
+      val view = injector.instanceOf[AddActiveBorderTransportMeansYesNoView]
 
       contentAsString(result) mustEqual
         view(boundForm, lrn, mode)(request, messages).toString
@@ -117,7 +117,7 @@ class AddVehicleIdentificationYesNoControllerSpec extends SpecBase with AppWithD
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addVehicleIdentificationYesNoRoute)
+      val request = FakeRequest(GET, addActiveBorderTransportMeansYesNoRoute)
 
       val result = route(app, request).value
 
@@ -130,7 +130,7 @@ class AddVehicleIdentificationYesNoControllerSpec extends SpecBase with AppWithD
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addVehicleIdentificationYesNoRoute)
+      val request = FakeRequest(POST, addActiveBorderTransportMeansYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
