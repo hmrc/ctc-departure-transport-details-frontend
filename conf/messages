@@ -413,17 +413,17 @@ authorisations.index.removeAuthorisationYesNo.title = Are you sure you want to r
 authorisations.index.removeAuthorisationYesNo.heading = Are you sure you want to remove {0} authorisation {1}?
 authorisations.index.removeAuthorisationYesNo.error.required = Select yes if you want to remove {0} authorisation {1}
 
-authorisationsAndLimit.limit.limitDate.title = When is the limit date?
-authorisationsAndLimit.limit.limitDate.heading = When is the limit date?
+authorisationsAndLimit.limit.limitDate.title = When do you expect the transit to arrive in {0}?
+authorisationsAndLimit.limit.limitDate.heading = When do you expect the transit to arrive in {0}?
 authorisationsAndLimit.limit.limitDate.checkYourAnswersLabel = Limit date
 authorisationsAndLimit.limit.limitDate.paragraph = This has to be before {0}.
 authorisationsAndLimit.limit.limitDate.change.hidden = limit date
-authorisationsAndLimit.limit.limitDate.error.required.all = Enter the limit date
-authorisationsAndLimit.limit.limitDate.error.required.two = The limit date must include a {0} and {1}
-authorisationsAndLimit.limit.limitDate.error.required = The limit date must include a {0}
-authorisationsAndLimit.limit.limitDate.error.invalid = Enter a real limit date
-authorisationsAndLimit.limit.limitDate.error.min.date = The limit date must be today or in the future
-authorisationsAndLimit.limit.limitDate.error.max.date = The limit date must be before {0}
+authorisationsAndLimit.limit.limitDate.error.required.all = Enter the estimated arrival date at the office of destination
+authorisationsAndLimit.limit.limitDate.error.required.two = The arrival date must include a {0} and {1}
+authorisationsAndLimit.limit.limitDate.error.required = The arrival date must include a {0}
+authorisationsAndLimit.limit.limitDate.error.invalid = Enter a real arrival date at the office of destination
+authorisationsAndLimit.limit.limitDate.error.min.date = The arrival date must be today or in the future
+authorisationsAndLimit.limit.limitDate.error.max.date = The arrival date must be before {0}
 
 # Transport details - Carrier details
 
@@ -507,6 +507,7 @@ equipment.index.addSealYesNo.heading = Do you want to add a seal?
 equipment.index.addSealYesNo.checkYourAnswersLabel = Do you want to add a seal?
 equipment.index.addSealYesNo.change.hidden = if you want to add a seal
 equipment.index.addSealYesNo.error.required = Select yes if you want to add a seal
+equipment.index.addSealYesNo.paragraph = You can only add a seal if you are authorised to use customs seals.
 
 equipment.index.seals.identificationNumber.title = What is the seal identification number?
 equipment.index.seals.identificationNumber.heading = What is the seal identification number?

@@ -28,10 +28,10 @@
     button: Button
 )
 
-@(form: Form[LocalDate], lrn: LocalReferenceNumber, mode: Mode, maxDate: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[LocalDate], lrn: LocalReferenceNumber, mode: Mode, maxDate: String, officeOfDestination: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("authorisationsAndLimit.limit.limitDate.title"),
+    title = messages("authorisationsAndLimit.limit.limitDate.title", officeOfDestination),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -43,7 +43,7 @@
         @inputDate(
             form = form,
             dateType = DateInputWithAdditionalHtml(
-                heading = messages("authorisationsAndLimit.limit.limitDate.heading"),
+                heading = messages("authorisationsAndLimit.limit.limitDate.heading", officeOfDestination),
                 caption = Some(messages("authorisations.caption")),
                 additionalHtml = messages("authorisationsAndLimit.limit.limitDate.paragraph", maxDate).toParagraph
             )
