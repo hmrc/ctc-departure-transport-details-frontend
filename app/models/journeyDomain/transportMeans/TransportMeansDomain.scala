@@ -23,6 +23,7 @@ import models.SecurityDetailsType.NoSecurityDetails
 import models.domain._
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.transportMeans.BorderModeOfTransport
+import models.transportMeans.BorderModeOfTransport.ChannelTunnel
 import models.{Mode, Phase, UserAnswers}
 import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
 import pages.preRequisites.ContainerIndicatorPage
@@ -56,7 +57,7 @@ object TransportMeansDomain {
 case class TransitionTransportMeansDomain(
   transportMeansDeparture: Option[TransportMeansDepartureDomain],
   borderModeOfTransport: Option[BorderModeOfTransport],
-  transportMeansActiveList: TransportMeansActiveListDomain
+  transportMeansActiveList: Option[TransportMeansActiveListDomain]
 ) extends TransportMeansDomain
 
 object TransitionTransportMeansDomain {
@@ -89,10 +90,20 @@ object TransitionTransportMeansDomain {
       } yield result
     }
 
+    val transportMeansActiveReader: UserAnswersReader[Option[TransportMeansActiveListDomain]] =
+      BorderModeOfTransportPage.optionalReader.flatMap {
+        case Some(borderModeOfTransport) if borderModeOfTransport != ChannelTunnel =>
+          UserAnswersReader[TransportMeansActiveListDomain].map(Some(_))
+        case _ =>
+          AddActiveBorderTransportMeansYesNoPage.filterOptionalDependent(identity) {
+            UserAnswersReader[TransportMeansActiveListDomain]
+          }
+      }
+
     (
       transportMeansDepartureReader,
       borderModeOfTransportReader,
-      TransportMeansActiveListDomain.userAnswersReader
+      transportMeansActiveReader
     ).tupled.map((TransitionTransportMeansDomain.apply _).tupled)
   }
 }
