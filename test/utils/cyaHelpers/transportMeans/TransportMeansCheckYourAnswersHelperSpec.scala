@@ -65,8 +65,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             val prefix = "transportMeans.active.identification"
             forAll(arbitrary[Nationality]) {
               nationality =>
-                val initialAnswers = emptyUserAnswers
-                  .setValue(OfficesOfTransitSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+                val initialAnswers = emptyUserAnswers.setValue(OfficesOfTransitSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
                   .setValue(NationalityPage(index), nationality)
 
                 forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index)(mockPhaseConfig), arbitrary[Mode]) {
