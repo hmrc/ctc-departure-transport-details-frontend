@@ -16,12 +16,12 @@
 
 package utils.cyaHelpers.transportMeans
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.transportMeans.active.routes
 import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.reference.Nationality
-import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.departure.{Identification, InlandMode}
+import models.transportMeans.departure.Identification
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transportMeans.TransportMeansActiveListSection
 import pages.transportMeans._
@@ -32,7 +32,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
 import viewModels.Link
 
-class TransportMeansCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig)
+class TransportMeansCheckYourAnswersHelper(
+  userAnswers: UserAnswers,
+  mode: Mode
+)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def activeBorderTransportsMeans: Seq[SummaryListRow] =
@@ -53,6 +56,13 @@ class TransportMeansCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)
     )
   }
 
+  def addModeCrossingBorder(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddBorderModeOfTransportYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transportMeans.addBorderModeOfTransportYesNo",
+    id = Some("change-add-border-mode-of-transport")
+  )
+
   def modeCrossingBorder: Option[SummaryListRow] = getAnswerAndBuildRow[BorderModeOfTransport](
     page = BorderModeOfTransportPage,
     formatAnswer = formatEnumAsText(BorderModeOfTransport.messageKeyPrefix),
@@ -63,8 +73,15 @@ class TransportMeansCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)
   def inlandMode: Option[SummaryListRow] = getAnswerAndBuildRow[InlandMode](
     page = InlandModePage,
     formatAnswer = formatEnumAsText(InlandMode.messageKeyPrefix),
-    prefix = "transportMeans.departure.inlandMode",
+    prefix = "transportMeans.inlandMode",
     id = Some("change-transport-means-inland-mode")
+  )
+
+  def addDepartureTransportMeans: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddDepartureTransportMeansYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transportMeans.addDepartureTransportMeansYesNo",
+    id = Some("change-add-departure-transport-means")
   )
 
   def departureIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
@@ -86,6 +103,13 @@ class TransportMeansCheckYourAnswersHelper(userAnswers: UserAnswers, mode: Mode)
     formatAnswer = formatAsText,
     prefix = "transportMeans.departure.vehicleCountry",
     id = Some("change-transport-means-departure-vehicle-nationality")
+  )
+
+  def addActiveBorderTransportMeans: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddActiveBorderTransportMeansYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transportMeans.addActiveBorderTransportMeansYesNo",
+    id = Some("change-add-active-border-transport-means")
   )
 
 }

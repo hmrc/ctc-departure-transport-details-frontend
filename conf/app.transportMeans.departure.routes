@@ -1,9 +1,3 @@
-
-GET        /inland-mode-of-transport/:lrn                                         controllers.transportMeans.departure.InlandModeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /inland-mode-of-transport/:lrn                                         controllers.transportMeans.departure.InlandModeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /change-inland-mode-of-transport/:lrn                                  controllers.transportMeans.departure.InlandModeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /change-inland-mode-of-transport/:lrn                                  controllers.transportMeans.departure.InlandModeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-
 GET        /departure-means-of-transport/identification/:lrn                      controllers.transportMeans.departure.IdentificationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /departure-means-of-transport/identification/:lrn                      controllers.transportMeans.departure.IdentificationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /departure-means-of-transport/change-identification/:lrn               controllers.transportMeans.departure.IdentificationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

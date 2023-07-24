@@ -16,13 +16,13 @@
 
 package controllers.equipment
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import forms.AddAnotherFormProvider
+import models.domain.UserAnswersReader
 import models.journeyDomain.equipment.EquipmentDomain
 import models.{LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.TransportNavigatorProvider
+import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -41,7 +41,7 @@ class AddAnotherEquipmentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherEquipmentView,
   viewModelProvider: AddAnotherEquipmentViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -66,9 +66,8 @@ class AddAnotherEquipmentController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
           {
             case true =>
-              Redirect(
-                UserAnswersNavigator.nextPage[EquipmentDomain](request.userAnswers, mode)(EquipmentDomain.userAnswersReader(viewModel.nextIndex), config)
-              )
+              implicit val reader: UserAnswersReader[EquipmentDomain] = EquipmentDomain.userAnswersReader(viewModel.nextIndex)
+              Redirect(UserAnswersNavigator.nextPage[EquipmentDomain](request.userAnswers, mode))
             case false =>
               Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
           }

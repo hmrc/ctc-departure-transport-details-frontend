@@ -17,24 +17,82 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
-import models.domain.{GettableAsReaderOps, UserAnswersReader}
+import config.PhaseConfig
+import models.Phase
+import models.domain._
 import models.journeyDomain.JourneyDomainModel
 import models.reference.Nationality
+import models.transportMeans.InlandMode
 import models.transportMeans.departure.Identification
+import pages.preRequisites.ContainerIndicatorPage
+import pages.transportMeans.InlandModePage
 import pages.transportMeans.departure._
 
-case class TransportMeansDepartureDomain(
-  identification: Identification,
-  identificationNumber: String,
-  nationality: Nationality
-) extends JourneyDomainModel
+sealed trait TransportMeansDepartureDomain extends JourneyDomainModel
 
 object TransportMeansDepartureDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[TransportMeansDepartureDomain] =
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDepartureDomain] =
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        TransitionTransportMeansDepartureDomain.userAnswersReader.widen[TransportMeansDepartureDomain]
+      case Phase.PostTransition =>
+        PostTransitionTransportMeansDepartureDomain.userAnswersReader.widen[TransportMeansDepartureDomain]
+    }
+}
+
+case class PostTransitionTransportMeansDepartureDomain(
+  identification: Identification,
+  identificationNumber: String,
+  nationality: Nationality
+) extends TransportMeansDepartureDomain
+
+object PostTransitionTransportMeansDepartureDomain {
+
+  implicit val userAnswersReader: UserAnswersReader[PostTransitionTransportMeansDepartureDomain] =
     (
       IdentificationPage.reader,
       MeansIdentificationNumberPage.reader,
       VehicleCountryPage.reader
-    ).tupled.map((TransportMeansDepartureDomain.apply _).tupled)
+    ).tupled.map((PostTransitionTransportMeansDepartureDomain.apply _).tupled)
+}
+
+case class TransitionTransportMeansDepartureDomain(
+  identification: Option[Identification],
+  identificationNumber: Option[String],
+  nationality: Option[Nationality]
+) extends TransportMeansDepartureDomain
+
+object TransitionTransportMeansDepartureDomain {
+
+  implicit val userAnswersReader: UserAnswersReader[TransitionTransportMeansDepartureDomain] = {
+    val identificationReader: UserAnswersReader[Option[Identification]] =
+      ContainerIndicatorPage.reader.flatMap {
+        case true  => AddIdentificationTypeYesNoPage.filterOptionalDependent(identity)(IdentificationPage.reader)
+        case false => IdentificationPage.reader.map(Some(_))
+      }
+
+    val identificationNumberReader: UserAnswersReader[Option[String]] =
+      ContainerIndicatorPage.reader.flatMap {
+        case true  => AddIdentificationNumberYesNoPage.filterOptionalDependent(identity)(MeansIdentificationNumberPage.reader)
+        case false => MeansIdentificationNumberPage.reader.map(Some(_))
+      }
+
+    val nationalityReader: UserAnswersReader[Option[Nationality]] =
+      InlandModePage.reader.flatMap {
+        case InlandMode.Rail =>
+          none[Nationality].pure[UserAnswersReader]
+        case _ =>
+          ContainerIndicatorPage.reader.flatMap {
+            case true  => AddVehicleCountryYesNoPage.filterOptionalDependent(identity)(VehicleCountryPage.reader)
+            case false => VehicleCountryPage.reader.map(Some(_))
+          }
+      }
+
+    (
+      identificationReader,
+      identificationNumberReader,
+      nationalityReader
+    ).tupled.map((TransitionTransportMeansDepartureDomain.apply _).tupled)
+  }
 }

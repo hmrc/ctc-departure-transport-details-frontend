@@ -14,71 +14,70 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans.departure
+package controllers.transportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.EnumerableFormProvider
+import forms.YesNoFormProvider
 import models.NormalMode
-import models.transportMeans.departure.InlandMode
 import navigation.TransportMeansNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.transportMeans.departure.InlandModePage
+import org.scalatestplus.mockito.MockitoSugar
+import pages.transportMeans.AddDepartureTransportMeansYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.transportMeans.departure.InlandModeView
+import views.html.transportMeans.AddDepartureTransportMeansYesNoView
 
 import scala.concurrent.Future
 
-class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class AddDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider         = new EnumerableFormProvider()
-  private val form                 = formProvider[InlandMode]("transportMeans.departure.inlandMode")
-  private val mode                 = NormalMode
-  private lazy val inlandModeRoute = routes.InlandModeController.onPageLoad(lrn, mode).url
+  private val formProvider                            = new YesNoFormProvider()
+  private val form                                    = formProvider("transportMeans.addDepartureTransportMeansYesNo")
+  private val mode                                    = NormalMode
+  private lazy val addVehicleIdentificationYesNoRoute = routes.AddDepartureTransportMeansYesNoController.onPageLoad(lrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[TransportMeansNavigatorProvider]).toInstance(fakeTransportMeansNavigatorProvider))
 
-  "InlandMode Controller" - {
+  "AddVehicleIdentificationYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, inlandModeRoute)
+      val request = FakeRequest(GET, addVehicleIdentificationYesNoRoute)
+      val result  = route(app, request).value
 
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[InlandModeView]
+      val view = injector.instanceOf[AddDepartureTransportMeansYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, InlandMode.values, mode)(request, messages).toString
+        view(form, lrn, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(InlandModePage, InlandMode.values.head)
+      val userAnswers = emptyUserAnswers.setValue(AddDepartureTransportMeansYesNoPage, true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, inlandModeRoute)
+      val request = FakeRequest(GET, addVehicleIdentificationYesNoRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> InlandMode.values.head.toString))
+      val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[InlandModeView]
+      val view = injector.instanceOf[AddDepartureTransportMeansYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, InlandMode.values, mode)(request, messages).toString
+        view(filledForm, lrn, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -87,8 +86,8 @@ class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, inlandModeRoute)
-        .withFormUrlEncodedBody(("value", InlandMode.values.head.toString))
+      val request = FakeRequest(POST, addVehicleIdentificationYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
@@ -101,28 +100,29 @@ class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, inlandModeRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, addVehicleIdentificationYesNoRoute).withFormUrlEncodedBody(("value", ""))
+      val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[InlandModeView]
-
       status(result) mustEqual BAD_REQUEST
 
+      val view = injector.instanceOf[AddDepartureTransportMeansYesNoView]
+
       contentAsString(result) mustEqual
-        view(boundForm, lrn, InlandMode.values, mode)(request, messages).toString
+        view(boundForm, lrn, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, inlandModeRoute)
+      val request = FakeRequest(GET, addVehicleIdentificationYesNoRoute)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
+
       redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
     }
 
@@ -130,8 +130,8 @@ class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, inlandModeRoute)
-        .withFormUrlEncodedBody(("value", InlandMode.values.head.toString))
+      val request = FakeRequest(POST, addVehicleIdentificationYesNoRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

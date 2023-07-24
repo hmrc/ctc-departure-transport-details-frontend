@@ -18,10 +18,10 @@ package models.authorisations
 
 import models.ProcedureType.Simplified
 import models.domain.GettableAsReaderOps
-import models.transportMeans.departure.InlandMode.{Air, Maritime, Rail}
+import models.transportMeans.InlandMode.{Air, Maritime, Rail}
 import models.{EnumerableType, Index, Radioable, UserAnswers, WithName}
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
-import pages.transportMeans.departure.InlandModePage
+import pages.transportMeans.InlandModePage
 import play.api.i18n.Messages
 
 sealed trait AuthorisationType extends Radioable[AuthorisationType] {

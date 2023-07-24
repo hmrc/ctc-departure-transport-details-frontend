@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import config.PhaseConfig
 @import controllers.transportMeans.departure.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputTextViewModel._
@@ -25,7 +26,8 @@
     formHelper: FormWithCSRF,
     inputText: InputText,
     errorSummary: ErrorSummary,
-    button: Button
+    button: Button,
+    phaseConfig: PhaseConfig
 )
 
 
@@ -48,7 +50,7 @@
                 caption = Some(messages("departureMeansOfTransport.caption"))
             ),
             inputClass = InputSize.Width20,
-            hint = Some(messages("transportMeans.departure.meansIdentificationNumber.hint"))
+            hint = Some(messages(phaseConfig.departureIdentificationNumberHint))
         )
 
         @button(attributes = Map("id" -> "submit"))

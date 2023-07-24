@@ -18,11 +18,12 @@ package models.transportMeans.departure
 
 import base.SpecBase
 import generators.Generators
+import models.transportMeans.InlandMode
 import models.transportMeans.departure.Identification._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transportMeans.departure.InlandModePage
+import pages.transportMeans.InlandModePage
 import play.api.libs.json.{JsError, JsString, Json}
 
 class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package pages.transportMeans.departure
+package pages.transportMeans
 
-import models.transportMeans.departure.InlandMode
+import models.transportMeans.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours

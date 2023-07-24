@@ -33,7 +33,7 @@ class AddAnotherAuthorisationViewModelSpec extends SpecBase with Generators with
         mode =>
           val userAnswers = arbitraryAuthorisationAnswers(emptyUserAnswers, authorisationIndex).sample.value
 
-          val result = new AddAnotherAuthorisationViewModelProvider()(frontendAppConfig)(userAnswers, mode)
+          val result = new AddAnotherAuthorisationViewModelProvider().apply(userAnswers, mode)
 
           result.listItems.length mustBe 1
           result.title mustBe "You have added 1 authorisation"
@@ -53,7 +53,7 @@ class AddAnotherAuthorisationViewModelSpec extends SpecBase with Generators with
               arbitraryAuthorisationAnswers(acc, Index(i)).sample.value
           }
 
-          val result = new AddAnotherAuthorisationViewModelProvider()(frontendAppConfig)(userAnswers, mode)
+          val result = new AddAnotherAuthorisationViewModelProvider().apply(userAnswers, mode)
           result.listItems.length mustBe authorisations
           result.title mustBe s"You have added ${formatter.format(authorisations)} authorisations"
           result.heading mustBe s"You have added ${formatter.format(authorisations)} authorisations"

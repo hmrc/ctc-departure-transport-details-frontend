@@ -23,7 +23,7 @@ import models.authorisations.AuthorisationType
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, Phase, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -33,7 +33,7 @@ case class AuthorisationDomain(authorisationType: AuthorisationType, referenceNu
   def asString(implicit messages: Messages): String =
     AuthorisationDomain.asString(authorisationType, referenceNumber)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
     stage match {
       case AccessingJourney =>
         // User cannot change authorisation type, they have to remove it when they want to make a change.

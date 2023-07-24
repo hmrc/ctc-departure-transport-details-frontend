@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.transportMeans.active
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.transportMeans.active.routes
 import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.{Mode, UserAnswers}
@@ -26,8 +26,11 @@ import play.api.i18n.Messages
 import utils.cyaHelpers.AnswersHelper
 import viewModels.ListItem
 
-class ActiveBorderTransportsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig)
-    extends AnswersHelper(userAnswers, mode) {
+class ActiveBorderTransportsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit
+  messages: Messages,
+  config: FrontendAppConfig,
+  phaseConfig: PhaseConfig
+) extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(TransportMeansActiveListSection) {
