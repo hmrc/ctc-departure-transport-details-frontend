@@ -41,12 +41,12 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("equipment.index.addSealYesNo.heading"),
-                caption = Some(messages("equipment.caption"))
+            yesNoType = YesNoWithAdditionalHtml(
+            heading = messages("equipment.index.addSealYesNo.heading"),
+            caption = Some(messages("equipment.caption")),
+            additionalHtml = messages("equipment.index.addSealYesNo.paragraph").toParagraph
             )
         )
-
         @button(attributes = Map("id" -> "submit"))
     }
 }
