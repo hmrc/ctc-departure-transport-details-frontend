@@ -17,7 +17,7 @@
 package viewModels.transportMeans
 
 import config.{FrontendAppConfig, PhaseConfig}
-import models.journeyDomain.transportMeans.{PostTransitionTransportMeansActiveDomain, TransportMeansActiveDomain}
+import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.TransportMeansCheckYourAnswersHelper
