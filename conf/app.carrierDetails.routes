@@ -4,10 +4,10 @@ POST       /carrier/add/:lrn                                             control
 GET        /carrier/change-add/:lrn                                      controllers.carrierDetails.CarrierDetailYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /carrier/change-add/:lrn                                      controllers.carrierDetails.CarrierDetailYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /carrier/eori-tcuin/:lrn                                        controllers.carrierDetails.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /carrier/eori-tcuin/:lrn                                        controllers.carrierDetails.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /carrier/change-eori-tcuin/:lrn                                 controllers.carrierDetails.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /carrier/change-eori-tcuin/:lrn                                 controllers.carrierDetails.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /carrier/eori-tcuin/:lrn                                      controllers.carrierDetails.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /carrier/eori-tcuin/:lrn                                      controllers.carrierDetails.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /carrier/change-eori-tcuin/:lrn                               controllers.carrierDetails.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /carrier/change-eori-tcuin/:lrn                               controllers.carrierDetails.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /carrier/add-contact/:lrn                                     controllers.carrierDetails.AddContactYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /carrier/add-contact/:lrn                                     controllers.carrierDetails.AddContactYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
