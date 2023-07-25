@@ -24,6 +24,7 @@ import models.SecurityDetailsType.NoSecurityDetails
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.reference.{CustomsOffice, Nationality}
+import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.BorderModeOfTransport._
 import models.transportMeans.active.Identification
 import models.{Index, Mode, Phase, UserAnswers}
@@ -35,19 +36,18 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 
 sealed trait TransportMeansActiveDomain extends JourneyDomainModel {
-
-  val identification: Identification
-  val identificationNumber: String
-
-  def asString(implicit messages: Messages): String =
-    TransportMeansActiveDomain.asString(identification, identificationNumber)
-
+  def asString(implicit messages: Messages): String
 }
 
 object TransportMeansActiveDomain {
 
-  def asString(identification: Identification, identificationNumber: String)(implicit messages: Messages): String =
-    s"${identification.asString} - $identificationNumber"
+  def asString(identification: Option[Identification], identificationNumber: Option[String])(implicit messages: Messages): String =
+    (identification, identificationNumber) match {
+      case (Some(identification), Some(identificationNumber)) => s"${identification.asString} - $identificationNumber"
+      case (Some(identification), None)                       => identification.asString
+      case (None, Some(identificationNumber))                 => identificationNumber
+      case (None, None)                                       => "" // TODO - what should this be?
+    }
 
   implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansActiveDomain] =
     phaseConfig.phase match {
@@ -57,16 +57,30 @@ object TransportMeansActiveDomain {
         PostTransitionTransportMeansActiveDomain.userAnswersReader(index).widen[TransportMeansActiveDomain]
     }
 
+  def conveyanceReader(index: Index)(borderModeReader: => UserAnswersReader[Option[BorderModeOfTransport]]): UserAnswersReader[Option[String]] =
+    for {
+      noSecurity    <- SecurityDetailsTypePage.reader.map(_ == NoSecurityDetails)
+      airBorderMode <- borderModeReader.map(_.contains(Air))
+      reader <- (noSecurity, airBorderMode) match {
+        case (false, true) =>
+          ConveyanceReferenceNumberPage(index).reader.map(Some(_))
+        case _ =>
+          ConveyanceReferenceNumberYesNoPage(index).filterOptionalDependent(identity)(ConveyanceReferenceNumberPage(index).reader)
+      }
+    } yield reader
 }
 
 case class TransitionTransportMeansActiveDomain(
   nationality: Option[Nationality],
-  identification: Identification,
-  identificationNumber: String,
+  identification: Option[Identification],
+  identificationNumber: Option[String],
   customsOffice: CustomsOffice,
   conveyanceReferenceNumber: Option[String]
 ) extends TransportMeansActiveDomain
     with JourneyDomainModel {
+
+  override def asString(implicit messages: Messages): String =
+    TransportMeansActiveDomain.asString(identification, identificationNumber)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Some(transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
@@ -74,37 +88,51 @@ case class TransitionTransportMeansActiveDomain(
 
 object TransitionTransportMeansActiveDomain {
 
-  implicit def userAnswersReader(index: Index): UserAnswersReader[TransitionTransportMeansActiveDomain] = {
-    lazy val conveyanceReads: UserAnswersReader[Option[String]] =
-      for {
-        securityDetails <- SecurityDetailsTypePage.reader
-        borderMode      <- BorderModeOfTransportPage.reader
-        reader <- (securityDetails, borderMode) match {
-          case (x, Air) if x != NoSecurityDetails =>
-            ConveyanceReferenceNumberPage(index).reader.map(Some(_))
-          case _ =>
-            ConveyanceReferenceNumberYesNoPage(index).filterOptionalDependent(identity)(ConveyanceReferenceNumberPage(index).reader)
-        }
-      } yield reader
-
-    lazy val nationalityReader: UserAnswersReader[Option[Nationality]] =
-      for {
-        borderMode <- BorderModeOfTransportPage.reader
-        reader <- borderMode match {
-          case ChannelTunnel =>
-            AddNationalityYesNoPage(index).filterOptionalDependent(identity)(NationalityPage(index).reader)
-          case _ =>
-            NationalityPage(index).reader.map(Some(_))
-        }
-      } yield reader
+  implicit def userAnswersReader(index: Index): UserAnswersReader[TransitionTransportMeansActiveDomain] =
     (
-      nationalityReader,
-      InferredIdentificationPage(index).reader orElse IdentificationPage(index).reader,
-      IdentificationNumberPage(index).reader,
+      nationalityReader(index),
+      identificationReader(index),
+      identificationNumberReader(index),
       CustomsOfficeActiveBorderPage(index).reader,
-      conveyanceReads
+      conveyanceReader(index)
     ).tupled.map((TransitionTransportMeansActiveDomain.apply _).tupled)
+
+  def nationalityReader(index: Index): UserAnswersReader[Option[Nationality]] =
+    BorderModeOfTransportPage.optionalReader.flatMap {
+      case Some(ChannelTunnel) =>
+        AddNationalityYesNoPage(index).filterOptionalDependent(identity)(NationalityPage(index).reader)
+      case _ =>
+        NationalityPage(index).reader.map(Some(_))
+    }
+
+  def identificationReader(index: Index): UserAnswersReader[Option[Identification]] = {
+    lazy val genericReader = InferredIdentificationPage(index).reader orElse IdentificationPage(index).reader
+    for {
+      borderMode                 <- BorderModeOfTransportPage.optionalReader
+      registeredCountryIsPresent <- NationalityPage(index).optionalReader.map(_.isDefined)
+      reader <-
+        if (borderMode.contains(ChannelTunnel) || registeredCountryIsPresent) {
+          genericReader.map(Some(_))
+        } else {
+          AddIdentificationYesNoPage(index).filterOptionalDependent(identity)(genericReader)
+        }
+    } yield reader
   }
+
+  def identificationNumberReader(index: Index): UserAnswersReader[Option[String]] =
+    for {
+      borderMode                 <- BorderModeOfTransportPage.optionalReader
+      registeredCountryIsPresent <- NationalityPage(index).optionalReader.map(_.isDefined)
+      reader <-
+        if (borderMode.contains(ChannelTunnel) || registeredCountryIsPresent) {
+          IdentificationNumberPage(index).reader.map(Some(_))
+        } else {
+          AddVehicleIdentificationNumberYesNoPage(index).filterOptionalDependent(identity)(IdentificationNumberPage(index).reader)
+        }
+    } yield reader
+
+  def conveyanceReader(index: Index): UserAnswersReader[Option[String]] =
+    TransportMeansActiveDomain.conveyanceReader(index)(BorderModeOfTransportPage.optionalReader)
 }
 
 case class PostTransitionTransportMeansActiveDomain(
@@ -116,6 +144,9 @@ case class PostTransitionTransportMeansActiveDomain(
 )(index: Index)
     extends TransportMeansActiveDomain
     with JourneyDomainModel {
+
+  override def asString(implicit messages: Messages): String =
+    TransportMeansActiveDomain.asString(Some(identification), Some(identificationNumber))
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     if (PostTransitionTransportMeansActiveDomain.hasMultiplicity(userAnswers)) {
@@ -129,26 +160,13 @@ object PostTransitionTransportMeansActiveDomain {
 
   def hasMultiplicity(userAnswers: UserAnswers): Boolean = userAnswers.get(OfficesOfTransitSection).isDefined
 
-  implicit def userAnswersReader(index: Index): UserAnswersReader[PostTransitionTransportMeansActiveDomain] = {
-    lazy val conveyanceReads: UserAnswersReader[Option[String]] =
-      for {
-        securityDetails <- SecurityDetailsTypePage.reader
-        borderMode      <- BorderModeOfTransportPage.reader
-        reader <- (securityDetails, borderMode) match {
-          case (x, Air) if x != NoSecurityDetails =>
-            ConveyanceReferenceNumberPage(index).reader.map(Some(_))
-          case _ =>
-            ConveyanceReferenceNumberYesNoPage(index).filterOptionalDependent(identity)(ConveyanceReferenceNumberPage(index).reader)
-        }
-      } yield reader
-
+  implicit def userAnswersReader(index: Index): UserAnswersReader[PostTransitionTransportMeansActiveDomain] =
     (
       InferredIdentificationPage(index).reader orElse IdentificationPage(index).reader,
       IdentificationNumberPage(index).reader,
       AddNationalityYesNoPage(index).filterOptionalDependent(identity)(NationalityPage(index).reader),
       CustomsOfficeActiveBorderPage(index).reader,
-      conveyanceReads
+      TransportMeansActiveDomain.conveyanceReader(index)(BorderModeOfTransportPage.reader.map(Some(_)))
     ).tupled.map((PostTransitionTransportMeansActiveDomain.apply _).tupled).map(_(index))
-  }
 
 }

@@ -62,7 +62,6 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
 
         "must return Some(Row)" - {
           "when incident is defined" in {
-            val prefix = "transportMeans.active.identification"
             forAll(arbitrary[Nationality]) {
               nationality =>
                 val initialAnswers = emptyUserAnswers
@@ -79,7 +78,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                     val result = helper.activeBorderTransportMeans(index).get
 
                     result.key.value mustBe "Active border transport means 1"
-                    result.value.value mustBe s"${messages(s"$prefix.${abtm.identification}")} - ${abtm.identificationNumber}"
+                    result.value.value mustBe abtm.asString
                     val actions = result.actions.get.items
                     actions.size mustBe 1
                     val action = actions.head

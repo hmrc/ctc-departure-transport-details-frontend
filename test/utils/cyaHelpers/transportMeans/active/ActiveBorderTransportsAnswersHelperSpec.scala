@@ -73,7 +73,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(
-                      name = s"${messages(s"$prefix.${active.identification}")} - ${active.identificationNumber}",
+                      name = active.asString,
                       changeUrl = routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, activeIndex).url,
                       removeUrl = Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(userAnswers.lrn, mode, index).url)
                     )

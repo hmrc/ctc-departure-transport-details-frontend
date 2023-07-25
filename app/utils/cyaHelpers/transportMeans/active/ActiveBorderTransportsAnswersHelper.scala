@@ -37,13 +37,12 @@ class ActiveBorderTransportsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(
       index =>
         buildListItem[TransportMeansActiveDomain](
           nameWhenComplete = _.asString,
-          nameWhenInProgress = (userAnswers.get(IdentificationPage(index)), userAnswers.get(IdentificationNumberPage(index))) match {
-            case (Some(identification), Some(identificationNumber)) =>
-              Some(TransportMeansActiveDomain.asString(identification, identificationNumber))
-            case (Some(identification), None)       => Some(identification.asString)
-            case (None, Some(identificationNumber)) => Some(identificationNumber)
-            case _                                  => None
-          },
+          nameWhenInProgress = Some(
+            TransportMeansActiveDomain.asString(
+              userAnswers.get(IdentificationPage(index)),
+              userAnswers.get(IdentificationNumberPage(index))
+            )
+          ),
           removeRoute = Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(lrn, mode, index))
         )(TransportMeansActiveDomain.userAnswersReader(index))
     }
