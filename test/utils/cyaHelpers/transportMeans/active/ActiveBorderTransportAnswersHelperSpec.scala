@@ -17,12 +17,15 @@
 package utils.cyaHelpers.transportMeans.active
 
 import base.SpecBase
+import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import generators.Generators
-import models.Mode
+import models.{Mode, Phase}
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.active.Identification
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.active._
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryListRow, Value}
@@ -32,6 +35,60 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actio
 class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "ActiveBorderTransportAnswersHelper" - {
+
+    "apply" - {
+
+      val userAnswers = emptyUserAnswers
+        .setValue(AddIdentificationYesNoPage(index), arbitrary[Boolean].sample.value)
+        .setValue(IdentificationPage(index), arbitrary[Identification].sample.value)
+        .setValue(AddVehicleIdentificationNumberYesNoPage(index), arbitrary[Boolean].sample.value)
+        .setValue(IdentificationNumberPage(index), Gen.alphaNumStr.sample.value)
+        .setValue(AddNationalityYesNoPage(index), arbitrary[Boolean].sample.value)
+        .setValue(NationalityPage(index), arbitrary[Nationality].sample.value)
+        .setValue(CustomsOfficeActiveBorderPage(index), arbitrary[CustomsOffice].sample.value)
+        .setValue(ConveyanceReferenceNumberYesNoPage(index), arbitrary[Boolean].sample.value)
+        .setValue(ConveyanceReferenceNumberPage(index), Gen.alphaNumStr.sample.value)
+
+      "must render rows in correct order" - {
+        "when during transition" in {
+          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+          when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val result = ActiveBorderTransportAnswersHelper(userAnswers, mode, index)(messages, frontendAppConfig, mockPhaseConfig)
+
+              result.head.key.value mustBe "Do you want to add the registered country for this vehicle?"
+              result(1).key.value mustBe "Registered country"
+              result(2).key.value mustBe "Do you want to add the type of identification?"
+              result(3).key.value mustBe "Identification type"
+              result(4).key.value mustBe "Do you want to add an identification number for this vehicle?"
+              result(5).key.value mustBe "Identification number"
+              result(6).key.value mustBe "Customs office"
+              result(7).key.value mustBe "Do you want to add a conveyance reference number?"
+              result(8).key.value mustBe "Conveyance reference number"
+          }
+        }
+
+        "when post transition" in {
+          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+          when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val result = ActiveBorderTransportAnswersHelper(userAnswers, mode, index)(messages, frontendAppConfig, mockPhaseConfig)
+
+              result.head.key.value mustBe "Do you want to add the type of identification?"
+              result(1).key.value mustBe "Identification type"
+              result(2).key.value mustBe "Do you want to add an identification number for this vehicle?"
+              result(3).key.value mustBe "Identification number"
+              result(4).key.value mustBe "Do you want to add the registered country for this vehicle?"
+              result(5).key.value mustBe "Registered country"
+              result(6).key.value mustBe "Customs office"
+              result(7).key.value mustBe "Do you want to add a conveyance reference number?"
+              result(8).key.value mustBe "Conveyance reference number"
+          }
+        }
+      }
+    }
 
     "activeBorderIdentificationType" - {
       "must return None" - {
@@ -151,6 +208,94 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                           href = routes.AddNationalityYesNoController.onPageLoad(answers.lrn, mode, index).url,
                           visuallyHiddenText = Some("if you want to add the registered country for the border means of transport"),
                           attributes = Map("id" -> "change-add-transport-means-vehicle-nationality")
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+          }
+        }
+      }
+
+    }
+
+    "activeBorderAddIdentificationType" - {
+      "must return None" - {
+        "when add Identification Type is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
+              val result = helper.activeBorderAddIdentificationType
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when add Identification Type is defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddIdentificationYesNoPage(index), true)
+              val helper  = new ActiveBorderTransportAnswersHelper(answers, mode, index)
+              val result  = helper.activeBorderAddIdentificationType
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("Do you want to add the type of identification?".toText),
+                  value = Value("Yes".toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = routes.AddIdentificationYesNoController.onPageLoad(answers.lrn, mode, index).url,
+                          visuallyHiddenText = Some("if you want to add the type of identification for the border means of transport"),
+                          attributes = Map("id" -> "change-add-transport-means-identification-type")
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+          }
+        }
+      }
+
+    }
+
+    "activeBorderAddIdentificationNumber" - {
+      "must return None" - {
+        "when add Identification Number is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
+              val result = helper.activeBorderAddIdentificationNumber
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when add Identification Number is defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddVehicleIdentificationNumberYesNoPage(index), true)
+              val helper  = new ActiveBorderTransportAnswersHelper(answers, mode, index)
+              val result  = helper.activeBorderAddIdentificationNumber
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("Do you want to add an identification number for this vehicle?".toText),
+                  value = Value("Yes".toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = routes.AddVehicleIdentificationNumberYesNoController.onPageLoad(answers.lrn, mode, index).url,
+                          visuallyHiddenText = Some("if you want to add an identification number for the border means of transport"),
+                          attributes = Map("id" -> "change-add-transport-means-identification-number")
                         )
                       )
                     )

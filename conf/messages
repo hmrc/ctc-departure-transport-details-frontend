@@ -122,8 +122,8 @@ transportMeans.addDepartureTransportMeansYesNo.error.required = Select yes if yo
 
 transportMeans.departure.addIdentificationTypeYesNo.title = Do you want to add the type of identification?
 transportMeans.departure.addIdentificationTypeYesNo.heading = Do you want to add the type of identification?
-transportMeans.departure.addIdentificationTypeYesNo.checkYourAnswersLabel = Do you want to add a type of identification?
-transportMeans.departure.addIdentificationTypeYesNo.change.hidden = if you want to add a type of identification
+transportMeans.departure.addIdentificationTypeYesNo.checkYourAnswersLabel = Do you want to add the type of identification?
+transportMeans.departure.addIdentificationTypeYesNo.change.hidden = if you want to add the type of identification for the departure means of transport
 transportMeans.departure.addIdentificationTypeYesNo.error.required = Select yes if you want to add a type of identification
 
 transportMeans.departure.identification.title = Which identification do you want to use for this vehicle?
@@ -155,7 +155,7 @@ transportMeans.departure.identification.error.required = Select which identifica
 transportMeans.departure.addIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
 transportMeans.departure.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
 transportMeans.departure.addIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add an identification number for this vehicle?
-transportMeans.departure.addIdentificationNumberYesNo.change.hidden = if you want to add an identification number for this vehicle
+transportMeans.departure.addIdentificationNumberYesNo.change.hidden = if you want to add an identification number for the departure means of transport
 transportMeans.departure.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
 
 transportMeans.departure.meansIdentificationNumber.withIDType.title = What is the {0}?
@@ -178,7 +178,7 @@ transportMeans.departure.meansIdentificationNumber.withNoIDType.error.length.pos
 transportMeans.departure.addVehicleCountryYesNo.title = Do you want to add the registered country for this vehicle?
 transportMeans.departure.addVehicleCountryYesNo.heading = Do you want to add the registered country for this vehicle?
 transportMeans.departure.addVehicleCountryYesNo.checkYourAnswersLabel = Do you want to add the registered country for this vehicle?
-transportMeans.departure.addVehicleCountryYesNo.change.hidden = if you want to add the registered country for the border means of transport
+transportMeans.departure.addVehicleCountryYesNo.change.hidden = if you want to add the registered country for the departure means of transport
 transportMeans.departure.addVehicleCountryYesNo.error.required = Select yes if you want to add the registered country for this vehicle
 
 transportMeans.departure.vehicleCountry.title = What country is this vehicle registered to?
@@ -222,12 +222,13 @@ transportMeans.addActiveBorderTransportMeansYesNo.error.required = Select yes if
 transportMeans.active.addVehicleIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
 transportMeans.active.addVehicleIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
 transportMeans.active.addVehicleIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
-transportMeans.active.addVehicleIdentificationNumberYeeNo.checkYourAnswersLabel= Do you want to add an identification number for this vehicle?
+transportMeans.active.addVehicleIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add an identification number for this vehicle?
+transportMeans.active.addVehicleIdentificationNumberYesNo.change.hidden = if you want to add an identification number for the border means of transport
 
 transportMeans.active.addIdentificationYesNo.title = Do you want to add the type of identification?
 transportMeans.active.addIdentificationYesNo.heading = Do you want to add the type of identification?
 transportMeans.active.addIdentificationYesNo.checkYourAnswersLabel = Do you want to add the type of identification?
-transportMeans.active.addIdentificationYesNo.change.hidden = if you want to add the identification type
+transportMeans.active.addIdentificationYesNo.change.hidden = if you want to add the type of identification for the border means of transport
 transportMeans.active.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification
 
 transportMeans.active.identification.title = Which identification do you want to use for this vehicle?

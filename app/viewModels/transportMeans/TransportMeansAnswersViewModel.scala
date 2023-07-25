@@ -44,8 +44,11 @@ object TransportMeansAnswersViewModel {
         sectionTitle = messages("transportMeans.departureMeans.subheading"),
         rows = Seq(
           helper.addDepartureTransportMeans,
+          helper.departureAddTypeYesNo,
           helper.departureIdentificationType,
+          helper.departureAddIdentificationNumber,
           helper.departureIdentificationNumber,
+          helper.departureAddNationality,
           helper.departureNationality
         ).flatten
       )
