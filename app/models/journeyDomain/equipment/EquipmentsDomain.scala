@@ -18,13 +18,13 @@ package models.journeyDomain.equipment
 
 import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, RichJsArray, UserAnswers}
+import models.{Index, Mode, Phase, RichJsArray, UserAnswers}
 import pages.sections.equipment.EquipmentsSection
 import play.api.mvc.Call
 
 case class EquipmentsDomain(value: Seq[EquipmentDomain]) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Some(controllers.equipment.routes.AddAnotherEquipmentController.onPageLoad(userAnswers.lrn, mode))
 }
 

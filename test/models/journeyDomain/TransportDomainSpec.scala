@@ -48,7 +48,6 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
     "when reduced data set indicator is undefined" - {
       "and not adding authorisations" in {
-
         val initialUserAnswers = emptyUserAnswers
           .setValue(DeclarationTypePage, DeclarationType.Option4)
           .setValue(AddAuthorisationsYesNoPage, false)

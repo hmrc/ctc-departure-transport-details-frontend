@@ -21,12 +21,29 @@ import models.Phase.{PostTransition, Transition}
 
 trait PhaseConfig {
   val phase: Phase
+
+  def amendMessageKey(key: String): String
+
+  val maxIdentificationNumberLength: Int
+
+  def lengthError(prefix: String): String = amendMessageKey(s"$prefix.error.length")
+
+  def activeIdentificationNumberHint: String    = amendMessageKey("transportMeans.active.identificationNumber.hint")
+  def departureIdentificationNumberHint: String = amendMessageKey("transportMeans.departure.meansIdentificationNumber.hint")
 }
 
 class TransitionConfig() extends PhaseConfig {
   override val phase: Phase = Transition
+
+  override def amendMessageKey(key: String): String = s"$key.transition"
+
+  override val maxIdentificationNumberLength: Int = 27
 }
 
 class PostTransitionConfig() extends PhaseConfig {
   override val phase: Phase = PostTransition
+
+  override def amendMessageKey(key: String): String = s"$key.postTransition"
+
+  override val maxIdentificationNumberLength: Int = 35
 }

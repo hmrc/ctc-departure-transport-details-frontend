@@ -70,10 +70,10 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   def arbitraryPreRequisitesAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[PreRequisitesDomain](userAnswers)
 
-  def arbitraryTransportMeansAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
+  def arbitraryTransportMeansAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
     buildUserAnswers[TransportMeansDomain](userAnswers)
 
-  def arbitraryTransportMeansDepartureAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
+  def arbitraryTransportMeansDepartureAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
     buildUserAnswers[TransportMeansDepartureDomain](userAnswers)
 
   def arbitraryTransportMeansActiveAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =

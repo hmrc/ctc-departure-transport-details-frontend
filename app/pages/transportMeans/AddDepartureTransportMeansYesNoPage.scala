@@ -14,36 +14,29 @@
  * limitations under the License.
  */
 
-package pages.transportMeans.departure
+package pages.transportMeans
 
-import controllers.transportMeans.departure.routes
-import models.transportMeans.departure.InlandMode
-import models.transportMeans.departure.InlandMode.Mail
+import controllers.transportMeans.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.TransportSection
-import pages.sections.transportMeans.{TransportMeansActiveListSection, TransportMeansDepartureSection}
+import pages.sections.transportMeans.TransportMeansDepartureSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try
 
-case object InlandModePage extends QuestionPage[InlandMode] {
+case object AddDepartureTransportMeansYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = TransportSection.path \ toString
 
-  override def toString: String = "inlandMode"
+  override def toString: String = "addDepartureTransportMeansYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.InlandModeController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.AddDepartureTransportMeansYesNoController.onPageLoad(userAnswers.lrn, mode))
 
-  override def cleanup(value: Option[InlandMode], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(Mail) =>
-        userAnswers.remove(TransportMeansDepartureSection).flatMap(_.remove(TransportMeansActiveListSection))
-      case Some(_) =>
-        userAnswers.remove(TransportMeansDepartureSection)
-      case None =>
-        super.cleanup(value, userAnswers)
-    }
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(false) => userAnswers.remove(TransportMeansDepartureSection)
+    case _           => super.cleanup(value, userAnswers)
+  }
 }

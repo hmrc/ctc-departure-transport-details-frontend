@@ -18,13 +18,13 @@ package models.authorisations
 
 import base.SpecBase
 import generators.Generators
-import models.transportMeans.departure.InlandMode
+import models.transportMeans.InlandMode
 import models.{DeclarationType, Index, ProcedureType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
-import pages.transportMeans.departure.InlandModePage
+import pages.transportMeans.InlandModePage
 import play.api.libs.json.{JsError, JsString, Json}
 
 class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

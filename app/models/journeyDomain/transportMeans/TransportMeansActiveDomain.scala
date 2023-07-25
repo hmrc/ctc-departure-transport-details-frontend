@@ -25,7 +25,7 @@ import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.BorderModeOfTransport._
 import models.transportMeans.active.Identification
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, Phase, UserAnswers}
 import pages.external.SecurityDetailsTypePage
 import pages.sections.external.OfficesOfTransitSection
 import pages.transportMeans.BorderModeOfTransportPage
@@ -45,12 +45,12 @@ case class TransportMeansActiveDomain(
   def asString(implicit messages: Messages): String =
     TransportMeansActiveDomain.asString(identification, identificationNumber)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some(
-    userAnswers.get(OfficesOfTransitSection) match {
-      case Some(_) => activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index)
-      case None    => transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode)
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
+    if (TransportMeansActiveDomain.hasMultiplicity(userAnswers, phase)) {
+      Some(activeRoutes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index))
+    } else {
+      Some(transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
     }
-  )
 }
 
 object TransportMeansActiveDomain {
@@ -58,7 +58,12 @@ object TransportMeansActiveDomain {
   def asString(identification: Identification, identificationNumber: String)(implicit messages: Messages): String =
     s"${identification.asString} - $identificationNumber"
 
-  def userAnswersReader(index: Index): UserAnswersReader[TransportMeansActiveDomain] = {
+  def hasMultiplicity(userAnswers: UserAnswers, phase: Phase): Boolean = phase match {
+    case Phase.PostTransition if userAnswers.get(OfficesOfTransitSection).isDefined => true
+    case _                                                                          => false
+  }
+
+  implicit def userAnswersReader(index: Index): UserAnswersReader[TransportMeansActiveDomain] = {
     lazy val conveyanceReads: UserAnswersReader[Option[String]] =
       for {
         securityDetails <- SecurityDetailsTypePage.reader

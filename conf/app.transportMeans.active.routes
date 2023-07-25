@@ -1,8 +1,12 @@
-
 GET        /border-means-of-transport/:activeIndex/add-country/:lrn                                        controllers.transportMeans.active.AddNationalityYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)
 POST       /border-means-of-transport/:activeIndex/add-country/:lrn                                        controllers.transportMeans.active.AddNationalityYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)
 GET        /border-means-of-transport/:activeIndex/change-add-country/:lrn                                 controllers.transportMeans.active.AddNationalityYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, activeIndex: Index)
 POST       /border-means-of-transport/:activeIndex/change-add-country/:lrn                                 controllers.transportMeans.active.AddNationalityYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, activeIndex: Index)
+
+GET        /border-means-of-transport/:activeIndex/add-identification-number/:lrn                          controllers.transportMeans.active.AddVehicleIdentificationNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)
+POST       /border-means-of-transport/:activeIndex/add-identification-number/:lrn                          controllers.transportMeans.active.AddVehicleIdentificationNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)
+GET        /border-means-of-transport/:activeIndex/change-add-identification-number/:lrn                   controllers.transportMeans.active.AddVehicleIdentificationNumberYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, activeIndex: Index)
+POST       /border-means-of-transport/:activeIndex/change-add-identification-number/:lrn                   controllers.transportMeans.active.AddVehicleIdentificationNumberYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, activeIndex: Index)
 
 GET        /border-means-of-transport/:activeIndex/identification-number/:lrn                              controllers.transportMeans.active.IdentificationNumberController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)
 POST       /border-means-of-transport/:activeIndex/identification-number/:lrn                              controllers.transportMeans.active.IdentificationNumberController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)
@@ -13,6 +17,11 @@ GET        /border-means-of-transport/:activeIndex/country/:lrn                 
 POST       /border-means-of-transport/:activeIndex/country/:lrn                                            controllers.transportMeans.active.NationalityController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)
 GET        /border-means-of-transport/:activeIndex/change-country/:lrn                                     controllers.transportMeans.active.NationalityController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, activeIndex: Index)
 POST       /border-means-of-transport/:activeIndex/change-country/:lrn                                     controllers.transportMeans.active.NationalityController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, activeIndex: Index)
+
+GET        /border-means-of-transport/:activeIndex/add-identification-type/:lrn                            controllers.transportMeans.active.AddIdentificationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)
+POST       /border-means-of-transport/:activeIndex/add-identification-type/:lrn                            controllers.transportMeans.active.AddIdentificationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)
+GET        /border-means-of-transport/:activeIndex/change-add-identification-type/:lrn                     controllers.transportMeans.active.AddIdentificationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, activeIndex: Index)
+POST       /border-means-of-transport/:activeIndex/change-add-identification-type/:lrn                     controllers.transportMeans.active.AddIdentificationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, activeIndex: Index)
 
 GET        /border-means-of-transport/:activeIndex/identification/:lrn                                     controllers.transportMeans.active.IdentificationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)
 POST       /border-means-of-transport/:activeIndex/identification/:lrn                                     controllers.transportMeans.active.IdentificationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, activeIndex: Index)

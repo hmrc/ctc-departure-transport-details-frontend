@@ -14,58 +14,57 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans.departure
+package controllers.transportMeans.active
 
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.EnumerableFormProvider
-import models.transportMeans.departure.InlandMode
-import models.{LocalReferenceNumber, Mode}
-import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
-import pages.transportMeans.departure.InlandModePage
+import forms.YesNoFormProvider
+import models.{Index, LocalReferenceNumber, Mode}
+import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
+import pages.transportMeans.active.AddIdentificationYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transportMeans.departure.InlandModeView
+import views.html.transportMeans.active.AddIdentificationYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class InlandModeController @Inject() (
+class AddIdentificationYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: TransportMeansNavigatorProvider,
+  navigatorProvider: TransportMeansActiveNavigatorProvider,
   actions: Actions,
-  formProvider: EnumerableFormProvider,
+  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: InlandModeView
+  view: AddIdentificationYesNoView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[InlandMode]("transportMeans.departure.inlandMode")
+  private val form = formProvider("transportMeans.active.addIdentificationYesNo")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(InlandModePage) match {
+      val preparedForm = request.userAnswers.get(AddIdentificationYesNoPage(activeIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, InlandMode.values, mode))
+      Ok(view(preparedForm, lrn, mode, activeIndex))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, InlandMode.values, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            InlandModePage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
+            AddIdentificationYesNoPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

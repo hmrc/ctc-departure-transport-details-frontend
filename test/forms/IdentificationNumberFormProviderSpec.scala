@@ -16,54 +16,107 @@
 
 package forms
 
-import base.SpecBase
-import forms.Constants.identificationNumberLength
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
 import models.transportMeans.active.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.FormError
+import play.api.test.Helpers.running
 
-class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with SpecBase {
+class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
 
   private val identificationType = arbitrary[Identification].sample.value
   private val prefix             = Gen.alphaNumStr.sample.value
 
   private val dynamicTitle = s"$prefix.${identificationType.toString}"
   private val requiredKey  = s"$prefix.error.required"
-  private val lengthKey    = s"$prefix.error.length"
   private val invalidKey   = s"$prefix.error.invalid"
 
-  val form = new IdentificationNumberFormProvider()(prefix, dynamicTitle)
+  private val maxIdentificationNumberTransitionLength: Int     = 27
+  private val maxIdentificationNumberPostTransitionLength: Int = 35
 
-  ".value" - {
+  "TransitionIdentificationNumberFormProvider" - {
 
-    val fieldName = "value"
+    val lengthKey = s"$prefix.error.length.transition"
+    val app       = transitionApplicationBuilder().build()
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(identificationNumberLength)
-    )
+    ".value" - {
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = identificationNumberLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(dynamicTitle))
-    )
+      running(app) {
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(dynamicTitle))
-    )
+        val form      = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix, dynamicTitle)
+        val fieldName = "value"
 
-    behave like fieldWithInvalidCharacters(
-      form,
-      fieldName,
-      error = FormError(fieldName, invalidKey, Seq(dynamicTitle)),
-      identificationNumberLength
-    )
+        behave like fieldThatBindsValidData(
+          form,
+          fieldName,
+          stringsWithMaxLength(maxIdentificationNumberTransitionLength)
+        )
+
+        behave like fieldWithMaxLength(
+          form,
+          fieldName,
+          maxLength = maxIdentificationNumberTransitionLength,
+          lengthError = FormError(fieldName, lengthKey, Seq(dynamicTitle))
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, requiredKey, Seq(dynamicTitle))
+        )
+
+        behave like fieldWithInvalidCharacters(
+          form,
+          fieldName,
+          error = FormError(fieldName, invalidKey, Seq(dynamicTitle)),
+          maxIdentificationNumberTransitionLength
+        )
+      }
+    }
+
+  }
+
+  "PostTransitionIdentificationNumberFormProvider" - {
+
+    val lengthKey = s"$prefix.error.length.postTransition"
+    val app       = postTransitionApplicationBuilder().build()
+
+    ".value" - {
+
+      running(app) {
+
+        val form      = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix, dynamicTitle)
+        val fieldName = "value"
+
+        behave like fieldThatBindsValidData(
+          form,
+          fieldName,
+          stringsWithMaxLength(maxIdentificationNumberPostTransitionLength)
+        )
+
+        behave like fieldWithMaxLength(
+          form,
+          fieldName,
+          maxLength = maxIdentificationNumberPostTransitionLength,
+          lengthError = FormError(fieldName, lengthKey, Seq(dynamicTitle))
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, requiredKey, Seq(dynamicTitle))
+        )
+
+        behave like fieldWithInvalidCharacters(
+          form,
+          fieldName,
+          error = FormError(fieldName, invalidKey, Seq(dynamicTitle)),
+          maxIdentificationNumberPostTransitionLength
+        )
+      }
+    }
+
   }
 }
