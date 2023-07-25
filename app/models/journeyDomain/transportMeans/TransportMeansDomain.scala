@@ -22,7 +22,7 @@ import controllers.transportMeans.routes
 import models.SecurityDetailsType.NoSecurityDetails
 import models.domain._
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.transportMeans.BorderModeOfTransport
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import models.transportMeans.BorderModeOfTransport.ChannelTunnel
 import models.{Mode, Phase, UserAnswers}
 import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
@@ -31,7 +31,8 @@ import pages.transportMeans.{
   AddActiveBorderTransportMeansYesNoPage,
   AddBorderModeOfTransportYesNoPage,
   AddDepartureTransportMeansYesNoPage,
-  BorderModeOfTransportPage
+  BorderModeOfTransportPage,
+  InlandModePage
 }
 import play.api.mvc.Call
 
@@ -100,16 +101,20 @@ object TransitionTransportMeansDomain {
           }
       }
 
-    (
-      transportMeansDepartureReader,
-      borderModeOfTransportReader,
-      transportMeansActiveReader
-    ).tupled.map((TransitionTransportMeansDomain.apply _).tupled)
+    InlandModePage.reader.flatMap {
+      case InlandMode.Mail => UserAnswersReader(TransitionTransportMeansDomain(None, None, None))
+      case _ =>
+        (
+          transportMeansDepartureReader,
+          borderModeOfTransportReader,
+          transportMeansActiveReader
+        ).tupled.map((TransitionTransportMeansDomain.apply _).tupled)
+    }
   }
 }
 
 case class PostTransitionTransportMeansDomain(
-  transportMeansDeparture: TransportMeansDepartureDomain,
+  transportMeansDeparture: Option[TransportMeansDepartureDomain],
   borderModeOfTransport: Option[BorderModeOfTransport],
   transportMeansActiveList: Option[TransportMeansActiveListDomain]
 ) extends TransportMeansDomain
@@ -133,12 +138,14 @@ object PostTransitionTransportMeansDomain {
         case _ =>
           UserAnswersReader[TransportMeansActiveListDomain].map(Some(_))
       }
-
-    (
-      TransportMeansDepartureDomain.userAnswersReader,
-      borderModeOfTransportOptionalityReader,
-      transportMeansActiveReader
-    ).tupled.map((PostTransitionTransportMeansDomain.apply _).tupled)
+    InlandModePage.reader.flatMap {
+      case InlandMode.Mail => UserAnswersReader(PostTransitionTransportMeansDomain(None, None, None))
+      case _ =>
+        (
+          TransportMeansDepartureDomain.userAnswersReader.map(Some(_)),
+          borderModeOfTransportOptionalityReader,
+          transportMeansActiveReader
+        ).tupled.map((PostTransitionTransportMeansDomain.apply _).tupled)
+    }
   }
-
 }

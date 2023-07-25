@@ -18,7 +18,7 @@ package pages.external
 
 import models.Index
 import models.reference.CustomsOffice
-import pages.{QuestionPage, ReadOnlyPage}
+import pages.ReadOnlyPage
 import play.api.libs.json.JsPath
 
 case class OfficeOfTransitPage(index: Index) extends ReadOnlyPage[CustomsOffice] {
