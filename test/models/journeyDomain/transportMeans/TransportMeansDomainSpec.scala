@@ -21,26 +21,21 @@ import config.PhaseConfig
 import generators.Generators
 import models.SecurityDetailsType.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
 import models.domain.{EitherType, UserAnswersReader}
-import models.transportMeans.{BorderModeOfTransport, InlandMode}
+import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.BorderModeOfTransport._
-import models.transportMeans.InlandMode.Mail
 import models.{Phase, SecurityDetailsType}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
 import pages.preRequisites.ContainerIndicatorPage
+import pages.transportMeans._
 import pages.transportMeans.active.{IdentificationPage, NationalityPage}
-import pages.transportMeans.{
-  AddActiveBorderTransportMeansYesNoPage,
-  AddBorderModeOfTransportYesNoPage,
-  AddDepartureTransportMeansYesNoPage,
-  BorderModeOfTransportPage,
-  InlandModePage
-}
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
   "TransportMeansDomain" - {
+
     val mockPostTransitionPhaseConfig = mock[PhaseConfig]
     when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
@@ -50,22 +45,10 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
     "transportMeansDepartureReader" - {
       "when in transition" - {
 
-        "skip transport means section when Inland Mode is of type Mail" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(InlandModePage, Mail)
-
-          val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-            TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
-          ).run(userAnswers)
-
-          result.value mustBe TransitionTransportMeansDomain(None, None, None)
-        }
-
         "and container indicator is 1" - {
           "and add departures transport means yes/no is unanswered" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, true)
-              .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
             val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
               TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
@@ -79,7 +62,6 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
               val userAnswers = emptyUserAnswers
                 .setValue(ContainerIndicatorPage, true)
                 .setValue(AddDepartureTransportMeansYesNoPage, true)
-                .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
               val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
                 TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
@@ -95,7 +77,6 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, false)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
-              .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
             val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
               TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
@@ -109,22 +90,10 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
     "borderModeOfTransportReader" - {
       "when in post transition" - {
-
-        "skip transport means section when Inland Mode is of type Mail" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(InlandModePage, Mail)
-
-          val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-            TransportMeansDomain.userAnswersReader(mockPostTransitionPhaseConfig)
-          ).run(userAnswers)
-          result.value mustBe PostTransitionTransportMeansDomain(None, None, None)
-        }
-
         "and office of departure not in CL010" - {
           "security type is 0" in {
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockPostTransitionPhaseConfig)) {
               userAnswers =>
@@ -138,7 +107,6 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
           "security type is details (1,2,3)" in {
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
-              .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockPostTransitionPhaseConfig)) {
               userAnswers =>
@@ -158,7 +126,6 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
               .setValue(OfficeOfDepartureInCL010Page, false)
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
-              .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -174,7 +141,6 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
               .setValue(OfficeOfDepartureInCL010Page, false)
               .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
-              .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -192,7 +158,6 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
               .setValue(OfficeOfDepartureInCL010Page, true)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
-              .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -208,7 +173,6 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
               .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
               .setValue(OfficeOfDepartureInCL010Page, true)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
-              .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -232,7 +196,6 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
               .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
               .setValue(BorderModeOfTransportPage, borderMode)
-              .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -251,7 +214,6 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
               .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
               .setValue(BorderModeOfTransportPage, borderMode)
-              .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -270,7 +232,6 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
             .setValue(AddDepartureTransportMeansYesNoPage, true)
             .setValue(AddBorderModeOfTransportYesNoPage, false)
-            .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
           forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
             userAnswers =>
@@ -290,7 +251,6 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             .setValue(AddDepartureTransportMeansYesNoPage, true)
             .setValue(SecurityDetailsTypePage, NoSecurityDetails)
             .setValue(AddBorderModeOfTransportYesNoPage, false)
-            .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
           forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockPostTransitionPhaseConfig)) {
             userAnswers =>
@@ -308,7 +268,6 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             .setValue(AddDepartureTransportMeansYesNoPage, true)
             .setValue(SecurityDetailsTypePage, securityType)
             .setValue(BorderModeOfTransportPage, arbitrary[BorderModeOfTransport].sample.value)
-            .setValue(InlandModePage, arbitrary[InlandMode].retryUntil(_ != Mail).sample.value)
 
           forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockPostTransitionPhaseConfig)) {
             userAnswers =>
