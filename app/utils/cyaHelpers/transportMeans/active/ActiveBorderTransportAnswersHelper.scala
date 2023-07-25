@@ -19,9 +19,8 @@ package utils.cyaHelpers.transportMeans.active
 import config.{FrontendAppConfig, PhaseConfig}
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.active.Identification
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, Phase, UserAnswers}
 import pages.transportMeans.active._
-import pages.transportMeans.departure.AddIdentificationTypeYesNoPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
@@ -106,17 +105,32 @@ object ActiveBorderTransportAnswersHelper {
     index: Index
   )(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig): Seq[SummaryListRow] = {
     val helper = new ActiveBorderTransportAnswersHelper(userAnswers, mode, index)
-    Seq(
-      helper.activeBorderAddIdentificationType,
-      helper.activeBorderIdentificationType,
-      helper.activeBorderAddIdentificationNumber,
-      helper.activeBorderIdentificationNumber,
-      helper.activeBorderAddNationality,
-      helper.activeBorderNationality,
-      helper.customsOfficeAtBorder,
-      helper.activeBorderConveyanceReferenceNumberYesNo,
-      helper.conveyanceReferenceNumber
-    ).flatten
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        Seq(
+          helper.activeBorderAddNationality,
+          helper.activeBorderNationality,
+          helper.activeBorderAddIdentificationType,
+          helper.activeBorderIdentificationType,
+          helper.activeBorderAddIdentificationNumber,
+          helper.activeBorderIdentificationNumber,
+          helper.customsOfficeAtBorder,
+          helper.activeBorderConveyanceReferenceNumberYesNo,
+          helper.conveyanceReferenceNumber
+        ).flatten
+      case Phase.PostTransition =>
+        Seq(
+          helper.activeBorderAddIdentificationType,
+          helper.activeBorderIdentificationType,
+          helper.activeBorderAddIdentificationNumber,
+          helper.activeBorderIdentificationNumber,
+          helper.activeBorderAddNationality,
+          helper.activeBorderNationality,
+          helper.customsOfficeAtBorder,
+          helper.activeBorderConveyanceReferenceNumberYesNo,
+          helper.conveyanceReferenceNumber
+        ).flatten
+    }
   }
 
 }
