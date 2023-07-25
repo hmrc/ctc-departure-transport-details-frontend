@@ -49,6 +49,18 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
     "transportMeansDepartureReader" - {
       "when in transition" - {
+
+        "skip transport means section when Inland Mode is of type Mail" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(InlandModePage, Mail)
+
+          val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+            TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
+          ).run(userAnswers)
+
+          result.value mustBe TransitionTransportMeansDomain(None, None, None)
+        }
+
         "and container indicator is 1" - {
           "and add departures transport means yes/no is unanswered" in {
             val userAnswers = emptyUserAnswers
@@ -97,6 +109,17 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
     "borderModeOfTransportReader" - {
       "when in post transition" - {
+
+        "skip transport means section when Inland Mode is of type Mail" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(InlandModePage, Mail)
+
+          val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
+            TransportMeansDomain.userAnswersReader(mockPostTransitionPhaseConfig)
+          ).run(userAnswers)
+          result.value mustBe PostTransitionTransportMeansDomain(None, None, None)
+        }
+
         "and office of departure not in CL010" - {
           "security type is 0" in {
             val userAnswers = emptyUserAnswers
@@ -201,7 +224,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
     "transportMeansActiveReader" - {
       "when in transition" - {
         "borderModeOfTransport present" - {
-          "and not type ChannelTunnel" in { // TODO: Once active domain updated
+          "and not type ChannelTunnel" in {
             val borderMode = arbitrary[BorderModeOfTransport].retryUntil(_ != ChannelTunnel).sample.value
 
             val userAnswers = emptyUserAnswers
