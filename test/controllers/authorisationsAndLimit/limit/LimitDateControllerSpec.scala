@@ -17,12 +17,17 @@
 package controllers.authorisationsAndLimit.limit
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.actions.SpecificDataRequiredActionProvider
 import forms.DateFormProvider
 import models.NormalMode
+import models.reference.CustomsOffice
 import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Gen
+import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
 import pages.authorisationsAndLimit.limit.LimitDatePage
+import pages.external.OfficeOfDestinationPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -47,6 +52,7 @@ class LimitDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
   private val mode                = NormalMode
   private lazy val limitDateRoute = routes.LimitDateController.onPageLoad(lrn, mode).url
   private val date                = LocalDate.now
+  private val officeOfDestination = CustomsOffice("1D3", "OfficeOne", None)
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -57,7 +63,9 @@ class LimitDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers.setValue(OfficeOfDestinationPage, officeOfDestination)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, limitDateRoute)
 
@@ -68,12 +76,13 @@ class LimitDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, maxDateArg)(request, messages).toString
+        view(form, lrn, mode, maxDateArg, officeOfDestination.toString)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(LimitDatePage, date)
+      val userAnswers = emptyUserAnswers.setValue(LimitDatePage, date).setValue(OfficeOfDestinationPage, officeOfDestination)
+
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, limitDateRoute)
@@ -93,12 +102,12 @@ class LimitDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, maxDateArg)(request, messages).toString
+        view(filledForm, lrn, mode, maxDateArg, officeOfDestination.toString)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(OfficeOfDestinationPage, officeOfDestination))
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -118,7 +127,7 @@ class LimitDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(emptyUserAnswers.setValue(OfficeOfDestinationPage, officeOfDestination))
 
       val invalidAnswer = ""
 
@@ -132,7 +141,7 @@ class LimitDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
       val view = injector.instanceOf[LimitDateView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, maxDateArg)(request, messages).toString
+        view(filledForm, lrn, mode, maxDateArg, officeOfDestination.toString)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

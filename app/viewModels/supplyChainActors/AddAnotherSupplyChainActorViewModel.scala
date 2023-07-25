@@ -16,7 +16,7 @@
 
 package viewModels.supplyChainActors
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -36,7 +36,7 @@ case class AddAnotherSupplyChainActorViewModel(
 
 object AddAnotherSupplyChainActorViewModel {
 
-  class AddAnotherSupplyChainActorViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
+  class AddAnotherSupplyChainActorViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherSupplyChainActorViewModel = {
       val helper = new SupplyChainActorsAnswersHelper(userAnswers, mode)

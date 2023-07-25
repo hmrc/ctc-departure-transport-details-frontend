@@ -1,7 +1,6 @@
 # microservice specific routes
 ->         /                                                                             app.preRequisites.Routes
-->         /                                                                             app.transportMeans.departure.Routes
-->         /                                                                             app.transportMeans.active.Routes
+->         /                                                                             app.transportMeans.Routes
 ->         /                                                                             app.supplyChainActors.Routes
 ->         /                                                                             app.authorisationsAndLimit.Routes
 ->         /                                                                             app.carrierDetails.Routes
@@ -11,16 +10,6 @@
 GET        /assets/*file                                                                 controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /:lrn                                                                         controllers.RedirectController.redirect(lrn: LocalReferenceNumber)
-
-GET        /border-mode-of-transport/:lrn                                                controllers.transportMeans.BorderModeOfTransportController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /border-mode-of-transport/:lrn                                                controllers.transportMeans.BorderModeOfTransportController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /change-border-mode-of-transport/:lrn                                         controllers.transportMeans.BorderModeOfTransportController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /change-border-mode-of-transport/:lrn                                         controllers.transportMeans.BorderModeOfTransportController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-
-GET        /modes-means-of-transport/check-answers/:lrn                                  controllers.transportMeans.TransportMeansCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /modes-means-of-transport/check-answers/:lrn                                  controllers.transportMeans.TransportMeansCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /modes-means-of-transport/change-check-answers/:lrn                           controllers.transportMeans.TransportMeansCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /modes-means-of-transport/change-check-answers/:lrn                           controllers.transportMeans.TransportMeansCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /check-answers/:lrn                                                           controllers.TransportAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /check-answers/:lrn                                                           controllers.TransportAnswersController.onSubmit(lrn: LocalReferenceNumber)

@@ -17,7 +17,7 @@
 package models.transportMeans.departure
 
 import models.{EnumerableType, Radioable, UserAnswers, WithName}
-import pages.transportMeans.departure.InlandModePage
+import pages.transportMeans.InlandModePage
 import play.api.i18n.Messages
 
 sealed trait Identification extends Radioable[Identification] {

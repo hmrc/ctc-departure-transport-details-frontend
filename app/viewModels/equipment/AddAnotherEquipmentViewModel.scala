@@ -16,7 +16,7 @@
 
 package viewModels.equipment
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.equipment.routes
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
@@ -37,7 +37,7 @@ case class AddAnotherEquipmentViewModel(
 
 object AddAnotherEquipmentViewModel {
 
-  class AddAnotherEquipmentViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
+  class AddAnotherEquipmentViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherEquipmentViewModel = {
       val helper = new EquipmentsAnswersHelper(userAnswers, mode)

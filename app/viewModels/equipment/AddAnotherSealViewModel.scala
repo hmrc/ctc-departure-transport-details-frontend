@@ -16,7 +16,7 @@
 
 package viewModels.equipment
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -36,7 +36,7 @@ case class AddAnotherSealViewModel(
 
 object AddAnotherSealViewModel {
 
-  class AddAnotherSealViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
+  class AddAnotherSealViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode, equipmentIndex: Index)(implicit messages: Messages): AddAnotherSealViewModel = {
       val helper = new SealsAnswersHelper(userAnswers, mode, equipmentIndex)
