@@ -21,7 +21,7 @@ import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import generators.Generators
 import models.SecurityDetailsType.NoSecurityDetails
-import models.journeyDomain.transportMeans.TransportMeansActiveDomain
+import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
 import models.reference.Nationality
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.active.Identification
@@ -69,11 +69,11 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
             forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index)(mockPhaseConfig), arbitrary[Mode]) {
               (userAnswers, mode) =>
                 val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
-                val active = TransportMeansActiveDomain.userAnswersReader(index).run(userAnswers).value
+                val active = PostTransitionTransportMeansActiveDomain.userAnswersReader(index).run(userAnswers).value
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(
-                      name = s"${messages(s"$prefix.${active.identification}")} - ${active.identificationNumber}",
+                      name = active.asString,
                       changeUrl = routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, activeIndex).url,
                       removeUrl = Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(userAnswers.lrn, mode, index).url)
                     )

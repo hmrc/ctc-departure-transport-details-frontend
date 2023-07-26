@@ -21,19 +21,19 @@ import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import generators.Generators
 import models.domain.UserAnswersReader
-import models.journeyDomain.transportMeans.TransportMeansActiveDomain
+import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
 import models.reference.Nationality
-import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import models.transportMeans.departure.{Identification => DepartureIdentification}
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
 import pages.sections.transportMeans.TransportMeansActiveSection
-import pages.transportMeans.departure._
 import pages.transportMeans._
 import pages.transportMeans.active.NationalityPage
+import pages.transportMeans.departure._
 import play.api.libs.json.{JsArray, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -43,12 +43,13 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
 
   "TransportMeansCheckYourAnswersHelper" - {
 
-    val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-    when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
-
     "activeBorderTransportMeans" - {
 
       "during post transition" - {
+
+        val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+        when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
         "must return None" - {
           "when active border transport means is undefined" in {
             forAll(arbitrary[Mode]) {
@@ -62,7 +63,6 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
 
         "must return Some(Row)" - {
           "when incident is defined" in {
-            val prefix = "transportMeans.active.identification"
             forAll(arbitrary[Nationality]) {
               nationality =>
                 val initialAnswers = emptyUserAnswers
@@ -71,15 +71,15 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
 
                 forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index)(mockPhaseConfig), arbitrary[Mode]) {
                   (userAnswers, mode) =>
-                    val abtm = UserAnswersReader[TransportMeansActiveDomain](
-                      TransportMeansActiveDomain.userAnswersReader(index)(phaseConfig)
+                    val abtm = UserAnswersReader[PostTransitionTransportMeansActiveDomain](
+                      PostTransitionTransportMeansActiveDomain.userAnswersReader(index)
                     ).run(userAnswers).value
 
                     val helper = new TransportMeansCheckYourAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
                     val result = helper.activeBorderTransportMeans(index).get
 
                     result.key.value mustBe "Active border transport means 1"
-                    result.value.value mustBe s"${messages(s"$prefix.${abtm.identification}")} - ${abtm.identificationNumber}"
+                    result.value.value mustBe abtm.asString
                     val actions = result.actions.get.items
                     actions.size mustBe 1
                     val action = actions.head
