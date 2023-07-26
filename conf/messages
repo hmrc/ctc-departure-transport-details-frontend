@@ -84,11 +84,11 @@ preRequisites.itemsDestinationCountry.change.hidden = country of destination
 preRequisites.itemsDestinationCountry.placeholder = Select a country
 preRequisites.itemsDestinationCountry.error.required = Enter the country of destination
 
-preRequisites.containerIndicator.title = Are you using any containers?
-preRequisites.containerIndicator.heading = Are you using any containers?
+preRequisites.containerIndicator.title = Are you using any shipping containers to transport the goods?
+preRequisites.containerIndicator.heading = Are you using any shipping containers to transport the goods?
 preRequisites.containerIndicator.checkYourAnswersLabel = Are you using any containers?
 preRequisites.containerIndicator.change.hidden = if you are using any containers
-preRequisites.containerIndicator.error.required = Select yes if you’re using any containers
+preRequisites.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
 
 # Transport details - Transport means
 
