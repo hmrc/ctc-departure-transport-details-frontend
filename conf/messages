@@ -73,7 +73,7 @@ preRequisites.countryOfDispatch.checkYourAnswersLabel = Country of dispatch
 preRequisites.countryOfDispatch.change.hidden = country of dispatch
 preRequisites.countryOfDispatch.placeholder = Select a country
 preRequisites.countryOfDispatch.error.required = Enter the country of dispatch
-preRequisites.countryOfDispatch.paragraph = This is the country the item was originally dispatched from. It might not be where the CTC transit movement begins.
+preRequisites.countryOfDispatch.paragraph = This is the country the item was originally dispatched from. It may not be where the transit movement begins.
 
 preRequisites.itemsDestinationCountry.title = What is the country of destination?
 preRequisites.itemsDestinationCountry.heading = What is the country of destination?
