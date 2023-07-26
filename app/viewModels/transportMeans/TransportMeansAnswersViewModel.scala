@@ -17,7 +17,7 @@
 package viewModels.transportMeans
 
 import config.{FrontendAppConfig, PhaseConfig}
-import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
+import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.TransportMeansCheckYourAnswersHelper
@@ -60,7 +60,7 @@ object TransportMeansAnswersViewModel {
 
       val borderMeansSection = {
         val row = helper.addActiveBorderTransportMeans.toSeq
-        if (PostTransitionTransportMeansActiveDomain.hasMultiplicity(userAnswers)) {
+        if (TransportMeansActiveDomain.hasMultiplicity(userAnswers, phaseConfig.phase)) {
           Section(
             sectionTitle = messages("transportMeans.borderMeans.subheading"),
             rows = row ++ helper.activeBorderTransportsMeans,

@@ -32,8 +32,10 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
+import pages.sections.external.OfficesOfTransitSection
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.active._
+import play.api.libs.json.{JsArray, Json}
 
 class TransportMeansActiveDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
@@ -52,6 +54,24 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
     val conveyanceNumber: String       = Gen.alphaNumStr.sample.value
 
     "in post-transition" - {
+
+      "hasMultiplicity" - {
+        "when at least one office of transit added" - {
+          "must be true" in {
+            val userAnswers = emptyUserAnswers.setValue(OfficesOfTransitSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+            val result      = TransportMeansActiveDomain.hasMultiplicity(userAnswers, Phase.PostTransition)
+            result mustBe true
+          }
+        }
+
+        "when no offices of transit added" - {
+          "must be false" in {
+            val result = TransportMeansActiveDomain.hasMultiplicity(emptyUserAnswers, Phase.PostTransition)
+            result mustBe false
+          }
+        }
+      }
+
       "can be parsed from user answers" - {
         "when the add nationality is answered yes" - {
           "and security detail type is 0 and inland mode is Sea and add conveyance number is yes" in {
@@ -301,6 +321,24 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
     }
 
     "during transition" - {
+
+      "hasMultiplicity" - {
+        "when at least one office of transit added" - {
+          "must be false" in {
+            val userAnswers = emptyUserAnswers.setValue(OfficesOfTransitSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+            val result      = TransportMeansActiveDomain.hasMultiplicity(userAnswers, Phase.Transition)
+            result mustBe false
+          }
+        }
+
+        "when no offices of transit added" - {
+          "must be false" in {
+            val result = TransportMeansActiveDomain.hasMultiplicity(emptyUserAnswers, Phase.Transition)
+            result mustBe false
+          }
+        }
+      }
+
       "nationalityReader" - {
         "can not be parsed from user answers" - {
           "when border mode of transport is 2 (rail)" - {

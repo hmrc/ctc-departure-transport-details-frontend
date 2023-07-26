@@ -35,19 +35,14 @@ import pages.transportMeans.active._
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
-sealed trait TransportMeansActiveDomain extends JourneyDomainModel {
-  def asString(implicit messages: Messages): String
-}
+sealed trait TransportMeansActiveDomain extends JourneyDomainModel
 
 object TransportMeansActiveDomain {
 
-  def asString(identification: Option[Identification], identificationNumber: Option[String])(implicit messages: Messages): String =
-    (identification, identificationNumber) match {
-      case (Some(identification), Some(identificationNumber)) => s"${identification.asString} - $identificationNumber"
-      case (Some(identification), None)                       => identification.asString
-      case (None, Some(identificationNumber))                 => identificationNumber
-      case (None, None)                                       => "" // TODO - what should this be?
-    }
+  def hasMultiplicity(userAnswers: UserAnswers, phase: Phase): Boolean = phase match {
+    case Phase.PostTransition => PostTransitionTransportMeansActiveDomain.hasMultiplicity(userAnswers)
+    case Phase.Transition     => false
+  }
 
   implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansActiveDomain] =
     phaseConfig.phase match {
@@ -78,9 +73,6 @@ case class TransitionTransportMeansActiveDomain(
   conveyanceReferenceNumber: Option[String]
 ) extends TransportMeansActiveDomain
     with JourneyDomainModel {
-
-  override def asString(implicit messages: Messages): String =
-    TransportMeansActiveDomain.asString(identification, identificationNumber)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Some(transportMeansRoutes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
@@ -145,8 +137,8 @@ case class PostTransitionTransportMeansActiveDomain(
     extends TransportMeansActiveDomain
     with JourneyDomainModel {
 
-  override def asString(implicit messages: Messages): String =
-    TransportMeansActiveDomain.asString(Some(identification), Some(identificationNumber))
+  def asString(implicit messages: Messages): String =
+    PostTransitionTransportMeansActiveDomain.asString(identification, identificationNumber)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     if (PostTransitionTransportMeansActiveDomain.hasMultiplicity(userAnswers)) {
@@ -157,6 +149,9 @@ case class PostTransitionTransportMeansActiveDomain(
 }
 
 object PostTransitionTransportMeansActiveDomain {
+
+  def asString(identification: Identification, identificationNumber: String)(implicit messages: Messages): String =
+    s"${identification.asString} - $identificationNumber"
 
   def hasMultiplicity(userAnswers: UserAnswers): Boolean = userAnswers.get(OfficesOfTransitSection).isDefined
 
