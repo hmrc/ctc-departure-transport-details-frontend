@@ -184,7 +184,7 @@ transportMeans.departure.addVehicleCountryYesNo.error.required = Select yes if y
 
 transportMeans.departure.vehicleCountry.title = What country is this vehicle registered to?
 transportMeans.departure.vehicleCountry.heading = What country is this vehicle registered to?
-transportMeans.departure.vehicleCountry.hint = Enter the country or code, like AT or Austria.
+transportMeans.departure.vehicleCountry.hint = Enter the country or code, like Austria or AT.
 transportMeans.departure.vehicleCountry.placeholder = Select a nationality
 transportMeans.departure.vehicleCountry.change.hidden = registered country for the departure means of transport
 transportMeans.departure.vehicleCountry.checkYourAnswersLabel = Registered country
