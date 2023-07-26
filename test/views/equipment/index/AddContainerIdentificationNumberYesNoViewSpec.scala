@@ -37,6 +37,8 @@ class AddContainerIdentificationNumberYesNoViewSpec extends YesNoViewBehaviours 
 
   behave like pageWithHeading()
 
+  behave like pageWithContent("p", "This is a unique number used to identify the container.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")

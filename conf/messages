@@ -493,6 +493,7 @@ equipment.addTransportEquipmentYesNo.error.required = Select yes if you want to 
 
 equipment.index.addContainerIdentificationNumberYesNo.title = Do you want to add a container identification number?
 equipment.index.addContainerIdentificationNumberYesNo.heading = Do you want to add a container identification number?
+equipment.index.addContainerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
 equipment.index.addContainerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add a container identification number?
 equipment.index.addContainerIdentificationNumberYesNo.change.hidden = if you want to add an identification number
 equipment.index.addContainerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number
