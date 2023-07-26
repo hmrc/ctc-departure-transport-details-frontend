@@ -280,7 +280,7 @@ transportMeans.active.identificationNumber.withNoIDType.error.length.postTransit
 
 transportMeans.active.nationality.title = What country is this vehicle registered to?
 transportMeans.active.nationality.heading = What country is this vehicle registered to?
-transportMeans.active.nationality.hint = Enter the country or code, like AT or Austria.
+transportMeans.active.nationality.hint = Enter the country or code, like Austria or AT.
 transportMeans.active.nationality.label = What country is this vehicle registered to?
 transportMeans.active.nationality.placeholder = Select a nationality
 transportMeans.active.nationality.change.hidden = registered country for the border means of transport
