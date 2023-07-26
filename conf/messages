@@ -500,7 +500,7 @@ equipment.index.addContainerIdentificationNumberYesNo.error.required = Select ye
 
 equipment.index.containerIdentificationNumber.title = What is the container identification number?
 equipment.index.containerIdentificationNumber.heading = What is the container identification number?
-equipment.index.containerIdentificationNumber.hint = This can be up to 17 characters long and include both letters and numbers.
+equipment.index.containerIdentificationNumber.hint = This can be up to 17 characters long and include both letters and numbers, for example AABB3322110.
 equipment.index.containerIdentificationNumber.checkYourAnswersLabel = Container identification number
 equipment.index.containerIdentificationNumber.change.hidden = identification number
 equipment.index.containerIdentificationNumber.error.required = Enter the container identification number
