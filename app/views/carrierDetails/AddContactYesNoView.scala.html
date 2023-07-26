@@ -41,9 +41,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("carrierDetails.addContactYesNo.heading"),
-                caption = Some(messages("carrierDetails.caption"))
+                caption = Some(messages("carrierDetails.caption")),
+                additionalHtml = messages("carrierDetails.addContactYesNo.paragraph").toParagraph
             )
         )
 

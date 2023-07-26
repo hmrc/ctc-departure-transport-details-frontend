@@ -452,6 +452,7 @@ carrierDetails.identificationNumber.error.invalidCharacters = The EORI number or
 
 carrierDetails.addContactYesNo.title = Do you want to add a contact for the carrier?
 carrierDetails.addContactYesNo.heading = Do you want to add a contact for the carrier?
+carrierDetails.addContactYesNo.paragraph = This is additional contact information for if Customs have any queries.
 carrierDetails.addContactYesNo.checkYourAnswersLabel = Do you want to add a contact for the carrier?
 carrierDetails.addContactYesNo.change.hidden = if you want to add a contact for the carrier
 carrierDetails.addContactYesNo.error.required = Select yes if you want to add a contact for the carrier
