@@ -459,6 +459,7 @@ carrierDetails.addContactYesNo.error.required = Select yes if you want to add a 
 
 carrierDetails.contact.name.title = Who is the contact for the carrier?
 carrierDetails.contact.name.heading = Who is the contact for the carrier?
+carrierDetails.contact.name.hint = Enter the contact’s full name.
 carrierDetails.contact.name.checkYourAnswersLabel = Contact name
 carrierDetails.contact.name.change.hidden = carrier contact name
 carrierDetails.contact.name.error.required = Enter the name of the contact for the carrier
