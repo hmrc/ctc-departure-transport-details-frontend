@@ -37,6 +37,8 @@ class AddPaymentMethodYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
+  behave like pageWithContent("p", "These include charges for hauliers and carriers.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")

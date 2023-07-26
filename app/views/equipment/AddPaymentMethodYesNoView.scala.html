@@ -41,9 +41,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("equipment.addPaymentMethodYesNo.heading"),
-                caption = Some(messages("charges.caption"))
+                caption = Some(messages("charges.caption")),
+                additionalHtml = messages("equipment.addPaymentMethodYesNo.paragraph").toParagraph
             )
         )
 
