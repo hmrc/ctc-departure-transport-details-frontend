@@ -40,6 +40,7 @@ checkYourAnswers.transportCharges = Transport charges
 
 preRequisites.sameUcrYesNo.title = Do you want to use the same Unique Consignment Reference (UCR) for all items?
 preRequisites.sameUcrYesNo.heading = Do you want to use the same Unique Consignment Reference (UCR) for all items?
+preRequisites.sameUcrYesNo.paragraph = This is a unique reference number you create that Customs use to identify the consignment.
 preRequisites.sameUcrYesNo.checkYourAnswersLabel = Do you want to use the same Unique Consignment Reference (UCR) for all items?
 preRequisites.sameUcrYesNo.change.hidden = if you want to use the same Unique Consignment Reference (UCR) for all items
 preRequisites.sameUcrYesNo.error.required = Select yes if you want to use the same UCR for all items
