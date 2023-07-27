@@ -480,8 +480,8 @@ carrierDetails.contact.telephoneNumber.error.minLength = {0}’s phone number mu
 # Transport details - Transport equipment
 
 equipment.caption = Transport details - Transport equipment
-equipment.value.withContainer = Transport equipment {0} - container {1}
-equipment.value.withoutContainer = Transport equipment {0}
+equipment.value.withContainer = Container {0}
+equipment.value.withoutContainer = No container identification number
 charges.caption = Transport details - Transport charges
 
 equipment.addTransportEquipmentYesNo.title = Do you want to add any transport equipment?

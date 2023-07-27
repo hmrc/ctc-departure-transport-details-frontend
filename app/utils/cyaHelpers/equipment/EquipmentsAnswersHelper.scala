@@ -45,7 +45,7 @@ class EquipmentsAnswersHelper(
 
         buildListItem[EquipmentDomain](
           nameWhenComplete = _.asString,
-          nameWhenInProgress = Some(EquipmentDomain.asString(equipmentIndex, userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)))),
+          nameWhenInProgress = Some(EquipmentDomain.asString(userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)))),
           removeRoute = removeRoute
         )(EquipmentDomain.userAnswersReader(equipmentIndex))
     }

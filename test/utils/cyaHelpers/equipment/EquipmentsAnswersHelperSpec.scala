@@ -97,7 +97,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
                 val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
                 val helper      = new EquipmentsAnswersHelper(userAnswers, mode)
                 val result      = helper.listItems
-                result.head.left.value.name mustBe s"Transport equipment 1 - container $containerId"
+                result.head.left.value.name mustBe s"Container $containerId"
             }
           }
         }
@@ -109,7 +109,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
                 val userAnswers = emptyUserAnswers.setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
                 val helper      = new EquipmentsAnswersHelper(userAnswers, mode)
                 val result      = helper.listItems
-                result.head.left.value.name mustBe "Transport equipment 1"
+                result.head.left.value.name mustBe "No container identification number"
             }
           }
         }
