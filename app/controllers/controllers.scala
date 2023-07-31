@@ -65,10 +65,19 @@ package object controllers {
 
   implicit class SettableOpsRunner[A](userAnswersWriter: UserAnswersWriter[Write[A]]) {
 
+    def appendValue[B](subPage: QuestionPage[B], value: B)(implicit format: Format[B]): UserAnswersWriter[Write[A]] =
+      userAnswersWriter.flatMapF {
+        case (page, userAnswers) =>
+          userAnswers.set(subPage, value) match {
+            case Success(value)     => Right((page, value))
+            case Failure(exception) => Left(WriterError(page, Some(s"Failed to append value to answer: ${exception.getMessage}")))
+          }
+      }
+
     def appendTransportEquipmentUuidIfNotPresent(equipmentIndex: Index): UserAnswersWriter[Write[A]] =
       appendValueIfNotPresent(UuidPage(equipmentIndex), UUID.randomUUID())
 
-    def appendValueIfNotPresent[B](subPage: QuestionPage[B], value: B)(implicit format: Format[B]): UserAnswersWriter[Write[A]] =
+    private def appendValueIfNotPresent[B](subPage: QuestionPage[B], value: B)(implicit format: Format[B]): UserAnswersWriter[Write[A]] =
       userAnswersWriter.flatMapF {
         case (page, userAnswers) =>
           userAnswers.get(subPage) match {
