@@ -40,6 +40,7 @@ checkYourAnswers.transportCharges = Transport charges
 
 preRequisites.sameUcrYesNo.title = Do you want to use the same Unique Consignment Reference (UCR) for all items?
 preRequisites.sameUcrYesNo.heading = Do you want to use the same Unique Consignment Reference (UCR) for all items?
+preRequisites.sameUcrYesNo.paragraph = This is a unique reference number you create that Customs use to identify the consignment.
 preRequisites.sameUcrYesNo.checkYourAnswersLabel = Do you want to use the same Unique Consignment Reference (UCR) for all items?
 preRequisites.sameUcrYesNo.change.hidden = if you want to use the same Unique Consignment Reference (UCR) for all items
 preRequisites.sameUcrYesNo.error.required = Select yes if you want to use the same UCR for all items
@@ -72,22 +73,22 @@ preRequisites.countryOfDispatch.checkYourAnswersLabel = Country of dispatch
 preRequisites.countryOfDispatch.change.hidden = country of dispatch
 preRequisites.countryOfDispatch.placeholder = Select a country
 preRequisites.countryOfDispatch.error.required = Enter the country of dispatch
-preRequisites.countryOfDispatch.paragraph = This is the country the item was originally dispatched from. It might not be where the CTC transit movement begins.
+preRequisites.countryOfDispatch.paragraph = This is the country the item was originally dispatched from. It may not be where the transit movement begins.
 
 preRequisites.itemsDestinationCountry.title = What is the country of destination?
 preRequisites.itemsDestinationCountry.heading = What is the country of destination?
 preRequisites.itemsDestinationCountry.hint = Enter the country, like France or Portugal.
-preRequisites.itemsDestinationCountry.paragraph = This is where the goods complete their journey. It may not be the final CTC country of the transit route.
+preRequisites.itemsDestinationCountry.paragraph = This is where the goods complete their journey. It may not be where the transit movement ends.
 preRequisites.itemsDestinationCountry.checkYourAnswersLabel = Country of destination
 preRequisites.itemsDestinationCountry.change.hidden = country of destination
 preRequisites.itemsDestinationCountry.placeholder = Select a country
 preRequisites.itemsDestinationCountry.error.required = Enter the country of destination
 
-preRequisites.containerIndicator.title = Are you using any containers?
-preRequisites.containerIndicator.heading = Are you using any containers?
+preRequisites.containerIndicator.title = Are you using any shipping containers to transport the goods?
+preRequisites.containerIndicator.heading = Are you using any shipping containers to transport the goods?
 preRequisites.containerIndicator.checkYourAnswersLabel = Are you using any containers?
 preRequisites.containerIndicator.change.hidden = if you are using any containers
-preRequisites.containerIndicator.error.required = Select yes if you’re using any containers
+preRequisites.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
 
 # Transport details - Transport means
 
@@ -102,7 +103,7 @@ activeBorderMeansOfTransport.caption = Transport details - Border means of trans
 
 transportMeans.inlandMode.title = Which inland mode of transport are you using?
 transportMeans.inlandMode.heading = Which inland mode of transport are you using?
-transportMeans.inlandMode.paragraph = This is the type of transport used from the UK office of departure to a UK port or airport.
+transportMeans.inlandMode.paragraph = This is the mode of transport used from the UK office of departure to a UK port or airport.
 transportMeans.inlandMode.maritime = Maritime
 transportMeans.inlandMode.rail = Rail
 transportMeans.inlandMode.road = Road
@@ -183,7 +184,7 @@ transportMeans.departure.addVehicleCountryYesNo.error.required = Select yes if y
 
 transportMeans.departure.vehicleCountry.title = What country is this vehicle registered to?
 transportMeans.departure.vehicleCountry.heading = What country is this vehicle registered to?
-transportMeans.departure.vehicleCountry.hint = Enter the country or code, like AT or Austria.
+transportMeans.departure.vehicleCountry.hint = Enter the country or code, like Austria or AT.
 transportMeans.departure.vehicleCountry.placeholder = Select a nationality
 transportMeans.departure.vehicleCountry.change.hidden = registered country for the departure means of transport
 transportMeans.departure.vehicleCountry.checkYourAnswersLabel = Registered country
@@ -279,7 +280,7 @@ transportMeans.active.identificationNumber.withNoIDType.error.length.postTransit
 
 transportMeans.active.nationality.title = What country is this vehicle registered to?
 transportMeans.active.nationality.heading = What country is this vehicle registered to?
-transportMeans.active.nationality.hint = Enter the country or code, like AT or Austria.
+transportMeans.active.nationality.hint = Enter the country or code, like Austria or AT.
 transportMeans.active.nationality.label = What country is this vehicle registered to?
 transportMeans.active.nationality.placeholder = Select a nationality
 transportMeans.active.nationality.change.hidden = registered country for the border means of transport
@@ -406,6 +407,7 @@ authorisations.addAnotherAuthorisation.maxLimit.label = You cannot add any more 
 
 authorisations.addAuthorisationsYesNo.title = Do you want to add an authorisation?
 authorisations.addAuthorisationsYesNo.heading = Do you want to add an authorisation?
+authorisations.addAuthorisationsYesNo.paragraph = This authorises the holder to perform specific functions during the transit movement.
 authorisations.addAuthorisationsYesNo.checkYourAnswersLabel = Do you want to add an authorisation?
 authorisations.addAuthorisationsYesNo.change.hidden = if you want to add an authorisation
 authorisations.addAuthorisationsYesNo.error.required = Select yes if you want to add an authorisation
@@ -450,12 +452,14 @@ carrierDetails.identificationNumber.error.invalidCharacters = The EORI number or
 
 carrierDetails.addContactYesNo.title = Do you want to add a contact for the carrier?
 carrierDetails.addContactYesNo.heading = Do you want to add a contact for the carrier?
+carrierDetails.addContactYesNo.paragraph = This is additional contact information for if Customs have any queries.
 carrierDetails.addContactYesNo.checkYourAnswersLabel = Do you want to add a contact for the carrier?
 carrierDetails.addContactYesNo.change.hidden = if you want to add a contact for the carrier
 carrierDetails.addContactYesNo.error.required = Select yes if you want to add a contact for the carrier
 
 carrierDetails.contact.name.title = Who is the contact for the carrier?
 carrierDetails.contact.name.heading = Who is the contact for the carrier?
+carrierDetails.contact.name.hint = Enter the contact’s full name.
 carrierDetails.contact.name.checkYourAnswersLabel = Contact name
 carrierDetails.contact.name.change.hidden = carrier contact name
 carrierDetails.contact.name.error.required = Enter the name of the contact for the carrier
@@ -476,26 +480,27 @@ carrierDetails.contact.telephoneNumber.error.minLength = {0}’s phone number mu
 # Transport details - Transport equipment
 
 equipment.caption = Transport details - Transport equipment
-equipment.value.withContainer = Transport equipment {0} - container {1}
-equipment.value.withoutContainer = Transport equipment {0}
+equipment.value.withContainer = Container {0}
+equipment.value.withoutContainer = No container identification number
 charges.caption = Transport details - Transport charges
 
 equipment.addTransportEquipmentYesNo.title = Do you want to add any transport equipment?
 equipment.addTransportEquipmentYesNo.heading = Do you want to add any transport equipment?
-equipment.addTransportEquipmentYesNo.paragraph = This means anything used to transport goods in CTC transit. For example, a swap body, articulated lorry or trailer.
+equipment.addTransportEquipmentYesNo.paragraph = This means anything used to transport goods in transit. For example, a swap body, articulated lorry or trailer.
 equipment.addTransportEquipmentYesNo.checkYourAnswersLabel = Do you want to add any transport equipment?
 equipment.addTransportEquipmentYesNo.change.hidden = if you want to add any transport equipment
 equipment.addTransportEquipmentYesNo.error.required = Select yes if you want to add any transport equipment
 
 equipment.index.addContainerIdentificationNumberYesNo.title = Do you want to add a container identification number?
 equipment.index.addContainerIdentificationNumberYesNo.heading = Do you want to add a container identification number?
+equipment.index.addContainerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
 equipment.index.addContainerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add a container identification number?
 equipment.index.addContainerIdentificationNumberYesNo.change.hidden = if you want to add an identification number
 equipment.index.addContainerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number
 
 equipment.index.containerIdentificationNumber.title = What is the container identification number?
 equipment.index.containerIdentificationNumber.heading = What is the container identification number?
-equipment.index.containerIdentificationNumber.hint = This can be up to 17 characters long and include both letters and numbers.
+equipment.index.containerIdentificationNumber.hint = This can be up to 17 characters long and include both letters and numbers, for example AABB3322110.
 equipment.index.containerIdentificationNumber.checkYourAnswersLabel = Container identification number
 equipment.index.containerIdentificationNumber.change.hidden = identification number
 equipment.index.containerIdentificationNumber.error.required = Enter the container identification number
@@ -555,6 +560,7 @@ equipment.index.removeTransportEquipment.error.required = Select yes if you want
 
 equipment.addPaymentMethodYesNo.title = Do you want to add a method of payment for transport charges?
 equipment.addPaymentMethodYesNo.heading = Do you want to add a method of payment for transport charges?
+equipment.addPaymentMethodYesNo.paragraph = These include charges for hauliers and carriers.
 equipment.addPaymentMethodYesNo.checkYourAnswersLabel = Do you want to add a method of payment for transport charges?
 equipment.addPaymentMethodYesNo.change.hidden = if you want to add a method of payment for transport charges
 equipment.addPaymentMethodYesNo.error.required = Select yes if you want to add a method of payment for transport charges

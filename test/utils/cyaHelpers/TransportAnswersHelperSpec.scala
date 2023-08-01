@@ -748,7 +748,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val result = helper.equipment(index).get
 
               result.key.value mustBe "Transport equipment 1"
-              result.value.value mustBe "Transport equipment 1"
+              result.value.value mustBe "No container identification number"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -771,7 +771,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val result = helper.equipment(index).get
 
               result.key.value mustBe "Transport equipment 1"
-              result.value.value mustBe s"Transport equipment 1 - container ${equipment.containerId.get}"
+              result.value.value mustBe s"Container ${equipment.containerId.get}"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

@@ -29,7 +29,6 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.active._
-import pages.transportMeans.departure.AddVehicleCountryYesNoPage
 import viewModels.transportMeans.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 
 class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

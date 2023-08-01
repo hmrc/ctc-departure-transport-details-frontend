@@ -44,7 +44,7 @@ class ContainerIdentificationNumberViewSpec extends InputTextViewBehaviours[Stri
 
   behave like pageWithHeading()
 
-  behave like pageWithHint("This can be up to 17 characters long and include both letters and numbers.")
+  behave like pageWithHint("This can be up to 17 characters long and include both letters and numbers, for example AABB3322110.")
 
   behave like pageWithInputText(Some(InputSize.Width20))
 

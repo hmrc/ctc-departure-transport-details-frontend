@@ -46,7 +46,7 @@ class VehicleCountryViewSpec extends InputSelectViewBehaviours[Nationality] {
 
   behave like pageWithSelect()
 
-  behave like pageWithHint("Enter the country or code, like AT or Austria.")
+  behave like pageWithHint("Enter the country or code, like Austria or AT.")
 
   behave like pageWithSubmitButton("Save and continue")
 }
