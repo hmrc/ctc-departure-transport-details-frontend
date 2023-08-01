@@ -41,38 +41,38 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
   "Reference Data" - {
 
+    def countriesResponseJson(listName: String): String =
+      s"""
+         |{
+         |  "_links": {
+         |    "self": {
+         |      "href": "/customs-reference-data/lists/$listName"
+         |    }
+         |  },
+         |  "meta": {
+         |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+         |    "snapshotDate": "2023-01-01"
+         |  },
+         |  "id": "$listName",
+         |  "data": [
+         |    {
+         |      "activeFrom": "2023-01-23",
+         |      "code": "GB",
+         |      "state": "valid",
+         |      "description": "United Kingdom"
+         |    },
+         |    {
+         |      "activeFrom": "2023-01-23",
+         |      "code": "AD",
+         |      "state": "valid",
+         |      "description": "Andorra"
+         |    }
+         |  ]
+         |}
+         |""".stripMargin
+
     "getCountries" - {
       "must return Seq of Country when successful" in {
-        def countriesResponseJson(listName: String): String =
-          s"""
-             |{
-             |  "_links": {
-             |    "self": {
-             |      "href": "/customs-reference-data/lists/$listName"
-             |    }
-             |  },
-             |  "meta": {
-             |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-             |    "snapshotDate": "2023-01-01"
-             |  },
-             |  "id": "$listName",
-             |  "data": [
-             |    {
-             |      "activeFrom": "2023-01-23",
-             |      "code": "GB",
-             |      "state": "valid",
-             |      "description": "United Kingdom"
-             |    },
-             |    {
-             |      "activeFrom": "2023-01-23",
-             |      "code": "AD",
-             |      "state": "valid",
-             |      "description": "Andorra"
-             |    }
-             |  ]
-             |}
-             |""".stripMargin
-
         server.stubFor(
           get(urlEqualTo(s"/$baseUrl/lists/CountryCodesFullList"))
             .willReturn(okJson(countriesResponseJson("CountryCodesFullList")))
@@ -134,6 +134,26 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(s"/$baseUrl/lists/Nationality", connector.getNationalities())
+      }
+    }
+
+    "getCountryCodesCTC" - {
+      "must return Seq of Country when successful" in {
+        server.stubFor(
+          get(urlEqualTo(s"/$baseUrl/lists/CountryCodesCommonTransit"))
+            .willReturn(okJson(countriesResponseJson("CountryCodesCommonTransit")))
+        )
+
+        val expectedResult: Seq[Country] = Seq(
+          Country(CountryCode("GB"), "United Kingdom"),
+          Country(CountryCode("AD"), "Andorra")
+        )
+
+        connector.getCountryCodesCommonTransit().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(s"/$baseUrl/lists/CountryCodesCommonTransit", connector.getCountryCodesCommonTransit())
       }
     }
   }
