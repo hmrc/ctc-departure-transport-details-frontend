@@ -62,7 +62,7 @@ class TransportMeansActiveNavigatorSpec extends SpecBase with ScalaCheckProperty
           "and customs office of transit is present" - {
             "must redirect to active transport check your answers" in {
               val initialAnswers = emptyUserAnswers.setValue(OfficesOfTransitSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
-              forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, activeIndex)) {
+              forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, activeIndex)(mockPhaseConfig)) {
                 answers =>
                   navigator
                     .nextPage(answers)
@@ -73,7 +73,7 @@ class TransportMeansActiveNavigatorSpec extends SpecBase with ScalaCheckProperty
 
           "and customs office of transit is not present" - {
             "must redirect to transport means check your answers" in {
-              forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex)) {
+              forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex)(mockPhaseConfig)) {
                 answers =>
                   navigator
                     .nextPage(answers)
