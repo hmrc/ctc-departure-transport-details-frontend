@@ -18,8 +18,8 @@ package utils.cyaHelpers.transportMeans.active
 
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.transportMeans.active.routes
-import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
-import models.{Index, Mode, UserAnswers}
+import models.journeyDomain.transportMeans.TransportMeansActiveDomain
+import models.{Mode, UserAnswers}
 import pages.sections.transportMeans.TransportMeansActiveListSection
 import pages.transportMeans.active._
 import play.api.i18n.Messages
@@ -32,24 +32,20 @@ class ActiveBorderTransportsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(
   phaseConfig: PhaseConfig
 ) extends AnswersHelper(userAnswers, mode) {
 
-  // only used in post-transition (no multiplicity during transition period)
-  def listItems: Seq[Either[ListItem, ListItem]] = {
-    def nameWhenInProgress(index: Index): Option[String] =
-      (userAnswers.get(IdentificationPage(index)), userAnswers.get(IdentificationNumberPage(index))) match {
-        case (Some(identification), Some(identificationNumber)) => Some(s"${identification.asString} - $identificationNumber")
-        case (Some(identification), None)                       => Some(identification.asString)
-        case (None, Some(identificationNumber))                 => Some(identificationNumber)
-        case _                                                  => None
-      }
-
+  def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(TransportMeansActiveListSection) {
       index =>
-        buildListItem[PostTransitionTransportMeansActiveDomain](
+        buildListItem[TransportMeansActiveDomain](
           nameWhenComplete = _.asString,
-          nameWhenInProgress = nameWhenInProgress(index),
+          nameWhenInProgress = (userAnswers.get(IdentificationPage(index)), userAnswers.get(IdentificationNumberPage(index))) match {
+            case (Some(identification), Some(identificationNumber)) =>
+              Some(TransportMeansActiveDomain.asString(identification, identificationNumber))
+            case (Some(identification), None)       => Some(identification.asString)
+            case (None, Some(identificationNumber)) => Some(identificationNumber)
+            case _                                  => None
+          },
           removeRoute = Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(lrn, mode, index))
-        )(PostTransitionTransportMeansActiveDomain.userAnswersReader(index))
+        )(TransportMeansActiveDomain.userAnswersReader(index))
     }
-  }
 
 }

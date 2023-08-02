@@ -22,117 +22,68 @@ import controllers.transportMeans.routes
 import models.SecurityDetailsType.NoSecurityDetails
 import models.domain._
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.BorderModeOfTransport.ChannelTunnel
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import models.{Mode, Phase, UserAnswers}
-import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
+import pages.external.SecurityDetailsTypePage
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans._
 import play.api.mvc.Call
 
-sealed trait TransportMeansDomain extends JourneyDomainModel {
+case class TransportMeansDomain(
+  transportMeansDeparture: Option[TransportMeansDepartureDomain],
+  borderModeOfTransport: Option[BorderModeOfTransport],
+  transportMeansActiveList: Option[TransportMeansActiveListDomain]
+) extends JourneyDomainModel {
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Option(routes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
-
 }
 
 object TransportMeansDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansDomain] =
+    InlandModePage.reader.flatMap {
+      case InlandMode.Mail =>
+        UserAnswersReader(TransportMeansDomain(None, None, None))
+      case _ =>
+        (
+          transportMeansDepartureReader,
+          borderModeOfTransportReader,
+          transportMeansActiveReader
+        ).tupled.map((TransportMeansDomain.apply _).tupled)
+    }
+
+  def transportMeansDepartureReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[Option[TransportMeansDepartureDomain]] =
     phaseConfig.phase match {
       case Phase.Transition =>
-        TransitionTransportMeansDomain.userAnswersReader.widen[TransportMeansDomain]
+        ContainerIndicatorPage.reader.flatMap {
+          case true =>
+            AddDepartureTransportMeansYesNoPage.filterOptionalDependent(identity) {
+              UserAnswersReader[TransitionTransportMeansDepartureDomain].widen[TransportMeansDepartureDomain]
+            }
+          case false =>
+            UserAnswersReader[TransitionTransportMeansDepartureDomain].widen[TransportMeansDepartureDomain].map(Some(_))
+        }
       case Phase.PostTransition =>
-        PostTransitionTransportMeansDomain.userAnswersReader.widen[TransportMeansDomain]
+        UserAnswersReader[PostTransitionTransportMeansDepartureDomain].map(Some(_))
     }
 
-}
-
-case class TransitionTransportMeansDomain(
-  transportMeansDeparture: Option[TransportMeansDepartureDomain],
-  borderModeOfTransport: Option[BorderModeOfTransport],
-  transportMeansActiveList: Option[TransportMeansActiveListDomain]
-) extends TransportMeansDomain
-
-object TransitionTransportMeansDomain {
-
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransitionTransportMeansDomain] = {
-
-    lazy val transportMeansDepartureReader: UserAnswersReader[Option[TransportMeansDepartureDomain]] =
-      ContainerIndicatorPage.reader.flatMap {
-        case true =>
-          AddDepartureTransportMeansYesNoPage.filterOptionalDependent(identity) {
-            TransportMeansDepartureDomain.userAnswersReader
-          }
-        case false =>
-          TransportMeansDepartureDomain.userAnswersReader.map(Some(_))
-      }
-
-    lazy val borderModeOfTransportReader: UserAnswersReader[Option[BorderModeOfTransport]] = {
-      lazy val optionalReader: UserAnswersReader[Option[BorderModeOfTransport]] = AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity) {
-        BorderModeOfTransportPage.reader
-      }
-
-      OfficeOfDepartureInCL010Page.reader.flatMap {
-        case true =>
-          optionalReader
-        case false =>
-          SecurityDetailsTypePage.reader flatMap {
-            case NoSecurityDetails => optionalReader
-            case _                 => BorderModeOfTransportPage.reader.map(Some(_))
-          }
-      }
+  // additional declaration type is part of pre-lodge so for time being always set to 'A'
+  implicit val borderModeOfTransportReader: UserAnswersReader[Option[BorderModeOfTransport]] =
+    SecurityDetailsTypePage.reader.flatMap {
+      case NoSecurityDetails =>
+        AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity)(BorderModeOfTransportPage.reader)
+      case _ =>
+        BorderModeOfTransportPage.reader.map(Some(_))
     }
 
-    lazy val transportMeansActiveReader: UserAnswersReader[Option[TransportMeansActiveListDomain]] =
-      BorderModeOfTransportPage.optionalReader.flatMap {
-        case Some(borderModeOfTransport) if borderModeOfTransport != ChannelTunnel =>
-          UserAnswersReader[TransportMeansActiveListDomain].map(Some(_))
-        case _ =>
-          AddActiveBorderTransportMeansYesNoPage.filterOptionalDependent(identity) {
-            UserAnswersReader[TransportMeansActiveListDomain]
-          }
-      }
-
-    (
-      transportMeansDepartureReader,
-      borderModeOfTransportReader,
-      transportMeansActiveReader
-    ).tupled.map((TransitionTransportMeansDomain.apply _).tupled)
-  }
-}
-
-case class PostTransitionTransportMeansDomain(
-  transportMeansDeparture: TransportMeansDepartureDomain,
-  borderModeOfTransport: Option[BorderModeOfTransport],
-  transportMeansActiveList: Option[TransportMeansActiveListDomain]
-) extends TransportMeansDomain
-
-object PostTransitionTransportMeansDomain {
-
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[PostTransitionTransportMeansDomain] = {
-
-    lazy val borderModeOfTransportReader: UserAnswersReader[Option[BorderModeOfTransport]] =
-      SecurityDetailsTypePage.reader flatMap {
-        case NoSecurityDetails => AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity)(BorderModeOfTransportPage.reader)
-        case _                 => BorderModeOfTransportPage.reader.map(Some(_))
-      }
-
-    lazy val transportMeansActiveReader: UserAnswersReader[Option[TransportMeansActiveListDomain]] =
-      SecurityDetailsTypePage.reader.flatMap {
-        case NoSecurityDetails =>
-          AddActiveBorderTransportMeansYesNoPage.filterOptionalDependent(identity) {
-            UserAnswersReader[TransportMeansActiveListDomain]
-          }
-        case _ =>
-          UserAnswersReader[TransportMeansActiveListDomain].map(Some(_))
-      }
-
-    (
-      TransportMeansDepartureDomain.userAnswersReader,
-      borderModeOfTransportReader,
-      transportMeansActiveReader
-    ).tupled.map((PostTransitionTransportMeansDomain.apply _).tupled)
-  }
+  implicit val transportMeansActiveReader: UserAnswersReader[Option[TransportMeansActiveListDomain]] =
+    SecurityDetailsTypePage.reader.flatMap {
+      case NoSecurityDetails =>
+        AddActiveBorderTransportMeansYesNoPage.filterOptionalDependent(identity) {
+          UserAnswersReader[TransportMeansActiveListDomain]
+        }
+      case _ =>
+        UserAnswersReader[TransportMeansActiveListDomain].map(Some(_))
+    }
 }

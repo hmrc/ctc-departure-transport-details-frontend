@@ -18,7 +18,7 @@ package utils.cyaHelpers.transportMeans
 
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.transportMeans.active.routes
-import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
+import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.reference.Nationality
 import models.transportMeans.departure.Identification
 import models.transportMeans.{BorderModeOfTransport, InlandMode}
@@ -41,13 +41,12 @@ class TransportMeansCheckYourAnswersHelper(
   def activeBorderTransportsMeans: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(TransportMeansActiveListSection)(activeBorderTransportMeans)
 
-  // only used in post-transition (no multiplicity during transition period)
-  def activeBorderTransportMeans(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[PostTransitionTransportMeansActiveDomain](
+  def activeBorderTransportMeans(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[TransportMeansActiveDomain](
     formatAnswer = _.asString.toText,
     prefix = "transportMeans.active",
     id = Some(s"change-active-border-transport-means-${index.display}"),
     args = index.display
-  )(PostTransitionTransportMeansActiveDomain.userAnswersReader(index))
+  )(TransportMeansActiveDomain.userAnswersReader(index))
 
   def addOrRemoveActiveBorderTransportsMeans(): Option[Link] = buildLink(TransportMeansActiveListSection) {
     Link(
