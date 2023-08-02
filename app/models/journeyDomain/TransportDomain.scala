@@ -24,18 +24,16 @@ import models.journeyDomain.carrierDetails.CarrierDetailsDomain
 import models.journeyDomain.equipment.EquipmentsAndChargesDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
-import models.transportMeans.InlandMode.Mail
 import models.{Mode, Phase, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.ApprovedOperatorPage
 import pages.supplyChainActors.SupplyChainActorYesNoPage
-import pages.transportMeans.InlandModePage
 import play.api.mvc.Call
 
 case class TransportDomain(
   preRequisites: PreRequisitesDomain,
-  transportMeans: Option[TransportMeansDomain],
+  transportMeans: TransportMeansDomain,
   supplyChainActors: Option[SupplyChainActorsDomain],
   authorisationsAndLimit: Option[AuthorisationsAndLimitDomain],
   carrierDetails: Option[CarrierDetailsDomain],
@@ -58,7 +56,7 @@ object TransportDomain {
 
     for {
       preRequisites          <- UserAnswersReader[PreRequisitesDomain]
-      transportMeans         <- InlandModePage.filterOptionalDependent(_ != Mail)(UserAnswersReader[TransportMeansDomain])
+      transportMeans         <- UserAnswersReader[TransportMeansDomain]
       supplyChainActors      <- SupplyChainActorYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[SupplyChainActorsDomain])
       authorisationsAndLimit <- authorisationsAndLimitReads
       carrierDetails         <- CarrierDetailYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[CarrierDetailsDomain])

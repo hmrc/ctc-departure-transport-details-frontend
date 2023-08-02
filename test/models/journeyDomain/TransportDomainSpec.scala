@@ -20,39 +20,16 @@ import base.SpecBase
 import generators.Generators
 import models.DeclarationType
 import models.domain.{EitherType, UserAnswersReader}
-import models.transportMeans.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.{ApprovedOperatorPage, DeclarationTypePage}
 import pages.supplyChainActors.SupplyChainActorYesNoPage
-import pages.transportMeans.InlandModePage
 
 class TransportDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
   "can be parsed from user answers" - {
-
-    "when Mail inland mode" in {
-      val initialUserAnswers = emptyUserAnswers.setValue(InlandModePage, InlandMode.Mail)
-      forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-        userAnswers =>
-          val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-          result.value.transportMeans must not be defined
-      }
-    }
-
-    "when non-Mail inland mode" in {
-      forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode)) {
-        inlandMode =>
-          val initialUserAnswers = emptyUserAnswers.setValue(InlandModePage, inlandMode)
-          forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-            userAnswers =>
-              val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-              result.value.transportMeans must be(defined)
-          }
-      }
-    }
 
     "when reduced data set indicator is true" in {
       forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
