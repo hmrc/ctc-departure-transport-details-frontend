@@ -41,11 +41,12 @@ trait UserAnswersEntryGenerators {
   private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.external._
     {
-      case ApprovedOperatorPage    => arbitrary[Boolean].map(JsBoolean)
-      case DeclarationTypePage     => arbitrary[DeclarationType].map(Json.toJson(_))
-      case OfficeOfDestinationPage => arbitrary[CustomsOffice].map(Json.toJson(_))
-      case ProcedureTypePage       => arbitrary[ProcedureType].map(Json.toJson(_))
-      case SecurityDetailsTypePage => arbitrary[SecurityDetailsType].map(Json.toJson(_))
+      case ApprovedOperatorPage         => arbitrary[Boolean].map(JsBoolean)
+      case DeclarationTypePage          => arbitrary[DeclarationType].map(Json.toJson(_))
+      case OfficeOfDestinationPage      => arbitrary[CustomsOffice].map(Json.toJson(_))
+      case OfficeOfDepartureInCL010Page => arbitrary[Boolean].map(JsBoolean)
+      case ProcedureTypePage            => arbitrary[ProcedureType].map(Json.toJson(_))
+      case SecurityDetailsTypePage      => arbitrary[SecurityDetailsType].map(Json.toJson(_))
     }
   }
 

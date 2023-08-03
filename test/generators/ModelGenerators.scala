@@ -18,7 +18,7 @@ package generators
 
 import models._
 import models.reference._
-import models.transportMeans.InlandMode
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import models.transportMeans.InlandMode.{Mail, Rail}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -88,9 +88,23 @@ trait ModelGenerators {
       Gen.oneOf(SecurityDetailsType.values)
     }
 
-  implicit lazy val arbitraryBorderModeOfTransport: Arbitrary[models.transportMeans.BorderModeOfTransport] =
+  implicit lazy val arbitraryBorderModeOfTransport: Arbitrary[BorderModeOfTransport] =
     Arbitrary {
-      Gen.oneOf(models.transportMeans.BorderModeOfTransport.values)
+      Gen.oneOf(BorderModeOfTransport.values)
+    }
+
+  implicit lazy val arbitraryOptionalNonAirBorderModeOfTransport: Arbitrary[Option[BorderModeOfTransport]] =
+    Arbitrary {
+      Gen.option {
+        Gen.oneOf(BorderModeOfTransport.values.filterNot(_ == BorderModeOfTransport.Air))
+      }
+    }
+
+  lazy val arbitraryOptionalNonRailBorderModeOfTransport: Arbitrary[Option[BorderModeOfTransport]] =
+    Arbitrary {
+      Gen.option {
+        Gen.oneOf(BorderModeOfTransport.values.filterNot(_ == BorderModeOfTransport.ChannelTunnel))
+      }
     }
 
   implicit lazy val arbitraryCountry: Arbitrary[Country] =

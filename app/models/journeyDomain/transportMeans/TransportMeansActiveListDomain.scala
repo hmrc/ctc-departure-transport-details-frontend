@@ -17,6 +17,7 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
+import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
@@ -34,7 +35,7 @@ case class TransportMeansActiveListDomain(
 
 object TransportMeansActiveListDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[TransportMeansActiveListDomain] = {
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansActiveListDomain] = {
 
     val activeListReader: UserAnswersReader[Seq[TransportMeansActiveDomain]] =
       TransportMeansActiveListSection.arrayReader.flatMap {

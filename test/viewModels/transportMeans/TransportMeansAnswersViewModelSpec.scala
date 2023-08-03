@@ -135,7 +135,7 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
               (mode, amount) =>
                 val userAnswersGen = (0 until amount).foldLeft(Gen.const(initialAnswers)) {
                   (acc, i) =>
-                    acc.flatMap(arbitraryTransportMeansActiveAnswers(_, Index(i)))
+                    acc.flatMap(arbitraryTransportMeansActiveAnswers(_, Index(i))(mockPhaseConfig))
                 }
                 forAll(userAnswersGen) {
                   userAnswers =>
