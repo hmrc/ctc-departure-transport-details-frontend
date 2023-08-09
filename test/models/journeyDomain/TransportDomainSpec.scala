@@ -20,32 +20,52 @@ import base.SpecBase
 import generators.Generators
 import models.DeclarationType
 import models.domain.{EitherType, UserAnswersReader}
-import models.transportMeans.InlandMode
+import models.transportMeans.{InlandMode, InlandModeYesNo}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.{ApprovedOperatorPage, DeclarationTypePage}
 import pages.supplyChainActors.SupplyChainActorYesNoPage
-import pages.transportMeans.InlandModePage
+import pages.transportMeans.{AddInlandModeYesNoPage, InlandModePage}
 
 class TransportDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
   "can be parsed from user answers" - {
 
-    "when Mail inland mode" in {
-      val initialUserAnswers = emptyUserAnswers.setValue(InlandModePage, InlandMode.Mail)
-      forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-        userAnswers =>
-          val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-          result.value.transportMeans must not be defined
+    "when addInlandMode is answered yes" - {
+      "when Mail inland mode" in {
+        val initialUserAnswers = emptyUserAnswers
+          .setValue(AddInlandModeYesNoPage, InlandModeYesNo.Yes)
+          .setValue(InlandModePage, InlandMode.Mail)
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+          userAnswers =>
+            val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+            result.value.transportMeans must not be defined
+        }
+      }
+
+      "when non-Mail inland mode" in {
+        forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode)) {
+          inlandMode =>
+            val initialUserAnswers = emptyUserAnswers
+              .setValue(AddInlandModeYesNoPage, InlandModeYesNo.Yes)
+              .setValue(InlandModePage, inlandMode)
+            forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+              userAnswers =>
+                val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+                result.value.transportMeans must be(defined)
+            }
+        }
       }
     }
 
-    "when non-Mail inland mode" in {
-      forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode)) {
-        inlandMode =>
-          val initialUserAnswers = emptyUserAnswers.setValue(InlandModePage, inlandMode)
+    "when addInlandMode is answered no" in {
+
+      forAll(Gen.oneOf(InlandModeYesNo.values).filter(_ == InlandModeYesNo.No)) {
+        noInlandMode =>
+          val initialUserAnswers = emptyUserAnswers.setValue(AddInlandModeYesNoPage, noInlandMode)
           forAll(arbitraryTransportAnswers(initialUserAnswers)) {
             userAnswers =>
               val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
