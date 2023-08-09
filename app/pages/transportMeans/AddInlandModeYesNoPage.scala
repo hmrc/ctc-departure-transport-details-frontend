@@ -34,7 +34,7 @@ case object AddInlandModeYesNoPage extends QuestionPage[InlandModeYesNo] {
   override def toString: String = "addInlandModeYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddActiveBorderTransportMeansYesNoController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.AddInlandModeYesNoController.onPageLoad(userAnswers.lrn, mode))
 
   override def cleanup(value: Option[InlandModeYesNo], userAnswers: UserAnswers): Try[UserAnswers] = value match {
     case Some(No) => userAnswers.remove(InlandModePage)

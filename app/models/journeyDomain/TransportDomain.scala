@@ -36,6 +36,7 @@ import play.api.mvc.Call
 
 case class TransportDomain(
   preRequisites: PreRequisitesDomain,
+  inlandModeYesNo: InlandModeYesNo,
   transportMeans: Option[TransportMeansDomain],
   supplyChainActors: Option[SupplyChainActorsDomain],
   authorisationsAndLimit: Option[AuthorisationsAndLimitDomain],
@@ -57,7 +58,7 @@ object TransportDomain {
         case false => AddAuthorisationsYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[AuthorisationsAndLimitDomain])
       }
 
-    implicit lazy val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] =
+    implicit val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] =
       AddInlandModeYesNoPage.reader.flatMap {
         case InlandModeYesNo.Yes => InlandModePage.filterOptionalDependent(_ != Mail)(UserAnswersReader[TransportMeansDomain])
         case _                   => UserAnswersReader[TransportMeansDomain].map(Some(_))
@@ -65,6 +66,7 @@ object TransportDomain {
 
     for {
       preRequisites          <- UserAnswersReader[PreRequisitesDomain]
+      inlandModeYesNo        <- AddInlandModeYesNoPage.reader
       transportMeans         <- transportMeansReads
       supplyChainActors      <- SupplyChainActorYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[SupplyChainActorsDomain])
       authorisationsAndLimit <- authorisationsAndLimitReads
@@ -72,6 +74,7 @@ object TransportDomain {
       equipmentsAndCharges   <- UserAnswersReader[EquipmentsAndChargesDomain]
     } yield TransportDomain(
       preRequisites,
+      inlandModeYesNo,
       transportMeans,
       supplyChainActors,
       authorisationsAndLimit,
