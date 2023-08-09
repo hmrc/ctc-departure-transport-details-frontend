@@ -43,10 +43,9 @@
 
         @inputRadio(
             field = form("value"),
-            radioType = RadioWithAdditionalHtml(
+            radioType = Radio(
                 heading = messages("transportMeans.inlandMode.heading"),
-                caption = Some(messages("inlandMode.caption")),
-                additionalHtml = messages("transportMeans.inlandMode.paragraph").toParagraph
+                caption = Some(messages("inlandMode.caption"))
             ),
             radioItems = fieldId => inlandModes.toRadioItems(fieldId, form.value)
         )

@@ -47,8 +47,6 @@ class InlandModeViewSpec extends RadioViewBehaviours[InlandMode] {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "This is the mode of transport used from the UK office of departure to a UK port or airport.")
-
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")

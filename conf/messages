@@ -111,7 +111,6 @@ transportMeans.addInlandModeYesNo.error.required = Select yes if you want to add
 
 transportMeans.inlandMode.title = Which inland mode of transport are you using?
 transportMeans.inlandMode.heading = Which inland mode of transport are you using?
-transportMeans.inlandMode.paragraph = This is the mode of transport used from the UK office of departure to a UK port or airport.
 transportMeans.inlandMode.maritime = Maritime
 transportMeans.inlandMode.rail = Rail
 transportMeans.inlandMode.road = Road

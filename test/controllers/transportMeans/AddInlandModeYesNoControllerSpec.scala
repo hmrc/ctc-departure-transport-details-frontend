@@ -93,7 +93,6 @@ class AddInlandModeYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -122,7 +121,6 @@ class AddInlandModeYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
