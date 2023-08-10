@@ -18,7 +18,7 @@ package models.authorisations
 
 import models.ProcedureType.Simplified
 import models.domain.GettableAsReaderOps
-import models.transportMeans.InlandMode.{Air, Maritime, Rail}
+import models.transportMeans.InlandMode._
 import models.{EnumerableType, Index, Radioable, UserAnswers, WithName}
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
 import pages.transportMeans.InlandModePage
@@ -56,14 +56,14 @@ object AuthorisationType extends EnumerableType[AuthorisationType] {
       reducedDataSetIndicator <- ApprovedOperatorPage.inferredReader
       inlandMode              <- InlandModePage.reader
     } yield (reducedDataSetIndicator, inlandMode, procedureType) match {
-      case (true, Maritime | Rail | Air, _) => Seq(TRD)
-      case (true, _, Simplified)            => Seq(ACR)
-      case _                                => values
+      case (true, Maritime | Rail | Air, _)                   => Seq(TRD)
+      case (true, Road | Fixed | Mail | Waterway, Simplified) => Seq(ACR)
+      case (false, Maritime | Rail | Air, Simplified)         => Seq(ACR)
+      case _                                                  => values
     }
     reader.run(userAnswers).getOrElse(values)
   }
 
   def values(userAnswers: UserAnswers, index: Index): Seq[AuthorisationType] =
     if (index.isFirst) values(userAnswers) else values
-
 }

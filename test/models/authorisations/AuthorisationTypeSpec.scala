@@ -18,6 +18,7 @@ package models.authorisations
 
 import base.SpecBase
 import generators.Generators
+import models.ProcedureType.Simplified
 import models.transportMeans.InlandMode
 import models.{DeclarationType, Index, ProcedureType}
 import org.scalacheck.Arbitrary.arbitrary
@@ -64,6 +65,29 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with 
     "values" - {
       "when first index" - {
         val index = Index(0)
+        "when not a reduced data set, is simplified and is Maritime/Rail/Air inland mode" - {
+          "must infer answers as ACR" in {
+            val declarationTypeGen = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)
+
+            val inlandModeGen = Gen.oneOf(
+              InlandMode.Maritime,
+              InlandMode.Rail,
+              InlandMode.Air
+            )
+
+            forAll(declarationTypeGen, inlandModeGen) {
+              (declarationType, inlandMode) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(ProcedureTypePage, Simplified)
+                  .setValue(DeclarationTypePage, declarationType)
+                  .setValue(ApprovedOperatorPage, false)
+                  .setValue(InlandModePage, inlandMode)
+
+                AuthorisationType.values(userAnswers, index) mustBe Seq(AuthorisationType.ACR)
+            }
+          }
+        }
+
         "when reduced data set, maritime/rail/air inland mode" - {
           "must infer answer as TRD" in {
             val declarationTypeGen = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)
@@ -112,8 +136,16 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with 
         }
 
         "when TIR" - {
-          "must not infer answer" in {
-            forAll(arbitrary[ProcedureType], arbitrary[InlandMode]) {
+          "must not infer answer if inlandMode is Road/Fixed/Mail/Waterway" in {
+
+            val inlandModeGen = Gen.oneOf(
+              InlandMode.Road,
+              InlandMode.Mail,
+              InlandMode.Fixed,
+              InlandMode.Waterway
+            )
+
+            forAll(arbitrary[ProcedureType], inlandModeGen) {
               (procedureType, inlandMode) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(ProcedureTypePage, procedureType)
@@ -123,13 +155,39 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with 
                 AuthorisationType.values(userAnswers, index) mustBe AuthorisationType.values
             }
           }
+
+          "must infer answer if inlandMode is Maritime/Air/Rail and procedure type is simplified" in {
+
+            val inlandModeGen = Gen.oneOf(
+              InlandMode.Maritime,
+              InlandMode.Air,
+              InlandMode.Rail
+            )
+
+            forAll(inlandModeGen) {
+              inlandMode =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(ProcedureTypePage, Simplified)
+                  .setValue(DeclarationTypePage, DeclarationType.Option4)
+                  .setValue(InlandModePage, inlandMode)
+
+                AuthorisationType.values(userAnswers, index) mustBe Seq(AuthorisationType.ACR)
+            }
+          }
         }
 
         "when not using a reduced data set" - {
-          "must not infer answer" in {
+          "must not infer answer if inlandMode is Road/Fixed/Mail/Waterway" in {
             val declarationTypeGen = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)
 
-            forAll(arbitrary[ProcedureType], declarationTypeGen, arbitrary[InlandMode]) {
+            val inlandModeGen = Gen.oneOf(
+              InlandMode.Road,
+              InlandMode.Mail,
+              InlandMode.Fixed,
+              InlandMode.Waterway
+            )
+
+            forAll(arbitrary[ProcedureType], declarationTypeGen, inlandModeGen) {
               (procedureType, declarationType, inlandMode) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(ProcedureTypePage, procedureType)
