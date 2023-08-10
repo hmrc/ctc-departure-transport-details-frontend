@@ -19,13 +19,14 @@ package models.journeyDomain
 import base.SpecBase
 import generators.Generators
 import models.DeclarationType
+import models.ProcedureType.{Normal, Simplified}
 import models.domain.{EitherType, UserAnswersReader}
 import models.transportMeans.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.carrierDetails.CarrierDetailYesNoPage
-import pages.external.{ApprovedOperatorPage, DeclarationTypePage}
+import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
 import pages.supplyChainActors.SupplyChainActorYesNoPage
 import pages.transportMeans.InlandModePage
 
@@ -69,10 +70,11 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
       }
     }
 
-    "when reduced data set indicator is undefined" - {
+    "when procedure type is Normal and reduced data set indicator is undefined" - {
       "and not adding authorisations" in {
         val initialUserAnswers = emptyUserAnswers
           .setValue(DeclarationTypePage, DeclarationType.Option4)
+          .setValue(ProcedureTypePage, Normal)
           .setValue(AddAuthorisationsYesNoPage, false)
 
         forAll(arbitraryTransportAnswers(initialUserAnswers)) {
@@ -95,13 +97,14 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
       }
     }
 
-    "when reduced data set indicator is false" - {
+    "when reduced data set indicator is false and procedure type is Normal" - {
       "and not adding authorisations" in {
         forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
           declarationType =>
             val initialUserAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
               .setValue(ApprovedOperatorPage, false)
+              .setValue(ProcedureTypePage, Normal)
               .setValue(AddAuthorisationsYesNoPage, false)
 
             forAll(arbitraryTransportAnswers(initialUserAnswers)) {
@@ -118,6 +121,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
             val initialUserAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
               .setValue(ApprovedOperatorPage, false)
+              .setValue(ProcedureTypePage, Normal)
               .setValue(AddAuthorisationsYesNoPage, true)
 
             forAll(arbitraryTransportAnswers(initialUserAnswers)) {
@@ -126,6 +130,38 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 result.value.authorisationsAndLimit must be(defined)
             }
         }
+      }
+    }
+
+    "when reduced data set indicator is false and procedure type is Simplified" - {
+      forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+        declarationType =>
+          val initialUserAnswers = emptyUserAnswers
+            .setValue(DeclarationTypePage, declarationType)
+            .setValue(ApprovedOperatorPage, false)
+            .setValue(ProcedureTypePage, Simplified)
+
+          forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+            userAnswers =>
+              val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+              result.value.authorisationsAndLimit must be(defined)
+          }
+      }
+    }
+
+    "when reduced data set indicator is true and procedure type is Normal" in {
+      forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+        declarationType =>
+          val initialUserAnswers = emptyUserAnswers
+            .setValue(DeclarationTypePage, declarationType)
+            .setValue(ApprovedOperatorPage, true)
+            .setValue(ProcedureTypePage, Normal)
+
+          forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+            userAnswers =>
+              val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+              result.value.authorisationsAndLimit must be(defined)
+          }
       }
     }
 
