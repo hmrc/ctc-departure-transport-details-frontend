@@ -79,8 +79,8 @@ object TransitionTransportMeansDepartureDomain {
       }
 
     val nationalityReader: UserAnswersReader[Option[Nationality]] =
-      InlandModePage.reader.flatMap {
-        case InlandMode.Rail =>
+      InlandModePage.optionalReader.flatMap {
+        case Some(InlandMode.Rail) =>
           none[Nationality].pure[UserAnswersReader]
         case _ =>
           ContainerIndicatorPage.reader.flatMap {

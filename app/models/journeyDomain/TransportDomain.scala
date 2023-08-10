@@ -25,7 +25,8 @@ import models.journeyDomain.equipment.EquipmentsAndChargesDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
 import models.transportMeans.InlandMode.Mail
-import models.transportMeans.InlandModeYesNo
+import models.transportMeans.{InlandMode, InlandModeYesNo}
+import models.transportMeans.InlandModeYesNo._
 import models.{Mode, Phase, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.carrierDetails.CarrierDetailYesNoPage
@@ -36,7 +37,7 @@ import play.api.mvc.Call
 
 case class TransportDomain(
   preRequisites: PreRequisitesDomain,
-  inlandModeYesNo: InlandModeYesNo,
+  inlandMode: Option[InlandMode],
   transportMeans: Option[TransportMeansDomain],
   supplyChainActors: Option[SupplyChainActorsDomain],
   authorisationsAndLimit: Option[AuthorisationsAndLimitDomain],
@@ -58,15 +59,15 @@ object TransportDomain {
         case false => AddAuthorisationsYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[AuthorisationsAndLimitDomain])
       }
 
-    implicit val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] =
-      AddInlandModeYesNoPage.reader.flatMap {
-        case InlandModeYesNo.Yes => InlandModePage.filterOptionalDependent(_ != Mail)(UserAnswersReader[TransportMeansDomain])
-        case _                   => UserAnswersReader[TransportMeansDomain].map(Some(_))
+    implicit lazy val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] =
+      InlandModePage.optionalReader.flatMap {
+        case Some(Mail) => none[TransportMeansDomain].pure[UserAnswersReader]
+        case _          => UserAnswersReader[TransportMeansDomain].map(Some(_))
       }
 
     for {
       preRequisites          <- UserAnswersReader[PreRequisitesDomain]
-      inlandModeYesNo        <- AddInlandModeYesNoPage.reader
+      inlandMode             <- AddInlandModeYesNoPage.filterOptionalDependent(_ == Yes)(InlandModePage.reader)
       transportMeans         <- transportMeansReads
       supplyChainActors      <- SupplyChainActorYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[SupplyChainActorsDomain])
       authorisationsAndLimit <- authorisationsAndLimitReads
@@ -74,7 +75,7 @@ object TransportDomain {
       equipmentsAndCharges   <- UserAnswersReader[EquipmentsAndChargesDomain]
     } yield TransportDomain(
       preRequisites,
-      inlandModeYesNo,
+      inlandMode,
       transportMeans,
       supplyChainActors,
       authorisationsAndLimit,
