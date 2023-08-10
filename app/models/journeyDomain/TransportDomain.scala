@@ -24,8 +24,8 @@ import models.journeyDomain.carrierDetails.CarrierDetailsDomain
 import models.journeyDomain.equipment.EquipmentsAndChargesDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
+import models.transportMeans.InlandMode
 import models.transportMeans.InlandMode.Mail
-import models.transportMeans.{InlandMode, InlandModeYesNo}
 import models.transportMeans.InlandModeYesNo._
 import models.{Mode, Phase, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
