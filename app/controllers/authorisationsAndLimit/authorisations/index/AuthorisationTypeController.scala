@@ -84,3 +84,10 @@ class AuthorisationTypeController @Inject() (
     page(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
   }
 }
+
+// If RDI is 1 and Inland mode is 1,2 or 4, then Infer Index 0 as C524
+//      if procedure type is simplified then infer index 1 as C521
+// else if procedure type is Simplified, then infer index 0 as C521
+
+// Create a new Navigator called the AuthorisationsNavigator, this will use the AuthorisationsDomain
+// we will then use this navigator in the AuthorisationReferenceNumber controller
