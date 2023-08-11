@@ -21,6 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.IdentificationNumberFormProvider
 import models.requests.DataRequest
+import models.transportMeans.active.Identification
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.departure.{IdentificationPage, MeansIdentificationNumberPage}
@@ -40,47 +41,45 @@ class MeansIdentificationNumberController @Inject() (
   formProvider: IdentificationNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   view: MeansIdentificationNumberView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
-  private case class DynamicHeading(prefix: String, args: String*)
 
-  private def dynamicHeading(implicit request: DataRequest[_]): DynamicHeading = {
-    val prefix = "transportMeans.departure.meansIdentificationNumber"
-
-    request.userAnswers.get(IdentificationPage) match {
-      case Some(identificationType) => DynamicHeading(s"$prefix.withIDType", identificationType.arg)
-      case None                     => DynamicHeading(s"$prefix.withNoIDType")
-    }
-  }
+  private val prefix = "transportMeans.departure.meansIdentificationNumber"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
-    .requireData(lrn) {
+    .requireData(lrn)
+    .andThen(getMandatoryPage(IdentificationPage)) {
       implicit request =>
-        val dynamicHeadingValue = dynamicHeading(request)
-        val form                = formProvider(dynamicHeadingValue.prefix, dynamicHeadingValue.args: _*)
+        val identificationType = request.arg
+        val form               = formProvider(prefix)
         val preparedForm = request.userAnswers.get(MeansIdentificationNumberPage) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
-        Ok(view(preparedForm, lrn, mode, dynamicHeadingValue.prefix, dynamicHeadingValue.args: _*))
+        Ok(view(preparedForm, lrn, mode, prefix, identificationType.arg))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
-    .requireData(lrn)
-    .async {
-      implicit request =>
-        val dynamicHeadingValue = dynamicHeading(request)
-        val form                = formProvider(dynamicHeadingValue.prefix, dynamicHeadingValue.args: _*)
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, dynamicHeadingValue.prefix, dynamicHeadingValue.args: _*))),
-            value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-              MeansIdentificationNumberPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
-            }
-          )
-    }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
+    actions
+      .requireData(lrn)
+      .andThen(getMandatoryPage(IdentificationPage))
+      .async {
+        implicit request =>
+          val identificationType = request.arg
+          val form               = formProvider(prefix)
+          form
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, prefix, identificationType.arg))),
+              value => {
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                MeansIdentificationNumberPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              }
+            )
+
+      }
+
 }
