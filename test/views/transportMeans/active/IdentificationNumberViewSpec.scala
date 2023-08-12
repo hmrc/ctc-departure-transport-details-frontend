@@ -49,7 +49,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] with 
   }
 
   private def applyView(app: Application, form: Form[String]): HtmlFormat.Appendable =
-    app.injector.instanceOf[IdentificationNumberView].apply(form, lrn, NormalMode, activeIndex, prefix, identificationType.forDisplay)(fakeRequest, messages)
+    app.injector.instanceOf[IdentificationNumberView].apply(form, lrn, NormalMode, activeIndex, identificationType.forDisplay)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
@@ -85,7 +85,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] with 
 
     val prefix: String = "transportMeans.active.identificationNumber"
     val form           = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
-    val view           = injector.instanceOf[IdentificationNumberView].apply(form, lrn, NormalMode, activeIndex, prefix, identificationNumber)(fakeRequest, messages)
+    val view           = injector.instanceOf[IdentificationNumberView].apply(form, lrn, NormalMode, activeIndex, identificationNumber)(fakeRequest, messages)
     val doc            = parseView(view)
 
     behave like pageWithTitle(doc, prefix)

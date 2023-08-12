@@ -20,8 +20,6 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.IdentificationNumberFormProvider
-import models.requests.DataRequest
-import models.transportMeans.active.Identification
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.departure.{IdentificationPage, MeansIdentificationNumberPage}
@@ -47,7 +45,7 @@ class MeansIdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix = "transportMeans.departure.meansIdentificationNumber"
+  val prefix = "transportMeans.departure.meansIdentificationNumber"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(lrn)
@@ -59,7 +57,7 @@ class MeansIdentificationNumberController @Inject() (
           case None        => form
           case Some(value) => form.fill(value)
         }
-        Ok(view(preparedForm, lrn, mode, prefix, identificationType.arg))
+        Ok(view(preparedForm, lrn, mode, identificationType.arg))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] =
@@ -73,7 +71,7 @@ class MeansIdentificationNumberController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, prefix, identificationType.arg))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, identificationType.arg))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 MeansIdentificationNumberPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()

@@ -32,10 +32,10 @@
 )
 
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, prefix: String, identificationNumber: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, identificationType: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages(s"$prefix.title"),
+    title = messages("transportMeans.departure.meansIdentificationNumber.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -47,9 +47,9 @@
         @inputText(
             field = form("value"),
             inputTextType = TextInputWithHiddenLabel(
-                heading = messages(s"$prefix.heading"),
+                heading = messages("transportMeans.departure.meansIdentificationNumber.heading"),
                 caption = Some(messages("departureMeansOfTransport.caption")),
-                additionalHtml = insetText(identificationNumber.capitalize)
+                additionalHtml = insetText(identificationType.capitalize)
             ),
             inputClass = InputSize.Width20,
             hint = Some(messages(phaseConfig.departureIdentificationNumberHint))

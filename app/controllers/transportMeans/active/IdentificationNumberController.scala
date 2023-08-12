@@ -46,7 +46,7 @@ class IdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val prefix = "transportMeans.active.identificationNumber"
+  val prefix = "transportMeans.active.identificationNumber"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] =
     actions
@@ -59,7 +59,7 @@ class IdentificationNumberController @Inject() (
             case None        => form
             case Some(value) => form.fill(value)
           }
-          Ok(view(preparedForm, lrn, mode, activeIndex, prefix, identificationType.toString))
+          Ok(view(preparedForm, lrn, mode, activeIndex, identificationType.forDisplay))
       }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] =
@@ -69,12 +69,11 @@ class IdentificationNumberController @Inject() (
       .async {
         implicit request =>
           val identificationType = request.arg
-
-          val form = formProvider(prefix)
+          val form               = formProvider(prefix)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex, prefix, identificationType.toString))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex, identificationType.toString))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
                 IdentificationNumberPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

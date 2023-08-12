@@ -80,7 +80,7 @@ class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, prefix, identification.arg)(request, messages).toString
+        view(form, lrn, mode, identification.arg)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -101,7 +101,7 @@ class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, prefix, identification.arg)(request, messages).toString
+        view(filledForm, lrn, mode, identification.arg)(request, messages).toString
 
     }
 
@@ -144,7 +144,7 @@ class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefau
           val view = injector.instanceOf[MeansIdentificationNumberView]
 
           contentAsString(result) mustEqual
-            view(filledForm, lrn, mode, prefix, identification.arg)(request, messages).toString()
+            view(filledForm, lrn, mode, identification.arg)(request, messages).toString()
 
       }
     }

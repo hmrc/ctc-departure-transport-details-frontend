@@ -30,10 +30,10 @@
     phaseConfig: PhaseConfig
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index, prefix: String, identificationNumber: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index, identificationType: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages(s"$prefix.title"),
+    title = messages("transportMeans.active.identificationNumber.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -45,9 +45,9 @@
         @inputText(
             field = form("value"),
             inputTextType = TextInputWithHiddenLabel(
-                heading = messages(s"$prefix.heading"),
+                heading = messages("transportMeans.active.identificationNumber.heading"),
                 caption = Some(messages("activeBorderMeansOfTransport.caption")),
-                additionalHtml = insetText(identificationNumber.capitalize)
+                additionalHtml = insetText(identificationType.capitalize)
             ),
             inputClass = InputSize.Width20,
             hint = Some(messages(phaseConfig.activeIdentificationNumberHint))

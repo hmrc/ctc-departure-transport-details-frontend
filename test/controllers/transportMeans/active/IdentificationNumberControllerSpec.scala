@@ -42,7 +42,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
   private val formProvider                   = app.injector.instanceOf[IdentificationNumberFormProvider]
   private val form                           = formProvider(prefix)
-  private val identificationNumber           = "IdNumber"
   private val mode                           = NormalMode
   private lazy val identificationNumberRoute = routes.IdentificationNumberController.onPageLoad(lrn, mode, index).url
   val identification: Identification         = arbitrary[Identification].sample.value
@@ -75,7 +74,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, lrn, mode, activeIndex, prefix, identification.toString)(request, messages).toString
+            view(form, lrn, mode, activeIndex, identification.forDisplay.capitalize)(request, messages).toString
       }
     }
 
@@ -99,7 +98,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(filledForm, lrn, mode, activeIndex, prefix, identification.toString)(request, messages).toString
+            view(filledForm, lrn, mode, activeIndex, identification.forDisplay)(request, messages).toString
       }
     }
 
@@ -144,7 +143,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
             val view = injector.instanceOf[IdentificationNumberView]
 
             contentAsString(result) mustEqual
-              view(filledForm, lrn, mode, activeIndex, prefix, identification.toString)(request, messages).toString
+              view(filledForm, lrn, mode, activeIndex, identification.toString)(request, messages).toString
         }
       }
 

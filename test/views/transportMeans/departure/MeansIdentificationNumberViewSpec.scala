@@ -20,8 +20,6 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.IdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
-import models.transportMeans.active.Identification
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.Application
 import play.api.data.Form
@@ -48,7 +46,7 @@ class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] 
   }
 
   private def applyView(app: Application, form: Form[String]): HtmlFormat.Appendable =
-    app.injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, prefix, identificationNumber)(fakeRequest, messages)
+    app.injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, identificationNumber)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
@@ -84,7 +82,7 @@ class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] 
 
     val prefix: String = "transportMeans.departure.meansIdentificationNumber"
     val form           = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
-    val view           = injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, prefix, "identificationNumber")(fakeRequest, messages)
+    val view           = injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, "identificationNumber")(fakeRequest, messages)
     val doc            = parseView(view)
 
     behave like pageWithTitle(doc, prefix)
