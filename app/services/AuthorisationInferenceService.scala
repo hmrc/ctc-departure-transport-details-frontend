@@ -29,7 +29,7 @@ import javax.inject.Inject
 
 class AuthorisationInferenceService @Inject() () {
 
-  def inferAuthorisations(userAnswers: UserAnswers): Option[UserAnswers] = {
+  def inferAuthorisations(userAnswers: UserAnswers): UserAnswers = {
 
     val reader: UserAnswersReader[Option[UserAnswers]] = for {
       procedureType           <- ProcedureTypePage.reader
@@ -49,10 +49,14 @@ class AuthorisationInferenceService @Inject() () {
         userAnswers
           .set(InferredAuthorisationTypePage(Index(0)), ACR)
           .toOption
-      case _ => None
+      case _ =>
+        Some(userAnswers)
     }
 
-    reader.apply(userAnswers).getOrElse(None)
+    reader.apply(userAnswers) match {
+      case Right(Some(value)) => value
+      case _                  => userAnswers
+    }
   }
 }
 

@@ -21,7 +21,7 @@ import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
 import models.authorisations.AuthorisationType
 import models.transportMeans.InlandMode
-import models.{DeclarationType, Index, UserAnswers}
+import models.{DeclarationType, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -47,12 +47,12 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers)
 
             val expectedResult = userAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.TRD)
 
-            result mustBe Some(expectedResult)
+            result mustBe expectedResult
         }
       }
     }
@@ -69,13 +69,13 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers)
 
             val expectedResult = userAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.TRD)
               .setValue(InferredAuthorisationTypePage(Index(1)), AuthorisationType.ACR)
 
-            result mustBe Some(expectedResult)
+            result mustBe expectedResult
         }
       }
     }
@@ -92,9 +92,9 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers)
 
-            result mustBe None
+            result mustBe userAnswers
         }
       }
     }
@@ -111,9 +111,9 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers)
 
-            result mustBe None
+            result mustBe userAnswers
         }
       }
     }
@@ -130,9 +130,9 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers)
 
-            result mustBe None
+            result mustBe userAnswers
         }
       }
     }
@@ -149,12 +149,12 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers)
 
             val expectedResult = userAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.ACR)
 
-            result mustBe Some(expectedResult)
+            result mustBe expectedResult
         }
       }
     }
@@ -171,12 +171,12 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers)
 
             val expectedResult = userAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.ACR)
 
-            result mustBe Some(expectedResult)
+            result mustBe expectedResult
         }
       }
     }
@@ -193,12 +193,12 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers)
 
             val expectedResult = userAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.ACR)
 
-            result mustBe Some(expectedResult)
+            result mustBe expectedResult
         }
       }
     }
