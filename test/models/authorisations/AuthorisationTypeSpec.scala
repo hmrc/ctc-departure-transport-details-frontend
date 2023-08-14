@@ -18,14 +18,11 @@ package models.authorisations
 
 import base.SpecBase
 import generators.Generators
-import models.ProcedureType.Simplified
-import models.transportMeans.InlandMode
-import models.{DeclarationType, Index, ProcedureType}
+import models.Index
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
-import pages.transportMeans.InlandModePage
+import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
 import play.api.libs.json.{JsError, JsString, Json}
 
 class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -63,157 +60,71 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with 
     }
 
     "values" - {
-      "when first index" - {
-        val index = Index(0)
-        "when not a reduced data set, is simplified and is Maritime/Rail/Air inland mode" - {
-          "must infer answers as ACR" in {
-            val declarationTypeGen = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)
+      "when no auth types in user answers" - {
+        "must return all values" in {
+          val result = AuthorisationType.values(emptyUserAnswers, Index(0))
 
-            val inlandModeGen = Gen.oneOf(
-              InlandMode.Maritime,
-              InlandMode.Rail,
-              InlandMode.Air
-            )
-
-            forAll(declarationTypeGen, inlandModeGen) {
-              (declarationType, inlandMode) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(ProcedureTypePage, Simplified)
-                  .setValue(DeclarationTypePage, declarationType)
-                  .setValue(ApprovedOperatorPage, false)
-                  .setValue(InlandModePage, inlandMode)
-
-                AuthorisationType.values(userAnswers, index) mustBe Seq(AuthorisationType.ACR)
-            }
-          }
+          result mustBe Seq(
+            AuthorisationType.ACR,
+            AuthorisationType.SSE,
+            AuthorisationType.TRD
+          )
         }
+      }
 
-        "when reduced data set, maritime/rail/air inland mode" - {
-          "must infer answer as TRD" in {
-            val declarationTypeGen = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)
+      "when there is an auth type in user answers" - {
+        "must filter out that type" - {
+          "when it has been inferred" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.ACR)
 
-            val inlandModeGen = Gen.oneOf(
-              InlandMode.Maritime,
-              InlandMode.Rail,
-              InlandMode.Air
+            val result = AuthorisationType.values(userAnswers, Index(1))
+
+            result mustBe Seq(
+              AuthorisationType.SSE,
+              AuthorisationType.TRD
             )
-
-            forAll(arbitrary[ProcedureType], declarationTypeGen, inlandModeGen) {
-              (procedureType, declarationType, inlandMode) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(ProcedureTypePage, procedureType)
-                  .setValue(DeclarationTypePage, declarationType)
-                  .setValue(ApprovedOperatorPage, true)
-                  .setValue(InlandModePage, inlandMode)
-
-                AuthorisationType.values(userAnswers, index) mustBe Seq(AuthorisationType.TRD)
-            }
-          }
-        }
-
-        "when reduced data set, road/mail/fixed/waterway inland mode, simplified procedure type" - {
-          "must infer answer as ACR" in {
-            val declarationTypeGen = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)
-
-            val inlandModeGen = Gen.oneOf(
-              InlandMode.Road,
-              InlandMode.Mail,
-              InlandMode.Fixed,
-              InlandMode.Waterway
-            )
-
-            forAll(declarationTypeGen, inlandModeGen) {
-              (declarationType, inlandMode) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(ProcedureTypePage, ProcedureType.Simplified)
-                  .setValue(DeclarationTypePage, declarationType)
-                  .setValue(ApprovedOperatorPage, true)
-                  .setValue(InlandModePage, inlandMode)
-
-                AuthorisationType.values(userAnswers, index) mustBe Seq(AuthorisationType.ACR)
-            }
-          }
-        }
-
-        "when TIR" - {
-          "must not infer answer if inlandMode is Road/Fixed/Mail/Waterway" in {
-
-            val inlandModeGen = Gen.oneOf(
-              InlandMode.Road,
-              InlandMode.Mail,
-              InlandMode.Fixed,
-              InlandMode.Waterway
-            )
-
-            forAll(arbitrary[ProcedureType], inlandModeGen) {
-              (procedureType, inlandMode) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(ProcedureTypePage, procedureType)
-                  .setValue(DeclarationTypePage, DeclarationType.Option4)
-                  .setValue(InlandModePage, inlandMode)
-
-                AuthorisationType.values(userAnswers, index) mustBe AuthorisationType.values
-            }
           }
 
-          "must infer answer if inlandMode is Maritime/Air/Rail and procedure type is simplified" in {
+          "when it has not been inferred" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACR)
 
-            val inlandModeGen = Gen.oneOf(
-              InlandMode.Maritime,
-              InlandMode.Air,
-              InlandMode.Rail
+            val result = AuthorisationType.values(userAnswers, Index(1))
+
+            result mustBe Seq(
+              AuthorisationType.SSE,
+              AuthorisationType.TRD
             )
-
-            forAll(inlandModeGen) {
-              inlandMode =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(ProcedureTypePage, Simplified)
-                  .setValue(DeclarationTypePage, DeclarationType.Option4)
-                  .setValue(InlandModePage, inlandMode)
-
-                AuthorisationType.values(userAnswers, index) mustBe Seq(AuthorisationType.ACR)
-            }
-          }
-        }
-
-        "when not using a reduced data set" - {
-          "must not infer answer if inlandMode is Road/Fixed/Mail/Waterway" in {
-            val declarationTypeGen = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)
-
-            val inlandModeGen = Gen.oneOf(
-              InlandMode.Road,
-              InlandMode.Mail,
-              InlandMode.Fixed,
-              InlandMode.Waterway
-            )
-
-            forAll(arbitrary[ProcedureType], declarationTypeGen, inlandModeGen) {
-              (procedureType, declarationType, inlandMode) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(ProcedureTypePage, procedureType)
-                  .setValue(DeclarationTypePage, declarationType)
-                  .setValue(ApprovedOperatorPage, false)
-                  .setValue(InlandModePage, inlandMode)
-
-                AuthorisationType.values(userAnswers, index) mustBe AuthorisationType.values
-            }
           }
         }
       }
 
-      "when not first index" - {
-        val index = Index(1)
-        "must not infer answer" in {
-          forAll(arbitrary[ProcedureType], arbitrary[DeclarationType], arbitrary[Boolean], arbitrary[InlandMode]) {
-            (procedureType, declarationType, approvedOperator, inlandMode) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(ProcedureTypePage, procedureType)
-                .setValue(DeclarationTypePage, declarationType)
-                .setValue(ApprovedOperatorPage, approvedOperator)
-                .setValue(InlandModePage, inlandMode)
+      "when all 3 auth types are in user answers" - {
+        "must return empty list" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.ACR)
+            .setValue(AuthorisationTypePage(Index(1)), AuthorisationType.SSE)
+            .setValue(InferredAuthorisationTypePage(Index(2)), AuthorisationType.TRD)
 
-              AuthorisationType.values(userAnswers, index) mustBe AuthorisationType.values
-          }
+          val result = AuthorisationType.values(userAnswers, Index(3))
+
+          result mustBe Seq.empty
+        }
+      }
+
+      "when one auth type has been added and we are that index" - {
+        "must return all 3 auth types" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.ACR)
+
+          val result = AuthorisationType.values(userAnswers, Index(0))
+
+          result mustBe Seq(
+            AuthorisationType.ACR,
+            AuthorisationType.SSE,
+            AuthorisationType.TRD
+          )
         }
       }
     }

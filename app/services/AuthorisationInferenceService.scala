@@ -16,7 +16,6 @@
 
 package services
 
-import connectors.CacheConnector
 import models.ProcedureType.{Normal, Simplified}
 import models.authorisations.AuthorisationType.{ACR, TRD}
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
@@ -25,14 +24,10 @@ import models.{Index, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.InferredAuthorisationTypePage
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
 import pages.transportMeans.InlandModePage
-import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
-class AuthorisationInferenceService @Inject() (
-  cacheConnector: CacheConnector
-) {
+class AuthorisationInferenceService @Inject() () {
 
   def inferAuthorisations(userAnswers: UserAnswers): Option[UserAnswers] = {
 
@@ -59,12 +54,6 @@ class AuthorisationInferenceService @Inject() (
 
     reader.apply(userAnswers).getOrElse(None)
   }
-
-  def updateUserAnswers(userAnswers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[Unit, Boolean]] =
-    inferAuthorisations(userAnswers) match {
-      case Some(value) => cacheConnector.post(value).map(Right(_))
-      case None        => Future.successful(Left(()))
-    }
 }
 
 // Probably want to return a Try/Option to make sure we have Inferred a value

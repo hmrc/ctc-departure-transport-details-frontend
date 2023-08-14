@@ -44,6 +44,11 @@ package object controllers {
 
   implicit class SettableOps[A](page: QuestionPage[A]) {
 
+    def emptyWrite: UserAnswersWriter[Write[A]] =
+      ReaderT[EitherType, UserAnswers, Write[A]](
+        userAnswers => Right((page, userAnswers))
+      )
+
     def writeToUserAnswers(value: A)(implicit format: Format[A]): UserAnswersWriter[Write[A]] =
       ReaderT[EitherType, UserAnswers, Write[A]](
         userAnswers =>

@@ -17,14 +17,8 @@
 package models.authorisations
 
 import models._
-import models.ProcedureType.Simplified
-import models.domain.{GettableAsReaderOps, JsArrayGettableAsReaderOps}
-import models.transportMeans.InlandMode._
-import models.{EnumerableType, Index, Radioable, UserAnswers, WithName}
-import pages.authorisationsAndLimit.authorisations.index.InferredAuthorisationTypePage
-import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
+import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
-import pages.transportMeans.InlandModePage
 import play.api.i18n.Messages
 
 sealed trait AuthorisationType extends Radioable[AuthorisationType] {
@@ -53,29 +47,16 @@ object AuthorisationType extends EnumerableType[AuthorisationType] {
     TRD
   )
 
-  // TODO we can potentially remove this method
-  def values(userAnswers: UserAnswers): Seq[AuthorisationType] = {
-    val reader = for {
-      procedureType           <- ProcedureTypePage.reader
-      reducedDataSetIndicator <- ApprovedOperatorPage.inferredReader
-      inlandMode              <- InlandModePage.reader
-    } yield (reducedDataSetIndicator, inlandMode, procedureType) match {
-      case (true, Maritime | Rail | Air, _)                   => Seq(TRD)
-      case (true, Road | Fixed | Mail | Waterway, Simplified) => Seq(ACR)
-      case (false, Maritime | Rail | Air, Simplified)         => Seq(ACR)
-      case _                                                  => values
-    }
-    reader.run(userAnswers).getOrElse(values)
-  }
-
-  // TODO Update this to return only types that have not been selected excluding the current index
   def values(userAnswers: UserAnswers, index: Index): Seq[AuthorisationType] = {
-
-    val existingValues = AuthorisationsSection.optionalReader.flatMap {
-      case Some(array) if array.nonEmpty => ???
-      case _                             => ???
+    val numberOfAuthorisations = userAnswers.getArraySize(AuthorisationsSection)
+    val authorisationTypes = (0 until numberOfAuthorisations).map(Index(_)).foldLeft[Seq[AuthorisationType]](Nil) {
+      (acc, authorisationIndex) =>
+        userAnswers.get(AuthorisationTypePage(authorisationIndex)) orElse userAnswers.get(InferredAuthorisationTypePage(authorisationIndex)) match {
+          case Some(value) if authorisationIndex != index => acc :+ value
+          case _                                          => acc
+        }
     }
 
-    if (index.isFirst) values(userAnswers) else values
+    values.diff(authorisationTypes)
   }
 }
