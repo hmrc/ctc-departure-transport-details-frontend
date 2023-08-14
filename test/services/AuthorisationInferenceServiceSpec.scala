@@ -16,21 +16,37 @@
 
 package services
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
+import connectors.CacheConnector
 import generators.Generators
-import models.{DeclarationType, Index}
+import models.{DeclarationType, Index, UserAnswers}
 import models.ProcedureType.{Normal, Simplified}
 import models.authorisations.AuthorisationType
 import models.transportMeans.InlandMode
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.index.InferredAuthorisationTypePage
 import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
 import pages.transportMeans.InlandModePage
 
-class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-  "AuthorisationInferenceService" - {
-    val declarationTypeGen = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
+class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with AppWithDefaultMockFixtures {
+  val mockCacheConnector: CacheConnector = mock[CacheConnector]
+
+  val declarationTypeGen: Gen[DeclarationType] = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockCacheConnector)
+    when(mockCacheConnector.post(any())(any())).thenReturn(Future.successful(true))
+  }
+
+  "inferAuthorisations" - {
 
     "when reduced dataset indicator is 1 and inland mode is Maritime/Rail/Air and ProcedureType is Normal" - {
       "must infer index 0 as TRD AuthorisationType" in {
@@ -42,14 +58,14 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
               .setValue(ApprovedOperatorPage, true)
               .setValue(ProcedureTypePage, Normal)
 
-            val service = new AuthorisationInferenceService()
+            val service = new AuthorisationInferenceService(mockCacheConnector)
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
 
             val expectedResult = userAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.TRD)
 
-            result mustBe expectedResult
+            result mustBe Some(expectedResult)
         }
       }
     }
@@ -64,15 +80,15 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
               .setValue(ApprovedOperatorPage, true)
               .setValue(ProcedureTypePage, Simplified)
 
-            val service = new AuthorisationInferenceService()
+            val service = new AuthorisationInferenceService(mockCacheConnector)
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
 
             val expectedResult = userAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.TRD)
               .setValue(InferredAuthorisationTypePage(Index(1)), AuthorisationType.ACR)
 
-            result mustBe expectedResult
+            result mustBe Some(expectedResult)
         }
       }
     }
@@ -87,11 +103,11 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
               .setValue(ApprovedOperatorPage, false)
               .setValue(ProcedureTypePage, Normal)
 
-            val service = new AuthorisationInferenceService()
+            val service = new AuthorisationInferenceService(mockCacheConnector)
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
 
-            result mustBe userAnswers
+            result mustBe None
         }
       }
     }
@@ -106,11 +122,11 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
               .setValue(ApprovedOperatorPage, true)
               .setValue(ProcedureTypePage, Normal)
 
-            val service = new AuthorisationInferenceService()
+            val service = new AuthorisationInferenceService(mockCacheConnector)
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
 
-            result mustBe userAnswers
+            result mustBe None
         }
       }
     }
@@ -125,11 +141,11 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
               .setValue(ApprovedOperatorPage, false)
               .setValue(ProcedureTypePage, Normal)
 
-            val service = new AuthorisationInferenceService()
+            val service = new AuthorisationInferenceService(mockCacheConnector)
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
 
-            result mustBe userAnswers
+            result mustBe None
         }
       }
     }
@@ -144,14 +160,14 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
               .setValue(ApprovedOperatorPage, false)
               .setValue(ProcedureTypePage, Simplified)
 
-            val service = new AuthorisationInferenceService()
+            val service = new AuthorisationInferenceService(mockCacheConnector)
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
 
             val expectedResult = userAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.ACR)
 
-            result mustBe expectedResult
+            result mustBe Some(expectedResult)
         }
       }
     }
@@ -166,14 +182,14 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
               .setValue(ApprovedOperatorPage, true)
               .setValue(ProcedureTypePage, Simplified)
 
-            val service = new AuthorisationInferenceService()
+            val service = new AuthorisationInferenceService(mockCacheConnector)
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
 
             val expectedResult = userAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.ACR)
 
-            result mustBe expectedResult
+            result mustBe Some(expectedResult)
         }
       }
     }
@@ -188,15 +204,56 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
               .setValue(ApprovedOperatorPage, false)
               .setValue(ProcedureTypePage, Simplified)
 
-            val service = new AuthorisationInferenceService()
+            val service = new AuthorisationInferenceService(mockCacheConnector)
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result: Option[UserAnswers] = service.inferAuthorisations(userAnswers)
 
             val expectedResult = userAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.ACR)
 
-            result mustBe expectedResult
+            result mustBe Some(expectedResult)
         }
+      }
+    }
+  }
+
+  "updateUserAnswers" - {
+    "must update userAnswers when a value is inferred" in {
+      forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
+        (inlandMode, declarationType) =>
+          beforeEach()
+          val userAnswers = emptyUserAnswers
+            .setValue(InlandModePage, inlandMode)
+            .setValue(DeclarationTypePage, declarationType)
+            .setValue(ApprovedOperatorPage, true)
+            .setValue(ProcedureTypePage, Normal)
+
+          val service = new AuthorisationInferenceService(mockCacheConnector)
+
+          service.updateUserAnswers(userAnswers).futureValue
+
+          val updatedUserAnswers = userAnswers
+            .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.TRD)
+
+          verify(mockCacheConnector).post(eqTo(updatedUserAnswers))(any())
+      }
+    }
+
+    "must not update userAnswers when no value is inferred" in {
+      forAll(arbitrary[InlandMode](arbitraryNonMaritimeRailAirInlandMode), declarationTypeGen) {
+        (inlandMode, declarationType) =>
+          beforeEach()
+          val userAnswers = emptyUserAnswers
+            .setValue(InlandModePage, inlandMode)
+            .setValue(DeclarationTypePage, declarationType)
+            .setValue(ApprovedOperatorPage, false)
+            .setValue(ProcedureTypePage, Normal)
+
+          val service = new AuthorisationInferenceService(mockCacheConnector)
+
+          service.updateUserAnswers(userAnswers).futureValue
+
+          verify(mockCacheConnector, never()).post(any())(any())
       }
     }
   }

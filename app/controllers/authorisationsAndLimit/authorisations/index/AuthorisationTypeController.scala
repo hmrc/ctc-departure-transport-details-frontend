@@ -29,6 +29,7 @@ import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage,
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.AuthorisationInferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.authorisationsAndLimit.authorisations.index.AuthorisationTypeView
 
@@ -42,7 +43,8 @@ class AuthorisationTypeController @Inject() (
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AuthorisationTypeView
+  view: AuthorisationTypeView,
+  services: AuthorisationInferenceService
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
@@ -51,6 +53,17 @@ class AuthorisationTypeController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
+      services.updateUserAnswers(request.userAnswers).map {
+        case Right(value) => ??? // TODO redirect using the nav
+        case _ =>
+          val preparedForm = request.userAnswers.get(AuthorisationTypePage(authorisationIndex)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
+
+          Future.successful(Ok(view(preparedForm, lrn, AuthorisationType.values, mode, authorisationIndex)))
+      }
+
       AuthorisationType.values(request.userAnswers, authorisationIndex) match {
         case authorisationType :: Nil =>
           redirect(mode, authorisationIndex, InferredAuthorisationTypePage, authorisationType)

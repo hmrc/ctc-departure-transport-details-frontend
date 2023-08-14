@@ -16,22 +16,27 @@
 
 package services
 
+import connectors.CacheConnector
 import models.ProcedureType.{Normal, Simplified}
 import models.authorisations.AuthorisationType.{ACR, TRD}
-import models.domain.GettableAsReaderOps
+import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.transportMeans.InlandMode.{Air, Maritime, Rail}
 import models.{Index, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.InferredAuthorisationTypePage
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
 import pages.transportMeans.InlandModePage
+import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.util.Success
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-class AuthorisationInferenceService {
+class AuthorisationInferenceService @Inject() (
+  cacheConnector: CacheConnector
+) {
 
-  def inferAuthorisations(userAnswers: UserAnswers): UserAnswers = {
+  def inferAuthorisations(userAnswers: UserAnswers): Option[UserAnswers] = {
 
-    val reader = for {
+    val reader: UserAnswersReader[Option[UserAnswers]] = for {
       procedureType           <- ProcedureTypePage.reader
       reducedDataSetIndicator <- ApprovedOperatorPage.inferredReader
       inlandMode              <- InlandModePage.reader
@@ -40,20 +45,26 @@ class AuthorisationInferenceService {
         userAnswers
           .set(InferredAuthorisationTypePage(Index(0)), TRD)
           .flatMap(_.set(InferredAuthorisationTypePage(Index(1)), ACR))
+          .toOption
       case (true, Maritime | Rail | Air, Normal) =>
         userAnswers
           .set(InferredAuthorisationTypePage(Index(0)), TRD)
+          .toOption
       case (_, _, Simplified) =>
         userAnswers
           .set(InferredAuthorisationTypePage(Index(0)), ACR)
-      case _ => Success(userAnswers)
+          .toOption
+      case _ => None
     }
 
-    reader.run(userAnswers) match {
-      case Right(Success(value)) => value
-      case _                     => userAnswers
-    }
+    reader.apply(userAnswers).getOrElse(None)
   }
+
+  def updateUserAnswers(userAnswers: UserAnswers)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Either[Unit, Boolean]] =
+    inferAuthorisations(userAnswers) match {
+      case Some(value) => cacheConnector.post(value).map(Right(_))
+      case None        => Future.successful(Left(()))
+    }
 }
 
 // Probably want to return a Try/Option to make sure we have Inferred a value

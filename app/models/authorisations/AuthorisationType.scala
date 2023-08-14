@@ -16,11 +16,14 @@
 
 package models.authorisations
 
+import models._
 import models.ProcedureType.Simplified
-import models.domain.GettableAsReaderOps
+import models.domain.{GettableAsReaderOps, JsArrayGettableAsReaderOps}
 import models.transportMeans.InlandMode._
 import models.{EnumerableType, Index, Radioable, UserAnswers, WithName}
+import pages.authorisationsAndLimit.authorisations.index.InferredAuthorisationTypePage
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
+import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import pages.transportMeans.InlandModePage
 import play.api.i18n.Messages
 
@@ -50,6 +53,7 @@ object AuthorisationType extends EnumerableType[AuthorisationType] {
     TRD
   )
 
+  // TODO we can potentially remove this method
   def values(userAnswers: UserAnswers): Seq[AuthorisationType] = {
     val reader = for {
       procedureType           <- ProcedureTypePage.reader
@@ -64,6 +68,14 @@ object AuthorisationType extends EnumerableType[AuthorisationType] {
     reader.run(userAnswers).getOrElse(values)
   }
 
-  def values(userAnswers: UserAnswers, index: Index): Seq[AuthorisationType] =
+  // TODO Update this to return only types that have not been selected excluding the current index
+  def values(userAnswers: UserAnswers, index: Index): Seq[AuthorisationType] = {
+
+    val existingValues = AuthorisationsSection.optionalReader.flatMap {
+      case Some(array) if array.nonEmpty => ???
+      case _                             => ???
+    }
+
     if (index.isFirst) values(userAnswers) else values
+  }
 }
