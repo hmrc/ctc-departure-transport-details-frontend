@@ -21,9 +21,11 @@ import generators.Generators
 import models.DeclarationType
 import models.ProcedureType.{Normal, Simplified}
 import models.domain.{EitherType, UserAnswersReader}
+import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
 import models.transportMeans.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.authorisationsAndLimit.AuthorisationsInferredPage
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
@@ -32,97 +34,37 @@ import pages.transportMeans.InlandModePage
 
 class TransportDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
-  "can be parsed from user answers" - {
+  "userAnswersReader" - {
 
-    "when Mail inland mode" in {
-      val initialUserAnswers = emptyUserAnswers.setValue(InlandModePage, InlandMode.Mail)
-      forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-        userAnswers =>
-          val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-          result.value.transportMeans must not be defined
-      }
-    }
+    "can be parsed from user answers" - {
 
-    "when non-Mail inland mode" in {
-      forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode)) {
-        inlandMode =>
-          val initialUserAnswers = emptyUserAnswers.setValue(InlandModePage, inlandMode)
-          forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-            userAnswers =>
-              val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-              result.value.transportMeans must be(defined)
-          }
-      }
-    }
-
-    "when reduced data set indicator is true" in {
-      forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
-        declarationType =>
-          val initialUserAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, declarationType)
-            .setValue(ApprovedOperatorPage, true)
-
-          forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-            userAnswers =>
-              val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-              result.value.authorisationsAndLimit must be(defined)
-          }
-      }
-    }
-
-    "when procedure type is Normal and reduced data set indicator is undefined" - {
-      "and not adding authorisations" in {
-        val initialUserAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, DeclarationType.Option4)
-          .setValue(ProcedureTypePage, Normal)
-          .setValue(AddAuthorisationsYesNoPage, false)
-
+      "when Mail inland mode" in {
+        val initialUserAnswers = emptyUserAnswers.setValue(InlandModePage, InlandMode.Mail)
         forAll(arbitraryTransportAnswers(initialUserAnswers)) {
           userAnswers =>
             val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-            result.value.authorisationsAndLimit must not be defined
+            result.value.transportMeans must not be defined
         }
       }
 
-      "and adding authorisations" in {
-        val initialUserAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, DeclarationType.Option4)
-          .setValue(AddAuthorisationsYesNoPage, true)
-
-        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-          userAnswers =>
-            val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-            result.value.authorisationsAndLimit must be(defined)
-        }
-      }
-    }
-
-    "when reduced data set indicator is false and procedure type is Normal" - {
-      "and not adding authorisations" in {
-        forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
-          declarationType =>
-            val initialUserAnswers = emptyUserAnswers
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, false)
-              .setValue(ProcedureTypePage, Normal)
-              .setValue(AddAuthorisationsYesNoPage, false)
-
+      "when non-Mail inland mode" in {
+        forAll(arbitrary[InlandMode](arbitraryNonMailInlandMode)) {
+          inlandMode =>
+            val initialUserAnswers = emptyUserAnswers.setValue(InlandModePage, inlandMode)
             forAll(arbitraryTransportAnswers(initialUserAnswers)) {
               userAnswers =>
                 val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-                result.value.authorisationsAndLimit must not be defined
+                result.value.transportMeans must be(defined)
             }
         }
       }
 
-      "and adding authorisations" in {
+      "when reduced data set indicator is true" in {
         forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
           declarationType =>
             val initialUserAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, false)
-              .setValue(ProcedureTypePage, Normal)
-              .setValue(AddAuthorisationsYesNoPage, true)
+              .setValue(ApprovedOperatorPage, true)
 
             forAll(arbitraryTransportAnswers(initialUserAnswers)) {
               userAnswers =>
@@ -131,73 +73,153 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
             }
         }
       }
-    }
 
-    "when reduced data set indicator is false and procedure type is Simplified" - {
-      forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
-        declarationType =>
+      "when procedure type is Normal and reduced data set indicator is undefined" - {
+        "and not adding authorisations" in {
           val initialUserAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, declarationType)
-            .setValue(ApprovedOperatorPage, false)
-            .setValue(ProcedureTypePage, Simplified)
-
-          forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-            userAnswers =>
-              val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-              result.value.authorisationsAndLimit must be(defined)
-          }
-      }
-    }
-
-    "when reduced data set indicator is true and procedure type is Normal" in {
-      forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
-        declarationType =>
-          val initialUserAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, declarationType)
-            .setValue(ApprovedOperatorPage, true)
+            .setValue(DeclarationTypePage, DeclarationType.Option4)
             .setValue(ProcedureTypePage, Normal)
+            .setValue(AddAuthorisationsYesNoPage, false)
+
+          forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+            userAnswers =>
+              val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+              result.value.authorisationsAndLimit must not be defined
+          }
+        }
+
+        "and adding authorisations" in {
+          val initialUserAnswers = emptyUserAnswers
+            .setValue(DeclarationTypePage, DeclarationType.Option4)
+            .setValue(AddAuthorisationsYesNoPage, true)
 
           forAll(arbitraryTransportAnswers(initialUserAnswers)) {
             userAnswers =>
               val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
               result.value.authorisationsAndLimit must be(defined)
           }
+        }
+      }
+
+      "when reduced data set indicator is false and procedure type is Normal" - {
+        "and not adding authorisations" in {
+          forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+            declarationType =>
+              val initialUserAnswers = emptyUserAnswers
+                .setValue(DeclarationTypePage, declarationType)
+                .setValue(ApprovedOperatorPage, false)
+                .setValue(ProcedureTypePage, Normal)
+                .setValue(AddAuthorisationsYesNoPage, false)
+
+              forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+                userAnswers =>
+                  val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+                  result.value.authorisationsAndLimit must not be defined
+              }
+          }
+        }
+
+        "and adding authorisations" in {
+          forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+            declarationType =>
+              val initialUserAnswers = emptyUserAnswers
+                .setValue(DeclarationTypePage, declarationType)
+                .setValue(ApprovedOperatorPage, false)
+                .setValue(ProcedureTypePage, Normal)
+                .setValue(AddAuthorisationsYesNoPage, true)
+
+              forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+                userAnswers =>
+                  val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+                  result.value.authorisationsAndLimit must be(defined)
+              }
+          }
+        }
+      }
+
+      "when reduced data set indicator is false and procedure type is Simplified" - {
+        forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+          declarationType =>
+            val initialUserAnswers = emptyUserAnswers
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, false)
+              .setValue(ProcedureTypePage, Simplified)
+
+            forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+              userAnswers =>
+                val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+                result.value.authorisationsAndLimit must be(defined)
+            }
+        }
+      }
+
+      "when reduced data set indicator is true and procedure type is Normal" in {
+        forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+          declarationType =>
+            val initialUserAnswers = emptyUserAnswers
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, true)
+              .setValue(ProcedureTypePage, Normal)
+
+            forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+              userAnswers =>
+                val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+                result.value.authorisationsAndLimit must be(defined)
+            }
+        }
+      }
+
+      "when adding supply chain actors" in {
+        val initialUserAnswers = emptyUserAnswers.setValue(SupplyChainActorYesNoPage, true)
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+          userAnswers =>
+            val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+            result.value.supplyChainActors must be(defined)
+        }
+      }
+
+      "when not adding supply chain actors" in {
+        val initialUserAnswers = emptyUserAnswers.setValue(SupplyChainActorYesNoPage, false)
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+          userAnswers =>
+            val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+            result.value.supplyChainActors must not be defined
+        }
+      }
+
+      "when adding carrier details" in {
+        val initialUserAnswers = emptyUserAnswers.setValue(CarrierDetailYesNoPage, true)
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+          userAnswers =>
+            val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+            result.value.carrierDetails must be(defined)
+        }
+      }
+
+      "when not adding carrier details" in {
+        val initialUserAnswers = emptyUserAnswers.setValue(CarrierDetailYesNoPage, false)
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+          userAnswers =>
+            val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
+            result.value.carrierDetails must not be defined
+        }
       }
     }
+  }
 
-    "when adding supply chain actors" in {
-      val initialUserAnswers = emptyUserAnswers.setValue(SupplyChainActorYesNoPage, true)
-      forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-        userAnswers =>
-          val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-          result.value.supplyChainActors must be(defined)
-      }
-    }
+  "authorisationsAndLimitReads" - {
+    "can not be parsed from user answers" - {
+      "when inference is not flagged as true" in {
+        forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+          declarationType =>
+            val userAnswers = emptyUserAnswers
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, true)
+              .setValue(ProcedureTypePage, Normal)
 
-    "when not adding supply chain actors" in {
-      val initialUserAnswers = emptyUserAnswers.setValue(SupplyChainActorYesNoPage, false)
-      forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-        userAnswers =>
-          val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-          result.value.supplyChainActors must not be defined
-      }
-    }
-
-    "when adding carrier details" in {
-      val initialUserAnswers = emptyUserAnswers.setValue(CarrierDetailYesNoPage, true)
-      forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-        userAnswers =>
-          val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-          result.value.carrierDetails must be(defined)
-      }
-    }
-
-    "when not adding carrier details" in {
-      val initialUserAnswers = emptyUserAnswers.setValue(CarrierDetailYesNoPage, false)
-      forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-        userAnswers =>
-          val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-          result.value.carrierDetails must not be defined
+            val result: EitherType[Option[AuthorisationsAndLimitDomain]] = TransportDomain.authorisationsAndLimitReads.run(userAnswers)
+            result.left.value.page mustBe AuthorisationsInferredPage
+        }
       }
     }
   }
