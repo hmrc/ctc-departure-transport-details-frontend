@@ -33,14 +33,16 @@ case class AuthorisationDomain(authorisationType: AuthorisationType, referenceNu
   def asString(implicit messages: Messages): String =
     AuthorisationDomain.asString(authorisationType, referenceNumber)
 
-  // TODO - if auth type is defined at index+1 but auth number isn't, redirect to auth number at index+1
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
     stage match {
       case AccessingJourney =>
         // User cannot change authorisation type, they have to remove it when they want to make a change.
         authorisationRoutes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, index)
       case CompletingJourney =>
-        authorisationsRoutes.AddAnotherAuthorisationController.onPageLoad(userAnswers.lrn, mode)
+        (userAnswers.get(InferredAuthorisationTypePage(index.next)), userAnswers.get(AuthorisationReferenceNumberPage(index.next))) match {
+          case (Some(_), None) => authorisationRoutes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, index.next)
+          case _               => authorisationsRoutes.AddAnotherAuthorisationController.onPageLoad(userAnswers.lrn, mode)
+        }
     }
   }
 }

@@ -65,6 +65,10 @@ trait ModelGenerators {
     Gen.oneOf(NormalMode, CheckMode)
   }
 
+  implicit lazy val arbitraryPhase: Arbitrary[Phase] = Arbitrary {
+    Gen.oneOf(Phase.Transition, Phase.PostTransition)
+  }
+
   implicit lazy val arbitraryIndex: Arbitrary[Index] = Arbitrary {
     for {
       position <- Gen.choose(0: Int, 10: Int)
