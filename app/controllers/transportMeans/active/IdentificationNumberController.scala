@@ -46,7 +46,7 @@ class IdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  val prefix = "transportMeans.active.identificationNumber"
+  private val prefix = "transportMeans.active.identificationNumber"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] =
     actions

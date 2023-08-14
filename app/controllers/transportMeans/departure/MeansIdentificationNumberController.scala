@@ -45,7 +45,7 @@ class MeansIdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  val prefix = "transportMeans.departure.meansIdentificationNumber"
+  private val prefix = "transportMeans.departure.meansIdentificationNumber"
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(lrn)
