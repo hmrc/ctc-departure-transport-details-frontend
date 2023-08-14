@@ -136,6 +136,7 @@ transportMeans.departure.identification.imoShipIdNumber = IMO ship identificatio
 transportMeans.departure.identification.wagonNumber = Wagon number
 transportMeans.departure.identification.trainNumber = Train number
 transportMeans.departure.identification.regNumberRoadVehicle = Registration number of a road vehicle
+transportMeans.departure.identification.regNumberRoadTrailer = Registration number of a road trailer
 transportMeans.departure.identification.regNumberAircraft = Registration number of an aircraft
 transportMeans.departure.identification.europeanVesselIdNumber = European vessel identification number (ENI code)
 transportMeans.departure.identification.checkYourAnswersLabel = Identification type
