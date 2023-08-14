@@ -368,7 +368,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Identification type".toText),
-                  value = Value(messages(s"${"transportMeans.departure.identification"}.$departureIdentification").toText),
+                  value = Value(messages(s"${"transportMeans.identification"}.$departureIdentification").toText),
                   actions = Some(
                     Actions(
                       items = List(

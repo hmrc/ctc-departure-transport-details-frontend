@@ -21,7 +21,7 @@ import pages.transportMeans.InlandModePage
 import play.api.i18n.Messages
 
 sealed trait Identification extends Radioable[Identification] {
-  def arg(implicit messages: Messages): String = messages(s"${Identification.messageKeyPrefix}.$this.arg")
+  def arg(implicit messages: Messages): String = messages(s"${Identification.messageKeyPrefix}.$this")
   val identificationType: Int
 
   override val messageKeyPrefix: String = Identification.messageKeyPrefix
@@ -69,7 +69,7 @@ object Identification extends EnumerableType[Identification] {
     override val identificationType: Int = 81
   }
 
-  val messageKeyPrefix: String = "transportMeans.departure.identification"
+  val messageKeyPrefix: String = "transportMeans.identification"
 
   val values: Seq[Identification] = Seq(
     SeaGoingVessel,

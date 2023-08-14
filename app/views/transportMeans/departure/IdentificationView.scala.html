@@ -32,7 +32,7 @@
 @(form: Form[Identification], lrn: LocalReferenceNumber, identifiers: Seq[Identification], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportMeans.departure.identification.title"),
+    title = messages("transportMeans.identification.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -45,7 +45,7 @@
             field = form("value"),
             radioType = Radio(
                 caption = Some(messages("departureMeansOfTransport.caption")),
-                heading = messages("transportMeans.departure.identification.heading")
+                heading = messages("transportMeans.identification.heading")
             ),
             radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
         )

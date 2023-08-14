@@ -32,7 +32,7 @@ class IdentificationViewSpec extends RadioViewBehaviours[Identification] {
   override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
     injector.instanceOf[IdentificationView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "transportMeans.departure.identification"
+  override val prefix: String = "transportMeans.identification"
 
   override def radioItems(fieldId: String, checkedValue: Option[Identification] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
