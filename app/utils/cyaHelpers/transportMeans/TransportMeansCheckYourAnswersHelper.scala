@@ -88,7 +88,7 @@ class TransportMeansCheckYourAnswersHelper(
   def departureIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
     page = IdentificationPage,
     formatAnswer = formatEnumAsText(Identification.messageKeyPrefix),
-    prefix = "transportMeans.identification",
+    prefix = "transportMeans.departure.identification",
     id = Some("change-transport-means-departure-identification")
   )
 

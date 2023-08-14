@@ -69,7 +69,7 @@ object Identification extends EnumerableType[Identification] {
     override val identificationType: Int = 81
   }
 
-  val messageKeyPrefix: String = "transportMeans.identification"
+  val messageKeyPrefix: String = "transportMeans.departure.identification"
 
   val values: Seq[Identification] = Seq(
     SeaGoingVessel,
