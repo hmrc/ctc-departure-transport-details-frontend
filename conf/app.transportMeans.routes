@@ -1,6 +1,11 @@
 ->         /                                                                             app.transportMeans.departure.Routes
 ->         /                                                                             app.transportMeans.active.Routes
 
+GET        /inland-mode-of-transport/add/:lrn                                            controllers.transportMeans.AddInlandModeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /inland-mode-of-transport/add/:lrn                                            controllers.transportMeans.AddInlandModeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /inland-mode-of-transport/change-add/:lrn                                     controllers.transportMeans.AddInlandModeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /inland-mode-of-transport/change-add/:lrn                                     controllers.transportMeans.AddInlandModeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
 GET        /inland-mode-of-transport/:lrn                                                controllers.transportMeans.InlandModeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /inland-mode-of-transport/:lrn                                                controllers.transportMeans.InlandModeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /change-inland-mode-of-transport/:lrn                                         controllers.transportMeans.InlandModeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

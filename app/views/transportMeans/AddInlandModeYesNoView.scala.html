@@ -16,10 +16,10 @@
 
 @import controllers.transportMeans.routes
 @import models.LocalReferenceNumber
-@import models.transportMeans.InlandMode
-@import views.html.components.{Button, ErrorSummary, InputRadio, Heading}
+@import models.transportMeans.InlandModeYesNo
 @import viewModels.components.InputRadioViewModel
 @import viewModels.components.InputRadioViewModel._
+@import views.html.components.{Button, ErrorSummary, InputRadio}
 
 @this(
     mainTemplate: MainTemplate,
@@ -29,25 +29,27 @@
     button: Button
 )
 
-@(form: Form[InlandMode], lrn: LocalReferenceNumber, inlandModes: Seq[InlandMode], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[InlandModeYesNo], lrn: LocalReferenceNumber, inlandModeYesNoOptions: Seq[InlandModeYesNo],  mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportMeans.inlandMode.title"),
+    title = messages("transportMeans.addInlandModeYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.InlandModeController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddInlandModeYesNoController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
+
         @inputRadio(
             field = form("value"),
-            radioType = Radio(
-                heading = messages("transportMeans.inlandMode.heading"),
-                caption = Some(messages("inlandMode.caption"))
+            radioType = RadioWithAdditionalHtml(
+                heading = messages("transportMeans.addInlandModeYesNo.heading"),
+                caption = Some(messages("inlandMode.caption")),
+                additionalHtml = messages("transportMeans.addInlandModeYesNo.paragraph").toParagraph
             ),
-            radioItems = fieldId => inlandModes.toRadioItems(fieldId, form.value)
+            radioItems = fieldId => inlandModeYesNoOptions.toRadioItems(fieldId, form.value)
         )
 
         @button(attributes = Map("id" -> "submit"))
