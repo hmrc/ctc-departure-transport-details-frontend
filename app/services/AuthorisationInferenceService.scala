@@ -59,6 +59,3 @@ class AuthorisationInferenceService @Inject() () {
     }
   }
 }
-
-// Probably want to return a Try/Option to make sure we have Inferred a value
-// From the controller we call this and redirect using the navigator
