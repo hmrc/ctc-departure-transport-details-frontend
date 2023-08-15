@@ -101,9 +101,16 @@ departureMeansOfTransport.caption = Transport details - Departure means of trans
 activeBorderModeOfTransport.caption = Transport details - Border mode of transport
 activeBorderMeansOfTransport.caption = Transport details - Border means of transport
 
+transportMeans.addInlandModeYesNo.title = Do you want to add an inland mode of transport?
+transportMeans.addInlandModeYesNo.heading = Do you want to add an inland mode of transport?
+transportMeans.addInlandModeYesNo.paragraph = This is the mode of transport used from the UK office of departure to a UK port or airport.
+transportMeans.addInlandModeYesNo.yes = Yes
+transportMeans.addInlandModeYesNo.no = No - the goods are already at the port or airport
+transportMeans.addInlandModeYesNo.change.hidden = if you want to add a inland mode
+transportMeans.addInlandModeYesNo.error.required = Select yes if you want to add an inland mode of transport
+
 transportMeans.inlandMode.title = Which inland mode of transport are you using?
 transportMeans.inlandMode.heading = Which inland mode of transport are you using?
-transportMeans.inlandMode.paragraph = This is the mode of transport used from the UK office of departure to a UK port or airport.
 transportMeans.inlandMode.maritime = Maritime
 transportMeans.inlandMode.rail = Rail
 transportMeans.inlandMode.road = Road

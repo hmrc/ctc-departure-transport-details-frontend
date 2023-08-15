@@ -18,26 +18,26 @@ package views.transportMeans
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.transportMeans.InlandMode
+import models.transportMeans.InlandModeYesNo
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import views.behaviours.RadioViewBehaviours
-import views.html.transportMeans.InlandModeView
+import views.html.transportMeans.AddInlandModeYesNoView
 
-class InlandModeViewSpec extends RadioViewBehaviours[InlandMode] {
+class AddInlandModeYesNoViewSpec extends RadioViewBehaviours[InlandModeYesNo] {
 
-  override def form: Form[InlandMode] = new EnumerableFormProvider()(prefix)
+  override def form: Form[InlandModeYesNo] = new EnumerableFormProvider()(prefix)
 
-  override def applyView(form: Form[InlandMode]): HtmlFormat.Appendable =
-    injector.instanceOf[InlandModeView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[InlandModeYesNo]): HtmlFormat.Appendable =
+    injector.instanceOf[AddInlandModeYesNoView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "transportMeans.inlandMode"
+  override val prefix: String = "transportMeans.addInlandModeYesNo"
 
-  override def radioItems(fieldId: String, checkedValue: Option[InlandMode] = None): Seq[RadioItem] =
+  override def radioItems(fieldId: String, checkedValue: Option[InlandModeYesNo] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[InlandMode] = InlandMode.values
+  override def values: Seq[InlandModeYesNo] = InlandModeYesNo.values
 
   behave like pageWithTitle()
 
@@ -46,6 +46,8 @@ class InlandModeViewSpec extends RadioViewBehaviours[InlandMode] {
   behave like pageWithSectionCaption("Transport details - Inland mode of transport")
 
   behave like pageWithHeading()
+
+  behave like pageWithContent("p", "This is the mode of transport used from the UK office of departure to a UK port or airport.")
 
   behave like pageWithRadioItems()
 
