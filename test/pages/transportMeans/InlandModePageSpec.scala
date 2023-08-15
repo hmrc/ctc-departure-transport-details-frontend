@@ -20,6 +20,7 @@ import models.transportMeans.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
+import pages.sections.authorisationsAndLimit.AuthorisationsAndLimitSection
 import pages.sections.transportMeans.{TransportMeansActiveListSection, TransportMeansDepartureSection}
 import play.api.libs.json.{JsArray, Json}
 
@@ -35,19 +36,21 @@ class InlandModePageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when answer changes to something that isn't mail" - {
-        "must remove departure section" in {
+        "must remove departure and authorisationsAndLimit sections" in {
           forAll(arbitrary[InlandMode]) {
             inlandMode =>
               val userAnswers = emptyUserAnswers
                 .setValue(InlandModePage, inlandMode)
                 .setValue(TransportMeansDepartureSection, Json.obj("foo" -> "bar"))
                 .setValue(TransportMeansActiveListSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+                .setValue(AuthorisationsAndLimitSection, Json.obj("foo" -> "bar"))
 
               forAll(Gen.oneOf(InlandMode.values).filterNot(_ == InlandMode.Mail).filterNot(_ == inlandMode)) {
                 differentInlandModeNotMail =>
                   val result = userAnswers.setValue(InlandModePage, differentInlandModeNotMail)
 
                   result.get(TransportMeansDepartureSection) must not be defined
+                  result.get(AuthorisationsAndLimitSection) must not be defined
                   result.get(TransportMeansActiveListSection) mustBe defined
               }
           }
@@ -56,17 +59,19 @@ class InlandModePageSpec extends PageBehaviours {
     }
 
     "when answer changes to Mail" - {
-      "must remove departure and active sections" in {
+      "must remove departure, active and authorisationsAndLimit sections" in {
         forAll(arbitrary[InlandMode].suchThat(_ != InlandMode.Mail)) {
           inlandMode =>
             val userAnswers = emptyUserAnswers
               .setValue(InlandModePage, inlandMode)
               .setValue(TransportMeansDepartureSection, Json.obj("foo" -> "bar"))
               .setValue(TransportMeansActiveListSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+              .setValue(AuthorisationsAndLimitSection, Json.obj("foo" -> "bar"))
 
             val result = userAnswers.setValue(InlandModePage, InlandMode.Mail)
 
             result.get(TransportMeansDepartureSection) must not be defined
+            result.get(AuthorisationsAndLimitSection) must not be defined
             result.get(TransportMeansActiveListSection) must not be defined
         }
       }
