@@ -37,7 +37,10 @@ object TransportMeansAnswersViewModel {
 
       val inlandModeSection = Section(
         sectionTitle = messages("transportMeans.inlandMode.subheading"),
-        rows = Seq(helper.inlandMode).flatten
+        rows = Seq(
+          helper.addInlandModeYesNo,
+          helper.inlandMode
+        ).flatten
       )
 
       val departureMeansSection = Section(

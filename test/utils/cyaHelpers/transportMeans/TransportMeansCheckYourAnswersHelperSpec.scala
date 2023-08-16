@@ -24,7 +24,7 @@ import models.domain.UserAnswersReader
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
 import models.reference.Nationality
 import models.transportMeans.departure.{Identification => DepartureIdentification}
-import models.transportMeans.{BorderModeOfTransport, InlandMode}
+import models.transportMeans.{BorderModeOfTransport, InlandMode, InlandModeYesNo}
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -117,6 +117,49 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               result.id mustBe "add-or-remove-border-means-of-transport"
               result.text mustBe "Add or remove border means of transport"
               result.href mustBe routes.AddAnotherBorderTransportController.onPageLoad(answers.lrn, mode).url
+          }
+        }
+      }
+    }
+
+    "addiInlandModeYesNo" - {
+      "must return None" - {
+        "when addInlandModeYesNoPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addInlandModeYesNo
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when addInlandModeYesNoPage defined" in {
+          forAll(arbitrary[Mode], arbitrary[InlandModeYesNo]) {
+            (mode, addInlandMode) =>
+              val answers = emptyUserAnswers.setValue(AddInlandModeYesNoPage, addInlandMode)
+              val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
+              val result  = helper.addInlandModeYesNo
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("Do you want to add an inland mode of transport?".toText),
+                  value = Value(messages(s"${"transportMeans.addInlandModeYesNo"}.$addInlandMode").toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = controllers.transportMeans.routes.AddInlandModeYesNoController.onPageLoad(answers.lrn, mode).url,
+                          visuallyHiddenText = Some("if you want to add an inland mode of transport"),
+                          attributes = Map("id" -> "change-add-transport-means-inland-mode")
+                        )
+                      )
+                    )
+                  )
+                )
+              )
           }
         }
       }
