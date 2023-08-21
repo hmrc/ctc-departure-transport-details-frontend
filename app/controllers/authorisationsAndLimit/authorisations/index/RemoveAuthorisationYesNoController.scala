@@ -24,7 +24,7 @@ import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import models.authorisations.AuthorisationType
 import models.requests.SpecificDataRequestProvider2
-import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
+import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
 import pages.sections.authorisationsAndLimit.AuthorisationSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -59,7 +59,7 @@ class RemoveAuthorisationYesNoController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage.getFirst(AuthorisationTypePage(authorisationIndex)))
+    .andThen(getMandatoryPage.getFirst(AuthorisationTypePage(authorisationIndex), InferredAuthorisationTypePage(authorisationIndex)))
     .andThen(getMandatoryPage.getSecond(AuthorisationReferenceNumberPage(authorisationIndex))) {
       implicit request =>
         Ok(view(form, lrn, mode, authorisationIndex, authType.forDisplay, authRefNumber))
@@ -67,7 +67,7 @@ class RemoveAuthorisationYesNoController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage.getFirst(AuthorisationTypePage(authorisationIndex)))
+    .andThen(getMandatoryPage.getFirst(AuthorisationTypePage(authorisationIndex), InferredAuthorisationTypePage(authorisationIndex)))
     .andThen(getMandatoryPage.getSecond(AuthorisationReferenceNumberPage(authorisationIndex)))
     .async {
       implicit request =>
