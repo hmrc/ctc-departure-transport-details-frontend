@@ -39,8 +39,8 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
 
   private val formProvider = new YesNoFormProvider()
 
-  private def form(authType: AuthorisationType, authRefNumber: String): Form[Boolean] =
-    formProvider("authorisations.index.removeAuthorisationYesNo", authType, authRefNumber)
+  private def form(authType: AuthorisationType): Form[Boolean] =
+    formProvider("authorisations.index.removeAuthorisationYesNo", authType)
 
   private val mode                               = NormalMode
   private lazy val removeAuthorisationYesNoRoute = routes.RemoveAuthorisationYesNoController.onPageLoad(lrn, mode, authorisationIndex).url
@@ -66,7 +66,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(authType, authRefNumber), lrn, mode, authorisationIndex, authType.forDisplay, authRefNumber)(request, messages).toString
+          view(form(authType), lrn, mode, authorisationIndex, authType.forDisplay)(request, messages).toString
       }
 
       "when Authorisation Type is inferred" in {
@@ -84,7 +84,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form(authType, authRefNumber), lrn, mode, authorisationIndex, authType.forDisplay, authRefNumber)(request, messages).toString
+          view(form(authType), lrn, mode, authorisationIndex, authType.forDisplay)(request, messages).toString
       }
     }
 
@@ -176,7 +176,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
       setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, removeAuthorisationYesNoRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form(authType, authRefNumber).bind(Map("value" -> ""))
+      val boundForm = form(authType).bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
@@ -185,7 +185,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
       val view = injector.instanceOf[RemoveAuthorisationYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, authorisationIndex, authType.forDisplay, authRefNumber)(request, messages).toString
+        view(boundForm, lrn, mode, authorisationIndex, authType.forDisplay)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET" - {

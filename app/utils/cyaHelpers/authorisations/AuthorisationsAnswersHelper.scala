@@ -45,7 +45,7 @@ class AuthorisationsAnswersHelper(
 
         buildListItem[AuthorisationDomain](
           nameWhenComplete = _.asString,
-          nameWhenInProgress = userAnswers.get(AuthorisationTypePage(index)).map(_.forDisplay),
+          nameWhenInProgress = (userAnswers.get(AuthorisationTypePage(index)) orElse userAnswers.get(InferredAuthorisationTypePage(index))).map(_.forDisplay),
           removeRoute = removeRoute(index)
         )(AuthorisationDomain.userAnswersReader(index))
     }

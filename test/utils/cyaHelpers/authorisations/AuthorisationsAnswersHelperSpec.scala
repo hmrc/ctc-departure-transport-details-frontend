@@ -172,6 +172,45 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
           }
         }
       }
+
+      "when user answers populated with an in-progress authorisation" - {
+        "and authorisation type is inferred" in {
+          forAll(arbitrary[Mode], arbitrary[AuthorisationType], nonEmptyString) {
+            (mode, authType, reference) =>
+              val userAnswers = emptyUserAnswers
+                .setValue(InferredAuthorisationTypePage(Index(0)), authType)
+                .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
+                .setValue(InferredAuthorisationTypePage(Index(1)), authType)
+                .setValue(AuthorisationReferenceNumberPage(Index(1)), reference)
+                .setValue(InferredAuthorisationTypePage(Index(2)), authType)
+              val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
+
+              helper.listItems mustBe Seq(
+                Right(
+                  ListItem(
+                    name = s"${authType.forDisplay} - $reference",
+                    changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
+                    removeUrl = None
+                  )
+                ),
+                Right(
+                  ListItem(
+                    name = s"${authType.forDisplay} - $reference",
+                    changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
+                    removeUrl = None
+                  )
+                ),
+                Left(
+                  ListItem(
+                    name = authType.forDisplay,
+                    changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(2)).url,
+                    removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(2)).url)
+                  )
+                )
+              )
+          }
+        }
+      }
     }
   }
 }
