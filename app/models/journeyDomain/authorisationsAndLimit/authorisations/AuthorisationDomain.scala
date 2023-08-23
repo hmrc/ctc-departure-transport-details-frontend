@@ -39,7 +39,10 @@ case class AuthorisationDomain(authorisationType: AuthorisationType, referenceNu
         // User cannot change authorisation type, they have to remove it when they want to make a change.
         authorisationRoutes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, index)
       case CompletingJourney =>
-        authorisationsRoutes.AddAnotherAuthorisationController.onPageLoad(userAnswers.lrn, mode)
+        (userAnswers.get(InferredAuthorisationTypePage(index.next)), userAnswers.get(AuthorisationReferenceNumberPage(index.next))) match {
+          case (Some(_), None) => authorisationRoutes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, index.next)
+          case _               => authorisationsRoutes.AddAnotherAuthorisationController.onPageLoad(userAnswers.lrn, mode)
+        }
     }
   }
 }

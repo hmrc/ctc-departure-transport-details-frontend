@@ -27,7 +27,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
 import pages.sections.authorisationsAndLimit.AuthorisationSection
-import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
+import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -39,8 +39,8 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
 
   private val formProvider = new YesNoFormProvider()
 
-  private def form(authType: AuthorisationType, authRefNumber: String): Form[Boolean] =
-    formProvider("authorisations.index.removeAuthorisationYesNo", authType, authRefNumber)
+  private def form(authType: AuthorisationType): Form[Boolean] =
+    formProvider("authorisations.index.removeAuthorisationYesNo", authType)
 
   private val mode                               = NormalMode
   private lazy val removeAuthorisationYesNoRoute = routes.RemoveAuthorisationYesNoController.onPageLoad(lrn, mode, authorisationIndex).url
@@ -50,55 +50,100 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
 
   "RemoveAuthorisationYesNo Controller" - {
 
-    "must return OK and the correct view for a GET" in {
-
-      val userAnswers = emptyUserAnswers
-        .setValue(AuthorisationTypePage(authorisationIndex), authType)
-        .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authRefNumber)
-
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, removeAuthorisationYesNoRoute)
-      val result  = route(app, request).value
-
-      val view = injector.instanceOf[RemoveAuthorisationYesNoView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form(authType, authRefNumber), lrn, mode, authorisationIndex, authType.forDisplay, authRefNumber)(request, messages).toString
-    }
-
-    "when yes submitted" - {
-      "must redirect to add another country of routing and remove country at specified index" in {
-
-        reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
-
+    "must return OK and the correct view for a GET" - {
+      "when Authorisation Type is not inferred" in {
         val userAnswers = emptyUserAnswers
           .setValue(AuthorisationTypePage(authorisationIndex), authType)
           .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authRefNumber)
 
         setExistingUserAnswers(userAnswers)
 
-        val request = FakeRequest(POST, removeAuthorisationYesNoRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+        val request = FakeRequest(GET, removeAuthorisationYesNoRoute)
+        val result  = route(app, request).value
 
-        val result = route(app, request).value
+        val view = injector.instanceOf[RemoveAuthorisationYesNoView]
 
-        status(result) mustEqual SEE_OTHER
+        status(result) mustEqual OK
 
-        redirectLocation(result).value mustEqual
-          controllers.authorisationsAndLimit.authorisations.routes.AddAnotherAuthorisationController.onPageLoad(lrn, mode).url
+        contentAsString(result) mustEqual
+          view(form(authType), lrn, mode, authorisationIndex, authType.forDisplay)(request, messages).toString
+      }
 
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.get(AuthorisationSection(index)) mustNot be(defined)
+      "when Authorisation Type is inferred" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(InferredAuthorisationTypePage(authorisationIndex), authType)
+          .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authRefNumber)
+
+        setExistingUserAnswers(userAnswers)
+
+        val request = FakeRequest(GET, removeAuthorisationYesNoRoute)
+        val result  = route(app, request).value
+
+        val view = injector.instanceOf[RemoveAuthorisationYesNoView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form(authType), lrn, mode, authorisationIndex, authType.forDisplay)(request, messages).toString
+      }
+    }
+
+    "when yes submitted" - {
+      "must redirect to add another Authorisation Type of routing and remove Authorisation Type at specified index" - {
+        "when Authorisation Type is not inferred" in {
+          reset(mockSessionRepository)
+          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AuthorisationTypePage(authorisationIndex), authType)
+            .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authRefNumber)
+
+          setExistingUserAnswers(userAnswers)
+
+          val request = FakeRequest(POST, removeAuthorisationYesNoRoute)
+            .withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual
+            controllers.authorisationsAndLimit.authorisations.routes.AddAnotherAuthorisationController.onPageLoad(lrn, mode).url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+          userAnswersCaptor.getValue.get(AuthorisationSection(index)) mustNot be(defined)
+        }
+
+        "when Authorisation Type is inferred" in {
+          reset(mockSessionRepository)
+          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+          val userAnswers = emptyUserAnswers
+            .setValue(InferredAuthorisationTypePage(authorisationIndex), authType)
+            .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authRefNumber)
+
+          setExistingUserAnswers(userAnswers)
+
+          val request = FakeRequest(POST, removeAuthorisationYesNoRoute)
+            .withFormUrlEncodedBody(("value", "true"))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual
+            controllers.authorisationsAndLimit.authorisations.routes.AddAnotherAuthorisationController.onPageLoad(lrn, mode).url
+
+          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+          userAnswersCaptor.getValue.get(AuthorisationSection(index)) mustNot be(defined)
+        }
       }
     }
 
     "when no submitted" - {
-      "must redirect to add another country and not remove country at specified index" in {
+      "must redirect to add another Authorisation Type and not remove Authorisation Type at specified index" in {
         reset(mockSessionRepository)
         when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -131,7 +176,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
       setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, removeAuthorisationYesNoRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form(authType, authRefNumber).bind(Map("value" -> ""))
+      val boundForm = form(authType).bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
@@ -140,7 +185,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
       val view = injector.instanceOf[RemoveAuthorisationYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, authorisationIndex, authType.forDisplay, authRefNumber)(request, messages).toString
+        view(boundForm, lrn, mode, authorisationIndex, authType.forDisplay)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET" - {

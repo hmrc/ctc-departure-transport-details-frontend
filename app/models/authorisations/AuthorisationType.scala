@@ -16,12 +16,9 @@
 
 package models.authorisations
 
-import models.ProcedureType.Simplified
-import models.domain.GettableAsReaderOps
-import models.transportMeans.InlandMode.{Air, Maritime, Rail}
-import models.{EnumerableType, Index, Radioable, UserAnswers, WithName}
-import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
-import pages.transportMeans.InlandModePage
+import models._
+import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
+import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import play.api.i18n.Messages
 
 sealed trait AuthorisationType extends Radioable[AuthorisationType] {
@@ -50,20 +47,16 @@ object AuthorisationType extends EnumerableType[AuthorisationType] {
     TRD
   )
 
-  def values(userAnswers: UserAnswers): Seq[AuthorisationType] = {
-    val reader = for {
-      procedureType           <- ProcedureTypePage.reader
-      reducedDataSetIndicator <- ApprovedOperatorPage.inferredReader
-      inlandMode              <- InlandModePage.reader
-    } yield (reducedDataSetIndicator, inlandMode, procedureType) match {
-      case (true, Maritime | Rail | Air, _) => Seq(TRD)
-      case (true, _, Simplified)            => Seq(ACR)
-      case _                                => values
+  def values(userAnswers: UserAnswers, index: Index): Seq[AuthorisationType] = {
+    val numberOfAuthorisations = userAnswers.getArraySize(AuthorisationsSection)
+    val authorisationTypes = (0 until numberOfAuthorisations).map(Index(_)).foldLeft[Seq[AuthorisationType]](Nil) {
+      (acc, authorisationIndex) =>
+        userAnswers.get(AuthorisationTypePage(authorisationIndex)) orElse userAnswers.get(InferredAuthorisationTypePage(authorisationIndex)) match {
+          case Some(value) if authorisationIndex != index => acc :+ value
+          case _                                          => acc
+        }
     }
-    reader.run(userAnswers).getOrElse(values)
+
+    values.diff(authorisationTypes)
   }
-
-  def values(userAnswers: UserAnswers, index: Index): Seq[AuthorisationType] =
-    if (index.isFirst) values(userAnswers) else values
-
 }

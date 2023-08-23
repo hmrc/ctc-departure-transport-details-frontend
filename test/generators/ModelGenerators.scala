@@ -65,6 +65,10 @@ trait ModelGenerators {
     Gen.oneOf(NormalMode, CheckMode)
   }
 
+  implicit lazy val arbitraryPhase: Arbitrary[Phase] = Arbitrary {
+    Gen.oneOf(Phase.Transition, Phase.PostTransition)
+  }
+
   implicit lazy val arbitraryIndex: Arbitrary[Index] = Arbitrary {
     for {
       position <- Gen.choose(0: Int, 10: Int)
@@ -156,6 +160,21 @@ trait ModelGenerators {
   val arbitraryNonRailInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
       Gen.oneOf(InlandMode.values.filterNot(_ == Rail))
+    }
+
+  val arbitraryMaritimeRailAirInlandMode: Arbitrary[InlandMode] =
+    Arbitrary {
+      Gen.oneOf(InlandMode.Maritime, InlandMode.Rail, InlandMode.Air)
+    }
+
+  val arbitraryNonMaritimeRailAirInlandMode: Arbitrary[InlandMode] =
+    Arbitrary {
+      Gen.oneOf(
+        InlandMode.values
+          .filterNot(_ == InlandMode.Maritime)
+          .filterNot(_ == InlandMode.Rail)
+          .filterNot(_ == InlandMode.Air)
+      )
     }
 
   implicit lazy val arbitraryPaymentMethod: Arbitrary[models.equipment.PaymentMethod] =

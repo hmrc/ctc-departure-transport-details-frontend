@@ -17,14 +17,14 @@
 package controllers.authorisationsAndLimit.authorisations.index
 
 import config.PhaseConfig
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import controllers.actions._
 import controllers.authorisationsAndLimit.authorisations.{routes => authRoutes}
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
 import models.authorisations.AuthorisationType
-import models.requests.SpecificDataRequestProvider2
-import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
+import models.requests.SpecificDataRequestProvider1
+import models.{Index, LocalReferenceNumber, Mode}
+import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
 import pages.sections.authorisationsAndLimit.AuthorisationSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -48,33 +48,29 @@ class RemoveAuthorisationYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider2[AuthorisationType, String]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[AuthorisationType]#SpecificDataRequest[_]
 
-  private def authType(implicit request: Request): AuthorisationType = request.arg._1
-
-  private def authRefNumber(implicit request: Request): String = request.arg._2
+  private def authType(implicit request: Request): AuthorisationType = request.arg
 
   private def form(implicit request: Request): Form[Boolean] =
-    formProvider("authorisations.index.removeAuthorisationYesNo", authType.forDisplay, authRefNumber)
+    formProvider("authorisations.index.removeAuthorisationYesNo", authType.forDisplay)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage.getFirst(AuthorisationTypePage(authorisationIndex)))
-    .andThen(getMandatoryPage.getSecond(AuthorisationReferenceNumberPage(authorisationIndex))) {
+    .andThen(getMandatoryPage.getFirst(AuthorisationTypePage(authorisationIndex), InferredAuthorisationTypePage(authorisationIndex))) {
       implicit request =>
-        Ok(view(form, lrn, mode, authorisationIndex, authType.forDisplay, authRefNumber))
+        Ok(view(form, lrn, mode, authorisationIndex, authType.forDisplay))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage.getFirst(AuthorisationTypePage(authorisationIndex)))
-    .andThen(getMandatoryPage.getSecond(AuthorisationReferenceNumberPage(authorisationIndex)))
+    .andThen(getMandatoryPage.getFirst(AuthorisationTypePage(authorisationIndex), InferredAuthorisationTypePage(authorisationIndex)))
     .async {
       implicit request =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, authorisationIndex, authType.forDisplay, authRefNumber))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, authorisationIndex, authType.forDisplay))),
             {
               case true =>
                 AuthorisationSection(authorisationIndex)

@@ -22,6 +22,7 @@ import models.transportMeans.InlandMode.Mail
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.TransportSection
+import pages.sections.authorisationsAndLimit.AuthorisationsAndLimitSection
 import pages.sections.transportMeans.{TransportMeansActiveListSection, TransportMeansDepartureSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
@@ -40,9 +41,14 @@ case object InlandModePage extends QuestionPage[InlandMode] {
   override def cleanup(value: Option[InlandMode], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(Mail) =>
-        userAnswers.remove(TransportMeansDepartureSection).flatMap(_.remove(TransportMeansActiveListSection))
+        userAnswers
+          .remove(TransportMeansDepartureSection)
+          .flatMap(_.remove(TransportMeansActiveListSection))
+          .flatMap(_.remove(AuthorisationsAndLimitSection))
       case Some(_) =>
-        userAnswers.remove(TransportMeansDepartureSection)
+        userAnswers
+          .remove(TransportMeansDepartureSection)
+          .flatMap(_.remove(AuthorisationsAndLimitSection))
       case None =>
         super.cleanup(value, userAnswers)
     }

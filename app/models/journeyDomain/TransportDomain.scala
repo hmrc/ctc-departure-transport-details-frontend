@@ -18,6 +18,7 @@ package models.journeyDomain
 
 import cats.implicits._
 import config.PhaseConfig
+import models.ProcedureType.Normal
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
 import models.journeyDomain.carrierDetails.CarrierDetailsDomain
@@ -28,9 +29,10 @@ import models.transportMeans.InlandMode
 import models.transportMeans.InlandMode.Mail
 import models.transportMeans.InlandModeYesNo._
 import models.{Mode, Phase, UserAnswers}
+import pages.authorisationsAndLimit.AuthorisationsInferredPage
 import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.carrierDetails.CarrierDetailYesNoPage
-import pages.external.ApprovedOperatorPage
+import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
 import pages.supplyChainActors.SupplyChainActorYesNoPage
 import pages.transportMeans.{AddInlandModeYesNoPage, InlandModePage}
 import play.api.mvc.Call
@@ -52,12 +54,6 @@ case class TransportDomain(
 object TransportDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportDomain] = {
-
-    implicit lazy val authorisationsAndLimitReads: UserAnswersReader[Option[AuthorisationsAndLimitDomain]] =
-      ApprovedOperatorPage.inferredReader.flatMap {
-        case true  => UserAnswersReader[AuthorisationsAndLimitDomain].map(Some(_))
-        case false => AddAuthorisationsYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[AuthorisationsAndLimitDomain])
-      }
 
     implicit lazy val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] =
       InlandModePage.optionalReader.flatMap {
@@ -84,4 +80,18 @@ object TransportDomain {
     )
   }
 
+  implicit lazy val authorisationsAndLimitReads: UserAnswersReader[Option[AuthorisationsAndLimitDomain]] = {
+    for {
+      approvedOperator <- ApprovedOperatorPage.inferredReader
+      procedureType    <- ProcedureTypePage.reader
+      reader <- (approvedOperator, procedureType) match {
+        case (false, Normal) =>
+          AddAuthorisationsYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[AuthorisationsAndLimitDomain])
+        case _ =>
+          AuthorisationsInferredPage.reader.flatMap {
+            _ => UserAnswersReader[AuthorisationsAndLimitDomain].map(Some(_))
+          }
+      }
+    } yield reader
+  }
 }

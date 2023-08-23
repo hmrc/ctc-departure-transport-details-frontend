@@ -420,9 +420,9 @@ authorisations.addAuthorisationsYesNo.checkYourAnswersLabel = Do you want to add
 authorisations.addAuthorisationsYesNo.change.hidden = if you want to add an authorisation
 authorisations.addAuthorisationsYesNo.error.required = Select yes if you want to add an authorisation
 
-authorisations.index.removeAuthorisationYesNo.title = Are you sure you want to remove {0} authorisation {1}?
-authorisations.index.removeAuthorisationYesNo.heading = Are you sure you want to remove {0} authorisation {1}?
-authorisations.index.removeAuthorisationYesNo.error.required = Select yes if you want to remove {0} authorisation {1}
+authorisations.index.removeAuthorisationYesNo.title = Are you sure you want to remove this {0} authorisation?
+authorisations.index.removeAuthorisationYesNo.heading = Are you sure you want to remove this {0} authorisation?
+authorisations.index.removeAuthorisationYesNo.error.required = Select yes if you want to remove this {0} authorisation
 
 authorisationsAndLimit.limit.limitDate.title = When do you expect the transit to arrive in {0}?
 authorisationsAndLimit.limit.limitDate.heading = When do you expect the transit to arrive in {0}?
