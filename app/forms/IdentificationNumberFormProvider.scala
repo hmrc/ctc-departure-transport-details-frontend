@@ -24,13 +24,13 @@ import javax.inject.Inject
 
 class IdentificationNumberFormProvider @Inject() (phaseConfig: PhaseConfig) extends Mappings {
 
-  def apply(prefix: String, args: String*): Form[String] =
+  def apply(prefix: String): Form[String] =
     Form(
-      "value" -> text(s"$prefix.error.required", args)
+      "value" -> text(s"$prefix.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(phaseConfig.maxIdentificationNumberLength, phaseConfig.lengthError(prefix), args),
-            regexp(alphaNumericRegex, s"$prefix.error.invalid", args)
+            maxLength(phaseConfig.maxIdentificationNumberLength, phaseConfig.lengthError(prefix)),
+            regexp(alphaNumericRegex, s"$prefix.error.invalid")
           )
         )
     )

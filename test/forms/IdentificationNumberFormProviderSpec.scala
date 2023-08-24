@@ -18,6 +18,7 @@ package forms
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
+import models.domain.StringFieldRegex.alphaNumericRegex
 import models.transportMeans.active.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -45,7 +46,7 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with Sp
 
       running(app) {
 
-        val form      = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix, dynamicTitle)
+        val form      = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
         val fieldName = "value"
 
         behave like fieldThatBindsValidData(
@@ -58,19 +59,19 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with Sp
           form,
           fieldName,
           maxLength = maxIdentificationNumberTransitionLength,
-          lengthError = FormError(fieldName, lengthKey, Seq(dynamicTitle))
+          lengthError = FormError(fieldName, lengthKey, Seq(maxIdentificationNumberTransitionLength))
         )
 
         behave like mandatoryField(
           form,
           fieldName,
-          requiredError = FormError(fieldName, requiredKey, Seq(dynamicTitle))
+          requiredError = FormError(fieldName, requiredKey)
         )
 
         behave like fieldWithInvalidCharacters(
           form,
           fieldName,
-          error = FormError(fieldName, invalidKey, Seq(dynamicTitle)),
+          error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.toString())),
           maxIdentificationNumberTransitionLength
         )
       }
@@ -87,7 +88,7 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with Sp
 
       running(app) {
 
-        val form      = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix, dynamicTitle)
+        val form      = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
         val fieldName = "value"
 
         behave like fieldThatBindsValidData(
@@ -100,19 +101,19 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with Sp
           form,
           fieldName,
           maxLength = maxIdentificationNumberPostTransitionLength,
-          lengthError = FormError(fieldName, lengthKey, Seq(dynamicTitle))
+          lengthError = FormError(fieldName, lengthKey, Seq(maxIdentificationNumberPostTransitionLength))
         )
 
         behave like mandatoryField(
           form,
           fieldName,
-          requiredError = FormError(fieldName, requiredKey, Seq(dynamicTitle))
+          requiredError = FormError(fieldName, requiredKey)
         )
 
         behave like fieldWithInvalidCharacters(
           form,
           fieldName,
-          error = FormError(fieldName, invalidKey, Seq(dynamicTitle)),
+          error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.toString())),
           maxIdentificationNumberPostTransitionLength
         )
       }

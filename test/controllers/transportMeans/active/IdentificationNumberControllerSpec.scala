@@ -38,16 +38,13 @@ import scala.concurrent.Future
 
 class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val withNoIDTypePrefix: String = "transportMeans.departure.meansIdentificationNumber.withNoIDType"
-  private val withIDTypePrefix: String   = "transportMeans.departure.meansIdentificationNumber.withIDType"
+  private val prefix = "transportMeans.active.identificationNumber"
 
-  private val formProvider = app.injector.instanceOf[IdentificationNumberFormProvider]
-
-  private def withNoIDTypeForm                               = formProvider(withNoIDTypePrefix)
-  private def withIDTypeForm(identification: Identification) = formProvider(withIDTypePrefix, identification.forDisplay)
-
+  private val formProvider                   = app.injector.instanceOf[IdentificationNumberFormProvider]
+  private val form                           = formProvider(prefix)
   private val mode                           = NormalMode
   private lazy val identificationNumberRoute = routes.IdentificationNumberController.onPageLoad(lrn, mode, index).url
+  val identification: Identification         = arbitrary[Identification].sample.value
 
   private val validAnswer = "testString"
 
@@ -60,91 +57,58 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
   "IdentificationNumber Controller" - {
 
-    "must return OK and the correct view for a GET" - {
-      "when identification type page has been answered" in {
-        forAll(arbitrary[Identification], identifierPageGen) {
-          (identifier, page) =>
-            val userAnswers = emptyUserAnswers.setValue(page, identifier)
-            setExistingUserAnswers(userAnswers)
+    "must return Ok and the correct view for a get" in {
+      forAll(arbitrary[Identification], identifierPageGen) {
+        (identifier, page) =>
+          val userAnswers = emptyUserAnswers
+            .setValue(page, identifier)
+            .setValue(IdentificationPage(index), identification)
 
-            val request = FakeRequest(GET, identificationNumberRoute)
+          setExistingUserAnswers(userAnswers)
+          val request = FakeRequest(GET, identificationNumberRoute)
 
-            val result = route(app, request).value
+          val result = route(app, request).value
 
-            val view = injector.instanceOf[IdentificationNumberView]
+          val view = injector.instanceOf[IdentificationNumberView]
 
-            status(result) mustEqual OK
+          status(result) mustEqual OK
 
-            contentAsString(result) mustEqual
-              view(withIDTypeForm(identifier), lrn, mode, activeIndex, withIDTypePrefix, identifier.forDisplay)(request, messages).toString
-        }
-      }
-      "when identification type page has not been answered" in {
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(GET, identificationNumberRoute)
-
-        val result = route(app, request).value
-
-        val view = injector.instanceOf[IdentificationNumberView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(withNoIDTypeForm, lrn, mode, activeIndex, withNoIDTypePrefix)(request, messages).toString
-
+          contentAsString(result) mustEqual
+            view(form, lrn, mode, activeIndex, identification.forDisplay.capitalize)(request, messages).toString
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" - {
-      "when identification type page has been answered" in {
-        forAll(arbitrary[Identification], identifierPageGen) {
-          (identifier, page) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(page, identifier)
-              .setValue(IdentificationNumberPage(index), validAnswer)
+    "must populate the view correctly on a GET when the question has previously been answered" in {
+      forAll(arbitrary[Identification], identifierPageGen) {
+        (identifier, page) =>
+          val userAnswers = emptyUserAnswers
+            .setValue(page, identifier)
+            .setValue(IdentificationPage(index), identification)
+            .setValue(IdentificationNumberPage(index), "testString")
 
-            setExistingUserAnswers(userAnswers)
+          setExistingUserAnswers(userAnswers)
 
-            val request = FakeRequest(GET, identificationNumberRoute)
+          val request    = FakeRequest(GET, identificationNumberRoute)
+          val filledForm = form.bind(Map("value" -> "testString"))
 
-            val result = route(app, request).value
+          val result = route(app, request).value
 
-            val filledForm = withIDTypeForm(identifier).bind(Map("value" -> validAnswer))
+          val view = injector.instanceOf[IdentificationNumberView]
 
-            val view = injector.instanceOf[IdentificationNumberView]
+          status(result) mustEqual OK
 
-            status(result) mustEqual OK
-
-            contentAsString(result) mustEqual
-              view(filledForm, lrn, mode, activeIndex, withIDTypePrefix, identifier.forDisplay)(request, messages).toString
-        }
-      }
-      "when identification type page has not been answered" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(IdentificationNumberPage(index), validAnswer)
-
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(GET, identificationNumberRoute)
-
-        val result = route(app, request).value
-
-        val filledForm = withNoIDTypeForm.bind(Map("value" -> validAnswer))
-
-        val view = injector.instanceOf[IdentificationNumberView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(filledForm, lrn, mode, activeIndex, withNoIDTypePrefix)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(filledForm, lrn, mode, activeIndex, identification.forDisplay)(request, messages).toString
       }
     }
 
     "must redirect to the next page when valid data is submitted" in {
       forAll(arbitrary[Identification], identifierPageGen) {
         (identifier, page) =>
-          val userAnswers = emptyUserAnswers.setValue(page, identifier)
+          val userAnswers = emptyUserAnswers
+            .setValue(page, identifier)
+            .setValue(IdentificationPage(index), identification)
+
           setExistingUserAnswers(userAnswers)
 
           when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
@@ -164,13 +128,13 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
       "when identification type page has been answered" in {
         forAll(arbitrary[Identification], identifierPageGen) {
           (identifier, page) =>
-            val userAnswers = emptyUserAnswers.setValue(page, identifier)
+            val userAnswers = emptyUserAnswers
+              .setValue(page, identifier)
+              .setValue(IdentificationPage(index), identification)
             setExistingUserAnswers(userAnswers)
 
-            val invalidAnswer = ""
-
-            val request    = FakeRequest(POST, identificationNumberRoute).withFormUrlEncodedBody(("value", invalidAnswer))
-            val filledForm = withIDTypeForm(identifier).bind(Map("value" -> invalidAnswer))
+            val request    = FakeRequest(POST, identificationNumberRoute).withFormUrlEncodedBody(("value", ""))
+            val filledForm = form.bind(Map("value" -> ""))
 
             val result = route(app, request).value
 
@@ -179,27 +143,10 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
             val view = injector.instanceOf[IdentificationNumberView]
 
             contentAsString(result) mustEqual
-              view(filledForm, lrn, mode, activeIndex, withIDTypePrefix, identifier.forDisplay)(request, messages).toString
+              view(filledForm, lrn, mode, activeIndex, identification.toString)(request, messages).toString
         }
       }
-      "when identification type page has not been answered" in {
 
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val invalidAnswer = ""
-
-        val request    = FakeRequest(POST, identificationNumberRoute).withFormUrlEncodedBody(("value", invalidAnswer))
-        val filledForm = withNoIDTypeForm.bind(Map("value" -> invalidAnswer))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual BAD_REQUEST
-
-        val view = injector.instanceOf[IdentificationNumberView]
-
-        contentAsString(result) mustEqual
-          view(filledForm, lrn, mode, activeIndex, withNoIDTypePrefix)(request, messages).toString
-      }
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
