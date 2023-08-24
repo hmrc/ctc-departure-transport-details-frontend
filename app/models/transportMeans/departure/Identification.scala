@@ -21,7 +21,7 @@ import pages.transportMeans.InlandModePage
 import play.api.i18n.Messages
 
 sealed trait Identification extends Radioable[Identification] {
-  def arg(implicit messages: Messages): String = messages(s"${Identification.messageKeyPrefix}.$this")
+  def arg(implicit messages: Messages): String = messages(s"${Identification.messageKeyPrefix}.$this.arg")
   val identificationType: Int
 
   override val messageKeyPrefix: String = Identification.messageKeyPrefix

@@ -18,24 +18,23 @@
 @import controllers.transportMeans.departure.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputTextViewModel._
-@import views.html.components.{Button, ErrorSummary, InputText, InsetText}
+@import views.html.components.{Button, ErrorSummary, InputText}
 @import models.transportMeans.departure.Identification
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputText: InputText,
-    insetText: InsetText,
     errorSummary: ErrorSummary,
     button: Button,
     phaseConfig: PhaseConfig
 )
 
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, identificationType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, prefix: String, args: String*)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportMeans.departure.meansIdentificationNumber.title"),
+    title = messages(s"$prefix.title", args: _*),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -46,10 +45,9 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = TextInputWithHiddenLabel(
-                heading = messages("transportMeans.departure.meansIdentificationNumber.heading"),
-                caption = Some(messages("departureMeansOfTransport.caption")),
-                additionalHtml = insetText(identificationType.capitalize)
+            inputTextType = OrdinaryTextInput(
+                heading = messages(s"$prefix.heading", args: _*),
+                caption = Some(messages("departureMeansOfTransport.caption"))
             ),
             inputClass = InputSize.Width20,
             hint = Some(messages(phaseConfig.departureIdentificationNumberHint))
