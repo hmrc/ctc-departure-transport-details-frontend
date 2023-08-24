@@ -38,9 +38,9 @@ class UpdateTaskController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def updateTask(lrn: LocalReferenceNumber, continue: String): Action[AnyContent] = actions.requireData(lrn).async {
+  def updateTask(lrn: LocalReferenceNumber, continue: String): Action[AnyContent] = actions.requireDataWithNoDependencies(lrn).async {
     implicit request =>
-      TransportSection.updateTask().writeToSession().navigateTo(Call(GET, continue))
+      TransportSection.updateTask().writeToSession().navigateTo(continue)
   }
 
 }
