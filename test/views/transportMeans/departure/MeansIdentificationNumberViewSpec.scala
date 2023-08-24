@@ -16,11 +16,10 @@
 
 package views.transportMeans.departure
 
-import base.AppWithDefaultMockFixtures
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.IdentificationNumberFormProvider
+import generators.Generators
 import models.NormalMode
-import models.transportMeans.departure.Identification
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.Application
 import play.api.data.Form
@@ -30,11 +29,11 @@ import viewModels.InputSize
 import views.behaviours.InputTextViewBehaviours
 import views.html.transportMeans.departure.MeansIdentificationNumberView
 
-class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] with AppWithDefaultMockFixtures {
+class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] with Generators with SpecBase with AppWithDefaultMockFixtures {
 
-  override val prefix: String = "transportMeans.departure.meansIdentificationNumber.withIDType"
+  override val prefix: String = "transportMeans.departure.meansIdentificationNumber"
 
-  private val identificationType = arbitrary[Identification].sample.value
+  private val identificationNumber = "idNumber"
 
   override def form: Form[String] = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
 
@@ -47,17 +46,17 @@ class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] 
   }
 
   private def applyView(app: Application, form: Form[String]): HtmlFormat.Appendable =
-    app.injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, prefix, identificationType.arg)(fakeRequest, messages)
+    app.injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, identificationNumber)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  behave like pageWithTitle(identificationType.arg)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Transport details - Departure means of transport")
 
-  behave like pageWithHeading(identificationType.arg)
+  behave like pageWithHeading()
 
   behave like pageWithInputText(Some(InputSize.Width20))
 
@@ -81,13 +80,13 @@ class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] 
 
   "when no identification type is present in user answers" - {
 
-    val withNoIDTypePrefix: String = "transportMeans.departure.meansIdentificationNumber.withNoIDType"
-    val form                       = app.injector.instanceOf[IdentificationNumberFormProvider].apply(withNoIDTypePrefix, identificationType.arg)
-    val view                       = injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, withNoIDTypePrefix)(fakeRequest, messages)
-    val doc                        = parseView(view)
+    val prefix: String = "transportMeans.departure.meansIdentificationNumber"
+    val form           = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
+    val view           = injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, "identificationNumber")(fakeRequest, messages)
+    val doc            = parseView(view)
 
-    behave like pageWithTitle(doc, withNoIDTypePrefix)
+    behave like pageWithTitle(doc, prefix)
 
-    behave like pageWithHeading(doc, withNoIDTypePrefix)
+    behave like pageWithHeading(doc, prefix)
   }
 }
