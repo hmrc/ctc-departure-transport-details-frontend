@@ -72,7 +72,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, lrn, mode, activeIndex, identifier.forDisplay)(request, messages).toString
+            view(form, lrn, mode, activeIndex, identifier.asString)(request, messages).toString
       }
     }
 
@@ -95,7 +95,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(filledForm, lrn, mode, activeIndex, identifier.forDisplay)(request, messages).toString
+            view(filledForm, lrn, mode, activeIndex, identifier.asString)(request, messages).toString
       }
     }
 
@@ -138,7 +138,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
             val view = injector.instanceOf[IdentificationNumberView]
 
             contentAsString(result) mustEqual
-              view(filledForm, lrn, mode, activeIndex, identifier.toString)(request, messages).toString
+              view(filledForm, lrn, mode, activeIndex, identifier.asString)(request, messages).toString
         }
       }
 

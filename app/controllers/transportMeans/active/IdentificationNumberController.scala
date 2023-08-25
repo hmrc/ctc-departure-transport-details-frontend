@@ -58,7 +58,7 @@ class IdentificationNumberController @Inject() (
             case None        => form
             case Some(value) => form.fill(value)
           }
-          Ok(view(preparedForm, lrn, mode, activeIndex, identificationType.forDisplay))
+          Ok(view(preparedForm, lrn, mode, activeIndex, identificationType.asString))
       }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] =
@@ -72,7 +72,7 @@ class IdentificationNumberController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex, identificationType.toString))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex, identificationType.asString))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
                 IdentificationNumberPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
