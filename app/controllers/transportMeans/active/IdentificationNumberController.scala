@@ -22,8 +22,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.IdentificationNumberFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
-import pages.transportMeans.active
-import pages.transportMeans.active.{IdentificationNumberPage, IdentificationPage}
+import pages.transportMeans.active.{IdentificationNumberPage, IdentificationPage, InferredIdentificationPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -51,7 +50,7 @@ class IdentificationNumberController @Inject() (
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] =
     actions
       .requireData(lrn)
-      .andThen(getMandatoryPage(active.IdentificationPage(activeIndex))) {
+      .andThen(getMandatoryPage(IdentificationPage(activeIndex), InferredIdentificationPage(activeIndex))) {
         implicit request =>
           val identificationType = request.arg
           val form               = formProvider(prefix)
@@ -65,7 +64,7 @@ class IdentificationNumberController @Inject() (
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] =
     actions
       .requireData(lrn)
-      .andThen(getMandatoryPage(IdentificationPage(activeIndex)))
+      .andThen(getMandatoryPage(IdentificationPage(activeIndex), InferredIdentificationPage(activeIndex)))
       .async {
         implicit request =>
           val identificationType = request.arg

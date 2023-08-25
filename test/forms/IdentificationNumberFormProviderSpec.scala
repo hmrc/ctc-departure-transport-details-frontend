@@ -19,28 +19,22 @@ package forms
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
-import models.transportMeans.active.Identification
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.FormError
 import play.api.test.Helpers.running
 
 class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
 
-  private val identificationType = arbitrary[Identification].sample.value
-  private val prefix             = Gen.alphaNumStr.sample.value
+  private val prefix = Gen.alphaNumStr.sample.value
 
-  private val dynamicTitle = s"$prefix.${identificationType.toString}"
-  private val requiredKey  = s"$prefix.error.required"
-  private val invalidKey   = s"$prefix.error.invalid"
-
-  private val maxIdentificationNumberTransitionLength: Int     = 27
-  private val maxIdentificationNumberPostTransitionLength: Int = 35
+  private val requiredKey = s"$prefix.error.required"
+  private val invalidKey  = s"$prefix.error.invalid"
 
   "TransitionIdentificationNumberFormProvider" - {
 
     val lengthKey = s"$prefix.error.length.transition"
     val app       = transitionApplicationBuilder().build()
+    val maxLength = 27
 
     ".value" - {
 
@@ -52,14 +46,14 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with Sp
         behave like fieldThatBindsValidData(
           form,
           fieldName,
-          stringsWithMaxLength(maxIdentificationNumberTransitionLength)
+          stringsWithMaxLength(maxLength)
         )
 
         behave like fieldWithMaxLength(
           form,
           fieldName,
-          maxLength = maxIdentificationNumberTransitionLength,
-          lengthError = FormError(fieldName, lengthKey, Seq(maxIdentificationNumberTransitionLength))
+          maxLength = maxLength,
+          lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
         )
 
         behave like mandatoryField(
@@ -72,7 +66,7 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with Sp
           form,
           fieldName,
           error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.toString())),
-          maxIdentificationNumberTransitionLength
+          maxLength
         )
       }
     }
@@ -83,6 +77,7 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with Sp
 
     val lengthKey = s"$prefix.error.length.postTransition"
     val app       = postTransitionApplicationBuilder().build()
+    val maxLength = 35
 
     ".value" - {
 
@@ -94,14 +89,14 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with Sp
         behave like fieldThatBindsValidData(
           form,
           fieldName,
-          stringsWithMaxLength(maxIdentificationNumberPostTransitionLength)
+          stringsWithMaxLength(maxLength)
         )
 
         behave like fieldWithMaxLength(
           form,
           fieldName,
-          maxLength = maxIdentificationNumberPostTransitionLength,
-          lengthError = FormError(fieldName, lengthKey, Seq(maxIdentificationNumberPostTransitionLength))
+          maxLength = maxLength,
+          lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
         )
 
         behave like mandatoryField(
@@ -114,7 +109,7 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with Sp
           form,
           fieldName,
           error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.toString())),
-          maxIdentificationNumberPostTransitionLength
+          maxLength
         )
       }
     }

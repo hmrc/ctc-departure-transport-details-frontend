@@ -47,7 +47,7 @@
             inputTextType = TextInputWithHiddenLabel(
                 heading = messages("transportMeans.active.identificationNumber.heading"),
                 caption = Some(messages("activeBorderMeansOfTransport.caption")),
-                additionalHtml = insetText(identificationType.capitalize)
+                additionalHtml = insetText(identificationType)
             ),
             inputClass = InputSize.Width20,
             hint = Some(messages(phaseConfig.activeIdentificationNumberHint))

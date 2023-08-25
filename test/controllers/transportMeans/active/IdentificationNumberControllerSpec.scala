@@ -44,7 +44,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
   private val form                           = formProvider(prefix)
   private val mode                           = NormalMode
   private lazy val identificationNumberRoute = routes.IdentificationNumberController.onPageLoad(lrn, mode, index).url
-  val identification: Identification         = arbitrary[Identification].sample.value
 
   private val validAnswer = "testString"
 
@@ -62,7 +61,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
         (identifier, page) =>
           val userAnswers = emptyUserAnswers
             .setValue(page, identifier)
-            .setValue(IdentificationPage(index), identification)
 
           setExistingUserAnswers(userAnswers)
           val request = FakeRequest(GET, identificationNumberRoute)
@@ -74,7 +72,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, lrn, mode, activeIndex, identification.forDisplay.capitalize)(request, messages).toString
+            view(form, lrn, mode, activeIndex, identifier.forDisplay)(request, messages).toString
       }
     }
 
@@ -83,7 +81,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
         (identifier, page) =>
           val userAnswers = emptyUserAnswers
             .setValue(page, identifier)
-            .setValue(IdentificationPage(index), identification)
             .setValue(IdentificationNumberPage(index), "testString")
 
           setExistingUserAnswers(userAnswers)
@@ -98,7 +95,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(filledForm, lrn, mode, activeIndex, identification.forDisplay)(request, messages).toString
+            view(filledForm, lrn, mode, activeIndex, identifier.forDisplay)(request, messages).toString
       }
     }
 
@@ -107,7 +104,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
         (identifier, page) =>
           val userAnswers = emptyUserAnswers
             .setValue(page, identifier)
-            .setValue(IdentificationPage(index), identification)
 
           setExistingUserAnswers(userAnswers)
 
@@ -130,7 +126,6 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
           (identifier, page) =>
             val userAnswers = emptyUserAnswers
               .setValue(page, identifier)
-              .setValue(IdentificationPage(index), identification)
             setExistingUserAnswers(userAnswers)
 
             val request    = FakeRequest(POST, identificationNumberRoute).withFormUrlEncodedBody(("value", ""))
@@ -143,7 +138,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
             val view = injector.instanceOf[IdentificationNumberView]
 
             contentAsString(result) mustEqual
-              view(filledForm, lrn, mode, activeIndex, identification.toString)(request, messages).toString
+              view(filledForm, lrn, mode, activeIndex, identifier.toString)(request, messages).toString
         }
       }
 
