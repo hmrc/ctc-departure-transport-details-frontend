@@ -11,5 +11,7 @@ GET        /assets/*file                                                        
 
 GET        /:lrn                                                                         controllers.RedirectController.redirect(lrn: LocalReferenceNumber)
 
+GET        /:lrn/update-task                                                             controllers.UpdateTaskController.updateTask(lrn: LocalReferenceNumber, continue: String)
+
 GET        /check-answers/:lrn                                                           controllers.TransportAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /check-answers/:lrn                                                           controllers.TransportAnswersController.onSubmit(lrn: LocalReferenceNumber)
