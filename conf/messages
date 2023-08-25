@@ -157,8 +157,10 @@ transportMeans.departure.addIdentificationNumberYesNo.checkYourAnswersLabel = Do
 transportMeans.departure.addIdentificationNumberYesNo.change.hidden = if you want to add an identification number for the departure means of transport
 transportMeans.departure.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
 
-transportMeans.departure.meansIdentificationNumber.title = What is the identification number for this?
-transportMeans.departure.meansIdentificationNumber.heading = What is the identification number for this?
+transportMeans.departure.meansIdentificationNumber.withIDType.title = What is the identification number for this?
+transportMeans.departure.meansIdentificationNumber.withNoIDType.title = What is the identification number for this vehicle?
+transportMeans.departure.meansIdentificationNumber.withIDType.heading = What is the identification number for this?
+transportMeans.departure.meansIdentificationNumber.withNoIDType.heading = What is the identification number for this vehicle?
 transportMeans.departure.meansIdentificationNumber.hint.transition = This can be up to 27 characters long and include both letters and numbers.
 transportMeans.departure.meansIdentificationNumber.hint.postTransition = This can be up to 35 characters long and include both letters and numbers.
 transportMeans.departure.meansIdentificationNumber.checkYourAnswersLabel = Identification number

@@ -16,6 +16,7 @@
 
 package generators
 
+import models.transportMeans.departure
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
@@ -27,6 +28,7 @@ import viewModels.authorisations.AddAnotherAuthorisationViewModel
 import viewModels.equipment.{AddAnotherEquipmentViewModel, AddAnotherSealViewModel}
 import viewModels.supplyChainActors.AddAnotherSupplyChainActorViewModel
 import viewModels.transportMeans.active.AddAnotherBorderTransportViewModel
+import viewModels.transportMeans.departure.MeansIdentificationNumberViewModel
 import viewModels.{Link, ListItem, Section}
 
 trait ViewModelGenerators {
@@ -206,5 +208,11 @@ trait ViewModelGenerators {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
     } yield AddAnotherBorderTransportViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryMeansIdentificationNumberViewModel: Arbitrary[MeansIdentificationNumberViewModel] = Arbitrary {
+    for {
+      identification <- Gen.option(arbitrary[departure.Identification])
+    } yield MeansIdentificationNumberViewModel(identification)
   }
 }
