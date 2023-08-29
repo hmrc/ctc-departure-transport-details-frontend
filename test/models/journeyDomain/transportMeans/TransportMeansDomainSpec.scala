@@ -20,6 +20,7 @@ import base.SpecBase
 import config.PhaseConfig
 import generators.Generators
 import models.SecurityDetailsType.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
+import models.Ternary.{False, True}
 import models.domain.{EitherType, UserAnswersReader}
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.BorderModeOfTransport._
@@ -48,7 +49,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
         "and container indicator is 1" - {
           "and add departures transport means yes/no is unanswered" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, true)
+              .setValue(ContainerIndicatorPage, True)
 
             val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
               TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
@@ -60,7 +61,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
           "and add departures transport means yes/no is yes" - {
             "and add type of identification yes/no is unanswered" in {
               val userAnswers = emptyUserAnswers
-                .setValue(ContainerIndicatorPage, true)
+                .setValue(ContainerIndicatorPage, True)
                 .setValue(AddDepartureTransportMeansYesNoPage, true)
 
               val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
@@ -75,7 +76,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
         "and container indicator is 0" - {
           "and type of identification is unanswered" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, false)
+              .setValue(ContainerIndicatorPage, False)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](

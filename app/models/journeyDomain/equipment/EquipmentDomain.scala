@@ -18,6 +18,7 @@ package models.journeyDomain.equipment
 
 import cats.implicits._
 import controllers.equipment.index.routes
+import models.Ternary.True
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.equipment.seal.SealsDomain
 import models.journeyDomain.{JourneyDomainModel, Stage}
@@ -61,13 +62,13 @@ object EquipmentDomain {
 
   def containerIdReads(equipmentIndex: Index): UserAnswersReader[Option[String]] =
     ContainerIndicatorPage.reader.flatMap {
-      case true if equipmentIndex.isFirst =>
+      case True if equipmentIndex.isFirst =>
         ContainerIdentificationNumberPage(equipmentIndex).reader.map(Option(_))
-      case true =>
+      case True =>
         AddContainerIdentificationNumberYesNoPage(equipmentIndex).filterOptionalDependent(identity) {
           ContainerIdentificationNumberPage(equipmentIndex).reader
         }
-      case false =>
+      case _ =>
         none[String].pure[UserAnswersReader]
     }
 

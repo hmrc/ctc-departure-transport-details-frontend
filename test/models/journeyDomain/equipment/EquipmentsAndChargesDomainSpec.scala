@@ -19,6 +19,7 @@ package models.journeyDomain.equipment
 import base.SpecBase
 import generators.{Generators, UserAnswersGenerator}
 import models.SecurityDetailsType.NoSecurityDetails
+import models.Ternary.{False, True}
 import models.domain.{EitherType, UserAnswersReader}
 import models.equipment.PaymentMethod
 import models.{Index, SecurityDetailsType}
@@ -36,7 +37,7 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
       "when add transport equipment yes/no is no" - {
         "equipments and payment method must both be None" in {
           val userAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, false)
+            .setValue(ContainerIndicatorPage, False)
             .setValue(AddTransportEquipmentYesNoPage, false)
 
           val expectedResult = EquipmentsAndChargesDomain(
@@ -56,7 +57,7 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
       "can be read from user answers" - {
         "when container indicator is true" in {
           val initialAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, true)
+            .setValue(ContainerIndicatorPage, True)
 
           forAll(arbitraryEquipmentAnswers(initialAnswers, Index(0))) {
             userAnswers =>
@@ -70,7 +71,7 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
         "when container indicator is false" - {
           "and add transport equipment yes/no is yes" in {
             val initialAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, false)
+              .setValue(ContainerIndicatorPage, False)
               .setValue(AddTransportEquipmentYesNoPage, true)
 
             forAll(arbitraryEquipmentAnswers(initialAnswers, Index(0))) {
@@ -84,7 +85,7 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
           "and add transport equipment yes/no is no" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, false)
+              .setValue(ContainerIndicatorPage, False)
               .setValue(AddTransportEquipmentYesNoPage, false)
 
             val result: EitherType[Option[EquipmentsDomain]] = UserAnswersReader[Option[EquipmentsDomain]](
@@ -107,7 +108,7 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
         "when container indicator is false" - {
           "and add transport equipment yes/no is unanswered" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, false)
+              .setValue(ContainerIndicatorPage, False)
 
             val result: EitherType[Option[EquipmentsDomain]] = UserAnswersReader[Option[EquipmentsDomain]](
               EquipmentsAndChargesDomain.equipmentsReads

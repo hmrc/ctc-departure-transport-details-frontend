@@ -16,18 +16,27 @@
 
 package views.preRequisites
 
-import models.NormalMode
+import forms.EnumerableFormProvider
+import models.{NormalMode, Ternary}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import views.behaviours.RadioViewBehaviours
 import views.html.preRequisites.ContainerIndicatorView
 
-class ContainerIndicatorViewSpec extends YesNoViewBehaviours {
+class ContainerIndicatorViewSpec extends RadioViewBehaviours[Ternary] {
 
-  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[ContainerIndicatorView].apply(form, lrn, NormalMode)(fakeRequest, messages)
+  override def form: Form[Ternary] = new EnumerableFormProvider()(prefix)
+
+  override def applyView(form: Form[Ternary]): HtmlFormat.Appendable =
+    injector.instanceOf[ContainerIndicatorView].apply(form, lrn, NormalMode, values)(fakeRequest, messages)
 
   override val prefix: String = "preRequisites.containerIndicator"
+
+  override def radioItems(fieldId: String, checkedValue: Option[Ternary] = None): Seq[RadioItem] =
+    values.toRadioItems(fieldId, checkedValue)
+
+  override def values: Seq[Ternary] = Ternary.values
 
   behave like pageWithTitle()
 
