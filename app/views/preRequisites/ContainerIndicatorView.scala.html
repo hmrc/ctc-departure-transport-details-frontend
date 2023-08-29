@@ -46,7 +46,8 @@
                 heading = messages("preRequisites.containerIndicator.heading"),
                 caption = Some(messages("caption"))
             ),
-            radioItems = fieldId => values.toRadioItems(fieldId, form.value)
+            radioItems = fieldId => values.toRadioItems(fieldId, form.value),
+            inline = values.length == 2
         )
 
         @button(attributes = Map("id" -> "submit"))

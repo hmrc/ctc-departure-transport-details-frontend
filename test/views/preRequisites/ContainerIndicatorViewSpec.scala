@@ -17,6 +17,7 @@
 package views.preRequisites
 
 import forms.EnumerableFormProvider
+import models.Ternary.{False, Maybe, True}
 import models.{NormalMode, Ternary}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -29,6 +30,9 @@ class ContainerIndicatorViewSpec extends RadioViewBehaviours[Ternary] {
   override def form: Form[Ternary] = new EnumerableFormProvider()(prefix)
 
   override def applyView(form: Form[Ternary]): HtmlFormat.Appendable =
+    applyView(form, values)
+
+  private def applyView(form: Form[Ternary], values: Seq[Ternary]): HtmlFormat.Appendable =
     injector.instanceOf[ContainerIndicatorView].apply(form, lrn, NormalMode, values)(fakeRequest, messages)
 
   override val prefix: String = "preRequisites.containerIndicator"
@@ -49,4 +53,20 @@ class ContainerIndicatorViewSpec extends RadioViewBehaviours[Ternary] {
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
+
+  "when two radio buttons" - {
+    "must inline them" in {
+      val view = applyView(form, Seq(True, False))
+      val doc  = parseView(view)
+      assertRenderedByClass(doc, "govuk-radios--inline")
+    }
+  }
+
+  "when three radio buttons" - {
+    "must not inline them" in {
+      val view = applyView(form, Seq(True, False, Maybe))
+      val doc  = parseView(view)
+      assertNotRenderedByClass(doc, "govuk-radios--inline")
+    }
+  }
 }
