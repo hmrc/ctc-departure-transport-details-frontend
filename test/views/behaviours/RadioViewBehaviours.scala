@@ -56,7 +56,8 @@ trait RadioViewBehaviours[T] extends QuestionViewBehaviours[T] {
         radioItems(fieldId).zipWithIndex.foreach {
           case (radioItem, index) =>
             s"must contain an input for the value ${radioItem.value.get}" in {
-              assertRenderedById(doc, radioItem.id.get)
+              val input = getElementById(doc, radioItem.id.get)
+              input.parent().getElementsByClass("govuk-radios__label").text() mustBe radioItem.content.value
             }
 
             radioItem.hint.foreach {

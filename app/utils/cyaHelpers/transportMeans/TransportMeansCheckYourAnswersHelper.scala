@@ -21,7 +21,7 @@ import controllers.transportMeans.active.routes
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
 import models.reference.Nationality
 import models.transportMeans.departure.Identification
-import models.transportMeans.{BorderModeOfTransport, InlandMode, InlandModeYesNo}
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transportMeans.TransportMeansActiveListSection
 import pages.transportMeans._
@@ -71,12 +71,15 @@ class TransportMeansCheckYourAnswersHelper(
     id = Some("change-border-mode-of-transport")
   )
 
-  def addInlandModeYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[InlandModeYesNo](
-    page = AddInlandModeYesNoPage,
-    formatAnswer = formatEnumAsText(InlandModeYesNo.messageKeyPrefix),
-    prefix = "transportMeans.addInlandModeYesNo",
-    id = Some("change-add-transport-means-inland-mode")
-  )
+  def addInlandModeYesNo: Option[SummaryListRow] = {
+    val prefix = "transportMeans.addInlandModeYesNo"
+    getAnswerAndBuildRow[Boolean](
+      page = AddInlandModeYesNoPage,
+      formatAnswer = formatAsYesOrNo(_, prefix),
+      prefix = prefix,
+      id = Some("change-add-transport-means-inland-mode")
+    )
+  }
 
   def inlandMode: Option[SummaryListRow] = getAnswerAndBuildRow[InlandMode](
     page = InlandModePage,

@@ -29,10 +29,13 @@ import java.time.LocalDate
 private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
   protected def formatAsYesOrNo(answer: Boolean): Content =
+    formatAsYesOrNo(answer, "site")
+
+  protected def formatAsYesOrNo(answer: Boolean, prefix: String): Content =
     if (answer) {
-      messages("site.yes").toText
+      messages(s"$prefix.yes").toText
     } else {
-      messages("site.no").toText
+      messages(s"$prefix.no").toText
     }
 
   def formatAsDateTime(answer: DateTime): Content =

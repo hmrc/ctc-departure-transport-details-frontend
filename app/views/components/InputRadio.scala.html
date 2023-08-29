@@ -32,7 +32,7 @@
     Radios(
         idPrefix = Some(field.id),
         name = field.name,
-        classes = if(inline) "govuk-radios--inline" else "",
+        classes = if (inline) "govuk-radios--inline" else "",
         errorMessage = field.error.map { e =>
             ErrorMessage.errorMessageWithDefaultStringsTranslated(content = Text(messages(e.message, e.args: _*)))
         },

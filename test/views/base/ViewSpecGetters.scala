@@ -24,11 +24,20 @@ trait ViewSpecGetters {
   def getElementByClass(doc: Document, className: String): Element =
     getElementBySelector(doc, s".$className")
 
+  def getElementByClass(element: Element, className: String): Element =
+    getElementBySelector(element, s".$className")
+
   def getElementById(doc: Document, id: String): Element =
     getElementBySelector(doc, s"#$id")
 
+  def getElementById(element: Element, id: String): Element =
+    getElementBySelector(element, s"#$id")
+
   def getElementBySelector(doc: Document, selector: String): Element =
     doc.select(selector).first()
+
+  def getElementBySelector(element: Element, selector: String): Element =
+    element.select(selector).first()
 
   def getElementsByTag(doc: Document, tag: String): Elements =
     doc.getElementsByTag(tag)
