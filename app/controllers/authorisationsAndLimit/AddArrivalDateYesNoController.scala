@@ -43,7 +43,7 @@ class AddArrivalDateYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("ArrivalDate.addArrivalDateYesNo")
+  private val form = formProvider("authorisations.addArrivalDateYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
