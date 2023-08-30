@@ -20,8 +20,7 @@
 @import views.html.components.Heading
 
 @this(
-    govukRadios: GovukRadios,
-    hmrcHeading: Heading
+    inputYesNoBase: InputYesNoBase
 )
 
 @(
@@ -62,16 +61,4 @@
     .withFormField(field)
 }
 
-@yesNoType match {
-    case OrdinaryYesNo(heading, caption) => {
-        @govukRadios(radios.withHeadingAndCaption(heading, caption))
-    }
-    case x @ YesNoWithAdditionalHtml(heading, caption, additionalHtml) => {
-        @hmrcHeading(heading, caption, Some(x.headingClasses))
-        @additionalHtml
-        @govukRadios(radios.withLegend(heading, false))
-    }
-    case YesNoWithLegend(legend) => {
-        @govukRadios(radios.withLegend(legend))
-    }
-}
+@inputYesNoBase(yesNoType, radios)
