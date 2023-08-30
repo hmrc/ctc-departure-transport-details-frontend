@@ -17,9 +17,8 @@
 package controllers.transportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.EnumerableFormProvider
+import forms.YesNoFormProvider
 import models.NormalMode
-import models.transportMeans.InlandModeYesNo
 import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -34,8 +33,8 @@ import scala.concurrent.Future
 
 class AddInlandModeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
-  private val formProvider              = new EnumerableFormProvider()
-  private val form                      = formProvider[InlandModeYesNo]("transportMeans.addInlandModeYesNo")
+  private val formProvider              = new YesNoFormProvider()
+  private val form                      = formProvider("transportMeans.addInlandModeYesNo")
   private val mode                      = NormalMode
   private lazy val inlandModeYesNoRoute = routes.AddInlandModeYesNoController.onPageLoad(lrn, mode).url
 
@@ -59,26 +58,26 @@ class AddInlandModeYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, InlandModeYesNo.values, mode)(request, messages).toString
+        view(form, lrn, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddInlandModeYesNoPage, InlandModeYesNo.values.head)
+      val userAnswers = emptyUserAnswers.setValue(AddInlandModeYesNoPage, true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, inlandModeYesNoRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> InlandModeYesNo.values.head.toString))
+      val filledForm = form.bind(Map("value" -> "true"))
 
       val view = injector.instanceOf[AddInlandModeYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, InlandModeYesNo.values, mode)(request, messages).toString
+        view(filledForm, lrn, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -88,7 +87,7 @@ class AddInlandModeYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, inlandModeYesNoRoute)
-        .withFormUrlEncodedBody(("value", InlandModeYesNo.values.head.toString))
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 
@@ -109,7 +108,7 @@ class AddInlandModeYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, InlandModeYesNo.values, mode)(request, messages).toString
+        view(boundForm, lrn, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -128,7 +127,7 @@ class AddInlandModeYesNoControllerSpec extends SpecBase with AppWithDefaultMockF
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, inlandModeYesNoRoute)
-        .withFormUrlEncodedBody(("value", InlandModeYesNo.values.head.toString))
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
 

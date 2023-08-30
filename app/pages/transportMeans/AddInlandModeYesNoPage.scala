@@ -17,8 +17,6 @@
 package pages.transportMeans
 
 import controllers.transportMeans.routes
-import models.transportMeans.InlandModeYesNo
-import models.transportMeans.InlandModeYesNo._
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.TransportSection
@@ -27,7 +25,7 @@ import play.api.mvc.Call
 
 import scala.util.Try
 
-case object AddInlandModeYesNoPage extends QuestionPage[InlandModeYesNo] {
+case object AddInlandModeYesNoPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = TransportSection.path \ toString
 
@@ -36,8 +34,8 @@ case object AddInlandModeYesNoPage extends QuestionPage[InlandModeYesNo] {
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddInlandModeYesNoController.onPageLoad(userAnswers.lrn, mode))
 
-  override def cleanup(value: Option[InlandModeYesNo], userAnswers: UserAnswers): Try[UserAnswers] = value match {
-    case Some(No) => userAnswers.remove(InlandModePage)
-    case _        => super.cleanup(value, userAnswers)
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
+    case Some(false) => userAnswers.remove(InlandModePage)
+    case _           => super.cleanup(value, userAnswers)
   }
 }

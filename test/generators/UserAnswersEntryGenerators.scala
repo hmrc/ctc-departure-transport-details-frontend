@@ -23,7 +23,7 @@ import models.reference._
 import models.supplyChainActors.SupplyChainActorType
 import models.transportMeans.active.{Identification => ActiveIdentification}
 import models.transportMeans.departure.Identification
-import models.transportMeans.{BorderModeOfTransport, InlandMode, InlandModeYesNo}
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.authorisationsAndLimit.AuthorisationsInferredPage
@@ -77,7 +77,7 @@ trait UserAnswersEntryGenerators {
     import pages.transportMeans._
     generateTransportMeansDepartureAnswer orElse
       generateTransportMeansActiveAnswer orElse {
-        case AddInlandModeYesNoPage                 => arbitrary[InlandModeYesNo].map(Json.toJson(_))
+        case AddInlandModeYesNoPage                 => arbitrary[Boolean].map(JsBoolean)
         case InlandModePage                         => arbitrary[InlandMode].map(Json.toJson(_))
         case AddDepartureTransportMeansYesNoPage    => arbitrary[Boolean].map(JsBoolean)
         case AddBorderModeOfTransportYesNoPage      => arbitrary[Boolean].map(JsBoolean)
