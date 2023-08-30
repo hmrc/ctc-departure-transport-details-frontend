@@ -30,9 +30,6 @@ trait ViewSpecGetters {
   def getElementById(doc: Document, id: String): Element =
     getElementBySelector(doc, s"#$id")
 
-  def getElementById(element: Element, id: String): Element =
-    getElementBySelector(element, s"#$id")
-
   def getElementBySelector(doc: Document, selector: String): Element =
     doc.select(selector).first()
 
