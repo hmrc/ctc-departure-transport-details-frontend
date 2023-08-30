@@ -17,7 +17,7 @@
 package pages.preRequisites
 
 import controllers.preRequisites.routes
-import models.{Mode, UserAnswers}
+import models.{Mode, Ternary, UserAnswers}
 import pages.QuestionPage
 import pages.sections.PreRequisitesSection
 import pages.sections.equipment.EquipmentsSection
@@ -26,7 +26,7 @@ import play.api.mvc.Call
 
 import scala.util.Try
 
-case object ContainerIndicatorPage extends QuestionPage[Boolean] {
+case object ContainerIndicatorPage extends QuestionPage[Ternary] {
 
   override def path: JsPath = PreRequisitesSection.path \ toString
 
@@ -35,7 +35,7 @@ case object ContainerIndicatorPage extends QuestionPage[Boolean] {
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.ContainerIndicatorController.onPageLoad(userAnswers.lrn, mode))
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+  override def cleanup(value: Option[Ternary], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(_) => userAnswers.remove(EquipmentsSection)
       case None    => super.cleanup(value, userAnswers)

@@ -19,9 +19,10 @@ package controllers.preRequisites
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.YesNoFormProvider
-import models.{LocalReferenceNumber, Mode}
+import forms.EnumerableFormProvider
+import models.{LocalReferenceNumber, Mode, Ternary}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
+import pages.external.AdditionalDeclarationTypePage
 import pages.preRequisites.ContainerIndicatorPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,35 +38,41 @@ class ContainerIndicatorController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
-  formProvider: YesNoFormProvider,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
+  formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: ContainerIndicatorView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("preRequisites.containerIndicator")
+  private val form = formProvider[Ternary]("preRequisites.containerIndicator")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(ContainerIndicatorPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(AdditionalDeclarationTypePage)) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(ContainerIndicatorPage) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, lrn, mode))
-  }
+        Ok(view(preparedForm, lrn, mode, Ternary.values(request.arg)))
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            ContainerIndicatorPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(AdditionalDeclarationTypePage))
+    .async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, Ternary.values(request.arg)))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+              ContainerIndicatorPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            }
+          )
+    }
 }

@@ -18,6 +18,7 @@ package models.journeyDomain.equipment
 
 import cats.implicits._
 import models.SecurityDetailsType.NoSecurityDetails
+import models.Ternary.True
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.JourneyDomainModel
 import models.equipment.PaymentMethod
@@ -39,9 +40,9 @@ object EquipmentsAndChargesDomain {
     } yield EquipmentsAndChargesDomain(equipments, paymentMethod)
 
   implicit lazy val equipmentsReads: UserAnswersReader[Option[EquipmentsDomain]] = ContainerIndicatorPage.reader.flatMap {
-    case true =>
+    case True =>
       UserAnswersReader[EquipmentsDomain].map(Option(_))
-    case false =>
+    case _ =>
       AddTransportEquipmentYesNoPage.filterOptionalDependent(identity) {
         UserAnswersReader[EquipmentsDomain]
       }

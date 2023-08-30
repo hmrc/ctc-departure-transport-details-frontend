@@ -89,6 +89,9 @@ preRequisites.containerIndicator.heading = Are you using any shipping containers
 preRequisites.containerIndicator.checkYourAnswersLabel = Are you using any containers?
 preRequisites.containerIndicator.change.hidden = if you are using any containers
 preRequisites.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
+preRequisites.containerIndicator.true = Yes
+preRequisites.containerIndicator.false = No
+preRequisites.containerIndicator.maybe = Not sure
 
 # Transport details - Transport means
 

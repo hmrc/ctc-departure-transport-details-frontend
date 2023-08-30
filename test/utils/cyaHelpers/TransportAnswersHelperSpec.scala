@@ -29,6 +29,7 @@ import controllers.preRequisites.{routes => preRequisitesRoutes}
 import controllers.supplyChainActors.index.{routes => supplyChainActorRoutes}
 import controllers.supplyChainActors.{routes => supplyChainActorsRoutes}
 import generators.Generators
+import models.Ternary.{False, True}
 import models.domain.UserAnswersReader
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.journeyDomain.equipment.EquipmentDomain
@@ -276,7 +277,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
         s"when $ContainerIndicatorPage defined" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val answers = emptyUserAnswers.setValue(ContainerIndicatorPage, true)
+              val answers = emptyUserAnswers.setValue(ContainerIndicatorPage, True)
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.usingContainersYesNo.get
 
@@ -740,7 +741,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       "must return Some(Row)" - {
         "when equipment is defined and container id is undefined" in {
           val initialUserAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, false)
+            .setValue(ContainerIndicatorPage, False)
 
           forAll(arbitraryEquipmentAnswers(initialUserAnswers, index), arbitrary[Mode]) {
             (userAnswers, mode) =>
@@ -761,7 +762,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
         "when equipment is  defined and container id is defined" in {
           val initialUserAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, true)
+            .setValue(ContainerIndicatorPage, True)
 
           forAll(arbitraryEquipmentAnswers(initialUserAnswers, index), arbitrary[Mode]) {
             (userAnswers, mode) =>

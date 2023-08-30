@@ -19,6 +19,7 @@ package models.journeyDomain.transportMeans
 import cats.implicits._
 import config.PhaseConfig
 import models.Phase
+import models.Ternary.{False, True}
 import models.domain._
 import models.journeyDomain.JourneyDomainModel
 import models.reference.Nationality
@@ -68,14 +69,14 @@ object TransitionTransportMeansDepartureDomain {
   implicit val userAnswersReader: UserAnswersReader[TransitionTransportMeansDepartureDomain] = {
     val identificationReader: UserAnswersReader[Option[Identification]] =
       ContainerIndicatorPage.reader.flatMap {
-        case true  => AddIdentificationTypeYesNoPage.filterOptionalDependent(identity)(IdentificationPage.reader)
-        case false => IdentificationPage.reader.map(Some(_))
+        case False => IdentificationPage.reader.map(Some(_))
+        case _     => AddIdentificationTypeYesNoPage.filterOptionalDependent(identity)(IdentificationPage.reader)
       }
 
     val identificationNumberReader: UserAnswersReader[Option[String]] =
       ContainerIndicatorPage.reader.flatMap {
-        case true  => AddIdentificationNumberYesNoPage.filterOptionalDependent(identity)(MeansIdentificationNumberPage.reader)
-        case false => MeansIdentificationNumberPage.reader.map(Some(_))
+        case False => MeansIdentificationNumberPage.reader.map(Some(_))
+        case _     => AddIdentificationNumberYesNoPage.filterOptionalDependent(identity)(MeansIdentificationNumberPage.reader)
       }
 
     val nationalityReader: UserAnswersReader[Option[Nationality]] =
@@ -84,8 +85,8 @@ object TransitionTransportMeansDepartureDomain {
           none[Nationality].pure[UserAnswersReader]
         case _ =>
           ContainerIndicatorPage.reader.flatMap {
-            case true  => AddVehicleCountryYesNoPage.filterOptionalDependent(identity)(VehicleCountryPage.reader)
-            case false => VehicleCountryPage.reader.map(Some(_))
+            case True => AddVehicleCountryYesNoPage.filterOptionalDependent(identity)(VehicleCountryPage.reader)
+            case _    => VehicleCountryPage.reader.map(Some(_))
           }
       }
 
