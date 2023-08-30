@@ -27,29 +27,37 @@
 @(
     field: Field,
     yesNoType: InputYesNoViewModel,
-    hint: Option[Content] = None
+    hint: Option[Content] = None,
+    showJustYesAndNo: Boolean
 )(implicit messages: Messages)
 
 @radios = @{
     Radios(
+        classes = if (showJustYesAndNo) "govuk-radios--inline" else "",
         hint = hint.map(x => Hint(content = x)),
         items = Seq(
-            RadioItem(
-                id = Some(field.id),
-                value = Some("true"),
-                content = Text(messages("site.yes"))
+            Some(
+                RadioItem(
+                    id = Some(field.id),
+                    value = Some("true"),
+                    content = Text(messages("site.yes"))
+                )
             ),
-            RadioItem(
-                id = Some(s"${field.id}-no"),
-                value = Some("false"),
-                content = Text(messages("site.no"))
+            Some(
+                RadioItem(
+                    id = Some(s"${field.id}-no"),
+                    value = Some("false"),
+                    content = Text(messages("site.no"))
+                )
             ),
-            RadioItem(
-                id = Some(s"${field.id}-maybe"),
-                value = Some("maybe"),
-                content = Text(messages("site.maybe"))
+            if (showJustYesAndNo) None else Some(
+                RadioItem(
+                    id = Some(s"${field.id}-maybe"),
+                    value = Some("maybe"),
+                    content = Text(messages("site.maybe"))
+                )
             )
-        )
+        ).flatten
     )
     .withFormField(field)
 }

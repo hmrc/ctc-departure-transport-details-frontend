@@ -56,8 +56,8 @@ class ContainerIndicatorController @Inject() (
           case None        => form
           case Some(value) => form.fill(value)
         }
-        // TODO - pass in flag for A or D
-        Ok(view(preparedForm, lrn, mode))
+
+        Ok(view(preparedForm, lrn, mode, request.arg))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
@@ -68,7 +68,7 @@ class ContainerIndicatorController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, request.arg))),
             value => {
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
               ContainerIndicatorPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()

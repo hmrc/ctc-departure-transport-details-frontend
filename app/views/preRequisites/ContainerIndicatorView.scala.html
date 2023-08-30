@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import config.Constants._
 @import controllers.preRequisites.routes
 @import models.{LocalReferenceNumber, OptionalBoolean}
 @import viewModels.components.InputYesNoViewModel._
@@ -27,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[OptionalBoolean], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[OptionalBoolean], lrn: LocalReferenceNumber, mode: Mode, additionalDeclarationType: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("preRequisites.containerIndicator.title"),
@@ -44,7 +45,8 @@
             yesNoType = OrdinaryYesNo(
                 heading = messages("preRequisites.containerIndicator.heading"),
                 caption = Some(messages("caption"))
-            )
+            ),
+            showJustYesAndNo = additionalDeclarationType == STANDARD
         )
 
         @button(attributes = Map("id" -> "submit"))
