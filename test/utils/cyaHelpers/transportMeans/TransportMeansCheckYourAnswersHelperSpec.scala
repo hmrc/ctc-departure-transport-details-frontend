@@ -24,7 +24,7 @@ import models.domain.UserAnswersReader
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
 import models.reference.Nationality
 import models.transportMeans.departure.{Identification => DepartureIdentification}
-import models.transportMeans.{BorderModeOfTransport, InlandMode, InlandModeYesNo}
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -135,17 +135,45 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
       }
 
       "must return Some(Row)" - {
-        "when addInlandModeYesNoPage defined" in {
-          forAll(arbitrary[Mode], arbitrary[InlandModeYesNo]) {
-            (mode, addInlandMode) =>
-              val answers = emptyUserAnswers.setValue(AddInlandModeYesNoPage, addInlandMode)
+        "when addInlandModeYesNoPage is yes" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddInlandModeYesNoPage, true)
               val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
               val result  = helper.addInlandModeYesNo
 
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Do you want to add an inland mode of transport?".toText),
-                  value = Value(messages(s"${"transportMeans.addInlandModeYesNo"}.$addInlandMode").toText),
+                  value = Value("Yes".toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = controllers.transportMeans.routes.AddInlandModeYesNoController.onPageLoad(answers.lrn, mode).url,
+                          visuallyHiddenText = Some("if you want to add an inland mode of transport"),
+                          attributes = Map("id" -> "change-add-transport-means-inland-mode")
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+          }
+        }
+
+        "when addInlandModeYesNoPage is no" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddInlandModeYesNoPage, false)
+              val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
+              val result  = helper.addInlandModeYesNo
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("Do you want to add an inland mode of transport?".toText),
+                  value = Value("No - the goods are already at the port or airport".toText),
                   actions = Some(
                     Actions(
                       items = List(
