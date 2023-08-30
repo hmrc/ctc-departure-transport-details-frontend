@@ -16,7 +16,7 @@
 
 package pages.preRequisites
 
-import models.Ternary
+import models.OptionalBoolean
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.sections.equipment.EquipmentsSection
@@ -26,18 +26,18 @@ class ContainerIndicatorPageSpec extends PageBehaviours {
 
   "ContainerIndicatorPage" - {
 
-    beRetrievable[Ternary](ContainerIndicatorPage)
+    beRetrievable[OptionalBoolean](ContainerIndicatorPage)
 
-    beSettable[Ternary](ContainerIndicatorPage)
+    beSettable[OptionalBoolean](ContainerIndicatorPage)
 
-    beRemovable[Ternary](ContainerIndicatorPage)
+    beRemovable[OptionalBoolean](ContainerIndicatorPage)
 
     "cleanup" - {
       "when answer changes" - {
         "must remove transport equipments section" in {
-          forAll(arbitrary[Ternary]) {
+          forAll(arbitrary[OptionalBoolean]) {
             indicator =>
-              forAll(arbitrary[Ternary].retryUntil(_ != indicator)) {
+              forAll(arbitrary[OptionalBoolean].retryUntil(_ != indicator)) {
                 differentIndicator =>
                   val userAnswers = emptyUserAnswers
                     .setValue(ContainerIndicatorPage, indicator)
@@ -53,7 +53,7 @@ class ContainerIndicatorPageSpec extends PageBehaviours {
 
       "when answer doesn't change" - {
         "must do nothing" in {
-          forAll(arbitrary[Ternary]) {
+          forAll(arbitrary[OptionalBoolean]) {
             indicator =>
               val userAnswers = emptyUserAnswers
                 .setValue(ContainerIndicatorPage, indicator)

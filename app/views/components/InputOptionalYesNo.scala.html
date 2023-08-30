@@ -27,25 +27,27 @@
 @(
     field: Field,
     yesNoType: InputYesNoViewModel,
-    hint: Option[Content] = None,
-    prefix: String = "site",
-    inline: Boolean = true
+    hint: Option[Content] = None
 )(implicit messages: Messages)
 
 @radios = @{
     Radios(
-        classes = if (inline) "govuk-radios--inline" else "",
         hint = hint.map(x => Hint(content = x)),
         items = Seq(
             RadioItem(
                 id = Some(field.id),
                 value = Some("true"),
-                content = Text(messages(s"$prefix.yes"))
+                content = Text(messages("site.yes"))
             ),
             RadioItem(
                 id = Some(s"${field.id}-no"),
                 value = Some("false"),
-                content = Text(messages(s"$prefix.no"))
+                content = Text(messages("site.no"))
+            ),
+            RadioItem(
+                id = Some(s"${field.id}-maybe"),
+                value = Some("maybe"),
+                content = Text(messages("site.maybe"))
             )
         )
     )

@@ -20,7 +20,6 @@ import cats.implicits._
 import config.PhaseConfig
 import controllers.transportMeans.routes
 import models.SecurityDetailsType.NoSecurityDetails
-import models.Ternary.True
 import models.domain._
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.transportMeans.BorderModeOfTransport
@@ -61,8 +60,8 @@ object TransitionTransportMeansDomain {
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransitionTransportMeansDomain] = {
 
     lazy val transportMeansDepartureReader: UserAnswersReader[Option[TransportMeansDepartureDomain]] =
-      ContainerIndicatorPage.reader.flatMap {
-        case True =>
+      ContainerIndicatorPage.reader.map(_.value).flatMap {
+        case Some(true) =>
           AddDepartureTransportMeansYesNoPage.filterOptionalDependent(identity) {
             TransportMeansDepartureDomain.userAnswersReader
           }

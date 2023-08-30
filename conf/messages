@@ -5,6 +5,7 @@ site.delete.hidden = Remove {0}
 site.edit.hidden = Change {0}
 site.no = No
 site.yes = Yes
+site.maybe = Not sure
 site.continue = Continue
 site.saveAndContinue = Save and continue
 site.service_name = Manage your transit movements
@@ -89,9 +90,6 @@ preRequisites.containerIndicator.heading = Are you using any shipping containers
 preRequisites.containerIndicator.checkYourAnswersLabel = Are you using any containers?
 preRequisites.containerIndicator.change.hidden = if you are using any containers
 preRequisites.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
-preRequisites.containerIndicator.true = Yes
-preRequisites.containerIndicator.false = No
-preRequisites.containerIndicator.maybe = Not sure
 
 # Transport details - Transport means
 

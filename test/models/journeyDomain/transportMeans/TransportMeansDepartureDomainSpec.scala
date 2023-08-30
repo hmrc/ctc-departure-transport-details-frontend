@@ -19,12 +19,11 @@ package models.journeyDomain.transportMeans
 import base.SpecBase
 import config.PhaseConfig
 import generators.Generators
-import models.Phase
-import models.Ternary.{False, True}
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.Nationality
 import models.transportMeans.InlandMode
 import models.transportMeans.departure.Identification
+import models.{OptionalBoolean, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -143,7 +142,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
         "and container indicator is 1" - {
           "and add identification type yes/no page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, True)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
             val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
               TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
@@ -154,7 +153,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
           "and identification page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, True)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
               .setValue(AddIdentificationTypeYesNoPage, true)
 
             val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
@@ -166,7 +165,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
           "and add identification number yes/no page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, True)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
               .setValue(AddIdentificationTypeYesNoPage, false)
 
             val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
@@ -178,7 +177,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
           "and identification number page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, True)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
               .setValue(AddIdentificationTypeYesNoPage, false)
               .setValue(AddIdentificationNumberYesNoPage, true)
 
@@ -191,7 +190,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
           "and add nationality yes/no page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, True)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
               .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
               .setValue(AddIdentificationTypeYesNoPage, false)
               .setValue(AddIdentificationNumberYesNoPage, false)
@@ -205,7 +204,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
           "and nationality page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, True)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
               .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
               .setValue(AddIdentificationTypeYesNoPage, false)
               .setValue(AddIdentificationNumberYesNoPage, false)
@@ -222,7 +221,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
         "and container indicator is 0" - {
           "and identification type page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, False)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.no)
 
             val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
               TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
@@ -233,7 +232,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
           "and identification number page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, False)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.no)
               .setValue(IdentificationPage, arbitrary[Identification].sample.value)
 
             val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
@@ -245,7 +244,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
           "and nationality page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, False)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.no)
               .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
               .setValue(IdentificationPage, arbitrary[Identification].sample.value)
               .setValue(MeansIdentificationNumberPage, Gen.alphaNumStr.sample.value)

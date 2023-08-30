@@ -19,7 +19,6 @@ package models.journeyDomain.transportMeans
 import cats.implicits._
 import config.PhaseConfig
 import models.Phase
-import models.Ternary.{False, True}
 import models.domain._
 import models.journeyDomain.JourneyDomainModel
 import models.reference.Nationality
@@ -68,15 +67,15 @@ object TransitionTransportMeansDepartureDomain {
 
   implicit val userAnswersReader: UserAnswersReader[TransitionTransportMeansDepartureDomain] = {
     val identificationReader: UserAnswersReader[Option[Identification]] =
-      ContainerIndicatorPage.reader.flatMap {
-        case False => IdentificationPage.reader.map(Some(_))
-        case _     => AddIdentificationTypeYesNoPage.filterOptionalDependent(identity)(IdentificationPage.reader)
+      ContainerIndicatorPage.reader.map(_.value).flatMap {
+        case Some(false) => IdentificationPage.reader.map(Some(_))
+        case _           => AddIdentificationTypeYesNoPage.filterOptionalDependent(identity)(IdentificationPage.reader)
       }
 
     val identificationNumberReader: UserAnswersReader[Option[String]] =
-      ContainerIndicatorPage.reader.flatMap {
-        case False => MeansIdentificationNumberPage.reader.map(Some(_))
-        case _     => AddIdentificationNumberYesNoPage.filterOptionalDependent(identity)(MeansIdentificationNumberPage.reader)
+      ContainerIndicatorPage.reader.map(_.value).flatMap {
+        case Some(false) => MeansIdentificationNumberPage.reader.map(Some(_))
+        case _           => AddIdentificationNumberYesNoPage.filterOptionalDependent(identity)(MeansIdentificationNumberPage.reader)
       }
 
     val nationalityReader: UserAnswersReader[Option[Nationality]] =
@@ -84,9 +83,9 @@ object TransitionTransportMeansDepartureDomain {
         case Some(InlandMode.Rail) =>
           none[Nationality].pure[UserAnswersReader]
         case _ =>
-          ContainerIndicatorPage.reader.flatMap {
-            case True => AddVehicleCountryYesNoPage.filterOptionalDependent(identity)(VehicleCountryPage.reader)
-            case _    => VehicleCountryPage.reader.map(Some(_))
+          ContainerIndicatorPage.reader.map(_.value).flatMap {
+            case Some(true) => AddVehicleCountryYesNoPage.filterOptionalDependent(identity)(VehicleCountryPage.reader)
+            case _          => VehicleCountryPage.reader.map(Some(_))
           }
       }
 

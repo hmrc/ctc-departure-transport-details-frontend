@@ -19,8 +19,8 @@ package controllers.preRequisites
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.EnumerableFormProvider
-import models.{LocalReferenceNumber, Mode, Ternary}
+import forms.OptionalYesNoFormProvider
+import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.external.AdditionalDeclarationTypePage
 import pages.preRequisites.ContainerIndicatorPage
@@ -39,14 +39,14 @@ class ContainerIndicatorController @Inject() (
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
-  formProvider: EnumerableFormProvider,
+  formProvider: OptionalYesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: ContainerIndicatorView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[Ternary]("preRequisites.containerIndicator")
+  private val form = formProvider("preRequisites.containerIndicator")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(lrn)
@@ -56,8 +56,8 @@ class ContainerIndicatorController @Inject() (
           case None        => form
           case Some(value) => form.fill(value)
         }
-
-        Ok(view(preparedForm, lrn, mode, Ternary.values(request.arg)))
+        // TODO - pass in flag for A or D
+        Ok(view(preparedForm, lrn, mode))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
@@ -68,7 +68,7 @@ class ContainerIndicatorController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, Ternary.values(request.arg)))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
             value => {
               implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
               ContainerIndicatorPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
