@@ -19,8 +19,7 @@ package controllers.transportMeans
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.EnumerableFormProvider
-import models.transportMeans.InlandModeYesNo
+import forms.YesNoFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.AddInlandModeYesNoPage
@@ -38,14 +37,14 @@ class AddInlandModeYesNoController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
-  formProvider: EnumerableFormProvider,
+  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddInlandModeYesNoView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[InlandModeYesNo]("transportMeans.addInlandModeYesNo")
+  private val form = formProvider("transportMeans.addInlandModeYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
@@ -54,7 +53,7 @@ class AddInlandModeYesNoController @Inject() (
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, InlandModeYesNo.values, mode))
+      Ok(view(preparedForm, lrn, mode))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
@@ -62,7 +61,7 @@ class AddInlandModeYesNoController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, InlandModeYesNo.values, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
             AddInlandModeYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()

@@ -16,31 +16,13 @@
 
 package utils
 
-import models.DateTime
-
+import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, LocalDateTime}
 
 object Format {
-
-  private val dateTimeFormatIE015: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
 
   implicit class RichLocalDate(localDate: LocalDate) {
     def formatAsString: String = localDate.format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
     def formatForText: String  = localDate.format(DateTimeFormatter.ofPattern("dd MM yyyy"))
-  }
-
-  implicit class RichLocalDateTime(localDateTime: LocalDateTime) {
-    def toIE015Format: String  = localDateTime.format(dateTimeFormatIE015)
-    def toDateTime: DateTime   = DateTime(localDateTime)
-    def formatAsString: String = localDateTime.format(DateTimeFormatter.ofPattern("d MMMM yyyy HH:mm"))
-  }
-
-  implicit class RichDateTime(dateTime: DateTime) {
-    def formatAsString: String = dateTime.toLocalDateTime.formatAsString
-  }
-
-  implicit class RichString(string: String) {
-    def parseWithIE015Format: LocalDateTime = LocalDateTime.parse(string, dateTimeFormatIE015)
   }
 }

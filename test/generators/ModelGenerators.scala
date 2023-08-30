@@ -18,8 +18,8 @@ package generators
 
 import models._
 import models.reference._
-import models.transportMeans.{BorderModeOfTransport, InlandMode, InlandModeYesNo}
 import models.transportMeans.InlandMode.{Mail, Rail}
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -145,11 +145,6 @@ trait ModelGenerators {
   implicit lazy val arbitraryInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
       Gen.oneOf(InlandMode.values)
-    }
-
-  implicit lazy val arbitraryInlandModeYesNo: Arbitrary[InlandModeYesNo] =
-    Arbitrary {
-      Gen.oneOf(InlandModeYesNo.values)
     }
 
   val arbitraryNonMailInlandMode: Arbitrary[InlandMode] =

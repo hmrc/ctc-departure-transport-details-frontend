@@ -16,28 +16,20 @@
 
 package views.transportMeans
 
-import forms.EnumerableFormProvider
 import models.NormalMode
-import models.transportMeans.InlandModeYesNo
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.YesNoViewBehaviours
 import views.html.transportMeans.AddInlandModeYesNoView
 
-class AddInlandModeYesNoViewSpec extends RadioViewBehaviours[InlandModeYesNo] {
+class AddInlandModeYesNoViewSpec extends YesNoViewBehaviours {
 
-  override def form: Form[InlandModeYesNo] = new EnumerableFormProvider()(prefix)
+  override val noContent: String = "No - the goods are already at the port or airport"
 
-  override def applyView(form: Form[InlandModeYesNo]): HtmlFormat.Appendable =
-    injector.instanceOf[AddInlandModeYesNoView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector.instanceOf[AddInlandModeYesNoView].apply(form, lrn, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.addInlandModeYesNo"
-
-  override def radioItems(fieldId: String, checkedValue: Option[InlandModeYesNo] = None): Seq[RadioItem] =
-    values.toRadioItems(fieldId, checkedValue)
-
-  override def values: Seq[InlandModeYesNo] = InlandModeYesNo.values
 
   behave like pageWithTitle()
 
