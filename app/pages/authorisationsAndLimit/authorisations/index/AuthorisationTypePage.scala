@@ -20,7 +20,8 @@ import controllers.authorisationsAndLimit.authorisations.index.routes
 import models.authorisations.AuthorisationType
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.authorisationsAndLimit.AuthorisationSection
+import pages.sections.authorisationsAndLimit.{AuthorisationSection, LimitSection}
+import pages.sections.equipment.EquipmentsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -38,8 +39,13 @@ abstract class BaseAuthorisationTypePage(authorisationIndex: Index) extends Ques
   // TODO - if user adds or removes a SSE type authorisation this affects the transport equipment seals and goods item numbers nav.
   override def cleanup(value: Option[AuthorisationType], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(_) => userAnswers.remove(AuthorisationReferenceNumberPage(authorisationIndex)).flatMap(cleanup)
-      case _       => super.cleanup(value, userAnswers)
+      case Some(_) =>
+        userAnswers
+          .remove(AuthorisationReferenceNumberPage(authorisationIndex))
+          .flatMap(_.remove(LimitSection))
+          .flatMap(_.remove(EquipmentsSection))
+          .flatMap(cleanup)
+      case _ => super.cleanup(value, userAnswers)
     }
 }
 
