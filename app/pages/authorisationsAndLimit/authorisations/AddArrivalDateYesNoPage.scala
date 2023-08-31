@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
+// TODO - move page, controller and view to authorisationsAndLimit.limit
 package pages.authorisationsAndLimit.authorisations
 
 import controllers.authorisationsAndLimit.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.TransportSection
-import pages.sections.authorisationsAndLimit.AuthorisationsAndLimitSection
+import pages.authorisationsAndLimit.limit.LimitDatePage
+import pages.sections.authorisationsAndLimit.LimitSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,7 +29,7 @@ import scala.util.Try
 
 case object AddArrivalDateYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = TransportSection.path \ toString
+  override def path: JsPath = LimitSection.path \ toString
 
   override def toString: String = "addArrivalDateYesNo"
 
@@ -37,7 +38,7 @@ case object AddArrivalDateYesNoPage extends QuestionPage[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(AuthorisationsAndLimitSection)
+      case Some(false) => userAnswers.remove(LimitDatePage)
       case _           => super.cleanup(value, userAnswers)
     }
 }

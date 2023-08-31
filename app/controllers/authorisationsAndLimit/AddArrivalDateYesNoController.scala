@@ -16,6 +16,7 @@
 
 package controllers.authorisationsAndLimit
 
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
@@ -39,7 +40,7 @@ class AddArrivalDateYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddArrivalDateYesNoView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -63,7 +64,7 @@ class AddArrivalDateYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            AddArrivalDateYesNoPage.writeToUserAnswers(value).writeToSession().navigate()
+            AddArrivalDateYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

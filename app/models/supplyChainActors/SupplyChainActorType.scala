@@ -17,12 +17,8 @@
 package models.supplyChainActors
 
 import models.{EnumerableType, Radioable, WithName}
-import play.api.i18n.Messages
 
 sealed trait SupplyChainActorType extends Radioable[SupplyChainActorType] {
-
-  def asString(implicit messages: Messages): String =
-    messages(s"${SupplyChainActorType.messageKeyPrefix}.$this")
 
   override val messageKeyPrefix: String = SupplyChainActorType.messageKeyPrefix
 }

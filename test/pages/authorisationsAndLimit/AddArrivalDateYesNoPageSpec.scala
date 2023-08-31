@@ -17,13 +17,14 @@
 package pages.authorisationsAndLimit
 
 import pages.authorisationsAndLimit.authorisations.AddArrivalDateYesNoPage
+import pages.authorisationsAndLimit.limit.LimitDatePage
 import pages.behaviours.PageBehaviours
-import pages.sections.authorisationsAndLimit.AuthorisationsAndLimitSection
-import play.api.libs.json.Json
+
+import java.time.LocalDate
 
 class AddArrivalDateYesNoPageSpec extends PageBehaviours {
 
-  "AddAuthorisationsYesNoPage" - {
+  "AddArrivalDateYesNoPage" - {
 
     beRetrievable[Boolean](AddArrivalDateYesNoPage)
 
@@ -33,20 +34,20 @@ class AddArrivalDateYesNoPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when NO selected" - {
-        "must clean up Authorisation section" in {
-          val preChange  = emptyUserAnswers.setValue(AuthorisationsAndLimitSection, Json.obj("foo" -> "bar"))
+        "must clean up Limit date" in {
+          val preChange  = emptyUserAnswers.setValue(LimitDatePage, LocalDate.now())
           val postChange = preChange.setValue(AddArrivalDateYesNoPage, false)
 
-          postChange.get(AuthorisationsAndLimitSection) mustNot be(defined)
+          postChange.get(LimitDatePage) mustNot be(defined)
         }
       }
 
       "when YES selected" - {
         "must do nothing" in {
-          val preChange  = emptyUserAnswers.setValue(AuthorisationsAndLimitSection, Json.obj("foo" -> "bar"))
+          val preChange  = emptyUserAnswers.setValue(LimitDatePage, LocalDate.now())
           val postChange = preChange.setValue(AddArrivalDateYesNoPage, true)
 
-          postChange.get(AuthorisationsAndLimitSection) must be(defined)
+          postChange.get(LimitDatePage) must be(defined)
         }
       }
     }

@@ -18,18 +18,11 @@ package models.transportMeans.active
 
 import models.{EnumerableType, Index, Radioable, UserAnswers, WithName}
 import pages.transportMeans.BorderModeOfTransportPage
-import play.api.i18n.Messages
 
 sealed trait Identification extends Radioable[Identification] {
   val borderModeType: Int
 
   override val messageKeyPrefix: String = Identification.messageKeyPrefix
-
-  def asString(implicit messages: Messages): String =
-    messages(s"${Identification.messageKeyPrefix}.$this")
-
-  def forDisplay(implicit messages: Messages): String =
-    messages(s"${Identification.messageKeyPrefix}.forDisplay.$this")
 }
 
 object Identification extends EnumerableType[Identification] {

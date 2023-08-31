@@ -28,8 +28,7 @@ import models.journeyDomain.transportMeans.TransportMeansDomain
 import models.transportMeans.InlandMode
 import models.transportMeans.InlandMode.Mail
 import models.{Mode, Phase, UserAnswers}
-import pages.authorisationsAndLimit.AuthorisationsInferredPage
-import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
+import pages.authorisationsAndLimit.{AddAuthorisationsYesNoPage, AuthorisationsInferredPage}
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
 import pages.supplyChainActors.SupplyChainActorYesNoPage

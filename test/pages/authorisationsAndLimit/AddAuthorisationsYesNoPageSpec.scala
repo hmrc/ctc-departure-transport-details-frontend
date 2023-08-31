@@ -16,10 +16,9 @@
 
 package pages.authorisationsAndLimit
 
-import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.behaviours.PageBehaviours
-import pages.sections.authorisationsAndLimit.AuthorisationsAndLimitSection
-import play.api.libs.json.Json
+import pages.sections.authorisationsAndLimit.{AuthorisationsSection, LimitSection}
+import play.api.libs.json.{JsArray, Json}
 
 class AddAuthorisationsYesNoPageSpec extends PageBehaviours {
 
@@ -34,19 +33,31 @@ class AddAuthorisationsYesNoPageSpec extends PageBehaviours {
     "cleanup" - {
       "when NO selected" - {
         "must clean up Authorisation section" in {
-          val preChange  = emptyUserAnswers.setValue(AuthorisationsAndLimitSection, Json.obj("foo" -> "bar"))
-          val postChange = preChange.setValue(AddAuthorisationsYesNoPage, false)
+          val userAnswers = emptyUserAnswers
+            .setValue(AuthorisationsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+            .setValue(AuthorisationsInferredPage, true)
+            .setValue(LimitSection, Json.obj("foo" -> "bar"))
 
-          postChange.get(AuthorisationsAndLimitSection) mustNot be(defined)
+          val result = userAnswers.setValue(AddAuthorisationsYesNoPage, false)
+
+          result.get(AuthorisationsSection) mustNot be(defined)
+          result.get(AuthorisationsInferredPage) mustNot be(defined)
+          result.get(LimitSection) mustNot be(defined)
         }
       }
 
       "when YES selected" - {
         "must do nothing" in {
-          val preChange  = emptyUserAnswers.setValue(AuthorisationsAndLimitSection, Json.obj("foo" -> "bar"))
-          val postChange = preChange.setValue(AddAuthorisationsYesNoPage, true)
+          val userAnswers = emptyUserAnswers
+            .setValue(AuthorisationsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+            .setValue(AuthorisationsInferredPage, true)
+            .setValue(LimitSection, Json.obj("foo" -> "bar"))
 
-          postChange.get(AuthorisationsAndLimitSection) must be(defined)
+          val result = userAnswers.setValue(AddAuthorisationsYesNoPage, true)
+
+          result.get(AuthorisationsSection) must be(defined)
+          result.get(AuthorisationsInferredPage) must be(defined)
+          result.get(LimitSection) must be(defined)
         }
       }
     }

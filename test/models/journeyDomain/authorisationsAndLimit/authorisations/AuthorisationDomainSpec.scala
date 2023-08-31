@@ -30,7 +30,7 @@ import models.{DeclarationType, Index, Mode, Phase, ProcedureType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
-import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
+import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
 import pages.external._
 import pages.transportMeans.InlandModePage

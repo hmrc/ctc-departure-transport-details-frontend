@@ -16,6 +16,7 @@
 
 package generators
 
+import config.Constants._
 import models._
 import models.authorisations.AuthorisationType
 import models.equipment.PaymentMethod
@@ -26,7 +27,7 @@ import models.transportMeans.departure.Identification
 import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.authorisationsAndLimit.AuthorisationsInferredPage
+import pages.authorisationsAndLimit.authorisations.AddArrivalDateYesNoPage
 import play.api.libs.json._
 import queries.Gettable
 
@@ -42,12 +43,13 @@ trait UserAnswersEntryGenerators {
   private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.external._
     {
-      case ApprovedOperatorPage         => arbitrary[Boolean].map(JsBoolean)
-      case DeclarationTypePage          => arbitrary[DeclarationType].map(Json.toJson(_))
-      case OfficeOfDestinationPage      => arbitrary[CustomsOffice].map(Json.toJson(_))
-      case OfficeOfDepartureInCL010Page => arbitrary[Boolean].map(JsBoolean)
-      case ProcedureTypePage            => arbitrary[ProcedureType].map(Json.toJson(_))
-      case SecurityDetailsTypePage      => arbitrary[SecurityDetailsType].map(Json.toJson(_))
+      case ApprovedOperatorPage          => arbitrary[Boolean].map(JsBoolean)
+      case DeclarationTypePage           => arbitrary[DeclarationType].map(Json.toJson(_))
+      case OfficeOfDestinationPage       => arbitrary[CustomsOffice].map(Json.toJson(_))
+      case OfficeOfDepartureInCL010Page  => arbitrary[Boolean].map(JsBoolean)
+      case ProcedureTypePage             => arbitrary[ProcedureType].map(Json.toJson(_))
+      case SecurityDetailsTypePage       => arbitrary[SecurityDetailsType].map(Json.toJson(_))
+      case AdditionalDeclarationTypePage => Gen.oneOf(STANDARD, `PRE-LODGE`).map(JsString)
     }
   }
 
@@ -55,8 +57,7 @@ trait UserAnswersEntryGenerators {
     generatePreRequisitesAnswer orElse
       generateTransportMeansAnswer orElse
       generateSupplyChainActorsAnswers orElse
-      generateAuthorisationAnswers orElse
-      generateLimitAnswers orElse
+      generateAuthorisationsAndLimitAnswers orElse
       generateCarrierDetailsAnswers orElse
       generateEquipmentsAndChargesAnswers
 
@@ -130,12 +131,20 @@ trait UserAnswersEntryGenerators {
     }
   }
 
+  private def generateAuthorisationsAndLimitAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.authorisationsAndLimit._
+
+    val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
+      case AuthorisationsInferredPage => arbitrary[Boolean].map(JsBoolean)
+      case AddAuthorisationsYesNoPage => arbitrary[Boolean].map(JsBoolean)
+    }
+
+    pf orElse generateAuthorisationAnswers orElse generateLimitAnswers
+  }
+
   private def generateAuthorisationAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
-    import pages.authorisationsAndLimit.authorisations._
     import pages.authorisationsAndLimit.authorisations.index._
     {
-      case AuthorisationsInferredPage          => arbitrary[Boolean].map(JsBoolean)
-      case AddAuthorisationsYesNoPage          => arbitrary[Boolean].map(JsBoolean)
       case AuthorisationTypePage(_)            => arbitrary[AuthorisationType].map(Json.toJson(_))
       case AuthorisationReferenceNumberPage(_) => Gen.alphaNumStr.map(JsString)
     }
@@ -144,7 +153,8 @@ trait UserAnswersEntryGenerators {
   private def generateLimitAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.authorisationsAndLimit.limit.LimitDatePage
     {
-      case LimitDatePage => arbitrary[LocalDate].map(Json.toJson(_))
+      case AddArrivalDateYesNoPage => arbitrary[Boolean].map(JsBoolean)
+      case LimitDatePage           => arbitrary[LocalDate].map(Json.toJson(_))
     }
   }
 

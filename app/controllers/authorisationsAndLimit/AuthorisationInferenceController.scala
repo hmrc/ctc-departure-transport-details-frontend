@@ -16,9 +16,11 @@
 
 package controllers.authorisationsAndLimit
 
+import config.PhaseConfig
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import models.{LocalReferenceNumber, Mode}
-import navigation.TransportNavigatorProvider
+import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.authorisationsAndLimit.AuthorisationsInferredPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -27,7 +29,7 @@ import services.AuthorisationInferenceService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class AuthorisationInferenceController @Inject() (
   override val messagesApi: MessagesApi,
@@ -36,19 +38,14 @@ class AuthorisationInferenceController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   authorisationInferenceService: AuthorisationInferenceService
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
   def infer(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val userAnswers = authorisationInferenceService.inferAuthorisations(request.userAnswers)
-      for {
-        updatedUserAnswers <- Future.fromTry(userAnswers.set(AuthorisationsInferredPage, true))
-        _                  <- sessionRepository.set(updatedUserAnswers)
-      } yield {
-        val navigator = navigatorProvider(mode)
-        Redirect(navigator.nextPage(userAnswers))
-      }
+      val userAnswers                              = authorisationInferenceService.inferAuthorisations(request.userAnswers)
+      implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+      AuthorisationsInferredPage.writeToUserAnswers(true).updateTask().writeToSession(userAnswers).navigate()
   }
 }
