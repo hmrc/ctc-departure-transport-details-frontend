@@ -20,8 +20,8 @@ import config.{FrontendAppConfig, PhaseConfig}
 import controllers.authorisationsAndLimit.authorisations.index.routes
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.{Index, Mode, UserAnswers}
+import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
-import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
 import play.api.i18n.Messages
 import play.api.mvc.Call

@@ -26,7 +26,7 @@ import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
 import models.{Index, Mode, UserAnswers}
-import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
+import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
 import pages.authorisationsAndLimit.limit.LimitDatePage
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
 import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
