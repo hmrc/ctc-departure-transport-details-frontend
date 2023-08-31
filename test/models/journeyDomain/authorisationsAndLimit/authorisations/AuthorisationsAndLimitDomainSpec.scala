@@ -24,7 +24,7 @@ import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.authorisationsAndLimit.authorisations.AddArrivalDateYesNoPage
+import pages.authorisationsAndLimit.authorisations.AddLimitDateYesNoPage
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
 import pages.authorisationsAndLimit.limit.LimitDatePage
 import pages.external.AdditionalDeclarationTypePage
@@ -91,7 +91,7 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
               AuthorisationsAndLimitDomain.limitReader(authorisationsDomain)
             ).run(userAnswers)
 
-            result.left.value.page mustBe AddArrivalDateYesNoPage
+            result.left.value.page mustBe AddLimitDateYesNoPage
           }
         }
       }

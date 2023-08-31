@@ -22,24 +22,24 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
-import pages.authorisationsAndLimit.authorisations.AddArrivalDateYesNoPage
+import pages.authorisationsAndLimit.authorisations.AddLimitDateYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.authorisationsAndLimit.AddArrivalDateYesNoView
+import views.html.authorisationsAndLimit.limit.AddLimitDateYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddArrivalDateYesNoController @Inject() (
+class AddLimitDateYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddArrivalDateYesNoView
+  view: AddLimitDateYesNoView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
@@ -48,7 +48,7 @@ class AddArrivalDateYesNoController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddArrivalDateYesNoPage) match {
+      val preparedForm = request.userAnswers.get(AddLimitDateYesNoPage) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
@@ -64,7 +64,7 @@ class AddArrivalDateYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            AddArrivalDateYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            AddLimitDateYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

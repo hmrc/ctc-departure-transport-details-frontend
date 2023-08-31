@@ -9,7 +9,7 @@ POST       /authorisations/change-add/:lrn                            controller
 GET        /authorisations/infer/:lrn                                 controllers.authorisationsAndLimit.AuthorisationInferenceController.infer(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /authorisations/change-add/:lrn                            controllers.authorisationsAndLimit.AuthorisationInferenceController.infer(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /authorisations/add-arrival-date/:lrn                      controllers.authorisationsAndLimit.AddArrivalDateYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /authorisations/add-arrival-date/:lrn                      controllers.authorisationsAndLimit.AddArrivalDateYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /authorisations/change-add-arrival-date/:lrn               controllers.authorisationsAndLimit.AddArrivalDateYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /authorisations/change-add-arrival-date/:lrn               controllers.authorisationsAndLimit.AddArrivalDateYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /authorisations/add-arrival-date/:lrn                      controllers.authorisationsAndLimit.AddLimitDateYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /authorisations/add-arrival-date/:lrn                      controllers.authorisationsAndLimit.AddLimitDateYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /authorisations/change-add-arrival-date/:lrn               controllers.authorisationsAndLimit.AddLimitDateYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /authorisations/change-add-arrival-date/:lrn               controllers.authorisationsAndLimit.AddLimitDateYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

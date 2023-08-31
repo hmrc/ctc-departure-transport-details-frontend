@@ -35,7 +35,7 @@
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.AddArrivalDateYesNoController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddLimitDateYesNoController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

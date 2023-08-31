@@ -14,30 +14,31 @@
  * limitations under the License.
  */
 
-package controllers.authorisationsAndLimit
+package controllers.authorisationsAndLimit.limit
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.authorisationsAndLimit.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.authorisationsAndLimit.authorisations.AddArrivalDateYesNoPage
+import pages.authorisationsAndLimit.authorisations.AddLimitDateYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.authorisationsAndLimit.AddArrivalDateYesNoView
+import views.html.authorisationsAndLimit.limit.AddLimitDateYesNoView
 
 import scala.concurrent.Future
 
-class AddArrivalDateYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AddLimitDateYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider                  = new YesNoFormProvider()
   private val form                          = formProvider("authorisations.addArrivalDateYesNo")
   private val mode                          = NormalMode
-  private lazy val addArrivalDateYesNoRoute = routes.AddArrivalDateYesNoController.onPageLoad(lrn, mode).url
+  private lazy val addArrivalDateYesNoRoute = routes.AddLimitDateYesNoController.onPageLoad(lrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -53,7 +54,7 @@ class AddArrivalDateYesNoControllerSpec extends SpecBase with AppWithDefaultMock
       val request = FakeRequest(GET, addArrivalDateYesNoRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[AddArrivalDateYesNoView]
+      val view = injector.instanceOf[AddLimitDateYesNoView]
 
       status(result) mustEqual OK
 
@@ -63,7 +64,7 @@ class AddArrivalDateYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddArrivalDateYesNoPage, true)
+      val userAnswers = emptyUserAnswers.setValue(AddLimitDateYesNoPage, true)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addArrivalDateYesNoRoute)
@@ -72,7 +73,7 @@ class AddArrivalDateYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[AddArrivalDateYesNoView]
+      val view = injector.instanceOf[AddLimitDateYesNoView]
 
       status(result) mustEqual OK
 
@@ -107,7 +108,7 @@ class AddArrivalDateYesNoControllerSpec extends SpecBase with AppWithDefaultMock
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddArrivalDateYesNoView]
+      val view = injector.instanceOf[AddLimitDateYesNoView]
 
       contentAsString(result) mustEqual
         view(boundForm, lrn, mode)(request, messages).toString

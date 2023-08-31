@@ -20,12 +20,12 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.authorisationsAndLimit.AddArrivalDateYesNoView
+import views.html.authorisationsAndLimit.limit.AddLimitDateYesNoView
 
 class AddArrivalDateYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddArrivalDateYesNoView].apply(form, lrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddLimitDateYesNoView].apply(form, lrn, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "authorisations.addArrivalDateYesNo"
 
