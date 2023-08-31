@@ -35,11 +35,13 @@ class AddAuthorisationsYesNoPageSpec extends PageBehaviours {
         "must clean up Authorisation section" in {
           val userAnswers = emptyUserAnswers
             .setValue(AuthorisationsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+            .setValue(AuthorisationsInferredPage, true)
             .setValue(LimitSection, Json.obj("foo" -> "bar"))
 
           val result = userAnswers.setValue(AddAuthorisationsYesNoPage, false)
 
           result.get(AuthorisationsSection) mustNot be(defined)
+          result.get(AuthorisationsInferredPage) mustNot be(defined)
           result.get(LimitSection) mustNot be(defined)
         }
       }
@@ -48,11 +50,13 @@ class AddAuthorisationsYesNoPageSpec extends PageBehaviours {
         "must do nothing" in {
           val userAnswers = emptyUserAnswers
             .setValue(AuthorisationsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+            .setValue(AuthorisationsInferredPage, true)
             .setValue(LimitSection, Json.obj("foo" -> "bar"))
 
           val result = userAnswers.setValue(AddAuthorisationsYesNoPage, true)
 
           result.get(AuthorisationsSection) must be(defined)
+          result.get(AuthorisationsInferredPage) must be(defined)
           result.get(LimitSection) must be(defined)
         }
       }

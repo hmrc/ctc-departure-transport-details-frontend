@@ -36,7 +36,12 @@ case object AddAuthorisationsYesNoPage extends QuestionPage[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(AuthorisationsSection).flatMap(_.remove(LimitSection))
-      case _           => super.cleanup(value, userAnswers)
+      case Some(false) =>
+        userAnswers
+          .remove(AuthorisationsSection)
+          .flatMap(_.remove(AuthorisationsInferredPage))
+          .flatMap(_.remove(LimitSection))
+      case _ =>
+        super.cleanup(value, userAnswers)
     }
 }
