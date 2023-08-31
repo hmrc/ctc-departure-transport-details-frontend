@@ -25,8 +25,7 @@ import models.journeyDomain.authorisationsAndLimit.authorisations.Authorisations
 import models.transportMeans.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.authorisationsAndLimit.AuthorisationsInferredPage
-import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
+import pages.authorisationsAndLimit.{AddAuthorisationsYesNoPage, AuthorisationsInferredPage}
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
 import pages.supplyChainActors.SupplyChainActorYesNoPage

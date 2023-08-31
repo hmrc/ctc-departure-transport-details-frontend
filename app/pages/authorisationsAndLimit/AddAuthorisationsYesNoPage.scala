@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package pages.authorisationsAndLimit.authorisations
+package pages.authorisationsAndLimit
 
 import controllers.authorisationsAndLimit.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.TransportSection
-import pages.sections.authorisationsAndLimit.AuthorisationsAndLimitSection
+import pages.sections.authorisationsAndLimit.{AuthorisationsAndLimitSection, AuthorisationsSection, LimitSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,7 +27,7 @@ import scala.util.Try
 
 case object AddAuthorisationsYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = TransportSection.path \ toString
+  override def path: JsPath = AuthorisationsAndLimitSection.path \ toString
 
   override def toString: String = "addAuthorisationsYesNo"
 
@@ -37,7 +36,12 @@ case object AddAuthorisationsYesNoPage extends QuestionPage[Boolean] {
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(AuthorisationsAndLimitSection)
-      case _           => super.cleanup(value, userAnswers)
+      case Some(false) =>
+        userAnswers
+          .remove(AuthorisationsSection)
+          .flatMap(_.remove(AuthorisationsInferredPage))
+          .flatMap(_.remove(LimitSection))
+      case _ =>
+        super.cleanup(value, userAnswers)
     }
 }
