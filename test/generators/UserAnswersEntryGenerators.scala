@@ -26,7 +26,6 @@ import models.transportMeans.departure.Identification
 import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.authorisationsAndLimit.AuthorisationsInferredPage
 import play.api.libs.json._
 import queries.Gettable
 
@@ -55,8 +54,7 @@ trait UserAnswersEntryGenerators {
     generatePreRequisitesAnswer orElse
       generateTransportMeansAnswer orElse
       generateSupplyChainActorsAnswers orElse
-      generateAuthorisationAnswers orElse
-      generateLimitAnswers orElse
+      generateAuthorisationsAndLimitAnswers orElse
       generateCarrierDetailsAnswers orElse
       generateEquipmentsAndChargesAnswers
 
@@ -130,12 +128,20 @@ trait UserAnswersEntryGenerators {
     }
   }
 
+  private def generateAuthorisationsAndLimitAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.authorisationsAndLimit._
+
+    val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
+      case AuthorisationsInferredPage => arbitrary[Boolean].map(JsBoolean)
+      case AddAuthorisationsYesNoPage => arbitrary[Boolean].map(JsBoolean)
+    }
+
+    pf orElse generateAuthorisationAnswers orElse generateLimitAnswers
+  }
+
   private def generateAuthorisationAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
-    import pages.authorisationsAndLimit.authorisations._
     import pages.authorisationsAndLimit.authorisations.index._
     {
-      case AuthorisationsInferredPage          => arbitrary[Boolean].map(JsBoolean)
-      case AddAuthorisationsYesNoPage          => arbitrary[Boolean].map(JsBoolean)
       case AuthorisationTypePage(_)            => arbitrary[AuthorisationType].map(Json.toJson(_))
       case AuthorisationReferenceNumberPage(_) => Gen.alphaNumStr.map(JsString)
     }

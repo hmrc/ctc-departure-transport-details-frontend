@@ -18,60 +18,55 @@ package forms
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
-import models.transportMeans.active.Identification
-import org.scalacheck.Arbitrary.arbitrary
+import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
 import play.api.test.Helpers.running
 
 class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
 
-  private val identificationType = arbitrary[Identification].sample.value
-  private val prefix             = Gen.alphaNumStr.sample.value
+  private val prefix = Gen.alphaNumStr.sample.value
 
-  private val dynamicTitle = s"$prefix.${identificationType.toString}"
-  private val requiredKey  = s"$prefix.error.required"
-  private val invalidKey   = s"$prefix.error.invalid"
-
-  private val maxIdentificationNumberTransitionLength: Int     = 27
-  private val maxIdentificationNumberPostTransitionLength: Int = 35
+  private val requiredKey = s"$prefix.error.required"
+  private val invalidKey  = s"$prefix.error.invalid"
 
   "TransitionIdentificationNumberFormProvider" - {
 
     val lengthKey = s"$prefix.error.length.transition"
     val app       = transitionApplicationBuilder().build()
+    val maxLength = 27
 
     ".value" - {
 
       running(app) {
 
-        val form      = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix, dynamicTitle)
+        val form      = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
         val fieldName = "value"
 
         behave like fieldThatBindsValidData(
           form,
           fieldName,
-          stringsWithMaxLength(maxIdentificationNumberTransitionLength)
+          stringsWithMaxLength(maxLength)
         )
 
         behave like fieldWithMaxLength(
           form,
           fieldName,
-          maxLength = maxIdentificationNumberTransitionLength,
-          lengthError = FormError(fieldName, lengthKey, Seq(dynamicTitle))
+          maxLength = maxLength,
+          lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
         )
 
         behave like mandatoryField(
           form,
           fieldName,
-          requiredError = FormError(fieldName, requiredKey, Seq(dynamicTitle))
+          requiredError = FormError(fieldName, requiredKey)
         )
 
         behave like fieldWithInvalidCharacters(
           form,
           fieldName,
-          error = FormError(fieldName, invalidKey, Seq(dynamicTitle)),
-          maxIdentificationNumberTransitionLength
+          error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.toString())),
+          maxLength
         )
       }
     }
@@ -82,38 +77,39 @@ class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with Sp
 
     val lengthKey = s"$prefix.error.length.postTransition"
     val app       = postTransitionApplicationBuilder().build()
+    val maxLength = 35
 
     ".value" - {
 
       running(app) {
 
-        val form      = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix, dynamicTitle)
+        val form      = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
         val fieldName = "value"
 
         behave like fieldThatBindsValidData(
           form,
           fieldName,
-          stringsWithMaxLength(maxIdentificationNumberPostTransitionLength)
+          stringsWithMaxLength(maxLength)
         )
 
         behave like fieldWithMaxLength(
           form,
           fieldName,
-          maxLength = maxIdentificationNumberPostTransitionLength,
-          lengthError = FormError(fieldName, lengthKey, Seq(dynamicTitle))
+          maxLength = maxLength,
+          lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
         )
 
         behave like mandatoryField(
           form,
           fieldName,
-          requiredError = FormError(fieldName, requiredKey, Seq(dynamicTitle))
+          requiredError = FormError(fieldName, requiredKey)
         )
 
         behave like fieldWithInvalidCharacters(
           form,
           fieldName,
-          error = FormError(fieldName, invalidKey, Seq(dynamicTitle)),
-          maxIdentificationNumberPostTransitionLength
+          error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.toString())),
+          maxLength
         )
       }
     }

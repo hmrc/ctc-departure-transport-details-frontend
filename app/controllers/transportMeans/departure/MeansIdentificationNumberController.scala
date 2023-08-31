@@ -20,14 +20,14 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.IdentificationNumberFormProvider
-import models.requests.DataRequest
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
-import pages.transportMeans.departure.{IdentificationPage, MeansIdentificationNumberPage}
+import pages.transportMeans.departure.MeansIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.transportMeans.departure.MeansIdentificationNumberViewModel.MeansIdentificationNumberViewModelProvider
 import views.html.transportMeans.departure.MeansIdentificationNumberView
 
 import javax.inject.Inject
@@ -40,47 +40,41 @@ class MeansIdentificationNumberController @Inject() (
   formProvider: IdentificationNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: MeansIdentificationNumberView
+  view: MeansIdentificationNumberView,
+  viewModelProvider: MeansIdentificationNumberViewModelProvider
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
-  private case class DynamicHeading(prefix: String, args: String*)
 
-  private def dynamicHeading(implicit request: DataRequest[_]): DynamicHeading = {
-    val prefix = "transportMeans.departure.meansIdentificationNumber"
+  private val prefix = "transportMeans.departure.meansIdentificationNumber"
 
-    request.userAnswers.get(IdentificationPage) match {
-      case Some(identificationType) => DynamicHeading(s"$prefix.withIDType", identificationType.arg)
-      case None                     => DynamicHeading(s"$prefix.withNoIDType")
-    }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+    implicit request =>
+      val form      = formProvider(prefix)
+      val viewModel = viewModelProvider.apply(request.userAnswers)
+      val preparedForm = request.userAnswers.get(MeansIdentificationNumberPage) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
+      Ok(view(preparedForm, lrn, mode, viewModel))
   }
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
-    .requireData(lrn) {
-      implicit request =>
-        val dynamicHeadingValue = dynamicHeading(request)
-        val form                = formProvider(dynamicHeadingValue.prefix, dynamicHeadingValue.args: _*)
-        val preparedForm = request.userAnswers.get(MeansIdentificationNumberPage) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-        Ok(view(preparedForm, lrn, mode, dynamicHeadingValue.prefix, dynamicHeadingValue.args: _*))
-    }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+    implicit request =>
+      val form = formProvider(prefix)
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            val viewModel = viewModelProvider.apply(request.userAnswers)
+            Future.successful(BadRequest(view(formWithErrors, lrn, mode, viewModel)))
+          },
+          value => {
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            MeansIdentificationNumberPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+          }
+        )
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
-    .requireData(lrn)
-    .async {
-      implicit request =>
-        val dynamicHeadingValue = dynamicHeading(request)
-        val form                = formProvider(dynamicHeadingValue.prefix, dynamicHeadingValue.args: _*)
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, dynamicHeadingValue.prefix, dynamicHeadingValue.args: _*))),
-            value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-              MeansIdentificationNumberPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
-            }
-          )
-    }
+  }
+
 }
