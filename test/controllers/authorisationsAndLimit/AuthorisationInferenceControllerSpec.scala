@@ -17,7 +17,7 @@
 package controllers.authorisationsAndLimit
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import models.{NormalMode, UserAnswers}
+import models.{NormalMode, TaskStatus, UserAnswers}
 import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -26,6 +26,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import pages.authorisationsAndLimit.AuthorisationsInferredPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.AuthorisationInferenceService
@@ -47,9 +48,11 @@ class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultM
 
     "must update user answers and redirect" in {
 
-      val userAnswers = emptyUserAnswers
-      setExistingUserAnswers(userAnswers)
-      when(mockAuthorisationInferenceService.inferAuthorisations(any())).thenReturn(userAnswers)
+      val userAnswersBeforeInference = emptyUserAnswers
+      setExistingUserAnswers(userAnswersBeforeInference)
+
+      val userAnswersAfterInference = userAnswersBeforeInference.copy(data = Json.obj("foo" -> "bar"))
+      when(mockAuthorisationInferenceService.inferAuthorisations(any())).thenReturn(userAnswersAfterInference)
 
       val request = FakeRequest(GET, authorisationInferenceRoute)
       val result  = route(app, request).value
@@ -58,11 +61,12 @@ class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultM
 
       redirectLocation(result).value mustEqual onwardRoute.url
 
-      verify(mockAuthorisationInferenceService).inferAuthorisations(eqTo(userAnswers))
+      verify(mockAuthorisationInferenceService).inferAuthorisations(eqTo(userAnswersBeforeInference))
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(AuthorisationsInferredPage).value mustBe true
+      userAnswersCaptor.getValue.data mustBe userAnswersAfterInference.setValue(AuthorisationsInferredPage, true).data
+      userAnswersCaptor.getValue.tasks.get(".transportDetails").value mustBe TaskStatus.InProgress
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

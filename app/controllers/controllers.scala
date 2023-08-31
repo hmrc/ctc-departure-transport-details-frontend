@@ -73,6 +73,15 @@ package object controllers {
           }
       }
 
+    def writeToUserAnswers(userAnswers: UserAnswers, value: A)(implicit format: Format[A]): UserAnswersWriter[Write[A]] =
+      ReaderT[EitherType, UserAnswers, Write[A]](
+        _ =>
+          userAnswers.set[A](page, value) match {
+            case Success(userAnswers) => Right((page, userAnswers))
+            case Failure(exception)   => Left(WriterError(page, Some(s"Failed to write $value to page ${page.path} with exception: ${exception.toString}")))
+          }
+      )
+
     def writeToUserAnswers(value: A)(implicit format: Format[A]): UserAnswersWriter[Write[A]] =
       ReaderT[EitherType, UserAnswers, Write[A]](
         userAnswers =>
