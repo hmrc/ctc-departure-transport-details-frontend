@@ -17,7 +17,7 @@
 package controllers.authorisationsAndLimit.limit
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.authorisationsAndLimit.routes
+import controllers.authorisationsAndLimit.limit.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import navigation.TransportNavigatorProvider

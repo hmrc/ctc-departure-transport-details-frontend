@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-// TODO - move page, controller and view to authorisationsAndLimit.limit
 package pages.authorisationsAndLimit.authorisations
 
-import controllers.authorisationsAndLimit.routes
+import controllers.authorisationsAndLimit.limit.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.authorisationsAndLimit.limit.LimitDatePage

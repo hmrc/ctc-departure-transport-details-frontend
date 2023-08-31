@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.authorisationsAndLimit
+package controllers.authorisationsAndLimit.limit
 
 import config.PhaseConfig
 import controllers.actions._
