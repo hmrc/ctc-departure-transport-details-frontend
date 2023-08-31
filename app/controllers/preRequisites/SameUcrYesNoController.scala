@@ -16,9 +16,9 @@
 
 package controllers.preRequisites
 
-import config.PhaseConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.YesNoFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.UserAnswersNavigator
@@ -41,7 +41,7 @@ class SameUcrYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: SameUcrYesNoView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig, appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -65,7 +65,13 @@ class SameUcrYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            SameUcrYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            SameUcrYesNoPage
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession()
+              .getNextPage()
+              .updateItems(lrn)
+              .navigate()
           }
         )
   }
