@@ -40,7 +40,7 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
         "when AuthorisationType is ACR" in {
 
           val authType             = AuthorisationType.ACR
-          val authorisationsDomain = AuthorisationsDomain(Seq(AuthorisationDomain(authType, authRefNumber)(authorisationIndex)))
+          val authorisationsDomain = AuthorisationsDomain(Seq(AuthorisationDomain(authType, authRefNumber, "")(authorisationIndex)))
 
           val userAnswers = emptyUserAnswers
             .setValue(AuthorisationTypePage(authorisationIndex), authType)
@@ -59,7 +59,7 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
         "when authorisation type is not ACR" in {
 
           val authType             = Gen.oneOf(AuthorisationType.TRD, AuthorisationType.SSE).sample.value
-          val authorisationsDomain = AuthorisationsDomain(Seq(AuthorisationDomain(authType, authRefNumber)(authorisationIndex)))
+          val authorisationsDomain = AuthorisationsDomain(Seq(AuthorisationDomain(authType, authRefNumber, "")(authorisationIndex)))
 
           val result: EitherType[Option[LimitDomain]] = UserAnswersReader[Option[LimitDomain]](
             AuthorisationsAndLimitDomain.limitReader(authorisationsDomain)

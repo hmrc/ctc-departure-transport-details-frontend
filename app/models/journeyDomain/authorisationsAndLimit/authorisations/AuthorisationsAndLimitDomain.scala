@@ -17,6 +17,7 @@
 package models.journeyDomain.authorisationsAndLimit.authorisations
 
 import cats.implicits.{catsSyntaxApplicativeId, none}
+import config.Constants.`PRE-LODGE`
 import models.domain.UserAnswersReader
 import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
@@ -27,7 +28,9 @@ case class AuthorisationsAndLimitDomain(authorisationsDomain: AuthorisationsDoma
 object AuthorisationsAndLimitDomain {
 
   def limitReader(authDomain: AuthorisationsDomain): UserAnswersReader[Option[LimitDomain]] =
-    authDomain.authorisations.exists(_.authorisationType == AuthorisationType.ACR) match {
+    authDomain.authorisations.exists(
+      x => x.authorisationType == AuthorisationType.ACR && x.additionalDeclarationType == `PRE-LODGE`
+    ) match {
       case true  => UserAnswersReader[LimitDomain].map(Some(_))
       case false => none[LimitDomain].pure[UserAnswersReader]
     }

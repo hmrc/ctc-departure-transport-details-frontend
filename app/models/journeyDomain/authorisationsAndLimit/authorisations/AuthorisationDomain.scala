@@ -25,13 +25,16 @@ import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
+import pages.authorisationsAndLimit.limit.LimitDatePage
+import pages.external.AdditionalDeclarationTypePage
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
-case class AuthorisationDomain(authorisationType: AuthorisationType, referenceNumber: String)(index: Index) extends JourneyDomainModel {
+case class AuthorisationDomain(authorisationType: AuthorisationType, referenceNumber: String, additionalDeclarationType: String)(index: Index)
+    extends JourneyDomainModel {
 
   def asString(implicit messages: Messages): String =
-    AuthorisationDomain.asString(authorisationType, referenceNumber)
+    AuthorisationDomain.asString(authorisationType, referenceNumber, additionalDeclarationType)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
     stage match {
@@ -49,14 +52,15 @@ case class AuthorisationDomain(authorisationType: AuthorisationType, referenceNu
 
 object AuthorisationDomain {
 
-  def asString(authorisationType: AuthorisationType, referenceNumber: String)(implicit messages: Messages): String =
-    s"${authorisationType.forDisplay} - $referenceNumber"
+  def asString(authorisationType: AuthorisationType, referenceNumber: String, additionalDeclarationType: String)(implicit messages: Messages): String =
+    s"${authorisationType.forDisplay} - $referenceNumber - $additionalDeclarationType"
 
   // scalastyle:off cyclomatic.complexity
   def userAnswersReader(index: Index): UserAnswersReader[AuthorisationDomain] =
     (
       InferredAuthorisationTypePage(index).reader orElse AuthorisationTypePage(index).reader,
-      AuthorisationReferenceNumberPage(index).reader
+      AuthorisationReferenceNumberPage(index).reader,
+      AdditionalDeclarationTypePage.reader
     ).tupled.map((AuthorisationDomain.apply _).tupled).map(_(index))
 
 }
