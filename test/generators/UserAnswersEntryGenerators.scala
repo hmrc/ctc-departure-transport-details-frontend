@@ -16,6 +16,7 @@
 
 package generators
 
+import config.Constants.{`PRE-LODGE`, STANDARD}
 import models._
 import models.authorisations.AuthorisationType
 import models.equipment.PaymentMethod
@@ -26,6 +27,7 @@ import models.transportMeans.departure.Identification
 import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.authorisationsAndLimit.authorisations.AddLimitDateYesNoPage
 import play.api.libs.json._
 import queries.Gettable
 
@@ -41,12 +43,13 @@ trait UserAnswersEntryGenerators {
   private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.external._
     {
-      case ApprovedOperatorPage         => arbitrary[Boolean].map(JsBoolean)
-      case DeclarationTypePage          => arbitrary[DeclarationType].map(Json.toJson(_))
-      case OfficeOfDestinationPage      => arbitrary[CustomsOffice].map(Json.toJson(_))
-      case OfficeOfDepartureInCL010Page => arbitrary[Boolean].map(JsBoolean)
-      case ProcedureTypePage            => arbitrary[ProcedureType].map(Json.toJson(_))
-      case SecurityDetailsTypePage      => arbitrary[SecurityDetailsType].map(Json.toJson(_))
+      case ApprovedOperatorPage          => arbitrary[Boolean].map(JsBoolean)
+      case DeclarationTypePage           => arbitrary[DeclarationType].map(Json.toJson(_))
+      case OfficeOfDestinationPage       => arbitrary[CustomsOffice].map(Json.toJson(_))
+      case OfficeOfDepartureInCL010Page  => arbitrary[Boolean].map(JsBoolean)
+      case ProcedureTypePage             => arbitrary[ProcedureType].map(Json.toJson(_))
+      case SecurityDetailsTypePage       => arbitrary[SecurityDetailsType].map(Json.toJson(_))
+      case AdditionalDeclarationTypePage => Gen.oneOf(STANDARD, `PRE-LODGE`).map(JsString)
     }
   }
 
@@ -150,7 +153,8 @@ trait UserAnswersEntryGenerators {
   private def generateLimitAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.authorisationsAndLimit.limit.LimitDatePage
     {
-      case LimitDatePage => arbitrary[LocalDate].map(Json.toJson(_))
+      case AddLimitDateYesNoPage => arbitrary[Boolean].map(JsBoolean)
+      case LimitDatePage         => arbitrary[LocalDate].map(Json.toJson(_))
     }
   }
 

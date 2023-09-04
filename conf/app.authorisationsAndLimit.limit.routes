@@ -3,3 +3,8 @@ GET        /authorisations/limit-date/:lrn                controllers.authorisat
 POST       /authorisations/limit-date/:lrn                controllers.authorisationsAndLimit.limit.LimitDateController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /authorisations/change-limit-date/:lrn         controllers.authorisationsAndLimit.limit.LimitDateController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /authorisations/change-limit-date/:lrn         controllers.authorisationsAndLimit.limit.LimitDateController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /authorisations/add-arrival-date/:lrn                      controllers.authorisationsAndLimit.limit.AddLimitDateYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /authorisations/add-arrival-date/:lrn                      controllers.authorisationsAndLimit.limit.AddLimitDateYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /authorisations/change-add-arrival-date/:lrn               controllers.authorisationsAndLimit.limit.AddLimitDateYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /authorisations/change-add-arrival-date/:lrn               controllers.authorisationsAndLimit.limit.AddLimitDateYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
