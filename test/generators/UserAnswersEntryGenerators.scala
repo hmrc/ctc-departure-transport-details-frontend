@@ -27,7 +27,6 @@ import models.transportMeans.departure.Identification
 import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.authorisationsAndLimit.authorisations.AddLimitDateYesNoPage
 import play.api.libs.json._
 import queries.Gettable
 
@@ -151,7 +150,8 @@ trait UserAnswersEntryGenerators {
   }
 
   private def generateLimitAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
-    import pages.authorisationsAndLimit.limit.LimitDatePage
+    import pages.authorisationsAndLimit.limit._
+    import pages.authorisationsAndLimit.authorisations.AddLimitDateYesNoPage
     {
       case AddLimitDateYesNoPage => arbitrary[Boolean].map(JsBoolean)
       case LimitDatePage         => arbitrary[LocalDate].map(Json.toJson(_))
