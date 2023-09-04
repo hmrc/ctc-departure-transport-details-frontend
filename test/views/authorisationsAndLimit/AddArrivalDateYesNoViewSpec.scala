@@ -27,7 +27,7 @@ class AddArrivalDateYesNoViewSpec extends YesNoViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[AddLimitDateYesNoView].apply(form, lrn, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "authorisations.addArrivalDateYesNo"
+  override val prefix: String = "authorisationsAndLimit.limit.addLimitDateYesNo"
 
   behave like pageWithTitle()
 

@@ -61,7 +61,7 @@ object TransportAnswersViewModel {
 
       val authorisationsSection = Section(
         sectionTitle = messages("checkYourAnswers.authorisations"),
-        rows = helper.addAuthorisation.toList ++ helper.authorisations ++ helper.limitDate.toList,
+        rows = helper.addAuthorisation.toList ++ helper.authorisations ++ helper.addLimitDateYesNo.toList ++ helper.limitDate.toList,
         addAnotherLink = helper.addOrRemoveAuthorisations
       )
 

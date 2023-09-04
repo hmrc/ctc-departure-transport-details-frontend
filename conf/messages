@@ -393,12 +393,12 @@ authorisations.addAuthorisationsYesNo.change.hidden = if you want to add an auth
 authorisations.addAuthorisationsYesNo.error.required = Select yes if you want to add an authorisation
 
 
-authorisations.addArrivalDateYesNo.title = Do you want to add the arrival date at the office of destination?
-authorisations.addArrivalDateYesNo.heading = Do you want to add the arrival date at the office of destination?
-authorisations.addArrivalDateYesNo.paragraph = This is the latest date you expect the transit to arrive.
-authorisations.addArrivalDateYesNo.checkYourAnswersLabel = Do you want to add the arrival date at the office of destination?
-authorisations.addArrivalDateYesNo.change.hidden = if you want to add an arrival date
-authorisations.addArrivalDateYesNo.error.required = Select yes if you want to add the arrival date at the office of destination
+authorisationsAndLimit.limit.addLimitDateYesNo.title = Do you want to add the arrival date at the office of destination?
+authorisationsAndLimit.limit.addLimitDateYesNo.heading = Do you want to add the arrival date at the office of destination?
+authorisationsAndLimit.limit.addLimitDateYesNo.paragraph = This is the latest date you expect the transit to arrive.
+authorisationsAndLimit.limit.addLimitDateYesNo.checkYourAnswersLabel = Do you want to add the arrival date at the office of destination?
+authorisationsAndLimit.limit.addLimitDateYesNo.change.hidden = if you want to add an arrival date
+authorisationsAndLimit.limit.addLimitDateYesNo.error.required = Select yes if you want to add the arrival date at the office of destination
 
 authorisations.index.removeAuthorisationYesNo.title = Are you sure you want to remove this {0} authorisation?
 authorisations.index.removeAuthorisationYesNo.heading = Are you sure you want to remove this {0} authorisation?

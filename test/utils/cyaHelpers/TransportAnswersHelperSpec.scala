@@ -39,6 +39,7 @@ import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
+import pages.authorisationsAndLimit.authorisations.AddLimitDateYesNoPage
 import pages.sections.authorisationsAndLimit.AuthorisationSection
 import pages.sections.equipment.EquipmentSection
 import pages.sections.supplyChainActors.SupplyChainActorSection
@@ -516,6 +517,40 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               action.href mustBe limitRoutes.LimitDateController.onPageLoad(answers.lrn, mode).url
               action.visuallyHiddenText.get mustBe "limit date"
               action.id mustBe "change-limit-date"
+          }
+        }
+      }
+    }
+
+    "addLimitDateYesNo" - {
+      "must return None" - {
+        s"when $AddLimitDateYesNoPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addLimitDateYesNo
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $AddLimitDateYesNoPage defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddLimitDateYesNoPage, true)
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.addLimitDateYesNo.get
+
+              result.key.value mustBe "Do you want to add the arrival date at the office of destination?"
+              result.value.value mustBe "Yes"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe limitRoutes.AddLimitDateYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustBe "if you want to add an arrival date"
+              action.id mustBe "change-limit-date-yesno"
           }
         }
       }

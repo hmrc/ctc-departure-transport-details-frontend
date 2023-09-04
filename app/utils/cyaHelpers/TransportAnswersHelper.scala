@@ -27,6 +27,7 @@ import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
 import models.{Index, Mode, UserAnswers}
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
+import pages.authorisationsAndLimit.authorisations.AddLimitDateYesNoPage
 import pages.authorisationsAndLimit.limit.LimitDatePage
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
 import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
@@ -153,6 +154,13 @@ class TransportAnswersHelper(
     formatAnswer = formatAsDate,
     prefix = "authorisationsAndLimit.limit.limitDate",
     id = Some("change-limit-date")
+  )
+
+  def addLimitDateYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddLimitDateYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "authorisationsAndLimit.limit.addLimitDateYesNo",
+    id = Some("change-limit-date-yesno")
   )
 
   def addCarrierDetail: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
