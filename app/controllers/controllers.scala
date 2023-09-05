@@ -153,11 +153,12 @@ package object controllers {
     def navigateTo(route: String)(implicit executionContext: ExecutionContext): Future[Result] =
       navigateTo(Call(GET, route))
 
-    def getNextPage()(implicit navigator: UserAnswersNavigator, executionContext: ExecutionContext, requestHeader: RequestHeader): Future[Call] =
+    def getNextPage()(implicit navigator: UserAnswersNavigator, executionContext: ExecutionContext, frontendAppConfig: FrontendAppConfig): Future[Call] =
       write.map {
         case (_, userAnswers) =>
           val call = navigator.nextPage(userAnswers)
-          call.copy(url = call.absoluteURL())
+          val url  = frontendAppConfig.absoluteURL(call.url)
+          call.copy(url = url)
       }
 
     private def navigate(result: Write[A] => Call)(implicit executionContext: ExecutionContext): Future[Result] =
