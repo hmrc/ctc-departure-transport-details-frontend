@@ -24,7 +24,7 @@ import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.authorisationsAndLimit.authorisations.AddLimitDateYesNoPage
+import pages.authorisationsAndLimit.limit.AddLimitDateYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest

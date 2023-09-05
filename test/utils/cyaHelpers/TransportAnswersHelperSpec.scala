@@ -39,11 +39,10 @@ import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
-import pages.authorisationsAndLimit.authorisations.AddLimitDateYesNoPage
 import pages.sections.authorisationsAndLimit.AuthorisationSection
 import pages.sections.equipment.EquipmentSection
 import pages.sections.supplyChainActors.SupplyChainActorSection
-import pages.authorisationsAndLimit.limit.LimitDatePage
+import pages.authorisationsAndLimit.limit.{AddLimitDateYesNoPage, LimitDatePage}
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
 import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
 import pages.equipment.{AddPaymentMethodYesNoPage, AddTransportEquipmentYesNoPage, PaymentMethodPage}

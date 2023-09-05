@@ -151,7 +151,6 @@ trait UserAnswersEntryGenerators {
 
   private def generateLimitAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.authorisationsAndLimit.limit._
-    import pages.authorisationsAndLimit.authorisations.AddLimitDateYesNoPage
     {
       case AddLimitDateYesNoPage => arbitrary[Boolean].map(JsBoolean)
       case LimitDatePage         => arbitrary[LocalDate].map(Json.toJson(_))

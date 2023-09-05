@@ -27,8 +27,7 @@ import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
 import models.{Index, Mode, UserAnswers}
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
-import pages.authorisationsAndLimit.authorisations.AddLimitDateYesNoPage
-import pages.authorisationsAndLimit.limit.LimitDatePage
+import pages.authorisationsAndLimit.limit.{AddLimitDateYesNoPage, LimitDatePage}
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
 import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
 import pages.equipment.{AddPaymentMethodYesNoPage, AddTransportEquipmentYesNoPage, PaymentMethodPage}

@@ -22,7 +22,7 @@ import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, Use
 import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
 import models.authorisations.AuthorisationType
-import pages.authorisationsAndLimit.authorisations.AddLimitDateYesNoPage
+import pages.authorisationsAndLimit.limit.AddLimitDateYesNoPage
 import pages.external.AdditionalDeclarationTypePage
 
 case class AuthorisationsAndLimitDomain(authorisationsDomain: AuthorisationsDomain, limitDomain: Option[LimitDomain]) extends JourneyDomainModel

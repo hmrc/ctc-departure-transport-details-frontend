@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package pages.authorisationsAndLimit.authorisations
+package pages.authorisationsAndLimit.limit
 
 import controllers.authorisationsAndLimit.limit.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.authorisationsAndLimit.limit.LimitDatePage
 import pages.sections.authorisationsAndLimit.LimitSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
