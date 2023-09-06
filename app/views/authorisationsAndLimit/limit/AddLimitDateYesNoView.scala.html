@@ -40,14 +40,14 @@
         @errorSummary(form.errors)
 
         @inputYesNo(
-              field = form("value"),
-              yesNoType = YesNoWithAdditionalHtml(
-                     heading = messages("authorisationsAndLimit.limit.addLimitDateYesNo.heading"),
-                     caption = Some(messages("authorisations.caption")),
-                     additionalHtml = messages("authorisationsAndLimit.limit.addLimitDateYesNo.paragraph").toParagraph
-              )
+            field = form("value"),
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("authorisationsAndLimit.limit.addLimitDateYesNo.heading"),
+                caption = Some(messages("authorisations.caption")),
+                additionalHtml = messages("authorisationsAndLimit.limit.addLimitDateYesNo.paragraph").toParagraph
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))
-   }
+    }
 }

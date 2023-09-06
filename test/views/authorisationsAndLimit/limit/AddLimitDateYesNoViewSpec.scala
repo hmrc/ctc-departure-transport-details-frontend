@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.authorisationsAndLimit
+package views.authorisationsAndLimit.limit
 
 import models.NormalMode
 import play.api.data.Form
@@ -22,7 +22,7 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.authorisationsAndLimit.limit.AddLimitDateYesNoView
 
-class AddArrivalDateYesNoViewSpec extends YesNoViewBehaviours {
+class AddLimitDateYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[AddLimitDateYesNoView].apply(form, lrn, NormalMode)(fakeRequest, messages)
