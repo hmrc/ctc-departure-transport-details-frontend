@@ -201,7 +201,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no authorisation number is found" in {
+      "if no authorisation is found" in {
         setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, removeAuthorisationYesNoRoute)
@@ -210,7 +210,8 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          controllers.authorisationsAndLimit.authorisations.routes.AddAnotherAuthorisationController.onPageLoad(lrn, mode).url
       }
     }
 
@@ -229,7 +230,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no authorisation number is found" in {
+      "if no authorisation is found" in {
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -240,7 +241,8 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          controllers.authorisationsAndLimit.authorisations.routes.AddAnotherAuthorisationController.onPageLoad(lrn, mode).url
       }
     }
   }
