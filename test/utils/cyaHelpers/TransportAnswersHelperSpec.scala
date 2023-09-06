@@ -549,7 +549,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               action.content.value mustBe "Change"
               action.href mustBe limitRoutes.AddLimitDateYesNoController.onPageLoad(answers.lrn, mode).url
               action.visuallyHiddenText.get mustBe "if you want to add an arrival date"
-              action.id mustBe "change-limit-date-yesno"
+              action.id mustBe "change-add-limit-date"
           }
         }
       }

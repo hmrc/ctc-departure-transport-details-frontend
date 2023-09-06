@@ -159,7 +159,7 @@ class TransportAnswersHelper(
     page = AddLimitDateYesNoPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "authorisationsAndLimit.limit.addLimitDateYesNo",
-    id = Some("change-limit-date-yesno")
+    id = Some("change-add-limit-date")
   )
 
   def addCarrierDetail: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
