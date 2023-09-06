@@ -400,7 +400,7 @@ authorisationsAndLimit.limit.addLimitDateYesNo.title = Do you want to add the ar
 authorisationsAndLimit.limit.addLimitDateYesNo.heading = Do you want to add the arrival date at the office of destination?
 authorisationsAndLimit.limit.addLimitDateYesNo.paragraph = This is the latest date you expect the transit to arrive.
 authorisationsAndLimit.limit.addLimitDateYesNo.checkYourAnswersLabel = Do you want to add the arrival date at the office of destination?
-authorisationsAndLimit.limit.addLimitDateYesNo.change.hidden = if you want to add an arrival date
+authorisationsAndLimit.limit.addLimitDateYesNo.change.hidden = if you want to add the arrival date at the office of destination
 authorisationsAndLimit.limit.addLimitDateYesNo.error.required = Select yes if you want to add the arrival date at the office of destination
 
 authorisationsAndLimit.limit.limitDate.title = When do you expect the transit to arrive in {0}?
