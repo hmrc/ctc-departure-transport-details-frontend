@@ -21,13 +21,13 @@ import controllers.actions._
 import controllers.equipment.index.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
 import models.requests.SpecificDataRequestProvider1
+import models.{Index, LocalReferenceNumber, Mode}
+import pages.equipment.index.seals.IdentificationNumberPage
+import pages.sections.equipment.SealSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import pages.sections.equipment.SealSection
-import pages.equipment.index.seals.IdentificationNumberPage
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.equipment.index.seals.RemoveSealYesNoView
@@ -52,19 +52,21 @@ class RemoveSealYesNoController @Inject() (
   private def form(implicit request: Request): Form[Boolean] =
     formProvider("equipment.index.seals.removeSealYesNo", request.arg)
 
+  private def addAnother(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Call =
+    routes.AddAnotherSealController.onPageLoad(lrn, mode, equipmentIndex)
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
+    .requireIndex(lrn, SealSection(equipmentIndex, sealIndex), addAnother(lrn, mode, equipmentIndex))
     .andThen(getMandatoryPage.getFirst(IdentificationNumberPage(equipmentIndex, sealIndex))) {
       implicit request =>
         Ok(view(form, lrn, mode, equipmentIndex, sealIndex, request.arg))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index, sealIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
+    .requireIndex(lrn, SealSection(equipmentIndex, sealIndex), addAnother(lrn, mode, equipmentIndex))
     .andThen(getMandatoryPage.getFirst(IdentificationNumberPage(equipmentIndex, sealIndex)))
     .async {
       implicit request =>
-        lazy val redirect = routes.AddAnotherSealController.onPageLoad(lrn, mode, equipmentIndex)
         form
           .bindFromRequest()
           .fold(
@@ -75,9 +77,9 @@ class RemoveSealYesNoController @Inject() (
                   .removeFromUserAnswers()
                   .updateTask()
                   .writeToSession()
-                  .navigateTo(redirect)
+                  .navigateTo(addAnother(lrn, mode, equipmentIndex))
               case false =>
-                Future.successful(Redirect(redirect))
+                Future.successful(Redirect(addAnother(lrn, mode, equipmentIndex)))
             }
           )
     }

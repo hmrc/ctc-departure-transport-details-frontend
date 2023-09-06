@@ -24,7 +24,7 @@ import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.sections.supplyChainActors.SupplyChainActorSection
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.supplyChainActors.index.RemoveSupplyChainActorView
@@ -45,27 +45,33 @@ class RemoveSupplyChainActorController @Inject() (
 
   private val form = formProvider("supplyChainActors.index.removeSupplyChainActor")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      Ok(view(form, lrn, mode, index))
-  }
+  private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
+    routes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode)
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index))),
-          {
-            case true =>
-              SupplyChainActorSection(index)
-                .removeFromUserAnswers()
-                .updateTask()
-                .writeToSession()
-                .navigateTo(routes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode))
-            case false =>
-              Future.successful(Redirect(routes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode)))
-          }
-        )
-  }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions
+    .requireIndex(lrn, SupplyChainActorSection(index), addAnother(lrn, mode)) {
+      implicit request =>
+        Ok(view(form, lrn, mode, index))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions
+    .requireIndex(lrn, SupplyChainActorSection(index), addAnother(lrn, mode))
+    .async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index))),
+            {
+              case true =>
+                SupplyChainActorSection(index)
+                  .removeFromUserAnswers()
+                  .updateTask()
+                  .writeToSession()
+                  .navigateTo(addAnother(lrn, mode))
+              case false =>
+                Future.successful(Redirect(addAnother(lrn, mode)))
+            }
+          )
+    }
 }
