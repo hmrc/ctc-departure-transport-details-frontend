@@ -392,6 +392,9 @@ authorisations.addAuthorisationsYesNo.checkYourAnswersLabel = Do you want to add
 authorisations.addAuthorisationsYesNo.change.hidden = if you want to add an authorisation
 authorisations.addAuthorisationsYesNo.error.required = Select yes if you want to add an authorisation
 
+authorisations.index.removeAuthorisationYesNo.title = Are you sure you want to remove this {0} authorisation?
+authorisations.index.removeAuthorisationYesNo.heading = Are you sure you want to remove this {0} authorisation?
+authorisations.index.removeAuthorisationYesNo.error.required = Select yes if you want to remove this {0} authorisation
 
 authorisationsAndLimit.limit.addLimitDateYesNo.title = Do you want to add the arrival date at the office of destination?
 authorisationsAndLimit.limit.addLimitDateYesNo.heading = Do you want to add the arrival date at the office of destination?
@@ -400,15 +403,11 @@ authorisationsAndLimit.limit.addLimitDateYesNo.checkYourAnswersLabel = Do you wa
 authorisationsAndLimit.limit.addLimitDateYesNo.change.hidden = if you want to add an arrival date
 authorisationsAndLimit.limit.addLimitDateYesNo.error.required = Select yes if you want to add the arrival date at the office of destination
 
-authorisations.index.removeAuthorisationYesNo.title = Are you sure you want to remove this {0} authorisation?
-authorisations.index.removeAuthorisationYesNo.heading = Are you sure you want to remove this {0} authorisation?
-authorisations.index.removeAuthorisationYesNo.error.required = Select yes if you want to remove this {0} authorisation
-
 authorisationsAndLimit.limit.limitDate.title = When do you expect the transit to arrive in {0}?
 authorisationsAndLimit.limit.limitDate.heading = When do you expect the transit to arrive in {0}?
-authorisationsAndLimit.limit.limitDate.checkYourAnswersLabel = Limit date
+authorisationsAndLimit.limit.limitDate.checkYourAnswersLabel = Estimated arrival date at the office of destination
 authorisationsAndLimit.limit.limitDate.paragraph = This has to be before {0}.
-authorisationsAndLimit.limit.limitDate.change.hidden = limit date
+authorisationsAndLimit.limit.limitDate.change.hidden = estimated arrival date at the office of destination
 authorisationsAndLimit.limit.limitDate.error.required.all = Enter the estimated arrival date at the office of destination
 authorisationsAndLimit.limit.limitDate.error.required.two = The arrival date must include a {0} and {1}
 authorisationsAndLimit.limit.limitDate.error.required = The arrival date must include a {0}

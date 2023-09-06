@@ -148,18 +148,18 @@ class TransportAnswersHelper(
     )
   }
 
-  def limitDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
-    page = LimitDatePage,
-    formatAnswer = formatAsDate,
-    prefix = "authorisationsAndLimit.limit.limitDate",
-    id = Some("change-limit-date")
-  )
-
   def addLimitDateYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddLimitDateYesNoPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "authorisationsAndLimit.limit.addLimitDateYesNo",
     id = Some("change-add-limit-date")
+  )
+
+  def limitDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
+    page = LimitDatePage,
+    formatAnswer = formatAsDate,
+    prefix = "authorisationsAndLimit.limit.limitDate",
+    id = Some("change-limit-date")
   )
 
   def addCarrierDetail: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](

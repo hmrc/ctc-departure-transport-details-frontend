@@ -486,41 +486,6 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
     }
 
-    "limitDate" - {
-      "must return None" - {
-        s"when $LimitDatePage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.limitDate
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        s"when $LimitDatePage defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val limitDate = LocalDate.of(2000: Int, 1: Int, 8: Int)
-              val answers   = emptyUserAnswers.setValue(LimitDatePage, limitDate)
-              val helper    = new TransportAnswersHelper(answers, mode)
-              val result    = helper.limitDate.get
-
-              result.key.value mustBe "Limit date"
-              result.value.value mustBe "8 January 2000"
-              val actions = result.actions.get.items
-              actions.size mustBe 1
-              val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe limitRoutes.LimitDateController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "limit date"
-              action.id mustBe "change-limit-date"
-          }
-        }
-      }
-    }
-
     "addLimitDateYesNo" - {
       "must return None" - {
         s"when $AddLimitDateYesNoPage undefined" in {
@@ -550,6 +515,41 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               action.href mustBe limitRoutes.AddLimitDateYesNoController.onPageLoad(answers.lrn, mode).url
               action.visuallyHiddenText.get mustBe "if you want to add an arrival date"
               action.id mustBe "change-add-limit-date"
+          }
+        }
+      }
+    }
+
+    "limitDate" - {
+      "must return None" - {
+        s"when $LimitDatePage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.limitDate
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $LimitDatePage defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val limitDate = LocalDate.of(2000: Int, 1: Int, 8: Int)
+              val answers   = emptyUserAnswers.setValue(LimitDatePage, limitDate)
+              val helper    = new TransportAnswersHelper(answers, mode)
+              val result    = helper.limitDate.get
+
+              result.key.value mustBe "Estimated arrival date at the office of destination"
+              result.value.value mustBe "8 January 2000"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe limitRoutes.LimitDateController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustBe "estimated arrival date at the office of destination"
+              action.id mustBe "change-limit-date"
           }
         }
       }
