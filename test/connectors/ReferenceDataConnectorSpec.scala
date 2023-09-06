@@ -72,9 +72,11 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
          |""".stripMargin
 
     "getCountries" - {
+      def url: String = s"/$baseUrl/lists/CountryCodesFullList"
+
       "must return Seq of Country when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/CountryCodesFullList"))
+          get(urlEqualTo(url))
             .willReturn(okJson(countriesResponseJson("CountryCodesFullList")))
         )
 
@@ -87,11 +89,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries())
+        checkErrorResponse(url, connector.getCountries())
       }
     }
 
     "getNationalities" - {
+      val url: String = s"/$baseUrl/lists/Nationality"
+
       "must return Seq of Country when successful" in {
         val nationalitiesResponseJson: String =
           """
@@ -120,7 +124,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             |""".stripMargin
 
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/Nationality"))
+          get(urlEqualTo(url))
             .willReturn(okJson(nationalitiesResponseJson))
         )
 
@@ -133,14 +137,16 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/Nationality", connector.getNationalities())
+        checkErrorResponse(url, connector.getNationalities())
       }
     }
 
     "getCountryCodesCTC" - {
+      val url: String = s"/$baseUrl/lists/CountryCodesCommonTransit"
+
       "must return Seq of Country when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/CountryCodesCommonTransit"))
+          get(urlEqualTo(url))
             .willReturn(okJson(countriesResponseJson("CountryCodesCommonTransit")))
         )
 
@@ -153,7 +159,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/CountryCodesCommonTransit", connector.getCountryCodesCommonTransit())
+        checkErrorResponse(url, connector.getCountryCodesCommonTransit())
       }
     }
   }

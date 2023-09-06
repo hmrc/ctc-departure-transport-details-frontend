@@ -30,18 +30,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
-    http.GET[Seq[Country]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
+    http.GET[Seq[Country]](url, headers = version2Header)
   }
 
   def getNationalities()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Nationality]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/Nationality"
-    http.GET[Seq[Nationality]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/Nationality"
+    http.GET[Seq[Nationality]](url, headers = version2Header)
   }
 
   def getCountryCodesCommonTransit()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesCommonTransit"
-    http.GET[Seq[Country]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/CountryCodesCommonTransit"
+    http.GET[Seq[Country]](url, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(
@@ -52,11 +52,9 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     (_: String, _: String, response: HttpResponse) => {
       response.status match {
         case OK =>
-          val referenceData = (response.json \ "data").getOrElse(
+          (response.json \ "data").validate[Seq[A]].getOrElse {
             throw new IllegalStateException("[ReferenceDataConnector][responseHandlerGeneric] Reference data could not be parsed")
-          )
-
-          referenceData.as[Seq[A]]
+          }
         case NO_CONTENT =>
           Nil
         case NOT_FOUND =>
