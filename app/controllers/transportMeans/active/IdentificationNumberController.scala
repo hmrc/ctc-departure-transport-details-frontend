@@ -37,8 +37,8 @@ class IdentificationNumberController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   formProvider: IdentificationNumberFormProvider,
-  actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
+  actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationNumberView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
@@ -47,19 +47,19 @@ class IdentificationNumberController @Inject() (
 
   private val prefix = "transportMeans.active.identificationNumber"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
-    .andThen(getMandatoryPage(IdentificationPage(activeIndex), InferredIdentificationPage(activeIndex))) {
-      implicit request =>
-        val form = formProvider(prefix, request.arg.forDisplay)
-
-        val preparedForm = request.userAnswers.get(IdentificationNumberPage(activeIndex)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-
-        Ok(view(preparedForm, lrn, request.arg.forDisplay, mode, activeIndex))
-    }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] =
+    actions
+      .requireData(lrn)
+      .andThen(getMandatoryPage(IdentificationPage(activeIndex), InferredIdentificationPage(activeIndex))) {
+        implicit request =>
+          val identificationType = request.arg
+          val form               = formProvider(prefix)
+          val preparedForm = request.userAnswers.get(IdentificationNumberPage(activeIndex)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
+          Ok(view(preparedForm, lrn, mode, activeIndex, identificationType.asString))
+      }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] =
     actions
@@ -67,11 +67,12 @@ class IdentificationNumberController @Inject() (
       .andThen(getMandatoryPage(IdentificationPage(activeIndex), InferredIdentificationPage(activeIndex)))
       .async {
         implicit request =>
-          val form = formProvider(prefix, request.arg.forDisplay)
+          val identificationType = request.arg
+          val form               = formProvider(prefix)
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, request.arg.forDisplay, mode, activeIndex))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex, identificationType.asString))),
               value => {
                 implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
                 IdentificationNumberPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

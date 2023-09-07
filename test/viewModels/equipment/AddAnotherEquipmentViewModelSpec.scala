@@ -33,7 +33,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
         mode =>
           val userAnswers = arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex).sample.value
 
-          val result = new AddAnotherEquipmentViewModelProvider()(frontendAppConfig)(userAnswers, mode)
+          val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, mode)
 
           result.listItems.length mustBe 1
           result.title mustBe "You have added 1 transport equipment"
@@ -53,7 +53,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               arbitraryEquipmentAnswers(acc, Index(i)).sample.value
           }
 
-          val result = new AddAnotherEquipmentViewModelProvider()(frontendAppConfig)(userAnswers, mode)
+          val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, mode)
 
           result.listItems.length mustBe numberOfEquipments
           result.title mustBe s"You have added ${formatter.format(numberOfEquipments)} transport equipment"

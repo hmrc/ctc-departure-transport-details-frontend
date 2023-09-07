@@ -16,57 +16,94 @@
 
 package views.transportMeans.departure
 
-import forms.MeansIdentificationNumberFormProvider
+import base.{AppWithDefaultMockFixtures, SpecBase}
+import forms.IdentificationNumberFormProvider
+import generators.Generators
 import models.NormalMode
 import models.transportMeans.departure.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import play.api.Application
 import play.api.data.Form
+import play.api.test.Helpers.running
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
+import viewModels.transportMeans.departure.MeansIdentificationNumberViewModel
 import views.behaviours.InputTextViewBehaviours
 import views.html.transportMeans.departure.MeansIdentificationNumberView
 
-class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
+class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] with Generators with SpecBase with AppWithDefaultMockFixtures {
 
-  override val prefix: String = "transportMeans.departure.meansIdentificationNumber.withIDType"
+  private val viewModel       = arbitrary[MeansIdentificationNumberViewModel].sample.value
+  override val prefix: String = viewModel.prefix
 
-  private val identificationType = arbitrary[Identification].sample.value
-
-  private val formProvider = new MeansIdentificationNumberFormProvider()
-
-  override def form: Form[String] = formProvider(prefix, identificationType.arg)
+  override def form: Form[String] = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, prefix, identificationType.arg)(fakeRequest, messages)
+    applyView(app, form)
+
+  private def applyView(app: Application): HtmlFormat.Appendable = {
+    val form = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
+    applyView(app, form)
+  }
+
+  private def applyView(app: Application, form: Form[String]): HtmlFormat.Appendable =
+    app.injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, viewModel)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
-
-  behave like pageWithTitle(identificationType.arg)
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Transport details - Departure means of transport")
 
-  behave like pageWithHeading(identificationType.arg)
-
-  behave like pageWithHint(
-    "This can be up to 27 characters long and include both letters and numbers."
-  )
-
   behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Save and continue")
 
+  "when during transition" - {
+    val app = transitionApplicationBuilder().build()
+    running(app) {
+      val doc = parseView(applyView(app))
+      behave like pageWithHint(doc, "This can be up to 27 characters long and include both letters and numbers.")
+    }
+  }
+
+  "when post transition" - {
+    val app = postTransitionApplicationBuilder().build()
+    running(app) {
+      val doc = parseView(applyView(app))
+      behave like pageWithHint(doc, "This can be up to 35 characters long and include both letters and numbers.")
+    }
+  }
+
   "when no identification type is present in user answers" - {
 
-    val withNoIDTypePrefix: String = "transportMeans.departure.meansIdentificationNumber.withNoIDType"
-    val form                       = formProvider(withNoIDTypePrefix, identificationType.arg)
-    val view                       = injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, withNoIDTypePrefix)(fakeRequest, messages)
-    val doc                        = parseView(view)
+    val viewModel      = MeansIdentificationNumberViewModel(None)
+    val prefix: String = "transportMeans.departure.meansIdentificationNumber.withNoIDType"
+    val form           = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
+    val view           = injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, viewModel)(fakeRequest, messages)
+    val doc            = parseView(view)
 
-    behave like pageWithTitle(doc, withNoIDTypePrefix)
+    behave like pageWithTitle(doc, prefix)
 
-    behave like pageWithHeading(doc, withNoIDTypePrefix)
+    behave like pageWithHeading(doc, prefix)
+
+    behave like pageWithoutInsetText(doc)
+  }
+
+  "when identification type is present in user answers" - {
+
+    val identification = arbitrary[Identification].sample.value
+    val viewModel      = MeansIdentificationNumberViewModel(Some(identification))
+    val prefix: String = "transportMeans.departure.meansIdentificationNumber.withIDType"
+    val form           = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
+    val view           = injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, viewModel)(fakeRequest, messages)
+    val doc            = parseView(view)
+
+    behave like pageWithTitle(doc, prefix)
+
+    behave like pageWithHeading(doc, prefix)
+
+    behave like pageWithInsetText(doc, identification.asString)
   }
 }

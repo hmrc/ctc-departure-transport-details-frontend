@@ -16,54 +16,103 @@
 
 package forms
 
-import base.SpecBase
-import forms.Constants.identificationNumberLength
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.behaviours.StringFieldBehaviours
-import models.transportMeans.active.Identification
-import org.scalacheck.Arbitrary.arbitrary
+import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
+import play.api.test.Helpers.running
 
-class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with SpecBase {
+class IdentificationNumberFormProviderSpec extends StringFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
 
-  private val identificationType = arbitrary[Identification].sample.value
-  private val prefix             = Gen.alphaNumStr.sample.value
+  private val prefix = Gen.alphaNumStr.sample.value
 
-  private val dynamicTitle = s"$prefix.${identificationType.toString}"
-  private val requiredKey  = s"$prefix.error.required"
-  private val lengthKey    = s"$prefix.error.length"
-  private val invalidKey   = s"$prefix.error.invalid"
+  private val requiredKey = s"$prefix.error.required"
+  private val invalidKey  = s"$prefix.error.invalid"
 
-  val form = new IdentificationNumberFormProvider()(prefix, dynamicTitle)
+  "TransitionIdentificationNumberFormProvider" - {
 
-  ".value" - {
+    val lengthKey = s"$prefix.error.length.transition"
+    val app       = transitionApplicationBuilder().build()
+    val maxLength = 27
 
-    val fieldName = "value"
+    ".value" - {
 
-    behave like fieldThatBindsValidData(
-      form,
-      fieldName,
-      stringsWithMaxLength(identificationNumberLength)
-    )
+      running(app) {
 
-    behave like fieldWithMaxLength(
-      form,
-      fieldName,
-      maxLength = identificationNumberLength,
-      lengthError = FormError(fieldName, lengthKey, Seq(dynamicTitle))
-    )
+        val form      = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
+        val fieldName = "value"
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey, Seq(dynamicTitle))
-    )
+        behave like fieldThatBindsValidData(
+          form,
+          fieldName,
+          stringsWithMaxLength(maxLength)
+        )
 
-    behave like fieldWithInvalidCharacters(
-      form,
-      fieldName,
-      error = FormError(fieldName, invalidKey, Seq(dynamicTitle)),
-      identificationNumberLength
-    )
+        behave like fieldWithMaxLength(
+          form,
+          fieldName,
+          maxLength = maxLength,
+          lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, requiredKey)
+        )
+
+        behave like fieldWithInvalidCharacters(
+          form,
+          fieldName,
+          error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.toString())),
+          maxLength
+        )
+      }
+    }
+
+  }
+
+  "PostTransitionIdentificationNumberFormProvider" - {
+
+    val lengthKey = s"$prefix.error.length.postTransition"
+    val app       = postTransitionApplicationBuilder().build()
+    val maxLength = 35
+
+    ".value" - {
+
+      running(app) {
+
+        val form      = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
+        val fieldName = "value"
+
+        behave like fieldThatBindsValidData(
+          form,
+          fieldName,
+          stringsWithMaxLength(maxLength)
+        )
+
+        behave like fieldWithMaxLength(
+          form,
+          fieldName,
+          maxLength = maxLength,
+          lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+        )
+
+        behave like mandatoryField(
+          form,
+          fieldName,
+          requiredError = FormError(fieldName, requiredKey)
+        )
+
+        behave like fieldWithInvalidCharacters(
+          form,
+          fieldName,
+          error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.toString())),
+          maxLength
+        )
+      }
+    }
+
   }
 }

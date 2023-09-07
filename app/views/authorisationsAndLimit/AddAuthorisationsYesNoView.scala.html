@@ -41,9 +41,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("authorisations.addAuthorisationsYesNo.heading"),
-                caption = Some(messages("authorisations.caption"))
+                caption = Some(messages("authorisations.caption")),
+                additionalHtml = messages("authorisations.addAuthorisationsYesNo.paragraph").toParagraph
             )
         )
 

@@ -17,6 +17,7 @@
 package config
 
 object Constants {
+  val T1                = "T1"
   val TIR               = "TIR"
   val NoSecurityDetails = "0"
 }

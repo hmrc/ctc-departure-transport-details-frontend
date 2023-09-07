@@ -16,7 +16,7 @@
 
 package controllers.transportMeans.active
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
@@ -39,7 +39,7 @@ class AddAnotherBorderTransportController @Inject() (
   viewModelProvider: AddAnotherBorderTransportViewModelProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherBorderTransportView
-)(implicit config: FrontendAppConfig)
+)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 

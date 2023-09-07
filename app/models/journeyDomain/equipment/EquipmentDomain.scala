@@ -22,7 +22,7 @@ import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JsA
 import models.journeyDomain.equipment.seal.SealsDomain
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.authorisations.AuthorisationType
-import models.{Index, Mode, ProcedureType, UserAnswers}
+import models.{Index, Mode, Phase, ProcedureType, UserAnswers}
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
 import pages.equipment.index._
@@ -38,19 +38,19 @@ case class EquipmentDomain(
     extends JourneyDomainModel {
 
   def asString(implicit messages: Messages): String =
-    EquipmentDomain.asString(index, containerId)
+    EquipmentDomain.asString(containerId)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Some(routes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, index))
 }
 
 object EquipmentDomain {
 
-  def asString(index: Index, containerId: Option[String])(implicit messages: Messages): String =
+  def asString(containerId: Option[String])(implicit messages: Messages): String =
     containerId.fold(
-      messages("equipment.value.withoutContainer", index.display)
+      messages("equipment.value.withoutContainer")
     )(
-      messages("equipment.value.withContainer", index.display, _)
+      messages("equipment.value.withContainer", _)
     )
 
   implicit def userAnswersReader(equipmentIndex: Index): UserAnswersReader[EquipmentDomain] =

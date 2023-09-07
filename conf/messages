@@ -40,6 +40,7 @@ checkYourAnswers.transportCharges = Transport charges
 
 preRequisites.sameUcrYesNo.title = Do you want to use the same Unique Consignment Reference (UCR) for all items?
 preRequisites.sameUcrYesNo.heading = Do you want to use the same Unique Consignment Reference (UCR) for all items?
+preRequisites.sameUcrYesNo.paragraph = This is a unique reference number you create that Customs use to identify the consignment.
 preRequisites.sameUcrYesNo.checkYourAnswersLabel = Do you want to use the same Unique Consignment Reference (UCR) for all items?
 preRequisites.sameUcrYesNo.change.hidden = if you want to use the same Unique Consignment Reference (UCR) for all items
 preRequisites.sameUcrYesNo.error.required = Select yes if you want to use the same UCR for all items
@@ -72,22 +73,22 @@ preRequisites.countryOfDispatch.checkYourAnswersLabel = Country of dispatch
 preRequisites.countryOfDispatch.change.hidden = country of dispatch
 preRequisites.countryOfDispatch.placeholder = Select a country
 preRequisites.countryOfDispatch.error.required = Enter the country of dispatch
-preRequisites.countryOfDispatch.paragraph = This is the country the item was originally dispatched from. It might not be where the CTC transit movement begins.
+preRequisites.countryOfDispatch.paragraph = This is the country the item was originally dispatched from. It may not be where the transit movement begins.
 
 preRequisites.itemsDestinationCountry.title = What is the country of destination?
 preRequisites.itemsDestinationCountry.heading = What is the country of destination?
 preRequisites.itemsDestinationCountry.hint = Enter the country, like France or Portugal.
-preRequisites.itemsDestinationCountry.paragraph = This is where the goods complete their journey. It may not be the final CTC country of the transit route.
+preRequisites.itemsDestinationCountry.paragraph = This is where the goods complete their journey. It may not be where the transit movement ends.
 preRequisites.itemsDestinationCountry.checkYourAnswersLabel = Country of destination
 preRequisites.itemsDestinationCountry.change.hidden = country of destination
 preRequisites.itemsDestinationCountry.placeholder = Select a country
 preRequisites.itemsDestinationCountry.error.required = Enter the country of destination
 
-preRequisites.containerIndicator.title = Are you using any containers?
-preRequisites.containerIndicator.heading = Are you using any containers?
+preRequisites.containerIndicator.title = Are you using any shipping containers to transport the goods?
+preRequisites.containerIndicator.heading = Are you using any shipping containers to transport the goods?
 preRequisites.containerIndicator.checkYourAnswersLabel = Are you using any containers?
 preRequisites.containerIndicator.change.hidden = if you are using any containers
-preRequisites.containerIndicator.error.required = Select yes if you’re using any containers
+preRequisites.containerIndicator.error.required = Select yes if you are using any shipping containers to transport the goods
 
 # Transport details - Transport means
 
@@ -100,48 +101,52 @@ departureMeansOfTransport.caption = Transport details - Departure means of trans
 activeBorderModeOfTransport.caption = Transport details - Border mode of transport
 activeBorderMeansOfTransport.caption = Transport details - Border means of transport
 
-transportMeans.departure.inlandMode.title = Which inland mode of transport are you using?
-transportMeans.departure.inlandMode.heading = Which inland mode of transport are you using?
-transportMeans.departure.inlandMode.paragraph = This is the type of transport used from the UK office of departure to a UK port or airport.
-transportMeans.departure.inlandMode.maritime = Maritime
-transportMeans.departure.inlandMode.rail = Rail
-transportMeans.departure.inlandMode.road = Road
-transportMeans.departure.inlandMode.air = Air
-transportMeans.departure.inlandMode.mail = Mail (active mode of transport unknown)
-transportMeans.departure.inlandMode.fixed = Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods
-transportMeans.departure.inlandMode.waterway = Inland waterway
-transportMeans.departure.inlandMode.checkYourAnswersLabel = Mode
-transportMeans.departure.inlandMode.error.required = Select which inland mode of transport you’re using
-transportMeans.departure.inlandMode.change.hidden = inland mode of transport
+transportMeans.addInlandModeYesNo.title = Do you want to add an inland mode of transport?
+transportMeans.addInlandModeYesNo.heading = Do you want to add an inland mode of transport?
+transportMeans.addInlandModeYesNo.paragraph = This is the mode of transport used from the UK office of departure to a UK port or airport.
+transportMeans.addInlandModeYesNo.yes = Yes
+transportMeans.addInlandModeYesNo.no = No - the goods are already at the port or airport
+transportMeans.addInlandModeYesNo.change.hidden = if you want to add an inland mode of transport
+transportMeans.addInlandModeYesNo.checkYourAnswersLabel = Do you want to add an inland mode of transport?
+transportMeans.addInlandModeYesNo.error.required = Select yes if you want to add an inland mode of transport
+
+transportMeans.inlandMode.title = Which inland mode of transport are you using?
+transportMeans.inlandMode.heading = Which inland mode of transport are you using?
+transportMeans.inlandMode.maritime = Maritime
+transportMeans.inlandMode.rail = Rail
+transportMeans.inlandMode.road = Road
+transportMeans.inlandMode.air = Air
+transportMeans.inlandMode.mail = Mail (active mode of transport unknown)
+transportMeans.inlandMode.fixed = Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods
+transportMeans.inlandMode.waterway = Inland waterway
+transportMeans.inlandMode.checkYourAnswersLabel = Mode
+transportMeans.inlandMode.error.required = Select which inland mode of transport you’re using
+transportMeans.inlandMode.change.hidden = inland mode of transport
+
+transportMeans.addDepartureTransportMeansYesNo.title = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.heading = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.change.hidden = if you want to add identification for the departure means of transport
+transportMeans.addDepartureTransportMeansYesNo.error.required = Select yes if you want to add identification for this vehicle
 
 transportMeans.departure.addIdentificationTypeYesNo.title = Do you want to add the type of identification?
 transportMeans.departure.addIdentificationTypeYesNo.heading = Do you want to add the type of identification?
-transportMeans.departure.addIdentificationTypeYesNo.checkYourAnswersLabel = Do you want to add a type of identification?
-transportMeans.departure.addIdentificationTypeYesNo.change.hidden = if you want to add a type of identification
+transportMeans.departure.addIdentificationTypeYesNo.checkYourAnswersLabel = Do you want to add the type of identification?
+transportMeans.departure.addIdentificationTypeYesNo.change.hidden = if you want to add the type of identification for the departure means of transport
 transportMeans.departure.addIdentificationTypeYesNo.error.required = Select yes if you want to add a type of identification
 
 transportMeans.departure.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.departure.identification.heading = Which identification do you want to use for this vehicle?
 transportMeans.departure.identification.seaGoingVessel = Name of a sea-going vessel
-transportMeans.departure.identification.seaGoingVessel.arg = name of the sea-going vessel
 transportMeans.departure.identification.iataFlightNumber = IATA flight number
-transportMeans.departure.identification.iataFlightNumber.arg = IATA flight number
 transportMeans.departure.identification.inlandWaterwaysVehicle = Name of an inland waterways vehicle
-transportMeans.departure.identification.inlandWaterwaysVehicle.arg = name of the inland waterways vehicle
 transportMeans.departure.identification.imoShipIdNumber = IMO ship identification number
-transportMeans.departure.identification.imoShipIdNumber.arg = IMO ship identification number
 transportMeans.departure.identification.wagonNumber = Wagon number
-transportMeans.departure.identification.wagonNumber.arg = wagon number
 transportMeans.departure.identification.trainNumber = Train number
-transportMeans.departure.identification.trainNumber.arg = train number
 transportMeans.departure.identification.regNumberRoadVehicle = Registration number of a road vehicle
-transportMeans.departure.identification.regNumberRoadVehicle.arg = registration number of the road vehicle
 transportMeans.departure.identification.regNumberRoadTrailer = Registration number of a road trailer
-transportMeans.departure.identification.regNumberRoadTrailer.arg = registration number of the road trailer
 transportMeans.departure.identification.regNumberAircraft = Registration number of an aircraft
-transportMeans.departure.identification.regNumberAircraft.arg = registration number of the aircraft
 transportMeans.departure.identification.europeanVesselIdNumber = European vessel identification number (ENI code)
-transportMeans.departure.identification.europeanVesselIdNumber.arg = European vessel identification number (ENI code)
 transportMeans.departure.identification.checkYourAnswersLabel = Identification type
 transportMeans.departure.identification.change.hidden = identification type for the departure means of transport
 transportMeans.departure.identification.error.required = Select which identification you want to use for this vehicle
@@ -149,32 +154,31 @@ transportMeans.departure.identification.error.required = Select which identifica
 transportMeans.departure.addIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
 transportMeans.departure.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
 transportMeans.departure.addIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add an identification number for this vehicle?
-transportMeans.departure.addIdentificationNumberYesNo.change.hidden = if you want to add an identification number for this vehicle
+transportMeans.departure.addIdentificationNumberYesNo.change.hidden = if you want to add an identification number for the departure means of transport
 transportMeans.departure.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
 
-transportMeans.departure.meansIdentificationNumber.withIDType.title = What is the {0}?
-transportMeans.departure.meansIdentificationNumber.withNoIDType.title = What is the identification number?
-transportMeans.departure.meansIdentificationNumber.withIDType.heading = What is the {0}?
-transportMeans.departure.meansIdentificationNumber.withNoIDType.heading = What is the identification number?
-transportMeans.departure.meansIdentificationNumber.hint = This can be up to 27 characters long and include both letters and numbers.
+transportMeans.departure.meansIdentificationNumber.withIDType.title = What is the identification number for this?
+transportMeans.departure.meansIdentificationNumber.withNoIDType.title = What is the identification number for this vehicle?
+transportMeans.departure.meansIdentificationNumber.withIDType.heading = What is the identification number for this?
+transportMeans.departure.meansIdentificationNumber.withNoIDType.heading = What is the identification number for this vehicle?
+transportMeans.departure.meansIdentificationNumber.hint.transition = This can be up to 27 characters long and include both letters and numbers.
+transportMeans.departure.meansIdentificationNumber.hint.postTransition = This can be up to 35 characters long and include both letters and numbers.
 transportMeans.departure.meansIdentificationNumber.checkYourAnswersLabel = Identification number
 transportMeans.departure.meansIdentificationNumber.change.hidden = identification number for the departure means of transport
-transportMeans.departure.meansIdentificationNumber.withIDType.error.required = Enter the {0}
-transportMeans.departure.meansIdentificationNumber.withIDType.error.invalid = The {0} must only include letters a to z and numbers 0 to 9
-transportMeans.departure.meansIdentificationNumber.withIDType.error.length = The {0} must be 27 characters or less
-transportMeans.departure.meansIdentificationNumber.withNoIDType.error.required = Enter the identification number
-transportMeans.departure.meansIdentificationNumber.withNoIDType.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
-transportMeans.departure.meansIdentificationNumber.withNoIDType.error.length = The identification number must be 27 characters or less
+transportMeans.departure.meansIdentificationNumber.error.required = Enter the identification number
+transportMeans.departure.meansIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+transportMeans.departure.meansIdentificationNumber.error.length.transition = The identification number must be 27 characters or less
+transportMeans.departure.meansIdentificationNumber.error.length.postTransition = The identification number must be 35 characters or less
 
 transportMeans.departure.addVehicleCountryYesNo.title = Do you want to add the registered country for this vehicle?
 transportMeans.departure.addVehicleCountryYesNo.heading = Do you want to add the registered country for this vehicle?
 transportMeans.departure.addVehicleCountryYesNo.checkYourAnswersLabel = Do you want to add the registered country for this vehicle?
-transportMeans.departure.addVehicleCountryYesNo.change.hidden = if you want to add the registered country for the border means of transport
+transportMeans.departure.addVehicleCountryYesNo.change.hidden = if you want to add the registered country for the departure means of transport
 transportMeans.departure.addVehicleCountryYesNo.error.required = Select yes if you want to add the registered country for this vehicle
 
 transportMeans.departure.vehicleCountry.title = What country is this vehicle registered to?
 transportMeans.departure.vehicleCountry.heading = What country is this vehicle registered to?
-transportMeans.departure.vehicleCountry.hint = Enter the country or code, like AT or Austria.
+transportMeans.departure.vehicleCountry.hint = Enter the country or code, like Austria or AT.
 transportMeans.departure.vehicleCountry.placeholder = Select a nationality
 transportMeans.departure.vehicleCountry.change.hidden = registered country for the departure means of transport
 transportMeans.departure.vehicleCountry.checkYourAnswersLabel = Registered country
@@ -187,6 +191,13 @@ transportMeans.anotherVehicleCrossingYesNo.checkYourAnswersLabel = Are you using
 transportMeans.anotherVehicleCrossingYesNo.change.hidden = if you are using another vehicle to cross the border
 transportMeans.anotherVehicleCrossingYesNo.error.required = Select yes if the vehicle will change before crossing the border
 
+transportMeans.addBorderModeOfTransportYesNo.title = Do you want to add a border mode of transport?
+transportMeans.addBorderModeOfTransportYesNo.heading = Do you want to add a border mode of transport?
+transportMeans.addBorderModeOfTransportYesNo.paragraph = This is the mode of transport used from a UK port or airport to another customs territory. For example, road, sea or air.
+transportMeans.addBorderModeOfTransportYesNo.checkYourAnswersLabel = Do you want to add a border mode of transport?
+transportMeans.addBorderModeOfTransportYesNo.change.hidden = if you want to add a border mode of transport
+transportMeans.addBorderModeOfTransportYesNo.error.required = Select yes if you want to add a border mode of transport
+
 transportMeans.borderModeOfTransport.title = How is the transit crossing the border?
 transportMeans.borderModeOfTransport.heading = How is the transit crossing the border?
 transportMeans.borderModeOfTransport.maritime = Sea
@@ -196,6 +207,24 @@ transportMeans.borderModeOfTransport.road = Irish land boundary
 transportMeans.borderModeOfTransport.checkYourAnswersLabel = Border mode of transport
 transportMeans.borderModeOfTransport.change.hidden = border mode of transport
 transportMeans.borderModeOfTransport.error.required = Select how the transit is crossing the border
+
+transportMeans.addActiveBorderTransportMeansYesNo.title = Do you want to add identification for this vehicle?
+transportMeans.addActiveBorderTransportMeansYesNo.heading = Do you want to add identification for this vehicle?
+transportMeans.addActiveBorderTransportMeansYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
+transportMeans.addActiveBorderTransportMeansYesNo.change.hidden = if you want to add identification for the border means of transport
+transportMeans.addActiveBorderTransportMeansYesNo.error.required = Select yes if you want to add identification for this vehicle
+
+transportMeans.active.addVehicleIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
+transportMeans.active.addVehicleIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
+transportMeans.active.addVehicleIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
+transportMeans.active.addVehicleIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add an identification number for this vehicle?
+transportMeans.active.addVehicleIdentificationNumberYesNo.change.hidden = if you want to add an identification number for the border means of transport
+
+transportMeans.active.addIdentificationYesNo.title = Do you want to add the type of identification?
+transportMeans.active.addIdentificationYesNo.heading = Do you want to add the type of identification?
+transportMeans.active.addIdentificationYesNo.checkYourAnswersLabel = Do you want to add the type of identification?
+transportMeans.active.addIdentificationYesNo.change.hidden = if you want to add the type of identification for the border means of transport
+transportMeans.active.addIdentificationYesNo.error.required = Select yes if you want to add the type of identification
 
 transportMeans.active.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.active.identification.heading = Which identification do you want to use for this vehicle?
@@ -207,14 +236,6 @@ transportMeans.active.identification.iataFlightNumber = IATA flight number
 transportMeans.active.identification.regNumberAircraft = Registration number of an aircraft
 transportMeans.active.identification.europeanVesselIdNumber = European vessel identification number (ENI code)
 transportMeans.active.identification.inlandWaterwaysVehicle = Name of an inland waterways vehicle
-transportMeans.active.identification.forDisplay.imoShipIdNumber = IMO ship identification number
-transportMeans.active.identification.forDisplay.seaGoingVessel = name of the sea-going vessel
-transportMeans.active.identification.forDisplay.trainNumber = train number
-transportMeans.active.identification.forDisplay.regNumberRoadVehicle = registration number of the road vehicle
-transportMeans.active.identification.forDisplay.iataFlightNumber = IATA flight number
-transportMeans.active.identification.forDisplay.regNumberAircraft = registration number of the aircraft
-transportMeans.active.identification.forDisplay.europeanVesselIdNumber = European vessel identification number (ENI code)
-transportMeans.active.identification.forDisplay.inlandWaterwaysVehicle = name of the inland waterways vehicle
 transportMeans.active.identification.checkYourAnswersLabel = Identification type
 transportMeans.active.identification.change.hidden = identification type for the border means of transport
 transportMeans.active.identification.error.required = Select which identification you want to use for this vehicle
@@ -226,17 +247,20 @@ transportMeans.active.addNationalityYesNo.checkYourAnswersLabel = Do you want to
 transportMeans.active.addNationalityYesNo.change.hidden = if you want to add the registered country for the border means of transport
 transportMeans.active.addNationalityYesNo.error.required = Select yes if you want to add the registered country for the vehicle crossing the border
 
-transportMeans.active.identificationNumber.title = What is the {0}?
-transportMeans.active.identificationNumber.heading = What is the {0}?
+transportMeans.active.identificationNumber.title = What is the identification number for this?
+transportMeans.active.identificationNumber.heading = What is the identification number for this?
+transportMeans.active.identificationNumber.hint.transition = This can be up to 27 characters long and include both letters and numbers.
+transportMeans.active.identificationNumber.hint.postTransition = This can be up to 35 characters long and include both letters and numbers.
 transportMeans.active.identificationNumber.checkYourAnswersLabel = Identification number
 transportMeans.active.identificationNumber.change.hidden = identification number for the border means of transport
-transportMeans.active.identificationNumber.error.required = Enter the {0}
-transportMeans.active.identificationNumber.error.length = The {0} must be 35 characters or less
-transportMeans.active.identificationNumber.error.invalid = The {0} must only include letters a to z and numbers 0 to 9
+transportMeans.active.identificationNumber.error.required = Enter the identification number
+transportMeans.active.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
+transportMeans.active.identificationNumber.error.length.transition = The identification number must be 27 characters or less
+transportMeans.active.identificationNumber.error.length.postTransition = The identification number must be 35 characters or less
 
 transportMeans.active.nationality.title = What country is this vehicle registered to?
 transportMeans.active.nationality.heading = What country is this vehicle registered to?
-transportMeans.active.nationality.hint = Enter the country or code, like AT or Austria.
+transportMeans.active.nationality.hint = Enter the country or code, like Austria or AT.
 transportMeans.active.nationality.label = What country is this vehicle registered to?
 transportMeans.active.nationality.placeholder = Select a nationality
 transportMeans.active.nationality.change.hidden = registered country for the border means of transport
@@ -309,12 +333,12 @@ supplyChainActors.index.supplyChainActorType.manufacturer = Manufacturer
 supplyChainActors.index.supplyChainActorType.warehouseKeeper = Warehouse keeper
 supplyChainActors.index.supplyChainActorType.error.required = Select which type of supply chain actor you want to add
 
-supplyChainActors.index.identificationNumber.title = What is the EORI number or Trader Identification Number (TIN) for the {0}?
-supplyChainActors.index.identificationNumber.heading = What is the EORI number or Trader Identification Number (TIN) for the {0}?
+supplyChainActors.index.identificationNumber.title = What is the EORI number or Third Country Unique Identification Number (TCUIN) for the {0}?
+supplyChainActors.index.identificationNumber.heading = What is the EORI number or Third Country Unique Identification Number (TCUIN) for the {0}?
 supplyChainActors.index.identificationNumber.hint = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
-supplyChainActors.index.identificationNumber.error.required = Enter the EORI number or Trader Identification Number (TIN) for the supply chain actor
-supplyChainActors.index.identificationNumber.error.length = The EORI number or Trader Identification Number (TIN) must be 17 characters or less
-supplyChainActors.index.identificationNumber.error.invalid = The EORI number or Trader Identification Number (TIN) must only include letters a to z and numbers 0 to 9
+supplyChainActors.index.identificationNumber.error.required = Enter the EORI number or Third Country Unique Identification Number for the supply chain actor
+supplyChainActors.index.identificationNumber.error.length = The EORI number or Third Country Unique Identification Number must be 17 characters or less
+supplyChainActors.index.identificationNumber.error.invalid = The EORI number or Third Country Unique Identification Number must only include letters a to z and numbers 0 to 9
 
 supplyChainActors.index.removeSupplyChainActor.title = Are you sure you want to remove this supply chain actor?
 supplyChainActors.index.removeSupplyChainActor.heading = Are you sure you want to remove this supply chain actor?
@@ -363,13 +387,14 @@ authorisations.addAnotherAuthorisation.maxLimit.label = You cannot add any more 
 
 authorisations.addAuthorisationsYesNo.title = Do you want to add an authorisation?
 authorisations.addAuthorisationsYesNo.heading = Do you want to add an authorisation?
+authorisations.addAuthorisationsYesNo.paragraph = This authorises the holder to perform specific functions during the transit movement.
 authorisations.addAuthorisationsYesNo.checkYourAnswersLabel = Do you want to add an authorisation?
 authorisations.addAuthorisationsYesNo.change.hidden = if you want to add an authorisation
 authorisations.addAuthorisationsYesNo.error.required = Select yes if you want to add an authorisation
 
-authorisations.index.removeAuthorisationYesNo.title = Are you sure you want to remove {0} authorisation {1}?
-authorisations.index.removeAuthorisationYesNo.heading = Are you sure you want to remove {0} authorisation {1}?
-authorisations.index.removeAuthorisationYesNo.error.required = Select yes if you want to remove {0} authorisation {1}
+authorisations.index.removeAuthorisationYesNo.title = Are you sure you want to remove this {0} authorisation?
+authorisations.index.removeAuthorisationYesNo.heading = Are you sure you want to remove this {0} authorisation?
+authorisations.index.removeAuthorisationYesNo.error.required = Select yes if you want to remove this {0} authorisation
 
 authorisationsAndLimit.limit.limitDate.title = When do you expect the transit to arrive in {0}?
 authorisationsAndLimit.limit.limitDate.heading = When do you expect the transit to arrive in {0}?
@@ -407,12 +432,14 @@ carrierDetails.identificationNumber.error.invalidCharacters = The EORI number or
 
 carrierDetails.addContactYesNo.title = Do you want to add a contact for the carrier?
 carrierDetails.addContactYesNo.heading = Do you want to add a contact for the carrier?
+carrierDetails.addContactYesNo.paragraph = This is additional contact information for if Customs have any queries.
 carrierDetails.addContactYesNo.checkYourAnswersLabel = Do you want to add a contact for the carrier?
 carrierDetails.addContactYesNo.change.hidden = if you want to add a contact for the carrier
 carrierDetails.addContactYesNo.error.required = Select yes if you want to add a contact for the carrier
 
 carrierDetails.contact.name.title = Who is the contact for the carrier?
 carrierDetails.contact.name.heading = Who is the contact for the carrier?
+carrierDetails.contact.name.hint = Enter the contact’s full name.
 carrierDetails.contact.name.checkYourAnswersLabel = Contact name
 carrierDetails.contact.name.change.hidden = carrier contact name
 carrierDetails.contact.name.error.required = Enter the name of the contact for the carrier
@@ -433,26 +460,27 @@ carrierDetails.contact.telephoneNumber.error.minLength = {0}’s phone number mu
 # Transport details - Transport equipment
 
 equipment.caption = Transport details - Transport equipment
-equipment.value.withContainer = Transport equipment {0} - container {1}
-equipment.value.withoutContainer = Transport equipment {0}
+equipment.value.withContainer = Container {0}
+equipment.value.withoutContainer = No container identification number
 charges.caption = Transport details - Transport charges
 
 equipment.addTransportEquipmentYesNo.title = Do you want to add any transport equipment?
 equipment.addTransportEquipmentYesNo.heading = Do you want to add any transport equipment?
-equipment.addTransportEquipmentYesNo.paragraph = This means anything used to transport goods in CTC transit. For example, a swap body, articulated lorry or trailer.
+equipment.addTransportEquipmentYesNo.paragraph = This means anything used to transport goods in transit. For example, a swap body, articulated lorry or trailer.
 equipment.addTransportEquipmentYesNo.checkYourAnswersLabel = Do you want to add any transport equipment?
 equipment.addTransportEquipmentYesNo.change.hidden = if you want to add any transport equipment
 equipment.addTransportEquipmentYesNo.error.required = Select yes if you want to add any transport equipment
 
 equipment.index.addContainerIdentificationNumberYesNo.title = Do you want to add a container identification number?
 equipment.index.addContainerIdentificationNumberYesNo.heading = Do you want to add a container identification number?
+equipment.index.addContainerIdentificationNumberYesNo.paragraph = This is a unique number used to identify the container.
 equipment.index.addContainerIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add a container identification number?
 equipment.index.addContainerIdentificationNumberYesNo.change.hidden = if you want to add an identification number
 equipment.index.addContainerIdentificationNumberYesNo.error.required = Select yes if you want to add a container identification number
 
 equipment.index.containerIdentificationNumber.title = What is the container identification number?
 equipment.index.containerIdentificationNumber.heading = What is the container identification number?
-equipment.index.containerIdentificationNumber.hint = This can be up to 17 characters long and include both letters and numbers.
+equipment.index.containerIdentificationNumber.hint = This can be up to 17 characters long and include both letters and numbers, for example AABB3322110.
 equipment.index.containerIdentificationNumber.checkYourAnswersLabel = Container identification number
 equipment.index.containerIdentificationNumber.change.hidden = identification number
 equipment.index.containerIdentificationNumber.error.required = Enter the container identification number
@@ -512,6 +540,7 @@ equipment.index.removeTransportEquipment.error.required = Select yes if you want
 
 equipment.addPaymentMethodYesNo.title = Do you want to add a method of payment for transport charges?
 equipment.addPaymentMethodYesNo.heading = Do you want to add a method of payment for transport charges?
+equipment.addPaymentMethodYesNo.paragraph = These include charges for hauliers and carriers.
 equipment.addPaymentMethodYesNo.checkYourAnswersLabel = Do you want to add a method of payment for transport charges?
 equipment.addPaymentMethodYesNo.change.hidden = if you want to add a method of payment for transport charges
 equipment.addPaymentMethodYesNo.error.required = Select yes if you want to add a method of payment for transport charges

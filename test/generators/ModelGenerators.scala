@@ -18,8 +18,8 @@ package generators
 
 import models._
 import models.reference._
-import models.transportMeans.departure.InlandMode
-import models.transportMeans.departure.InlandMode.Mail
+import models.transportMeans.InlandMode.{Mail, Rail}
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -65,6 +65,10 @@ trait ModelGenerators {
     Gen.oneOf(NormalMode, CheckMode)
   }
 
+  implicit lazy val arbitraryPhase: Arbitrary[Phase] = Arbitrary {
+    Gen.oneOf(Phase.Transition, Phase.PostTransition)
+  }
+
   implicit lazy val arbitraryIndex: Arbitrary[Index] = Arbitrary {
     for {
       position <- Gen.choose(0: Int, 10: Int)
@@ -88,9 +92,23 @@ trait ModelGenerators {
       Gen.oneOf("0", "1", "2", "3")
     }
 
-  implicit lazy val arbitraryBorderModeOfTransport: Arbitrary[models.transportMeans.BorderModeOfTransport] =
+  implicit lazy val arbitraryBorderModeOfTransport: Arbitrary[BorderModeOfTransport] =
     Arbitrary {
-      Gen.oneOf(models.transportMeans.BorderModeOfTransport.values)
+      Gen.oneOf(BorderModeOfTransport.values)
+    }
+
+  implicit lazy val arbitraryOptionalNonAirBorderModeOfTransport: Arbitrary[Option[BorderModeOfTransport]] =
+    Arbitrary {
+      Gen.option {
+        Gen.oneOf(BorderModeOfTransport.values.filterNot(_ == BorderModeOfTransport.Air))
+      }
+    }
+
+  lazy val arbitraryOptionalNonRailBorderModeOfTransport: Arbitrary[Option[BorderModeOfTransport]] =
+    Arbitrary {
+      Gen.option {
+        Gen.oneOf(BorderModeOfTransport.values.filterNot(_ == BorderModeOfTransport.ChannelTunnel))
+      }
     }
 
   implicit lazy val arbitraryCountry: Arbitrary[Country] =
@@ -132,6 +150,26 @@ trait ModelGenerators {
   val arbitraryNonMailInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
       Gen.oneOf(InlandMode.values.filterNot(_ == Mail))
+    }
+
+  val arbitraryNonRailInlandMode: Arbitrary[InlandMode] =
+    Arbitrary {
+      Gen.oneOf(InlandMode.values.filterNot(_ == Rail))
+    }
+
+  val arbitraryMaritimeRailAirInlandMode: Arbitrary[InlandMode] =
+    Arbitrary {
+      Gen.oneOf(InlandMode.Maritime, InlandMode.Rail, InlandMode.Air)
+    }
+
+  val arbitraryNonMaritimeRailAirInlandMode: Arbitrary[InlandMode] =
+    Arbitrary {
+      Gen.oneOf(
+        InlandMode.values
+          .filterNot(_ == InlandMode.Maritime)
+          .filterNot(_ == InlandMode.Rail)
+          .filterNot(_ == InlandMode.Air)
+      )
     }
 
   implicit lazy val arbitraryPaymentMethod: Arbitrary[models.equipment.PaymentMethod] =

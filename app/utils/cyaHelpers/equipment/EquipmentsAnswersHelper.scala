@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.equipment
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.equipment.index.routes
 import models.journeyDomain.equipment.EquipmentDomain
 import models.{Mode, UserAnswers}
@@ -31,7 +31,7 @@ import viewModels.ListItem
 class EquipmentsAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode
-)(implicit messages: Messages, config: FrontendAppConfig)
+)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
@@ -45,7 +45,7 @@ class EquipmentsAnswersHelper(
 
         buildListItem[EquipmentDomain](
           nameWhenComplete = _.asString,
-          nameWhenInProgress = Some(EquipmentDomain.asString(equipmentIndex, userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)))),
+          nameWhenInProgress = Some(EquipmentDomain.asString(userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)))),
           removeRoute = removeRoute
         )(EquipmentDomain.userAnswersReader(equipmentIndex))
     }

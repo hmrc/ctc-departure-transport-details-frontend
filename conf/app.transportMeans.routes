@@ -1,0 +1,37 @@
+->         /                                                                             app.transportMeans.departure.Routes
+->         /                                                                             app.transportMeans.active.Routes
+
+GET        /inland-mode-of-transport/add/:lrn                                            controllers.transportMeans.AddInlandModeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /inland-mode-of-transport/add/:lrn                                            controllers.transportMeans.AddInlandModeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /inland-mode-of-transport/change-add/:lrn                                     controllers.transportMeans.AddInlandModeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /inland-mode-of-transport/change-add/:lrn                                     controllers.transportMeans.AddInlandModeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /inland-mode-of-transport/:lrn                                                controllers.transportMeans.InlandModeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /inland-mode-of-transport/:lrn                                                controllers.transportMeans.InlandModeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /change-inland-mode-of-transport/:lrn                                         controllers.transportMeans.InlandModeController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /change-inland-mode-of-transport/:lrn                                         controllers.transportMeans.InlandModeController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /departure-means-of-transport/add-identification/:lrn                         controllers.transportMeans.AddDepartureTransportMeansYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /departure-means-of-transport/add-identification/:lrn                         controllers.transportMeans.AddDepartureTransportMeansYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /departure-means-of-transport/change-add-identification/:lrn                  controllers.transportMeans.AddDepartureTransportMeansYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /departure-means-of-transport/change-add-identification/:lrn                  controllers.transportMeans.AddDepartureTransportMeansYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /border-mode-of-transport/add/:lrn                                            controllers.transportMeans.AddBorderModeOfTransportYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /border-mode-of-transport/add/:lrn                                            controllers.transportMeans.AddBorderModeOfTransportYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /border-mode-of-transport/change-add/:lrn                                     controllers.transportMeans.AddBorderModeOfTransportYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /border-mode-of-transport/change-add/:lrn                                     controllers.transportMeans.AddBorderModeOfTransportYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /border-mode-of-transport/:lrn                                                controllers.transportMeans.BorderModeOfTransportController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /border-mode-of-transport/:lrn                                                controllers.transportMeans.BorderModeOfTransportController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /change-border-mode-of-transport/:lrn                                         controllers.transportMeans.BorderModeOfTransportController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /change-border-mode-of-transport/:lrn                                         controllers.transportMeans.BorderModeOfTransportController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /border-means-of-transport/add-identification/:lrn                            controllers.transportMeans.AddActiveBorderTransportMeansYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /border-means-of-transport/add-identification/:lrn                            controllers.transportMeans.AddActiveBorderTransportMeansYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /border-means-of-transport/change-add-identification/:lrn                     controllers.transportMeans.AddActiveBorderTransportMeansYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /border-means-of-transport/change-add-identification/:lrn                     controllers.transportMeans.AddActiveBorderTransportMeansYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /modes-means-of-transport/check-answers/:lrn                                  controllers.transportMeans.TransportMeansCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /modes-means-of-transport/check-answers/:lrn                                  controllers.transportMeans.TransportMeansCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /modes-means-of-transport/change-check-answers/:lrn                           controllers.transportMeans.TransportMeansCheckYourAnswersController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /modes-means-of-transport/change-check-answers/:lrn                           controllers.transportMeans.TransportMeansCheckYourAnswersController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

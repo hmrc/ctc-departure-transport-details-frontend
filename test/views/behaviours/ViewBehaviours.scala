@@ -130,6 +130,9 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     }
 
   def pageWithHint(expectedText: String): Unit =
+    pageWithHint(doc, expectedText)
+
+  def pageWithHint(doc: Document, expectedText: String): Unit =
     "must render hint" in {
       val hint = getElementByClass(doc, "govuk-hint")
       assertElementContainsText(hint, expectedText)
@@ -208,8 +211,16 @@ trait ViewBehaviours extends SpecBase with ViewSpecAssertions {
     }
 
   def pageWithInsetText(expectedText: String): Unit =
+    pageWithInsetText(doc, expectedText)
+
+  def pageWithInsetText(doc: Document, expectedText: String): Unit =
     "must render inset text" in {
-      val caption = getElementByClass(doc, "govuk-inset-text")
-      assertElementContainsText(caption, expectedText)
+      val insetText = getElementByClass(doc, "govuk-inset-text")
+      assertElementContainsText(insetText, expectedText)
+    }
+
+  def pageWithoutInsetText(doc: Document): Unit =
+    "must not render inset text" in {
+      assertElementDoesNotExist(doc, "govuk-inset-text")
     }
 }

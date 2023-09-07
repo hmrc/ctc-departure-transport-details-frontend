@@ -18,11 +18,12 @@ package models.transportMeans.departure
 
 import base.SpecBase
 import generators.Generators
+import models.transportMeans.InlandMode
 import models.transportMeans.departure.Identification._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transportMeans.departure.InlandModePage
+import pages.transportMeans.InlandModePage
 import play.api.libs.json.{JsError, JsString, Json}
 
 class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -56,50 +57,6 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
       forAll(gen) {
         identification =>
           Json.toJson(identification) mustEqual JsString(identification.toString)
-      }
-    }
-
-    "must have an associated arg value" - {
-
-      "when sea going vessel" in {
-        val result = SeaGoingVessel.arg
-        result mustBe "name of the sea-going vessel"
-      }
-      "when IATA flight number" in {
-        val result = IataFlightNumber.arg
-        result mustBe "IATA flight number"
-      }
-      "when inland waterways vehicle" in {
-        val result = InlandWaterwaysVehicle.arg
-        result mustBe "name of the inland waterways vehicle"
-      }
-      "when IMO ship identification number" in {
-        val result = ImoShipIdNumber.arg
-        result mustBe "IMO ship identification number"
-      }
-      "when wagon number" in {
-        val result = WagonNumber.arg
-        result mustBe "wagon number"
-      }
-      "when train number" in {
-        val result = TrainNumber.arg
-        result mustBe "train number"
-      }
-      "when reg number of road vehicle" in {
-        val result = RegNumberRoadVehicle.arg
-        result mustBe "registration number of the road vehicle"
-      }
-      "when reg number of road trailer" in {
-        val result = RegNumberRoadTrailer.arg
-        result mustBe "registration number of the road trailer"
-      }
-      "when reg number of aircraft" in {
-        val result = RegNumberAircraft.arg
-        result mustBe "registration number of the aircraft"
-      }
-      "when european vessel identification number" in {
-        val result = EuropeanVesselIdNumber.arg
-        result mustBe "European vessel identification number (ENI code)"
       }
     }
 

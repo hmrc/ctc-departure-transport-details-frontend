@@ -47,7 +47,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
 
   "when add vehicle nationality is true" - {
     "and security type is either 1,2,3 and mode of transport is air" - {
-      "must return 6 rows" in {
+      "must return 8 rows" in {
         forAll(arbitrary[String](arbitrarySomeSecurityDetailsType), arbitrary[Identification], arbitrary[CustomsOffice], arbitrary[Nationality]) {
           (securityType, identification, office, nationality) =>
             val answers = emptyUserAnswers
@@ -59,13 +59,15 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
               .setValue(NationalityPage(activeIndex), nationality)
               .setValue(CustomsOfficeActiveBorderPage(activeIndex), office)
               .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceNumber)
+              .setValue(AddIdentificationYesNoPage(activeIndex), true)
+              .setValue(AddVehicleIdentificationNumberYesNoPage(activeIndex), true)
 
             val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
             val sections            = viewModelProvider.apply(answers, mode, activeIndex).sections
             val activeBorderSection = sections.head
 
             activeBorderSection.sectionTitle mustNot be(defined)
-            activeBorderSection.rows.size mustBe 6
+            activeBorderSection.rows.size mustBe 8
             activeBorderSection.addAnotherLink must not be defined
 
         }
@@ -73,7 +75,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
     }
 
     "and security type is 0 and mode of transport is sea" - {
-      "must return 7 rows" in {
+      "must return 9 rows" in {
         forAll(arbitrary[Identification], arbitrary[CustomsOffice], arbitrary[Nationality]) {
           (identification, office, nationality) =>
             val answers = emptyUserAnswers
@@ -86,13 +88,15 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
               .setValue(CustomsOfficeActiveBorderPage(activeIndex), office)
               .setValue(ConveyanceReferenceNumberYesNoPage(activeIndex), true)
               .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceNumber)
+              .setValue(AddIdentificationYesNoPage(activeIndex), true)
+              .setValue(AddVehicleIdentificationNumberYesNoPage(activeIndex), true)
 
             val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
             val sections            = viewModelProvider.apply(answers, mode, activeIndex).sections
             val activeBorderSection = sections.head
 
             activeBorderSection.sectionTitle mustNot be(defined)
-            activeBorderSection.rows.size mustBe 7
+            activeBorderSection.rows.size mustBe 9
             activeBorderSection.addAnotherLink must not be defined
 
         }
@@ -103,7 +107,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
 
   "when add vehicle nationality is false" - {
     "and security type is either 1,2,3 and mode of transport is air" - {
-      "must return 6 rows" in {
+      "must return 8 rows" in {
         forAll(arbitrary[Identification], arbitrary[CustomsOffice]) {
           (identification, office) =>
             val answers = emptyUserAnswers
@@ -115,13 +119,15 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
               .setValue(CustomsOfficeActiveBorderPage(activeIndex), office)
               .setValue(ConveyanceReferenceNumberYesNoPage(activeIndex), true)
               .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceNumber)
+              .setValue(AddIdentificationYesNoPage(activeIndex), true)
+              .setValue(AddVehicleIdentificationNumberYesNoPage(activeIndex), true)
 
             val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
             val sections            = viewModelProvider.apply(answers, mode, activeIndex).sections
             val activeBorderSection = sections.head
 
             activeBorderSection.sectionTitle mustNot be(defined)
-            activeBorderSection.rows.size mustBe 6
+            activeBorderSection.rows.size mustBe 8
             activeBorderSection.addAnotherLink must not be defined
 
         }
@@ -130,7 +136,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
     }
 
     "and security type is either 0 and mode of transport is maritime" - {
-      "must return 6 rows" in {
+      "must return 8 rows" in {
         forAll(arbitrary[Identification], arbitrary[CustomsOffice]) {
           (identification, office) =>
             val answers = emptyUserAnswers
@@ -142,13 +148,15 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
               .setValue(CustomsOfficeActiveBorderPage(activeIndex), office)
               .setValue(ConveyanceReferenceNumberYesNoPage(activeIndex), true)
               .setValue(ConveyanceReferenceNumberPage(activeIndex), conveyanceNumber)
+              .setValue(AddIdentificationYesNoPage(activeIndex), true)
+              .setValue(AddVehicleIdentificationNumberYesNoPage(activeIndex), true)
 
             val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
             val sections            = viewModelProvider.apply(answers, mode, activeIndex).sections
             val activeBorderSection = sections.head
 
             activeBorderSection.sectionTitle mustNot be(defined)
-            activeBorderSection.rows.size mustBe 6
+            activeBorderSection.rows.size mustBe 8
             activeBorderSection.addAnotherLink must not be defined
         }
       }

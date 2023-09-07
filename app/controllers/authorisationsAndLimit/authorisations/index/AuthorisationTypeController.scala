@@ -49,9 +49,12 @@ class AuthorisationTypeController @Inject() (
 
   private val form = formProvider[AuthorisationType]("authorisations.authorisationType")
 
+  private def authorisationTypes(index: Index)(implicit request: DataRequest[_]) =
+    AuthorisationType.values(request.userAnswers, index)
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      AuthorisationType.values(request.userAnswers, authorisationIndex) match {
+      authorisationTypes(authorisationIndex) match {
         case authorisationType :: Nil =>
           redirect(mode, authorisationIndex, InferredAuthorisationTypePage, authorisationType)
         case authorisationTypes =>
@@ -69,7 +72,7 @@ class AuthorisationTypeController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, AuthorisationType.values(request.userAnswers), mode, authorisationIndex))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, authorisationTypes(authorisationIndex), mode, authorisationIndex))),
           value => redirect(mode, authorisationIndex, AuthorisationTypePage, value)
         )
   }

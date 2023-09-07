@@ -16,10 +16,10 @@
 
 package utils.cyaHelpers.transportMeans.active
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.active.Identification
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, Phase, UserAnswers}
 import pages.transportMeans.active._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
@@ -29,8 +29,22 @@ class ActiveBorderTransportAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   index: Index
-)(implicit messages: Messages, config: FrontendAppConfig)
+)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
+
+  def activeBorderAddIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddIdentificationYesNoPage(index),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transportMeans.active.addIdentificationYesNo",
+    id = Some("change-add-transport-means-identification-type")
+  )
+
+  def activeBorderAddIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddVehicleIdentificationNumberYesNoPage(index),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transportMeans.active.addVehicleIdentificationNumberYesNo",
+    id = Some("change-add-transport-means-identification-number")
+  )
 
   def activeBorderIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
     page = IdentificationPage(index),
@@ -85,17 +99,38 @@ class ActiveBorderTransportAnswersHelper(
 
 object ActiveBorderTransportAnswersHelper {
 
-  def apply(userAnswers: UserAnswers, mode: Mode, index: Index)(implicit messages: Messages, config: FrontendAppConfig): Seq[SummaryListRow] = {
+  def apply(
+    userAnswers: UserAnswers,
+    mode: Mode,
+    index: Index
+  )(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig): Seq[SummaryListRow] = {
     val helper = new ActiveBorderTransportAnswersHelper(userAnswers, mode, index)
-    Seq(
-      helper.activeBorderIdentificationType,
-      helper.activeBorderIdentificationNumber,
-      helper.activeBorderAddNationality,
-      helper.activeBorderNationality,
-      helper.customsOfficeAtBorder,
-      helper.activeBorderConveyanceReferenceNumberYesNo,
-      helper.conveyanceReferenceNumber
-    ).flatten
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        Seq(
+          helper.activeBorderAddNationality,
+          helper.activeBorderNationality,
+          helper.activeBorderAddIdentificationType,
+          helper.activeBorderIdentificationType,
+          helper.activeBorderAddIdentificationNumber,
+          helper.activeBorderIdentificationNumber,
+          helper.customsOfficeAtBorder,
+          helper.activeBorderConveyanceReferenceNumberYesNo,
+          helper.conveyanceReferenceNumber
+        ).flatten
+      case Phase.PostTransition =>
+        Seq(
+          helper.activeBorderAddIdentificationType,
+          helper.activeBorderIdentificationType,
+          helper.activeBorderAddIdentificationNumber,
+          helper.activeBorderIdentificationNumber,
+          helper.activeBorderAddNationality,
+          helper.activeBorderNationality,
+          helper.customsOfficeAtBorder,
+          helper.activeBorderConveyanceReferenceNumberYesNo,
+          helper.conveyanceReferenceNumber
+        ).flatten
+    }
   }
 
 }

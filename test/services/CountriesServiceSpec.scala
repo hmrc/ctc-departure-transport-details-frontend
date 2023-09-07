@@ -58,5 +58,17 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
       }
     }
 
+    "getCountryCodesCommonTransit" - {
+      "must return a list of unsorted countries" in {
+
+        when(mockRefDataConnector.getCountryCodesCommonTransit()(any(), any()))
+          .thenReturn(Future.successful(countries))
+
+        service.getCountryCodesCommonTransit().futureValue mustBe
+          Seq(country1, country2, country3)
+
+        verify(mockRefDataConnector).getCountryCodesCommonTransit()(any(), any())
+      }
+    }
   }
 }

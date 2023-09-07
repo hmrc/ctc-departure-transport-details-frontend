@@ -16,35 +16,37 @@
 
 package utils.cyaHelpers.authorisations
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.authorisationsAndLimit.authorisations.index.routes
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
+import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
-import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
-import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
+import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.AnswersHelper
 import viewModels.ListItem
 
-class AuthorisationsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, config: FrontendAppConfig)
+class AuthorisationsAnswersHelper(
+  userAnswers: UserAnswers,
+  mode: Mode
+)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(AuthorisationsSection) {
       index =>
-        val removeRoute: Option[Call] = if (userAnswers.get(AddAuthorisationsYesNoPage).isEmpty && index.isFirst) {
-          None
-        } else {
-          Some(routes.RemoveAuthorisationYesNoController.onPageLoad(lrn, mode, index))
+        def removeRoute(authIndex: Index): Option[Call] = authIndex match {
+          case Index(0) if userAnswers.get(AddAuthorisationsYesNoPage).isEmpty                 => None
+          case Index(1) if userAnswers.get(InferredAuthorisationTypePage(authIndex)).isDefined => None
+          case _                                                                               => Some(routes.RemoveAuthorisationYesNoController.onPageLoad(lrn, mode, authIndex))
         }
 
         buildListItem[AuthorisationDomain](
           nameWhenComplete = _.asString,
-          nameWhenInProgress = userAnswers.get(AuthorisationTypePage(index)).map(_.forDisplay),
-          removeRoute = removeRoute
+          nameWhenInProgress = (userAnswers.get(AuthorisationTypePage(index)) orElse userAnswers.get(InferredAuthorisationTypePage(index))).map(_.forDisplay),
+          removeRoute = removeRoute(index)
         )(AuthorisationDomain.userAnswersReader(index))
     }
-
 }

@@ -14,30 +14,22 @@
  * limitations under the License.
  */
 
-package views.transportMeans.departure
+package views.transportMeans
 
-import forms.EnumerableFormProvider
 import models.NormalMode
-import models.transportMeans.departure.InlandMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
-import views.html.transportMeans.departure.InlandModeView
+import views.behaviours.YesNoViewBehaviours
+import views.html.transportMeans.AddInlandModeYesNoView
 
-class InlandModeViewSpec extends RadioViewBehaviours[InlandMode] {
+class AddInlandModeYesNoViewSpec extends YesNoViewBehaviours {
 
-  override def form: Form[InlandMode] = new EnumerableFormProvider()(prefix)
+  override val noContent: String = "No - the goods are already at the port or airport"
 
-  override def applyView(form: Form[InlandMode]): HtmlFormat.Appendable =
-    injector.instanceOf[InlandModeView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector.instanceOf[AddInlandModeYesNoView].apply(form, lrn, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "transportMeans.departure.inlandMode"
-
-  override def radioItems(fieldId: String, checkedValue: Option[InlandMode] = None): Seq[RadioItem] =
-    values.toRadioItems(fieldId, checkedValue)
-
-  override def values: Seq[InlandMode] = InlandMode.values
+  override val prefix: String = "transportMeans.addInlandModeYesNo"
 
   behave like pageWithTitle()
 
@@ -46,6 +38,8 @@ class InlandModeViewSpec extends RadioViewBehaviours[InlandMode] {
   behave like pageWithSectionCaption("Transport details - Inland mode of transport")
 
   behave like pageWithHeading()
+
+  behave like pageWithContent("p", "This is the mode of transport used from the UK office of departure to a UK port or airport.")
 
   behave like pageWithRadioItems()
 

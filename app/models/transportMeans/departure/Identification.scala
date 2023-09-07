@@ -17,11 +17,9 @@
 package models.transportMeans.departure
 
 import models.{EnumerableType, Radioable, UserAnswers, WithName}
-import pages.transportMeans.departure.InlandModePage
-import play.api.i18n.Messages
+import pages.transportMeans.InlandModePage
 
 sealed trait Identification extends Radioable[Identification] {
-  def arg(implicit messages: Messages): String = messages(s"${Identification.messageKeyPrefix}.$this.arg")
   val identificationType: Int
 
   override val messageKeyPrefix: String = Identification.messageKeyPrefix

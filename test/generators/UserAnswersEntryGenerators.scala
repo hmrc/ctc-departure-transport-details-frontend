@@ -21,9 +21,9 @@ import models.authorisations.AuthorisationType
 import models.equipment.PaymentMethod
 import models.reference._
 import models.supplyChainActors.SupplyChainActorType
-import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.active.{Identification => ActiveIdentification}
-import models.transportMeans.departure.{Identification, InlandMode}
+import models.transportMeans.departure.Identification
+import models.transportMeans.{BorderModeOfTransport, InlandMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -41,11 +41,12 @@ trait UserAnswersEntryGenerators {
   private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.external._
     {
-      case ApprovedOperatorPage    => arbitrary[Boolean].map(JsBoolean)
-      case DeclarationTypePage     => arbitrary[String](arbitraryDeclarationType).map(Json.toJson(_))
-      case OfficeOfDestinationPage => arbitrary[CustomsOffice].map(Json.toJson(_))
-      case ProcedureTypePage       => arbitrary[ProcedureType].map(Json.toJson(_))
-      case SecurityDetailsTypePage => arbitrary[String](arbitrarySecurityDetailsType).map(Json.toJson(_))
+      case ApprovedOperatorPage         => arbitrary[Boolean].map(JsBoolean)
+      case DeclarationTypePage          => arbitrary[String](arbitraryDeclarationType).map(Json.toJson(_))
+      case OfficeOfDestinationPage      => arbitrary[CustomsOffice].map(Json.toJson(_))
+      case OfficeOfDepartureInCL010Page => arbitrary[Boolean].map(JsBoolean)
+      case ProcedureTypePage            => arbitrary[ProcedureType].map(Json.toJson(_))
+      case SecurityDetailsTypePage      => arbitrary[String](arbitrarySecurityDetailsType).map(Json.toJson(_))
     }
   }
 
@@ -53,8 +54,7 @@ trait UserAnswersEntryGenerators {
     generatePreRequisitesAnswer orElse
       generateTransportMeansAnswer orElse
       generateSupplyChainActorsAnswers orElse
-      generateAuthorisationAnswers orElse
-      generateLimitAnswers orElse
+      generateAuthorisationsAndLimitAnswers orElse
       generateCarrierDetailsAnswers orElse
       generateEquipmentsAndChargesAnswers
 
@@ -75,17 +75,24 @@ trait UserAnswersEntryGenerators {
     import pages.transportMeans._
     generateTransportMeansDepartureAnswer orElse
       generateTransportMeansActiveAnswer orElse {
-        case BorderModeOfTransportPage => arbitrary[BorderModeOfTransport].map(Json.toJson(_))
+        case AddInlandModeYesNoPage                 => arbitrary[Boolean].map(JsBoolean)
+        case InlandModePage                         => arbitrary[InlandMode].map(Json.toJson(_))
+        case AddDepartureTransportMeansYesNoPage    => arbitrary[Boolean].map(JsBoolean)
+        case AddBorderModeOfTransportYesNoPage      => arbitrary[Boolean].map(JsBoolean)
+        case BorderModeOfTransportPage              => arbitrary[BorderModeOfTransport].map(Json.toJson(_))
+        case AddActiveBorderTransportMeansYesNoPage => arbitrary[Boolean].map(JsBoolean)
       }
   }
 
   private def generateTransportMeansDepartureAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.transportMeans.departure._
     {
-      case InlandModePage                => arbitrary[InlandMode].map(Json.toJson(_))
-      case IdentificationPage            => arbitrary[Identification].map(Json.toJson(_))
-      case MeansIdentificationNumberPage => Gen.alphaNumStr.map(JsString)
-      case VehicleCountryPage            => arbitrary[Nationality].map(Json.toJson(_))
+      case AddIdentificationTypeYesNoPage   => arbitrary[Boolean].map(JsBoolean)
+      case IdentificationPage               => arbitrary[Identification].map(Json.toJson(_))
+      case AddIdentificationNumberYesNoPage => arbitrary[Boolean].map(JsBoolean)
+      case MeansIdentificationNumberPage    => Gen.alphaNumStr.map(JsString)
+      case AddVehicleCountryYesNoPage       => arbitrary[Boolean].map(JsBoolean)
+      case VehicleCountryPage               => arbitrary[Nationality].map(Json.toJson(_))
     }
   }
 
@@ -121,11 +128,20 @@ trait UserAnswersEntryGenerators {
     }
   }
 
+  private def generateAuthorisationsAndLimitAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.authorisationsAndLimit._
+
+    val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
+      case AuthorisationsInferredPage => arbitrary[Boolean].map(JsBoolean)
+      case AddAuthorisationsYesNoPage => arbitrary[Boolean].map(JsBoolean)
+    }
+
+    pf orElse generateAuthorisationAnswers orElse generateLimitAnswers
+  }
+
   private def generateAuthorisationAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
-    import pages.authorisationsAndLimit.authorisations._
     import pages.authorisationsAndLimit.authorisations.index._
     {
-      case AddAuthorisationsYesNoPage          => arbitrary[Boolean].map(JsBoolean)
       case AuthorisationTypePage(_)            => arbitrary[AuthorisationType].map(Json.toJson(_))
       case AuthorisationReferenceNumberPage(_) => Gen.alphaNumStr.map(JsString)
     }

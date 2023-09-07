@@ -47,8 +47,8 @@ object UserAnswersNavigator extends Logging {
     userAnswers: UserAnswers,
     mode: Mode,
     stage: Stage = CompletingJourney
-  )(implicit userAnswersReader: UserAnswersReader[T], config: FrontendAppConfig): Call = {
-    lazy val errorCall = Call(GET, config.notFoundUrl)
+  )(implicit userAnswersReader: UserAnswersReader[T], appConfig: FrontendAppConfig, phaseConfig: PhaseConfig): Call = {
+    lazy val errorCall = Call(GET, appConfig.notFoundUrl)
 
     userAnswersReader.run(userAnswers) match {
       case Left(ReaderError(page, _)) =>
@@ -57,7 +57,7 @@ object UserAnswersNavigator extends Logging {
           errorCall
         }
       case Right(x) =>
-        x.routeIfCompleted(userAnswers, mode, stage).getOrElse {
+        x.routeIfCompleted(userAnswers, mode, stage, phaseConfig.phase).getOrElse {
           logger.debug(s"Completed route not defined for model $x")
           errorCall
         }

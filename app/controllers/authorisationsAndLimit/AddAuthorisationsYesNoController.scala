@@ -16,12 +16,13 @@
 
 package controllers.authorisationsAndLimit
 
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import config.PhaseConfig
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
-import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
+import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -39,7 +40,7 @@ class AddAuthorisationsYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAuthorisationsYesNoView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -63,7 +64,7 @@ class AddAuthorisationsYesNoController @Inject() (
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            AddAuthorisationsYesNoPage.writeToUserAnswers(value).writeToSession().navigate()
+            AddAuthorisationsYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

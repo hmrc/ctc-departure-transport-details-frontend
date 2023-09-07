@@ -19,13 +19,15 @@ package controllers.preRequisites
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
-import models.{NormalMode, SelectableList}
+import models.{NormalMode, SelectableList, UserAnswers}
 import navigation.TransportNavigatorProvider
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import pages.preRequisites.ItemsDestinationCountryPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.preRequisites.ItemsDestinationCountryView
@@ -88,26 +90,78 @@ class ItemsDestinationCountryControllerSpec extends SpecBase with AppWithDefault
         view(filledForm, lrn, countryList.values, mode)(request, messages).toString
     }
 
-    "must redirect to the next page when valid data is submitted" in {
+    "must redirect to the next page when valid data is submitted" - {
+      "and country is in CL009" in {
+        when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+        when(mockCountriesService.getCountryCodesCommonTransit()(any())).thenReturn(Future.successful(Seq(country1)))
+        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        setExistingUserAnswers(emptyUserAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+        val request = FakeRequest(POST, itemsDestinationCountryRoute)
+          .withFormUrlEncodedBody(("value", country1.code.code))
 
-      val request = FakeRequest(POST, itemsDestinationCountryRoute)
-        .withFormUrlEncodedBody(("value", country1.code.code))
+        val result = route(app, request).value
 
-      val result = route(app, request).value
+        status(result) mustEqual SEE_OTHER
 
-      status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual onwardRoute.url
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+        userAnswersCaptor.getValue.data mustBe Json.parse(s"""
+            |{
+            |  "transportDetails" : {
+            |    "preRequisites" : {
+            |      "itemsDestinationCountry" : {
+            |        "code" : "${country1.code.code}",
+            |        "description" : "${country1.description}",
+            |        "isInCL009" : true
+            |      }
+            |    }
+            |  }
+            |}
+            |""".stripMargin)
+      }
+
+      "and country is not in CL009" in {
+        when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+        when(mockCountriesService.getCountryCodesCommonTransit()(any())).thenReturn(Future.successful(Nil))
+        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, itemsDestinationCountryRoute)
+          .withFormUrlEncodedBody(("value", country1.code.code))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual onwardRoute.url
+
+        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+        userAnswersCaptor.getValue.data mustBe Json.parse(s"""
+            |{
+            |  "transportDetails" : {
+            |    "preRequisites" : {
+            |      "itemsDestinationCountry" : {
+            |        "code" : "${country1.code.code}",
+            |        "description" : "${country1.description}",
+            |        "isInCL009" : false
+            |      }
+            |    }
+            |  }
+            |}
+            |""".stripMargin)
+      }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
+      when(mockCountriesService.getCountryCodesCommonTransit()(any())).thenReturn(Future.successful(Nil))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, itemsDestinationCountryRoute).withFormUrlEncodedBody(("value", "invalid value"))

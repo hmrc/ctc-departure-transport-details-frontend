@@ -14,41 +14,40 @@
  * limitations under the License.
  *@
 
-@import controllers.transportMeans.departure.routes
+@import controllers.transportMeans.routes
 @import models.LocalReferenceNumber
-@import models.transportMeans.departure.InlandMode
-@import views.html.components.{Button, ErrorSummary, InputRadio, Heading}
-@import viewModels.components.InputRadioViewModel
-@import viewModels.components.InputRadioViewModel._
+@import viewModels.components.InputYesNoViewModel._
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputRadio: InputRadio,
+    inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[InlandMode], lrn: LocalReferenceNumber, inlandModes: Seq[InlandMode], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportMeans.departure.inlandMode.title"),
+    title = messages("transportMeans.addInlandModeYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.InlandModeController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddInlandModeYesNoController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputRadio(
+        @inputYesNo(
             field = form("value"),
-            radioType = RadioWithAdditionalHtml(
-                heading = messages("transportMeans.departure.inlandMode.heading"),
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("transportMeans.addInlandModeYesNo.heading"),
                 caption = Some(messages("inlandMode.caption")),
-                additionalHtml = messages("transportMeans.departure.inlandMode.paragraph").toParagraph
+                additionalHtml = messages("transportMeans.addInlandModeYesNo.paragraph").toParagraph
             ),
-            radioItems = fieldId => inlandModes.toRadioItems(fieldId, form.value)
+            prefix = "transportMeans.addInlandModeYesNo",
+            inline = false
         )
 
         @button(attributes = Map("id" -> "submit"))

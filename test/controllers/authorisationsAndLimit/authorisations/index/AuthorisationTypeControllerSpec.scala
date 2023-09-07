@@ -17,20 +17,18 @@
 package controllers.authorisationsAndLimit.authorisations.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.Constants._
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.authorisations.AuthorisationType
-import models.transportMeans.departure.InlandMode.Maritime
-import models.{NormalMode, ProcedureType, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
-import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
-import pages.transportMeans.departure.InlandModePage
+import pages.external.DeclarationTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -41,10 +39,11 @@ import scala.concurrent.Future
 
 class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val formProvider                = new EnumerableFormProvider()
-  private val form                        = formProvider[AuthorisationType]("authorisations.authorisationType")
-  private val mode                        = NormalMode
-  private lazy val authorisationTypeRoute = routes.AuthorisationTypeController.onPageLoad(lrn, mode, index).url
+  private val formProvider                                = new EnumerableFormProvider()
+  private val form                                        = formProvider[AuthorisationType]("authorisations.authorisationType")
+  private val mode                                        = NormalMode
+  private lazy val authorisationTypeRoute                 = authorisationTypeRouteAtIndex(index)
+  private def authorisationTypeRouteAtIndex(index: Index) = routes.AuthorisationTypeController.onPageLoad(lrn, mode, index).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -55,14 +54,15 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "when value is inferred" - {
       "must redirect to next page" in {
+        val index = Index(2)
+
         val userAnswers = emptyUserAnswers
-          .setValue(ProcedureTypePage, ProcedureType.Normal)
-          .setValue(DeclarationTypePage, arbitrary[String](arbitraryNonTIRDeclarationType).sample.value)
-          .setValue(ApprovedOperatorPage, true)
-          .setValue(InlandModePage, Maritime)
+          .setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACR)
+          .setValue(AuthorisationTypePage(Index(1)), AuthorisationType.SSE)
+          .setValue(DeclarationTypePage, T1)
         setExistingUserAnswers(userAnswers)
 
-        val request = FakeRequest(GET, authorisationTypeRoute)
+        val request = FakeRequest(GET, authorisationTypeRouteAtIndex(index))
 
         val result = route(app, request).value
 

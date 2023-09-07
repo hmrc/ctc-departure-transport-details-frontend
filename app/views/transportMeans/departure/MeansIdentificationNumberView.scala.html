@@ -14,25 +14,29 @@
  * limitations under the License.
  *@
 
+@import config.PhaseConfig
 @import controllers.transportMeans.departure.routes
 @import models.LocalReferenceNumber
-@import viewModels.components.InputTextViewModel._
-@import views.html.components.{Button, ErrorSummary, InputText}
 @import models.transportMeans.departure.Identification
+@import viewModels.components.InputTextViewModel
+@import viewModels.transportMeans.departure.MeansIdentificationNumberViewModel
+@import views.html.components.{Button, ErrorSummary, InputText, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputText: InputText,
+    insetText: InsetText,
     errorSummary: ErrorSummary,
-    button: Button
+    button: Button,
+    phaseConfig: PhaseConfig
 )
 
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, prefix: String, args: String*)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, viewModel: MeansIdentificationNumberViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages(s"$prefix.title", args: _*),
+    title = messages(viewModel.title),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -43,12 +47,13 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
-                heading = messages(s"$prefix.heading", args: _*),
-                caption = Some(messages("departureMeansOfTransport.caption"))
+            inputTextType = InputTextViewModel.apply(
+                heading = messages(viewModel.heading),
+                caption = Some(messages("departureMeansOfTransport.caption")),
+                additionalHtml = viewModel.identification.map(_.asString).map(insetText(_))
             ),
             inputClass = InputSize.Width20,
-            hint = Some(messages("transportMeans.departure.meansIdentificationNumber.hint"))
+            hint = Some(messages(phaseConfig.departureIdentificationNumberHint))
         )
 
         @button(attributes = Map("id" -> "submit"))

@@ -42,7 +42,36 @@ package object controllers {
   type UserAnswersWriter[A] = ReaderT[EitherType, UserAnswers, A]
   type Write[A]             = (QuestionPage[A], UserAnswers)
 
+  private object UserAnswersWriter {
+
+    def updateTask[A](page: QuestionPage[A])(f: String => EitherType[Write[A]]): EitherType[Write[A]] =
+      page.path.path.headOption.map(_.toJsonString) match {
+        case Some(section) => f(section)
+        case None          => Left(WriterError(page, Some(s"Failed to find section in JSON path ${page.path}")))
+      }
+
+    def updateTask[A](page: QuestionPage[A], section: String, userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): EitherType[Write[A]] = {
+      val status = UserAnswersReader[TransportDomain].run(userAnswers) match {
+        case Left(_)  => InProgress
+        case Right(_) => Completed
+      }
+      Right((page, userAnswers.updateTask(section, status)))
+    }
+  }
+
   implicit class SettableOps[A](page: QuestionPage[A]) {
+
+    def updateTask()(implicit phaseConfig: PhaseConfig): UserAnswersWriter[Write[A]] =
+      ReaderT[EitherType, UserAnswers, Write[A]] {
+        userAnswers =>
+          UserAnswersWriter.updateTask(page) {
+            section =>
+              userAnswers.tasks.get(section) match {
+                case Some(Completed | InProgress) => UserAnswersWriter.updateTask(page, section, userAnswers)
+                case _                            => Right((page, userAnswers))
+              }
+          }
+      }
 
     def writeToUserAnswers(value: A)(implicit format: Format[A]): UserAnswersWriter[Write[A]] =
       ReaderT[EitherType, UserAnswers, Write[A]](
@@ -65,10 +94,19 @@ package object controllers {
 
   implicit class SettableOpsRunner[A](userAnswersWriter: UserAnswersWriter[Write[A]]) {
 
+    def appendValue[B](subPage: QuestionPage[B], value: B)(implicit format: Format[B]): UserAnswersWriter[Write[A]] =
+      userAnswersWriter.flatMapF {
+        case (page, userAnswers) =>
+          userAnswers.set(subPage, value) match {
+            case Success(value)     => Right((page, value))
+            case Failure(exception) => Left(WriterError(page, Some(s"Failed to append value to answer: ${exception.getMessage}")))
+          }
+      }
+
     def appendTransportEquipmentUuidIfNotPresent(equipmentIndex: Index): UserAnswersWriter[Write[A]] =
       appendValueIfNotPresent(UuidPage(equipmentIndex), UUID.randomUUID())
 
-    def appendValueIfNotPresent[B](subPage: QuestionPage[B], value: B)(implicit format: Format[B]): UserAnswersWriter[Write[A]] =
+    private def appendValueIfNotPresent[B](subPage: QuestionPage[B], value: B)(implicit format: Format[B]): UserAnswersWriter[Write[A]] =
       userAnswersWriter.flatMapF {
         case (page, userAnswers) =>
           userAnswers.get(subPage) match {
@@ -90,15 +128,8 @@ package object controllers {
     def updateTask()(implicit phaseConfig: PhaseConfig): UserAnswersWriter[Write[A]] =
       userAnswersWriter.flatMapF {
         case (page, userAnswers) =>
-          page.path.path.headOption.map(_.toJsonString) match {
-            case Some(section) =>
-              val status = UserAnswersReader[TransportDomain].run(userAnswers) match {
-                case Left(_)  => InProgress
-                case Right(_) => Completed
-              }
-              Right((page, userAnswers.updateTask(section, status)))
-            case None =>
-              Left(WriterError(page, Some(s"Failed to find section in JSON path ${page.path}")))
+          UserAnswersWriter.updateTask(page) {
+            section => UserAnswersWriter.updateTask(page, section, userAnswers)
           }
       }
 
