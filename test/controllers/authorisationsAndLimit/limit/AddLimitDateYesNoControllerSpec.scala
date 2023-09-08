@@ -36,7 +36,7 @@ import scala.concurrent.Future
 class AddLimitDateYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider                  = new YesNoFormProvider()
-  private val form                          = formProvider("authorisations.addArrivalDateYesNo")
+  private val form                          = formProvider("authorisationsAndLimit.limit.addLimitDateYesNo")
   private val mode                          = NormalMode
   private lazy val addArrivalDateYesNoRoute = routes.AddLimitDateYesNoController.onPageLoad(lrn, mode).url
 

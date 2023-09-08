@@ -44,7 +44,7 @@ class AddLimitDateYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("authorisations.addArrivalDateYesNo")
+  private val form = formProvider("authorisationsAndLimit.limit.addLimitDateYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
