@@ -41,102 +41,143 @@ class ConfirmRemoveBorderTransportControllerSpec extends SpecBase with AppWithDe
   "ConfirmRemoveBorderTransport Controller" - {
 
     "must return OK and the correct view for a GET" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request = FakeRequest(GET, confirmRemoveBorderTransportRoute)
-      val result  = route(app, request).value
-
-      val view = injector.instanceOf[ConfirmRemoveBorderTransportView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, lrn, mode, activeIndex)(request, messages).toString
-    }
-
-    "must redirect to the next page when valid data is submitted and call to remove a transport active border" in {
       forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex)) {
         userAnswers =>
-          reset(mockSessionRepository)
-          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
-
           setExistingUserAnswers(userAnswers)
 
-          val request = FakeRequest(POST, confirmRemoveBorderTransportRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+          val request = FakeRequest(GET, confirmRemoveBorderTransportRoute)
+          val result  = route(app, request).value
 
-          val result = route(app, request).value
+          val view = injector.instanceOf[ConfirmRemoveBorderTransportView]
 
-          status(result) mustEqual SEE_OTHER
+          status(result) mustEqual OK
 
-          redirectLocation(result).value mustEqual
-            routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode).url
-
-          val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-          verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-          userAnswersCaptor.getValue.get(TransportMeansActiveSection(activeIndex)) mustNot be(defined)
+          contentAsString(result) mustEqual
+            view(form, lrn, mode, activeIndex)(request, messages).toString
       }
     }
 
-    "must redirect to the next page when valid data is submitted and call to remove a transport active border is false" in {
+    "when yes submitted" - {
+      "must redirect to the next page when valid data is submitted and call to remove a transport active border" in {
+        forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex)) {
+          userAnswers =>
+            reset(mockSessionRepository)
+            when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      val userAnswers = emptyUserAnswers
+            setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(userAnswers)
+            val request = FakeRequest(POST, confirmRemoveBorderTransportRoute)
+              .withFormUrlEncodedBody(("value", "true"))
 
-      val request = FakeRequest(POST, confirmRemoveBorderTransportRoute)
-        .withFormUrlEncodedBody(("value", "false"))
+            val result = route(app, request).value
 
-      val result = route(app, request).value
+            status(result) mustEqual SEE_OTHER
 
-      status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustEqual
+              routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode).url
 
-      redirectLocation(result).value mustEqual
-        routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode).url
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+            userAnswersCaptor.getValue.get(TransportMeansActiveSection(activeIndex)) mustNot be(defined)
+        }
+      }
+    }
 
-      verify(mockSessionRepository, never()).set(any())(any())
+    "when no submitted" - {
+      "must redirect to add another supply chain actor and not remove supply chain actor at specified index" in {
+        forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex)) {
+          userAnswers =>
+            reset(mockSessionRepository)
+
+            setExistingUserAnswers(userAnswers)
+
+            val request = FakeRequest(POST, confirmRemoveBorderTransportRoute)
+              .withFormUrlEncodedBody(("value", "false"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              routes.AddAnotherBorderTransportController.onPageLoad(lrn, mode).url
+
+            verify(mockSessionRepository, never()).set(any())(any())
+        }
+      }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+      forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+          val request   = FakeRequest(POST, confirmRemoveBorderTransportRoute).withFormUrlEncodedBody(("value", ""))
+          val boundForm = form.bind(Map("value" -> ""))
+          val result    = route(app, request).value
 
-      val request   = FakeRequest(POST, confirmRemoveBorderTransportRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
-      val result    = route(app, request).value
+          status(result) mustEqual BAD_REQUEST
 
-      status(result) mustEqual BAD_REQUEST
+          val view = injector.instanceOf[ConfirmRemoveBorderTransportView]
 
-      val view = injector.instanceOf[ConfirmRemoveBorderTransportView]
-
-      contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, activeIndex)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(boundForm, lrn, mode, activeIndex)(request, messages).toString
+      }
     }
 
-    "must redirect to Session Expired for a GET if no existing data is found" in {
-      setNoExistingUserAnswers()
+    "must redirect to Session Expired for a GET" - {
+      "when no existing data found" in {
+        setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, confirmRemoveBorderTransportRoute)
+        val request = FakeRequest(GET, confirmRemoveBorderTransportRoute)
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
+
+      "when no active border transport means found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, confirmRemoveBorderTransportRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          routes.AddAnotherBorderTransportController.onPageLoad(lrn, mode).url
+      }
     }
 
-    "must redirect to Session Expired for a POST if no existing data is found" in {
-      setNoExistingUserAnswers()
+    "must redirect to Session Expired for a POST if no existing data is found" - {
+      "when no existing data found" in {
+        setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, confirmRemoveBorderTransportRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+        val request = FakeRequest(POST, confirmRemoveBorderTransportRoute)
+          .withFormUrlEncodedBody(("value", "true"))
 
-      val result = route(app, request).value
+        val result = route(app, request).value
 
-      status(result) mustEqual SEE_OTHER
+        status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
+
+      "when no active border transport means found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, confirmRemoveBorderTransportRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          routes.AddAnotherBorderTransportController.onPageLoad(lrn, mode).url
+      }
     }
   }
 }

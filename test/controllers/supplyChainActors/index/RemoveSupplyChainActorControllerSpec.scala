@@ -45,8 +45,8 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
 
     "must return OK and the correct view for a GET" in {
       forAll(arbitrarySupplyChainActorAnswers(emptyUserAnswers, index)) {
-        answers =>
-          setExistingUserAnswers(answers)
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
           val request = FakeRequest(GET, removeSupplyChainActorRoute)
           val result  = route(app, request).value
@@ -63,11 +63,11 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
     "when yes submitted" - {
       "must redirect to add another supply chain actor and remove supply chain actor at specified index" in {
         forAll(arbitrarySupplyChainActorAnswers(emptyUserAnswers, index)) {
-          answers =>
+          userAnswers =>
             reset(mockSessionRepository)
             when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-            setExistingUserAnswers(answers)
+            setExistingUserAnswers(userAnswers)
 
             val request = FakeRequest(POST, removeSupplyChainActorRoute)
               .withFormUrlEncodedBody(("value", "true"))
@@ -89,10 +89,10 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
     "when no submitted" - {
       "must redirect to add another supply chain actor and not remove supply chain actor at specified index" in {
         forAll(arbitrarySupplyChainActorAnswers(emptyUserAnswers, index)) {
-          answers =>
+          userAnswers =>
             reset(mockSessionRepository)
 
-            setExistingUserAnswers(answers)
+            setExistingUserAnswers(userAnswers)
 
             val request = FakeRequest(POST, removeSupplyChainActorRoute)
               .withFormUrlEncodedBody(("value", "false"))
@@ -112,8 +112,8 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
 
     "must return a Bad Request and errors when invalid data is submitted" in {
       forAll(arbitrarySupplyChainActorAnswers(emptyUserAnswers, index)) {
-        answers =>
-          setExistingUserAnswers(answers)
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
           val request   = FakeRequest(POST, removeSupplyChainActorRoute).withFormUrlEncodedBody(("value", ""))
           val boundForm = form.bind(Map("value" -> ""))
@@ -141,6 +141,19 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
 
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
+
+      "when no supply chain actor found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, removeSupplyChainActorRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          actorRoutes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode).url
+      }
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" - {
@@ -155,6 +168,20 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
+
+      "when no supply chain actor found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(POST, removeSupplyChainActorRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          actorRoutes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode).url
       }
     }
   }
