@@ -32,9 +32,17 @@ sealed trait AuthorisationType extends Radioable[AuthorisationType] {
 
 object AuthorisationType extends EnumerableType[AuthorisationType] {
 
-  case object ACR extends WithName("ACR") with AuthorisationType
-  case object SSE extends WithName("SSE") with AuthorisationType
-  case object TRD extends WithName("TRD") with AuthorisationType
+  case object ACR extends WithName("ACR") with AuthorisationType {
+    override val code: String = ""
+  }
+
+  case object SSE extends WithName("SSE") with AuthorisationType {
+    override val code: String = ""
+  }
+
+  case object TRD extends WithName("TRD") with AuthorisationType {
+    override val code: String = ""
+  }
 
   val messageKeyPrefix: String = "authorisations.authorisationType"
 

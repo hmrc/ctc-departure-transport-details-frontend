@@ -25,8 +25,7 @@ import models.journeyDomain.carrierDetails.CarrierDetailsDomain
 import models.journeyDomain.equipment.EquipmentsAndChargesDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
-import models.transportMeans.InlandMode
-import models.transportMeans.InlandMode.Mail
+import models.reference.InlandMode
 import models.{Mode, Phase, UserAnswers}
 import pages.authorisationsAndLimit.{AddAuthorisationsYesNoPage, AuthorisationsInferredPage}
 import pages.carrierDetails.CarrierDetailYesNoPage
@@ -55,8 +54,8 @@ object TransportDomain {
 
     implicit lazy val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] =
       InlandModePage.optionalReader.flatMap {
-        case Some(Mail) => none[TransportMeansDomain].pure[UserAnswersReader]
-        case _          => UserAnswersReader[TransportMeansDomain].map(Some(_))
+        case Some(inlandMode) if inlandMode.isMail => none[TransportMeansDomain].pure[UserAnswersReader]
+        case _                                     => UserAnswersReader[TransportMeansDomain].map(Some(_))
       }
 
     for {

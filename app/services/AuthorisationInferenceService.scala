@@ -16,10 +16,10 @@
 
 package services
 
+import config.Constants._
 import models.ProcedureType.{Normal, Simplified}
 import models.authorisations.AuthorisationType.{ACR, TRD}
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
-import models.transportMeans.InlandMode.{Air, Maritime, Rail}
 import models.{Index, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.InferredAuthorisationTypePage
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
@@ -35,7 +35,7 @@ class AuthorisationInferenceService @Inject() () {
       procedureType           <- ProcedureTypePage.reader
       reducedDataSetIndicator <- ApprovedOperatorPage.inferredReader
       inlandMode              <- InlandModePage.reader
-    } yield (reducedDataSetIndicator, inlandMode, procedureType) match {
+    } yield (reducedDataSetIndicator, inlandMode.code, procedureType) match {
       case (true, Maritime | Rail | Air, Simplified) =>
         userAnswers
           .set(InferredAuthorisationTypePage(Index(0)), TRD)

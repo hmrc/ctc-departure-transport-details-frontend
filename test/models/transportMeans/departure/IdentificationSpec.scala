@@ -18,7 +18,7 @@ package models.transportMeans.departure
 
 import base.SpecBase
 import generators.Generators
-import models.transportMeans.InlandMode
+import models.reference.InlandMode
 import models.transportMeans.departure.Identification._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -62,10 +62,17 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
     "Radio options" - {
 
+      val maritimeInlandMode = InlandMode("1", "Maritime Transport")
+      val railInlandMode     = InlandMode("2", "Rail Transport")
+      val roadInlandMode     = InlandMode("3", "Road transport")
+      val airInlandMode      = InlandMode("4", "Air transport")
+      val fixedInlandMode    = InlandMode("7", "Fixed transport installations")
+      val waterwayInlandMode = InlandMode("8", "Inland waterway transport")
+
       "Must return the correct number of radios" - {
         "When InlandMode is 'Maritime'" in {
           val answers = emptyUserAnswers
-            .setValue(InlandModePage, InlandMode.Maritime)
+            .setValue(InlandModePage, maritimeInlandMode)
 
           val radios = Identification.values(answers)
           val expected = Seq(
@@ -78,7 +85,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
         "When InlandMode is 'Rail'" in {
           val answers = emptyUserAnswers
-            .setValue(InlandModePage, InlandMode.Rail)
+            .setValue(InlandModePage, railInlandMode)
 
           val radios = Identification.values(answers)
           val expected = Seq(
@@ -91,7 +98,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
         "When InlandMode is 'Road'" in {
           val answers = emptyUserAnswers
-            .setValue(InlandModePage, InlandMode.Road)
+            .setValue(InlandModePage, roadInlandMode)
 
           val radios = Identification.values(answers)
           val expected = Seq(
@@ -104,7 +111,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
         "When InlandMode is 'Air'" in {
           val answers = emptyUserAnswers
-            .setValue(InlandModePage, InlandMode.Air)
+            .setValue(InlandModePage, airInlandMode)
 
           val radios = Identification.values(answers)
           val expected = Seq(
@@ -117,7 +124,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
         "When InlandMode is 'Fixed'" in {
           val answers = emptyUserAnswers
-            .setValue(InlandModePage, InlandMode.Fixed)
+            .setValue(InlandModePage, fixedInlandMode)
 
           val radios = Identification.values(answers)
           val expected = Seq(
@@ -138,7 +145,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
         "When InlandMode is 'Waterway'" in {
           val answers = emptyUserAnswers
-            .setValue(InlandModePage, InlandMode.Waterway)
+            .setValue(InlandModePage, waterwayInlandMode)
 
           val radios = Identification.values(answers)
           val expected = Seq(

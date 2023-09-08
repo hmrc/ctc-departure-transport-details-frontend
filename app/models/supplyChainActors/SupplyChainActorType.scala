@@ -25,10 +25,21 @@ sealed trait SupplyChainActorType extends Radioable[SupplyChainActorType] {
 
 object SupplyChainActorType extends EnumerableType[SupplyChainActorType] {
 
-  case object Consolidator extends WithName("consolidator") with SupplyChainActorType
-  case object FreightForwarder extends WithName("freightForwarder") with SupplyChainActorType
-  case object Manufacturer extends WithName("manufacturer") with SupplyChainActorType
-  case object WarehouseKeeper extends WithName("warehouseKeeper") with SupplyChainActorType
+  case object Consolidator extends WithName("consolidator") with SupplyChainActorType {
+    override val code: String = ""
+  }
+
+  case object FreightForwarder extends WithName("freightForwarder") with SupplyChainActorType {
+    override val code: String = ""
+  }
+
+  case object Manufacturer extends WithName("manufacturer") with SupplyChainActorType {
+    override val code: String = ""
+  }
+
+  case object WarehouseKeeper extends WithName("warehouseKeeper") with SupplyChainActorType {
+    override val code: String = ""
+  }
 
   val messageKeyPrefix: String = "supplyChainActors.index.supplyChainActorType"
 

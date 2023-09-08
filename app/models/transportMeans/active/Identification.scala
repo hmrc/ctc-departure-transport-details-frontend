@@ -29,34 +29,42 @@ object Identification extends EnumerableType[Identification] {
 
   case object ImoShipIdNumber extends WithName("imoShipIdNumber") with Identification {
     override val borderModeType: Int = 10
+    override val code: String        = borderModeType.toString
   }
 
   case object SeaGoingVessel extends WithName("seaGoingVessel") with Identification {
     override val borderModeType: Int = 11
+    override val code: String        = borderModeType.toString
   }
 
   case object TrainNumber extends WithName("trainNumber") with Identification {
     override val borderModeType: Int = 21
+    override val code: String        = borderModeType.toString
   }
 
   case object RegNumberRoadVehicle extends WithName("regNumberRoadVehicle") with Identification {
     override val borderModeType: Int = 30
+    override val code: String        = borderModeType.toString
   }
 
   case object IataFlightNumber extends WithName("iataFlightNumber") with Identification {
     override val borderModeType: Int = 40
+    override val code: String        = borderModeType.toString
   }
 
   case object RegNumberAircraft extends WithName("regNumberAircraft") with Identification {
     override val borderModeType: Int = 41
+    override val code: String        = borderModeType.toString
   }
 
   case object EuropeanVesselIdNumber extends WithName("europeanVesselIdNumber") with Identification {
     override val borderModeType: Int = 80
+    override val code: String        = borderModeType.toString
   }
 
   case object InlandWaterwaysVehicle extends WithName("inlandWaterwaysVehicle") with Identification {
     override val borderModeType: Int = 81
+    override val code: String        = borderModeType.toString
   }
 
   val messageKeyPrefix: String = "transportMeans.active.identification"

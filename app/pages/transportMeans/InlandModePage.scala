@@ -16,9 +16,9 @@
 
 package pages.transportMeans
 
+import config.Constants.Mail
 import controllers.transportMeans.routes
-import models.transportMeans.InlandMode
-import models.transportMeans.InlandMode.Mail
+import models.reference.InlandMode
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.TransportSection
@@ -40,7 +40,7 @@ case object InlandModePage extends QuestionPage[InlandMode] {
 
   override def cleanup(value: Option[InlandMode], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(Mail) =>
+      case Some(InlandMode(Mail, _)) =>
         userAnswers
           .remove(TransportMeansDepartureSection)
           .flatMap(_.remove(TransportMeansActiveListSection))

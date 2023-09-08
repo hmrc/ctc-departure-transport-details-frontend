@@ -16,7 +16,7 @@
 
 package pages.transportMeans
 
-import models.transportMeans.InlandMode
+import models.reference.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 

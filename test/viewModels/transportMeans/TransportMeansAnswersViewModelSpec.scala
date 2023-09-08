@@ -19,9 +19,9 @@ package viewModels.transportMeans
 import base.SpecBase
 import config.PhaseConfig
 import generators.Generators
-import models.reference.Nationality
+import models.reference.{InlandMode, Nationality}
 import models.transportMeans.departure.{Identification => DepartureIdentification}
-import models.transportMeans.{BorderModeOfTransport, InlandMode}
+import models.transportMeans.BorderModeOfTransport
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary

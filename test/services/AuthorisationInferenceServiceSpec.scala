@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
 import models.authorisations.AuthorisationType
-import models.transportMeans.InlandMode
+import models.reference.InlandMode
 import models.{DeclarationType, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

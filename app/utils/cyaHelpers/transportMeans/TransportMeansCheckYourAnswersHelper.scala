@@ -19,9 +19,9 @@ package utils.cyaHelpers.transportMeans
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.transportMeans.active.routes
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
-import models.reference.Nationality
+import models.reference.{InlandMode, Nationality}
 import models.transportMeans.departure.Identification
-import models.transportMeans.{BorderModeOfTransport, InlandMode}
+import models.transportMeans.BorderModeOfTransport
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transportMeans.TransportMeansActiveListSection
 import pages.transportMeans._
@@ -83,7 +83,7 @@ class TransportMeansCheckYourAnswersHelper(
 
   def inlandMode: Option[SummaryListRow] = getAnswerAndBuildRow[InlandMode](
     page = InlandModePage,
-    formatAnswer = formatEnumAsText(InlandMode.messageKeyPrefix),
+    formatAnswer = formatAsText,
     prefix = "transportMeans.inlandMode",
     id = Some("change-transport-means-inland-mode")
   )

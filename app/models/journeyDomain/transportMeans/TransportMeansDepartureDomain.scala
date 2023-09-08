@@ -22,7 +22,6 @@ import models.Phase
 import models.domain._
 import models.journeyDomain.JourneyDomainModel
 import models.reference.Nationality
-import models.transportMeans.InlandMode
 import models.transportMeans.departure.Identification
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.InlandModePage
@@ -80,7 +79,7 @@ object TransitionTransportMeansDepartureDomain {
 
     val nationalityReader: UserAnswersReader[Option[Nationality]] =
       InlandModePage.optionalReader.flatMap {
-        case Some(InlandMode.Rail) =>
+        case Some(inlandMode) if inlandMode.isRail =>
           none[Nationality].pure[UserAnswersReader]
         case _ =>
           ContainerIndicatorPage.reader.flatMap {

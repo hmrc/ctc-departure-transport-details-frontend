@@ -28,18 +28,22 @@ object BorderModeOfTransport extends EnumerableType[BorderModeOfTransport] {
 
   case object Sea extends WithName("maritime") with BorderModeOfTransport {
     override val borderModeType: Int = 1
+    override val code: String        = borderModeType.toString
   }
 
   case object ChannelTunnel extends WithName("rail") with BorderModeOfTransport {
     override val borderModeType: Int = 2
+    override val code: String        = borderModeType.toString
   }
 
   case object IrishLandBoundary extends WithName("road") with BorderModeOfTransport {
     override val borderModeType: Int = 3
+    override val code: String        = borderModeType.toString
   }
 
   case object Air extends WithName("air") with BorderModeOfTransport {
     override val borderModeType: Int = 4
+    override val code: String        = borderModeType.toString
   }
 
   val messageKeyPrefix: String = "transportMeans.borderModeOfTransport"

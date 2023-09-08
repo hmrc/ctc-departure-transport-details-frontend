@@ -17,7 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.reference.{Country, Nationality}
+import models.reference.{Country, InlandMode, Nationality}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.Reads
@@ -42,6 +42,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getCountryCodesCommonTransit()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
     val url = s"${config.referenceDataUrl}/lists/CountryCodesCommonTransit"
     http.GET[Seq[Country]](url, headers = version2Header)
+  }
+
+  def getTransportModeCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[InlandMode]] = {
+    val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
+    http.GET[Seq[InlandMode]](url, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(

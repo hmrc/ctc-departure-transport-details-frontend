@@ -20,4 +20,10 @@ object Constants {
   val GB = "GB"
   val XI = "XI"
   val AD = "AD"
+
+  val Maritime = "1"
+  val Rail     = "2"
+  val Air      = "4"
+  val Mail     = "5"
+  val Fixed    = "7"
 }

@@ -22,9 +22,9 @@ import controllers.transportMeans.active.routes
 import generators.Generators
 import models.domain.UserAnswersReader
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
-import models.reference.Nationality
+import models.reference.{InlandMode, Nationality}
 import models.transportMeans.departure.{Identification => DepartureIdentification}
-import models.transportMeans.{BorderModeOfTransport, InlandMode}
+import models.transportMeans.BorderModeOfTransport
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -212,11 +212,11 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               val answers = emptyUserAnswers.setValue(InlandModePage, inlandMode)
               val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
               val result  = helper.inlandMode
-
+//Value(s"$identificationNumber".toText)
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Mode".toText),
-                  value = Value(messages(s"${"transportMeans.inlandMode"}.$inlandMode").toText),
+                  value = Value(s"$inlandMode".toText),
                   actions = Some(
                     Actions(
                       items = List(

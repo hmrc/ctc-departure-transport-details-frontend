@@ -22,7 +22,7 @@ import generators.Generators
 import models.Phase
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.Nationality
-import models.transportMeans.InlandMode
+import models.reference.InlandMode
 import models.transportMeans.departure.Identification
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary

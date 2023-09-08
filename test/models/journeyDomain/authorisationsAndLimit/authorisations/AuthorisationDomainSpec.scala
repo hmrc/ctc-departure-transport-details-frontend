@@ -25,7 +25,7 @@ import models.ProcedureType.{Normal, Simplified}
 import models.authorisations.AuthorisationType
 import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.Stage
-import models.transportMeans.InlandMode
+import models.reference.InlandMode
 import models.{DeclarationType, Index, Mode, Phase, ProcedureType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -41,13 +41,19 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
     "userAnswersReader" - {
 
-      val referenceNumber              = Gen.alphaNumStr.sample.value.take(maxAuthorisationRefNumberLength)
-      val authorisationTypeInlandModes = List(InlandMode.Maritime, InlandMode.Rail, InlandMode.Air)
+      val referenceNumber    = Gen.alphaNumStr.sample.value.take(maxAuthorisationRefNumberLength)
+      val maritimeInlandMode = InlandMode("1", "Maritime Transport")
+      val railInlandMode     = InlandMode("2", "Rail Transport")
+      val airInlandMode      = InlandMode("4", "Air transport")
+      val diffInlandMode     = arbitraryNonMaritimeRailAirInlandMode.arbitrary.sample.value
+
+      val inlandModes                  = Seq(maritimeInlandMode, railInlandMode, airInlandMode, diffInlandMode)
+      val authorisationTypeInlandModes = List(maritimeInlandMode, railInlandMode, airInlandMode)
 
       "can be parsed from UserAnswers" - {
 
         "when DeclarationType is TIR (reduced data set is 0)" in {
-          val inlandModeGen = Gen.oneOf(InlandMode.values.diff(authorisationTypeInlandModes))
+          val inlandModeGen = Gen.oneOf(inlandModes.diff(authorisationTypeInlandModes))
 
           forAll(inlandModeGen, arbitrary[AuthorisationType]) {
             (inlandMode, authorisationType) =>
@@ -100,7 +106,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
           }
 
           "and inland mode is not 1,2 or 4" - {
-            val inlandModeGen = Gen.oneOf(InlandMode.values.diff(authorisationTypeInlandModes))
+            val inlandModeGen = Gen.oneOf(inlandModes.diff(authorisationTypeInlandModes))
             "and procedure type is simplified" in {
 
               forAll(inlandModeGen, declarationTypeGen) {
@@ -252,7 +258,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
           "and inland mode is not 1,2 or 4" - {
             "and procedure type is simplified" - {
               "must bypass authorisation type and go to authorisation reference number" in {
-                val inlandModeGen = Gen.oneOf(InlandMode.values.diff(authorisationTypeInlandModes))
+                val inlandModeGen = Gen.oneOf(inlandModes.diff(authorisationTypeInlandModes))
                 forAll(inlandModeGen, declarationTypeGen) {
                   (inlandMode, declarationType) =>
                     val userAnswers = emptyUserAnswers

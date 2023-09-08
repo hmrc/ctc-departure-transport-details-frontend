@@ -18,8 +18,7 @@ package generators
 
 import models._
 import models.reference._
-import models.transportMeans.InlandMode.{Mail, Rail}
-import models.transportMeans.{BorderModeOfTransport, InlandMode}
+import models.transportMeans.BorderModeOfTransport
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -144,32 +143,42 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
-      Gen.oneOf(InlandMode.values)
+      for {
+        code        <- Gen.oneOf("1", "2", "3", "4", "5", "7", "8")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
     }
 
   val arbitraryNonMailInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
-      Gen.oneOf(InlandMode.values.filterNot(_ == Mail))
+      for {
+        code        <- Gen.oneOf("1", "2", "3", "4", "7", "8")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
     }
 
   val arbitraryNonRailInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
-      Gen.oneOf(InlandMode.values.filterNot(_ == Rail))
+      for {
+        code        <- Gen.oneOf("1", "3", "4", "5", "7", "8")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
     }
 
   val arbitraryMaritimeRailAirInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
-      Gen.oneOf(InlandMode.Maritime, InlandMode.Rail, InlandMode.Air)
+      for {
+        code        <- Gen.oneOf("1", "2", "4")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
     }
 
   val arbitraryNonMaritimeRailAirInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
-      Gen.oneOf(
-        InlandMode.values
-          .filterNot(_ == InlandMode.Maritime)
-          .filterNot(_ == InlandMode.Rail)
-          .filterNot(_ == InlandMode.Air)
-      )
+      for {
+        code        <- Gen.oneOf("3", "5", "7", "8")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
     }
 
   implicit lazy val arbitraryPaymentMethod: Arbitrary[models.equipment.PaymentMethod] =
