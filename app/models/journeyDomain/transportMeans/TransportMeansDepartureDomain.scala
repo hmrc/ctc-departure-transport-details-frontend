@@ -25,7 +25,7 @@ import models.reference.Nationality
 import models.transportMeans.InlandMode
 import models.transportMeans.departure.Identification
 import pages.preRequisites.ContainerIndicatorPage
-import pages.transportMeans.InlandModePage
+import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
 import pages.transportMeans.departure._
 
 sealed trait TransportMeansDepartureDomain extends JourneyDomainModel
@@ -67,9 +67,14 @@ object TransitionTransportMeansDepartureDomain {
 
   implicit val userAnswersReader: UserAnswersReader[TransitionTransportMeansDepartureDomain] = {
     val identificationReader: UserAnswersReader[Option[Identification]] =
-      ContainerIndicatorPage.reader.map(_.value).flatMap {
-        case Some(false) => IdentificationPage.reader.map(Some(_))
-        case _           => AddIdentificationTypeYesNoPage.filterOptionalDependent(identity)(IdentificationPage.reader)
+      AddDepartureTransportMeansYesNoPage.isPopulated.flatMap {
+        case true =>
+          ContainerIndicatorPage.reader.map(_.value).flatMap {
+            case Some(false) => IdentificationPage.reader.map(Some(_))
+            case _           => AddIdentificationTypeYesNoPage.filterOptionalDependent(identity)(IdentificationPage.reader)
+          }
+        case false =>
+          IdentificationPage.reader.map(Some(_))
       }
 
     val identificationNumberReader: UserAnswersReader[Option[String]] =
