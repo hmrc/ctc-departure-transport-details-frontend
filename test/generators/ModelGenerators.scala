@@ -206,4 +206,9 @@ trait ModelGenerators {
       Gen.oneOf("1", "2", "3")
     }
 
+  implicit lazy val arbitraryOptionalBoolean: Arbitrary[OptionalBoolean] =
+    Arbitrary {
+      Gen.oneOf(OptionalBoolean.yes, OptionalBoolean.no, OptionalBoolean.maybe)
+    }
+
 }

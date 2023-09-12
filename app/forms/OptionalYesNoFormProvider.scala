@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package config
+package forms
 
-object Constants {
-  val GB = "GB"
-  val XI = "XI"
-  val AD = "AD"
+import forms.mappings.Mappings
+import models.OptionalBoolean
+import play.api.data.Form
 
-  val STANDARD    = "A"
-  val `PRE-LODGE` = "D"
+import javax.inject.Inject
 
-  val T1                = "T1"
-  val TIR               = "TIR"
-  val NoSecurityDetails = "0"
+class OptionalYesNoFormProvider @Inject() extends Mappings {
+
+  def apply(prefix: String, args: Any*): Form[OptionalBoolean] =
+    Form(
+      "value" -> optionalBoolean(s"$prefix.error.required", args = args)
+    )
 }

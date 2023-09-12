@@ -19,6 +19,7 @@ package models.journeyDomain
 import base.SpecBase
 import config.Constants._
 import generators.Generators
+import models.OptionalBoolean
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
@@ -43,13 +44,13 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           .setValue(UniqueConsignmentReferencePage, ucr)
           .setValue(TransportedToSameCountryYesNoPage, true)
           .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
-          .setValue(ContainerIndicatorPage, true)
+          .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
         val expectedResult = PreRequisitesDomain(
           ucr = Some(ucr),
           countryOfDispatch = None,
           itemsDestinationCountry = Some(itemsDestinationCountry),
-          containerIndicator = true
+          containerIndicator = OptionalBoolean.yes
         )
 
         val result: EitherType[PreRequisitesDomain] = UserAnswersReader[PreRequisitesDomain].run(userAnswers)
@@ -66,13 +67,13 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             .setValue(CountryOfDispatchPage, country)
             .setValue(TransportedToSameCountryYesNoPage, true)
             .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
-            .setValue(ContainerIndicatorPage, true)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
           val expectedResult = PreRequisitesDomain(
             ucr = None,
             countryOfDispatch = Some(country),
             itemsDestinationCountry = Some(itemsDestinationCountry),
-            containerIndicator = true
+            containerIndicator = OptionalBoolean.yes
           )
 
           val result: EitherType[PreRequisitesDomain] = UserAnswersReader[PreRequisitesDomain].run(userAnswers)
@@ -87,13 +88,13 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             .setValue(SameCountryOfDispatchYesNoPage, false)
             .setValue(TransportedToSameCountryYesNoPage, true)
             .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
-            .setValue(ContainerIndicatorPage, true)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
           val expectedResult = PreRequisitesDomain(
             ucr = None,
             countryOfDispatch = None,
             itemsDestinationCountry = Some(itemsDestinationCountry),
-            containerIndicator = true
+            containerIndicator = OptionalBoolean.yes
           )
 
           val result: EitherType[PreRequisitesDomain] = UserAnswersReader[PreRequisitesDomain].run(userAnswers)
@@ -131,7 +132,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             .setValue(CountryOfDispatchPage, country)
             .setValue(TransportedToSameCountryYesNoPage, true)
             .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
-            .setValue(ContainerIndicatorPage, true)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
           mandatoryPages.map {
             mandatoryPage =>
@@ -158,7 +159,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             .setValue(UniqueConsignmentReferencePage, ucr)
             .setValue(TransportedToSameCountryYesNoPage, true)
             .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
-            .setValue(ContainerIndicatorPage, true)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
           mandatoryPages.map {
             mandatoryPage =>

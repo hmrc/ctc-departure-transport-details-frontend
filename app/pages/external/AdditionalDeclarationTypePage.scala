@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package pages.external
 
-object Constants {
-  val GB = "GB"
-  val XI = "XI"
-  val AD = "AD"
+import pages.ReadOnlyPage
+import play.api.libs.json.JsPath
 
-  val STANDARD    = "A"
-  val `PRE-LODGE` = "D"
+case object AdditionalDeclarationTypePage extends ReadOnlyPage[String] {
 
-  val T1                = "T1"
-  val TIR               = "TIR"
-  val NoSecurityDetails = "0"
+  override def path: JsPath = preTaskListPath \ toString
+
+  override def toString: String = "additionalDeclarationType"
 }

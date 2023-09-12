@@ -18,6 +18,7 @@ package models.journeyDomain
 
 import cats.implicits._
 import config.Constants._
+import models.OptionalBoolean
 import models.domain.{UserAnswersReader, _}
 import models.reference.Country
 import pages.external.DeclarationTypePage
@@ -27,7 +28,7 @@ case class PreRequisitesDomain(
   ucr: Option[String],
   countryOfDispatch: Option[Country],
   itemsDestinationCountry: Option[Country],
-  containerIndicator: Boolean
+  containerIndicator: OptionalBoolean
 )
 
 object PreRequisitesDomain {

@@ -67,7 +67,7 @@ trait UserAnswersEntryGenerators {
       case CountryOfDispatchPage             => arbitrary[Country].map(Json.toJson(_))
       case TransportedToSameCountryYesNoPage => arbitrary[Boolean].map(JsBoolean)
       case ItemsDestinationCountryPage       => arbitrary[Country].map(Json.toJson(_))
-      case ContainerIndicatorPage            => arbitrary[Boolean].map(JsBoolean)
+      case ContainerIndicatorPage            => arbitrary[Option[Boolean]].map(Json.toJson(_))
     }
   }
 

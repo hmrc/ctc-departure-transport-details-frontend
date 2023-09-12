@@ -60,12 +60,12 @@ object TransitionTransportMeansDomain {
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransitionTransportMeansDomain] = {
 
     lazy val transportMeansDepartureReader: UserAnswersReader[Option[TransportMeansDepartureDomain]] =
-      ContainerIndicatorPage.reader.flatMap {
-        case true =>
+      ContainerIndicatorPage.reader.map(_.value).flatMap {
+        case Some(true) =>
           AddDepartureTransportMeansYesNoPage.filterOptionalDependent(identity) {
             TransportMeansDepartureDomain.userAnswersReader
           }
-        case false =>
+        case _ =>
           TransportMeansDepartureDomain.userAnswersReader.map(Some(_))
       }
 
