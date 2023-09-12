@@ -16,16 +16,20 @@
 
 package views.preRequisites
 
-import models.NormalMode
+import models.{NormalMode, OptionalBoolean}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
+import play.twirl.api.TwirlHelperImports._
+import views.behaviours.OptionalYesNoViewBehaviours
 import views.html.preRequisites.ContainerIndicatorView
 
-class ContainerIndicatorViewSpec extends YesNoViewBehaviours {
+class ContainerIndicatorViewSpec extends OptionalYesNoViewBehaviours {
 
-  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[ContainerIndicatorView].apply(form, lrn, NormalMode)(fakeRequest, messages)
+  override def applyView(form: Form[OptionalBoolean]): HtmlFormat.Appendable =
+    applyView(form, "D")
+
+  private def applyView(form: Form[OptionalBoolean], additionalDeclarationType: String): HtmlFormat.Appendable =
+    injector.instanceOf[ContainerIndicatorView].apply(form, lrn, NormalMode, additionalDeclarationType)(fakeRequest, messages)
 
   override val prefix: String = "preRequisites.containerIndicator"
 
@@ -40,4 +44,22 @@ class ContainerIndicatorViewSpec extends YesNoViewBehaviours {
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
+
+  "when pre-lodge declaration" - {
+    "must render 3 radio buttons not inlined" in {
+      val view = applyView(form, "D")
+      val doc  = parseView(view)
+      doc.getElementsByClass("govuk-radios__item").toList.size mustBe 3
+      assertNotRenderedByClass(doc, "govuk-radios--inline")
+    }
+  }
+
+  "when standard declaration" - {
+    "must render 2 radio buttons inlined" in {
+      val view = applyView(form, "A")
+      val doc  = parseView(view)
+      doc.getElementsByClass("govuk-radios__item").toList.size mustBe 2
+      assertRenderedByClass(doc, "govuk-radios--inline")
+    }
+  }
 }

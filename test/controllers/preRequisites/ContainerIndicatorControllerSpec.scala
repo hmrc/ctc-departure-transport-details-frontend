@@ -17,12 +17,14 @@
 package controllers.preRequisites
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.YesNoFormProvider
-import models.NormalMode
+import forms.OptionalYesNoFormProvider
+import models.{NormalMode, OptionalBoolean}
 import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
+import pages.external.AdditionalDeclarationTypePage
 import pages.preRequisites.ContainerIndicatorPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -34,7 +36,7 @@ import scala.concurrent.Future
 
 class ContainerIndicatorControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider                 = new YesNoFormProvider()
+  private val formProvider                 = new OptionalYesNoFormProvider()
   private val form                         = formProvider("preRequisites.containerIndicator")
   private val mode                         = NormalMode
   private lazy val containerIndicatorRoute = routes.ContainerIndicatorController.onPageLoad(lrn, mode).url
@@ -44,11 +46,15 @@ class ContainerIndicatorControllerSpec extends SpecBase with AppWithDefaultMockF
       .guiceApplicationBuilder()
       .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
 
+  private val additionalDeclarationType = Gen.oneOf("A", "D").sample.value
+  private val baseAnswers               = emptyUserAnswers.setValue(AdditionalDeclarationTypePage, additionalDeclarationType)
+
   "ContainerIndicator Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = baseAnswers
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, containerIndicatorRoute)
       val result  = route(app, request).value
@@ -58,12 +64,12 @@ class ContainerIndicatorControllerSpec extends SpecBase with AppWithDefaultMockF
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode)(request, messages).toString
+        view(form, lrn, mode, additionalDeclarationType)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(ContainerIndicatorPage, true)
+      val userAnswers = baseAnswers.setValue(ContainerIndicatorPage, OptionalBoolean.yes)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, containerIndicatorRoute)
@@ -77,14 +83,14 @@ class ContainerIndicatorControllerSpec extends SpecBase with AppWithDefaultMockF
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, lrn, mode, additionalDeclarationType)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(baseAnswers)
 
       val request = FakeRequest(POST, containerIndicatorRoute)
         .withFormUrlEncodedBody(("value", "true"))
@@ -98,7 +104,8 @@ class ContainerIndicatorControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = baseAnswers
+      setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, containerIndicatorRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
@@ -110,7 +117,7 @@ class ContainerIndicatorControllerSpec extends SpecBase with AppWithDefaultMockF
       val view = injector.instanceOf[ContainerIndicatorView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode)(request, messages).toString
+        view(boundForm, lrn, mode, additionalDeclarationType)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
