@@ -19,8 +19,8 @@ package models.journeyDomain.equipment
 import cats.implicits._
 import models.SecurityDetailsType.NoSecurityDetails
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
-import models.journeyDomain.JourneyDomainModel
 import models.equipment.PaymentMethod
+import models.journeyDomain.JourneyDomainModel
 import pages.equipment._
 import pages.external.SecurityDetailsTypePage
 import pages.preRequisites.ContainerIndicatorPage
@@ -38,14 +38,15 @@ object EquipmentsAndChargesDomain {
       paymentMethod <- if (equipments.isDefined) chargesReads else none[PaymentMethod].pure[UserAnswersReader]
     } yield EquipmentsAndChargesDomain(equipments, paymentMethod)
 
-  implicit lazy val equipmentsReads: UserAnswersReader[Option[EquipmentsDomain]] = ContainerIndicatorPage.reader.flatMap {
-    case true =>
-      UserAnswersReader[EquipmentsDomain].map(Option(_))
-    case false =>
-      AddTransportEquipmentYesNoPage.filterOptionalDependent(identity) {
-        UserAnswersReader[EquipmentsDomain]
-      }
-  }
+  implicit lazy val equipmentsReads: UserAnswersReader[Option[EquipmentsDomain]] =
+    ContainerIndicatorPage.reader.map(_.value).flatMap {
+      case Some(true) =>
+        UserAnswersReader[EquipmentsDomain].map(Option(_))
+      case _ =>
+        AddTransportEquipmentYesNoPage.filterOptionalDependent(identity) {
+          UserAnswersReader[EquipmentsDomain]
+        }
+    }
 
   implicit lazy val chargesReads: UserAnswersReader[Option[PaymentMethod]] = SecurityDetailsTypePage.reader.flatMap {
     case NoSecurityDetails => none[PaymentMethod].pure[UserAnswersReader]

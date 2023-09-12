@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.equipment.index.{routes => indexRoutes}
 import forms.AddAnotherFormProvider
 import generators.Generators
-import models.{Index, NormalMode}
+import models.{Index, NormalMode, OptionalBoolean}
 import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -97,10 +97,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
         when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
-        val userAnswers = emptyUserAnswers
-          .setValue(ContainerIndicatorPage, true)
-
-        setExistingUserAnswers(userAnswers)
+        setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, addAnotherEquipmentRoute)
 
@@ -118,10 +115,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
         when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
-        val userAnswers = emptyUserAnswers
-          .setValue(ContainerIndicatorPage, true)
-
-        setExistingUserAnswers(userAnswers)
+        setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(GET, addAnotherEquipmentRoute)
 
@@ -145,7 +139,7 @@ class AddAnotherEquipmentControllerSpec extends SpecBase with AppWithDefaultMock
             .thenReturn(notMaxedOutViewModel)
 
           val userAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, true)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
           setExistingUserAnswers(userAnswers)
 

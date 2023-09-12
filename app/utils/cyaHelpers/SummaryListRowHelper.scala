@@ -16,6 +16,7 @@
 
 package utils.cyaHelpers
 
+import models.OptionalBoolean
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -35,6 +36,9 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
     } else {
       messages(s"$prefix.no").toText
     }
+
+  protected def formatAsOptionalYesOrNo(answer: OptionalBoolean): Content =
+    answer.value.map(formatAsYesOrNo).getOrElse(messages("site.maybe").toText)
 
   def formatAsDate(answer: LocalDate): Content = answer.formatAsString.toText
 

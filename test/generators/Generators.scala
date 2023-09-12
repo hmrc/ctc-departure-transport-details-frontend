@@ -116,6 +116,10 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with ViewMode
       .retryUntil(_ != "true")
       .retryUntil(_ != "false")
 
+  def nonOptionalBooleans: Gen[String] =
+    nonBooleans
+      .retryUntil(_ != "maybe")
+
   def nonEmptyString: Gen[String] =
     for {
       length <- choose(1, stringMaxLength)
