@@ -59,11 +59,15 @@ object TransportAnswersViewModel {
         addAnotherLink = helper.addOrRemoveSupplyChainActors
       )
 
-      val authorisationsSection = Section(
-        sectionTitle = messages("checkYourAnswers.authorisations"),
-        rows = helper.addAuthorisation.toList ++ helper.authorisations ++ helper.limitDate.toList,
-        addAnotherLink = helper.addOrRemoveAuthorisations
-      )
+      val authorisationsSection = {
+        val authorisationRows = helper.addAuthorisation.toList ++ helper.authorisations
+        val limitDateRows     = Seq(helper.addLimitDateYesNo, helper.limitDate).flatten
+        Section(
+          sectionTitle = messages("checkYourAnswers.authorisations"),
+          rows = authorisationRows ++ limitDateRows,
+          addAnotherLink = helper.addOrRemoveAuthorisations
+        )
+      }
 
       val carrierDetailsSection = Section(
         sectionTitle = messages("checkYourAnswers.carrierDetails"),
