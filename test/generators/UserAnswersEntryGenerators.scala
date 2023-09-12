@@ -41,12 +41,13 @@ trait UserAnswersEntryGenerators {
   private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.external._
     {
-      case ApprovedOperatorPage         => arbitrary[Boolean].map(JsBoolean)
-      case DeclarationTypePage          => arbitrary[String](arbitraryDeclarationType).map(Json.toJson(_))
-      case OfficeOfDestinationPage      => arbitrary[CustomsOffice].map(Json.toJson(_))
-      case OfficeOfDepartureInCL010Page => arbitrary[Boolean].map(JsBoolean)
-      case ProcedureTypePage            => arbitrary[ProcedureType].map(Json.toJson(_))
-      case SecurityDetailsTypePage      => arbitrary[String](arbitrarySecurityDetailsType).map(Json.toJson(_))
+      case ApprovedOperatorPage          => arbitrary[Boolean].map(JsBoolean)
+      case DeclarationTypePage           => arbitrary[String](arbitraryDeclarationType).map(Json.toJson(_))
+      case OfficeOfDestinationPage       => arbitrary[CustomsOffice].map(Json.toJson(_))
+      case OfficeOfDepartureInCL010Page  => arbitrary[Boolean].map(JsBoolean)
+      case ProcedureTypePage             => arbitrary[ProcedureType].map(Json.toJson(_))
+      case SecurityDetailsTypePage       => arbitrary[String](arbitrarySecurityDetailsType).map(Json.toJson(_))
+      case AdditionalDeclarationTypePage => arbitrary[String](arbitraryAdditionalDeclarationType).map(Json.toJson(_))
     }
   }
 
@@ -148,9 +149,10 @@ trait UserAnswersEntryGenerators {
   }
 
   private def generateLimitAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
-    import pages.authorisationsAndLimit.limit.LimitDatePage
+    import pages.authorisationsAndLimit.limit._
     {
-      case LimitDatePage => arbitrary[LocalDate].map(Json.toJson(_))
+      case AddLimitDateYesNoPage => arbitrary[Boolean].map(JsBoolean)
+      case LimitDatePage         => arbitrary[LocalDate].map(Json.toJson(_))
     }
   }
 

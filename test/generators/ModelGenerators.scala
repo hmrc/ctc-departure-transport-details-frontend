@@ -38,6 +38,11 @@ trait ModelGenerators {
       Gen.oneOf("T", "T1", "T2", "T2F")
     }
 
+  lazy val arbitraryAdditionalDeclarationType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("A", "D")
+    }
+
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
     Arbitrary {
       for {

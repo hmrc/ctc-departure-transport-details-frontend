@@ -39,7 +39,7 @@ import models.{Index, Mode, OptionalBoolean}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
-import pages.authorisationsAndLimit.limit.LimitDatePage
+import pages.authorisationsAndLimit.limit.{AddLimitDateYesNoPage, LimitDatePage}
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
 import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
 import pages.equipment.{AddPaymentMethodYesNoPage, AddTransportEquipmentYesNoPage, PaymentMethodPage}
@@ -524,6 +524,40 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
     }
 
+    "addLimitDateYesNo" - {
+      "must return None" - {
+        s"when $AddLimitDateYesNoPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addLimitDateYesNo
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $AddLimitDateYesNoPage defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddLimitDateYesNoPage, true)
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.addLimitDateYesNo.get
+
+              result.key.value mustBe "Do you want to add the arrival date at the office of destination?"
+              result.value.value mustBe "Yes"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe limitRoutes.AddLimitDateYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustBe "if you want to add the arrival date at the office of destination"
+              action.id mustBe "change-add-limit-date"
+          }
+        }
+      }
+    }
+
     "limitDate" - {
       "must return None" - {
         s"when $LimitDatePage undefined" in {
@@ -545,14 +579,14 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper    = new TransportAnswersHelper(answers, mode)
               val result    = helper.limitDate.get
 
-              result.key.value mustBe "Limit date"
+              result.key.value mustBe "Estimated arrival date at the office of destination"
               result.value.value mustBe "8 January 2000"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe limitRoutes.LimitDateController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "limit date"
+              action.visuallyHiddenText.get mustBe "estimated arrival date at the office of destination"
               action.id mustBe "change-limit-date"
           }
         }
