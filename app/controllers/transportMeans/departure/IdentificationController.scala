@@ -20,13 +20,16 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.transportMeans.departure.Identification
+import models.reference.transportMeans.departure.Identification
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
+import pages.transportMeans.InlandModePage
 import pages.transportMeans.departure.IdentificationPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.MeansOfTransportIdentificationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transportMeans.departure.IdentificationView
 
@@ -38,35 +41,50 @@ class IdentificationController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: IdentificationView
+  view: IdentificationView,
+  service: MeansOfTransportIdentificationTypesService
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[Identification]("transportMeans.departure.identification")
+  private def form(identificationTypes: Seq[Identification]): Form[Identification] =
+    formProvider[Identification]("transportMeans.departure.identification", identificationTypes)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(IdentificationPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(InlandModePage))
+    .async {
+      implicit request =>
+        service.getMeansOfTransportIdentificationTypesService(request.arg).map {
+          identificationTypes =>
+            val preparedForm = request.userAnswers.get(IdentificationPage) match {
+              case None        => form(identificationTypes)
+              case Some(value) => form(identificationTypes).fill(value)
+            }
 
-      Ok(view(preparedForm, lrn, Identification.values(request.userAnswers), mode))
-  }
+            Ok(view(preparedForm, lrn, identificationTypes, mode))
+        }
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, Identification.values(request.userAnswers), mode))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            IdentificationPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(InlandModePage))
+    .async {
+      implicit request =>
+        service.getMeansOfTransportIdentificationTypesService(request.arg).flatMap {
+          identificationTypes =>
+            form(identificationTypes)
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, identificationTypes, mode))),
+                value => {
+                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                  IdentificationPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                }
+              )
+        }
+    }
 }

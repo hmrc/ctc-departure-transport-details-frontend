@@ -23,7 +23,7 @@ import generators.Generators
 import models.domain.UserAnswersReader
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
 import models.reference.{InlandMode, Nationality}
-import models.transportMeans.departure.{Identification => DepartureIdentification}
+import models.reference.transportMeans.departure.{Identification => DepartureIdentification}
 import models.transportMeans.BorderModeOfTransport
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
@@ -439,7 +439,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Identification type".toText),
-                  value = Value(messages(s"${"transportMeans.departure.identification"}.$departureIdentification").toText),
+                  value = Value(departureIdentification.toString.toText),
                   actions = Some(
                     Actions(
                       items = List(

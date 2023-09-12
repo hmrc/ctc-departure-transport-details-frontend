@@ -18,6 +18,7 @@ package generators
 
 import models._
 import models.reference._
+import models.reference.transportMeans.departure.Identification
 import models.transportMeans.BorderModeOfTransport
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
@@ -191,9 +192,12 @@ trait ModelGenerators {
       Gen.oneOf(models.authorisations.AuthorisationType.values)
     }
 
-  implicit lazy val arbitraryIdentificationDeparture: Arbitrary[models.transportMeans.departure.Identification] =
+  implicit lazy val arbitraryIdentificationDeparture: Arbitrary[models.reference.transportMeans.departure.Identification] =
     Arbitrary {
-      Gen.oneOf(models.transportMeans.departure.Identification.values)
+      for {
+        code        <- Gen.oneOf("10", "11", "20", "21", "30", "31", "40", "41", "80", "81")
+        description <- nonEmptyString
+      } yield Identification(code, description)
     }
 
   implicit lazy val arbitraryActiveIdentificationDeparture: Arbitrary[models.transportMeans.active.Identification] =

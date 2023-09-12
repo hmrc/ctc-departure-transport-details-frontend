@@ -22,7 +22,7 @@ import models.equipment.PaymentMethod
 import models.reference._
 import models.supplyChainActors.SupplyChainActorType
 import models.transportMeans.active.{Identification => ActiveIdentification}
-import models.transportMeans.departure.Identification
+import models.reference.transportMeans.departure.Identification
 import models.transportMeans.BorderModeOfTransport
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

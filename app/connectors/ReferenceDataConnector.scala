@@ -17,6 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
+import models.reference.transportMeans.departure.Identification
 import models.reference.{Country, InlandMode, Nationality}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
@@ -47,6 +48,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getTransportModeCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[InlandMode]] = {
     val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
     http.GET[Seq[InlandMode]](url, headers = version2Header)
+  }
+
+  def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Identification]] = {
+    val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
+    http.GET[Seq[Identification]](url, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(

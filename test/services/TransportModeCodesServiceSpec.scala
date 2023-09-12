@@ -31,8 +31,8 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new TransportModeCodesService(mockRefDataConnector)
 
-  private val inlandMode1 = InlandMode("7", "Inland waterway")
-  private val inlandMode2 = InlandMode("6", "Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods")
+  private val inlandMode1 = InlandMode("8", "Inland waterway")
+  private val inlandMode2 = InlandMode("7", "Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods")
   private val inlandMode3 = InlandMode("5", "Mail (active mode of transport unknown)")
   private val inlandMode4 = InlandMode("4", "Air")
   private val inlandMode5 = InlandMode("3", "Road")

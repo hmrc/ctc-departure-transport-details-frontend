@@ -20,7 +20,7 @@ import config.{FrontendAppConfig, PhaseConfig}
 import controllers.transportMeans.active.routes
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
 import models.reference.{InlandMode, Nationality}
-import models.transportMeans.departure.Identification
+import models.reference.transportMeans.departure.Identification
 import models.transportMeans.BorderModeOfTransport
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transportMeans.TransportMeansActiveListSection
@@ -97,7 +97,7 @@ class TransportMeansCheckYourAnswersHelper(
 
   def departureIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
     page = IdentificationPage,
-    formatAnswer = formatEnumAsText(Identification.messageKeyPrefix),
+    formatAnswer = formatAsText,
     prefix = "transportMeans.departure.identification",
     id = Some("change-transport-means-departure-identification")
   )

@@ -22,7 +22,7 @@ import models.Phase
 import models.domain._
 import models.journeyDomain.JourneyDomainModel
 import models.reference.Nationality
-import models.transportMeans.departure.Identification
+import models.reference.transportMeans.departure.Identification
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.InlandModePage
 import pages.transportMeans.departure._

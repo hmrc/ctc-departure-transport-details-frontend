@@ -17,7 +17,7 @@
 @import config.PhaseConfig
 @import controllers.transportMeans.departure.routes
 @import models.LocalReferenceNumber
-@import models.transportMeans.departure.Identification
+@import models.reference.transportMeans.departure.Identification
 @import viewModels.components.InputTextViewModel
 @import viewModels.transportMeans.departure.MeansIdentificationNumberViewModel
 @import views.html.components.{Button, ErrorSummary, InputText, InsetText}
@@ -50,7 +50,7 @@
             inputTextType = InputTextViewModel.apply(
                 heading = messages(viewModel.heading),
                 caption = Some(messages("departureMeansOfTransport.caption")),
-                additionalHtml = viewModel.identification.map(_.asString).map(insetText(_))
+                additionalHtml = viewModel.identification.map(_.toString).map(insetText(_))
             ),
             inputClass = InputSize.Width20,
             hint = Some(messages(phaseConfig.departureIdentificationNumberHint))
