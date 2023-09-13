@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.IdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
-import models.transportMeans.active.Identification
+import models.reference.transportMeans.active.Identification
 import navigation.TransportMeansActiveNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

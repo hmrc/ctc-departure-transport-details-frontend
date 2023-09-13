@@ -26,7 +26,7 @@ import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.BorderModeOfTransport._
-import models.transportMeans.active.Identification
+import models.reference.transportMeans.active.Identification
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.external.SecurityDetailsTypePage
 import pages.sections.external.OfficesOfTransitSection

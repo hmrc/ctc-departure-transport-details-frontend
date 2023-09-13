@@ -23,9 +23,8 @@ import generators.Generators
 import models.SecurityDetailsType.NoSecurityDetails
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
 import models.reference.Nationality
+import models.reference.transportMeans.active.Identification
 import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.active.Identification
-import models.transportMeans.active.Identification.TrainNumber
 import models.{Mode, NormalMode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -88,7 +87,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
       "and identification type is defined" in {
         forAll(arbitrary[Nationality]) {
           nationality =>
-            val identificationType = Identification.SeaGoingVessel
+            val identificationType = Identification("11", "Name of the sea-going vessel")
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
               .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
@@ -116,7 +115,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         val userAnswers = emptyUserAnswers
           .setValue(SecurityDetailsTypePage, NoSecurityDetails)
           .setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
-          .setValue(InferredIdentificationPage(index), TrainNumber)
+          .setValue(InferredIdentificationPage(index), Identification("21", "Train Number"))
           .setValue(IdentificationNumberPage(index), identificationNumber)
 
         forAll(arbitrary[Mode]) {
@@ -135,7 +134,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
       }
 
       "and identification type and identification number is defined" in {
-        val identificationType   = Identification.SeaGoingVessel
+        val identificationType   = Identification("11", "Name of the sea-going vessel")
         val identificationNumber = nonEmptyString.sample.value
         val userAnswers = emptyUserAnswers
           .setValue(SecurityDetailsTypePage, NoSecurityDetails)

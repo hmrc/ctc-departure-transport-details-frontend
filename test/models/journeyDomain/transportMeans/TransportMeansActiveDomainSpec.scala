@@ -21,11 +21,10 @@ import config.PhaseConfig
 import generators.Generators
 import models.SecurityDetailsType.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
 import models.domain.{EitherType, UserAnswersReader}
+import models.reference.transportMeans.active.Identification
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.BorderModeOfTransport._
-import models.transportMeans.active.Identification
-import models.transportMeans.active.Identification._
+import models.transportMeans.BorderModeOfTransport.{Air, _}
 import models.{Phase, SecurityDetailsType}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -175,7 +174,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         "when add nationality is unanswered" in {
           val userAnswers = emptyUserAnswers
             .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
-            .setValue(InferredIdentificationPage(index), Identification.RegNumberRoadVehicle)
+            .setValue(InferredIdentificationPage(index), Identification("30", "Registration Number of the Road Vehicle"))
             .setValue(IdentificationNumberPage(index), identificationNumber)
 
           val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
@@ -188,7 +187,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         "when nationality is unanswered" in {
           val userAnswers = emptyUserAnswers
             .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Air)
-            .setValue(IdentificationPage(index), Identification.IataFlightNumber)
+            .setValue(IdentificationPage(index), Identification("40", "IATA flight number"))
             .setValue(IdentificationNumberPage(index), identificationNumber)
             .setValue(AddNationalityYesNoPage(index), true)
 
@@ -203,7 +202,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           "and add nationality is true" in {
             val userAnswers = emptyUserAnswers
               .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
-              .setValue(InferredIdentificationPage(index), Identification.RegNumberRoadVehicle)
+              .setValue(InferredIdentificationPage(index), Identification("30", "Registration Number of the Road Vehicle"))
               .setValue(IdentificationNumberPage(index), identificationNumber)
               .setValue(AddNationalityYesNoPage(index), true)
               .setValue(NationalityPage(index), nationality)
@@ -218,7 +217,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           "and add nationality is false" in {
             val userAnswers = emptyUserAnswers
               .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
-              .setValue(InferredIdentificationPage(index), Identification.RegNumberRoadVehicle)
+              .setValue(InferredIdentificationPage(index), Identification("30", "Registration Number of the Road Vehicle"))
               .setValue(IdentificationNumberPage(index), identificationNumber)
               .setValue(AddNationalityYesNoPage(index), false)
 
@@ -233,7 +232,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         "when security is in set {1,2,3}" - {
           "and border mode of transport is 4 (Air)" in {
             val securityGen       = arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType)
-            val identificationGen = Gen.oneOf(IataFlightNumber, RegNumberAircraft)
+            val identificationGen = Gen.oneOf(Identification("40", "IATA flight number"), Identification("41", "Registration Number of the Aircraft"))
             forAll(securityGen, identificationGen) {
               (securityType, identification) =>
                 val userAnswers = emptyUserAnswers
@@ -255,7 +254,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           "and border mode of transport is not 4 (Air)" in {
             val securityGen       = arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType)
             val borderModeGen     = Gen.oneOf(BorderModeOfTransport.values.filterNot(_ == Air))
-            val identificationGen = Gen.oneOf(IataFlightNumber, RegNumberAircraft)
+            val identificationGen = Gen.oneOf(Identification("40", "IATA flight number"), Identification("41", "Registration Number of the Aircraft"))
             forAll(securityGen, borderModeGen, identificationGen) {
               (securityType, borderMode, identification) =>
                 val userAnswers = emptyUserAnswers

@@ -212,7 +212,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               val answers = emptyUserAnswers.setValue(InlandModePage, inlandMode)
               val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
               val result  = helper.inlandMode
-//Value(s"$identificationNumber".toText)
+
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Mode".toText),

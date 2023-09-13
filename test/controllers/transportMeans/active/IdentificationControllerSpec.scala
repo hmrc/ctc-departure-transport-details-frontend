@@ -19,13 +19,14 @@ package controllers.transportMeans.active
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import generators.Generators
+import models.reference.transportMeans.active.Identification
 import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.active.Identification
 import models.{NormalMode, UserAnswers}
 import navigation.TransportMeansActiveNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.active.{IdentificationPage, InferredIdentificationPage}
@@ -33,26 +34,42 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.MeansOfTransportIdentificationTypesActiveService
 import views.html.transportMeans.active.IdentificationView
 
 import scala.concurrent.Future
 
 class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
+  private val identificationTypes = arbitrary[Seq[Identification]].sample.value
+  private val identificationType  = identificationTypes.head
+
   private val formProvider             = new EnumerableFormProvider()
-  private val form                     = formProvider[Identification]("transportMeans.active.identification")
+  private val form                     = formProvider[Identification]("transportMeans.active.identification", identificationTypes)
   private val mode                     = NormalMode
   private lazy val identificationRoute = routes.IdentificationController.onPageLoad(lrn, mode, activeIndex).url
+
+  private val mockMeansOfTransportIdentificationTypesActiveService: MeansOfTransportIdentificationTypesActiveService =
+    mock[MeansOfTransportIdentificationTypesActiveService]
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockMeansOfTransportIdentificationTypesActiveService)
+  }
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[TransportMeansActiveNavigatorProvider]).toInstance(fakeTransportMeansActiveNavigatorProvider))
+      .overrides(bind(classOf[MeansOfTransportIdentificationTypesActiveService]).toInstance(mockMeansOfTransportIdentificationTypesActiveService))
 
   "Identification Controller" - {
 
     "when value is inferred" - {
       "must redirect to next page" in {
+        when(mockMeansOfTransportIdentificationTypesActiveService.getMeansOfTransportIdentificationTypesActive(any(), any())(any()))
+          .thenReturn(Future.successful(Seq(identificationType)))
+
         val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
         setExistingUserAnswers(userAnswers)
 
@@ -66,12 +83,15 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.getValue(InferredIdentificationPage(activeIndex)) mustBe Identification.TrainNumber
+        userAnswersCaptor.getValue.getValue(InferredIdentificationPage(activeIndex)) mustBe identificationType
         userAnswersCaptor.getValue.get(IdentificationPage(activeIndex)) must not be defined
       }
     }
 
     "must return OK and the correct view for a GET" in {
+      when(mockMeansOfTransportIdentificationTypesActiveService.getMeansOfTransportIdentificationTypesActive(any(), any())(any()))
+        .thenReturn(Future.successful(identificationTypes))
+
       val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.Sea)
 
       setExistingUserAnswers(userAnswers)
@@ -85,35 +105,44 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, Identification.values(userAnswers, activeIndex), mode, activeIndex)(request, messages).toString
+        view(form, lrn, identificationTypes, mode, activeIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      val userAnswers = emptyUserAnswers.setValue(IdentificationPage(activeIndex), Identification.values.head)
+      when(mockMeansOfTransportIdentificationTypesActiveService.getMeansOfTransportIdentificationTypesActive(any(), any())(any()))
+        .thenReturn(Future.successful(identificationTypes))
+
+      val userAnswers = emptyUserAnswers
+        .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Air)
+        .setValue(IdentificationPage(activeIndex), identificationType)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, identificationRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> Identification.values.head.toString))
+      val filledForm = form.bind(Map("value" -> identificationType.toString))
 
       val view = injector.instanceOf[IdentificationView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, Identification.values(userAnswers, activeIndex), mode, activeIndex)(request, messages).toString
+        view(filledForm, lrn, identificationTypes, mode, activeIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
-
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockMeansOfTransportIdentificationTypesActiveService.getMeansOfTransportIdentificationTypesActive(any(), any())(any()))
+        .thenReturn(Future.successful(identificationTypes))
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Air)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, identificationRoute)
-        .withFormUrlEncodedBody(("value", Identification.values.head.toString))
+        .withFormUrlEncodedBody(("value", identificationType.toString))
 
       val result = route(app, request).value
 
@@ -123,7 +152,11 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+      when(mockMeansOfTransportIdentificationTypesActiveService.getMeansOfTransportIdentificationTypesActive(any(), any())(any()))
+        .thenReturn(Future.successful(identificationTypes))
+
       val userAnswers = emptyUserAnswers
+        .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Air)
       setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, identificationRoute).withFormUrlEncodedBody(("value", "invalid value"))
@@ -136,7 +169,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, Identification.values(userAnswers, activeIndex), mode, activeIndex)(request, messages).toString
+        view(boundForm, lrn, identificationTypes, mode, activeIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -156,7 +189,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, identificationRoute)
-        .withFormUrlEncodedBody(("value", Identification.values.head.toString))
+        .withFormUrlEncodedBody(("value", identificationType.toString))
 
       val result = route(app, request).value
 

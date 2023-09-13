@@ -63,7 +63,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockMeansOfIdentificationTypesService)
-    when(mockMeansOfIdentificationTypesService.getMeansOfTransportIdentificationTypesService(any())(any())).thenReturn(Future.successful(identificationTypes))
+    when(mockMeansOfIdentificationTypesService.getMeansOfTransportIdentificationTypes(any())(any())).thenReturn(Future.successful(identificationTypes))
   }
 
   "Identification Controller" - {

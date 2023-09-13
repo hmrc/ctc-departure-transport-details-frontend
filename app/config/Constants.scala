@@ -23,9 +23,7 @@ object Constants {
 
   val Maritime = "1"
   val Rail     = "2"
-  val Road     = "3"
   val Air      = "4"
   val Mail     = "5"
   val Fixed    = "7"
-  val Waterway = "8"
 }

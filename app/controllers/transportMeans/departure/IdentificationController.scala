@@ -58,7 +58,7 @@ class IdentificationController @Inject() (
     .andThen(getMandatoryPage(InlandModePage))
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypesService(request.arg).map {
+        service.getMeansOfTransportIdentificationTypes(request.arg).map {
           identificationTypes =>
             val preparedForm = request.userAnswers.get(IdentificationPage) match {
               case None        => form(identificationTypes)
@@ -74,7 +74,7 @@ class IdentificationController @Inject() (
     .andThen(getMandatoryPage(InlandModePage))
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypesService(request.arg).flatMap {
+        service.getMeansOfTransportIdentificationTypes(request.arg).flatMap {
           identificationTypes =>
             form(identificationTypes)
               .bindFromRequest()

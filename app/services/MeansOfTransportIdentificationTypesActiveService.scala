@@ -16,27 +16,31 @@
 
 package services
 
-import config.Constants.Fixed
 import connectors.ReferenceDataConnector
-import models.reference.InlandMode
-import models.reference.transportMeans.departure.Identification
+import models.Index
+import models.reference.transportMeans.active.Identification
+import models.transportMeans.BorderModeOfTransport
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MeansOfTransportIdentificationTypesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
+class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getMeansOfTransportIdentificationTypes(inlandMode: InlandMode)(implicit hc: HeaderCarrier): Future[Seq[Identification]] =
-    referenceDataConnector.getMeansOfTransportIdentificationTypes().map(filter(_, inlandMode)).map(sort)
+  def getMeansOfTransportIdentificationTypesActive(index: Index, borderModeOfTransport: BorderModeOfTransport)(implicit
+    hc: HeaderCarrier
+  ): Future[Seq[Identification]] =
+    referenceDataConnector.getMeansOfTransportIdentificationTypesActive().map(filter(_, index, borderModeOfTransport)).map(sort)
 
   private def filter(
     identificationTypes: Seq[Identification],
-    inlandMode: InlandMode
+    index: Index,
+    borderModeOfTransport: BorderModeOfTransport
   ): Seq[Identification] =
-    inlandMode.code match {
-      case inlandModeCode if inlandModeCode != Fixed => identificationTypes.filter(_.code.startsWith(inlandModeCode))
-      case _                                         => identificationTypes
+    if (index.isFirst) {
+      identificationTypes.filter(_.code.startsWith(borderModeOfTransport.borderModeType.toString))
+    } else {
+      identificationTypes
     }
 
   private def sort(identificationTypes: Seq[Identification]): Seq[Identification] =

@@ -20,14 +20,18 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.requests.DataRequest
-import models.transportMeans.active.Identification
+import models.reference.transportMeans.active.Identification
+import models.requests.SpecificDataRequestProvider1
+import models.transportMeans.BorderModeOfTransport
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
+import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.active.{BaseIdentificationPage, IdentificationPage, InferredIdentificationPage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.MeansOfTransportIdentificationTypesActiveService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transportMeans.active.IdentificationView
 
@@ -39,49 +43,63 @@ class IdentificationController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: IdentificationView
+  view: IdentificationView,
+  service: MeansOfTransportIdentificationTypesActiveService
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[Identification]("transportMeans.active.identification")
+  private type Request = SpecificDataRequestProvider1[BorderModeOfTransport]#SpecificDataRequest[_]
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      Identification.values(request.userAnswers, activeIndex) match {
-        case identifier :: Nil =>
-          redirect(mode, activeIndex, InferredIdentificationPage, identifier)
-        case identifiers =>
-          val preparedForm = request.userAnswers.get(IdentificationPage(activeIndex)) match {
-            case None        => form
-            case Some(value) => form.fill(value)
-          }
+  private def form(identificationTypes: Seq[Identification]): Form[Identification] =
+    formProvider[Identification]("transportMeans.active.identification", identificationTypes)
 
-          Future.successful(Ok(view(preparedForm, lrn, identifiers, mode, activeIndex)))
-      }
-  }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(BorderModeOfTransportPage))
+    .async {
+      implicit request =>
+        service.getMeansOfTransportIdentificationTypesActive(activeIndex, request.arg).flatMap {
+          case identifier :: Nil =>
+            redirect(mode, activeIndex, InferredIdentificationPage, identifier)
+          case identifiers =>
+            val preparedForm = request.userAnswers.get(IdentificationPage(activeIndex)) match {
+              case None        => form(identifiers)
+              case Some(value) => form(identifiers).fill(value)
+            }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors =>
-            Future.successful(
-              BadRequest(view(formWithErrors, lrn, Identification.values(request.userAnswers, activeIndex), mode, activeIndex))
-            ),
-          value => redirect(mode, activeIndex, IdentificationPage, value)
-        )
-  }
+            Future.successful(Ok(view(preparedForm, lrn, identifiers, mode, activeIndex)))
+        }
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(BorderModeOfTransportPage))
+    .async {
+      implicit request =>
+        service.getMeansOfTransportIdentificationTypesActive(activeIndex, request.arg).flatMap {
+          identificationTypeList =>
+            form(identificationTypeList)
+              .bindFromRequest()
+              .fold(
+                formWithErrors =>
+                  Future.successful(
+                    BadRequest(view(formWithErrors, lrn, identificationTypeList, mode, activeIndex))
+                  ),
+                value => redirect(mode, activeIndex, IdentificationPage, value)
+              )
+        }
+    }
 
   private def redirect(
     mode: Mode,
     index: Index,
     page: Index => BaseIdentificationPage,
     value: Identification
-  )(implicit request: DataRequest[_]): Future[Result] = {
+  )(implicit request: Request): Future[Result] = {
     implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
     page(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
   }

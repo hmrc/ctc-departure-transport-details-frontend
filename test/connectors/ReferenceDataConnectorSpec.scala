@@ -19,7 +19,7 @@ package connectors
 import base._
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import models.reference._
-import models.reference.transportMeans.departure.Identification
+import models.reference.transportMeans._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -247,9 +247,9 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(identificationCodesDepartureResponseJson))
         )
 
-        val expectedResult: Seq[Identification] = Seq(
-          Identification("10", "IMO ship identification number"),
-          Identification("11", "Name of a sea-going vessel")
+        val expectedResult: Seq[departure.Identification] = Seq(
+          departure.Identification("10", "IMO ship identification number"),
+          departure.Identification("11", "Name of a sea-going vessel")
         )
 
         connector.getMeansOfTransportIdentificationTypes().futureValue mustEqual expectedResult
@@ -257,6 +257,54 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getMeansOfTransportIdentificationTypes())
+      }
+    }
+
+    "getMeansOfTransportIdentificationTypesActive" - {
+      val url: String = s"/$baseUrl/lists/TypeOfIdentificationofMeansOfTransportActive"
+
+      "must return Seq of Identification when successful" in {
+        val identificationCodesActiveResponseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/TypeOfIdentificationofMeansOfTransportActive"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "TypeOfIdentificationofMeansOfTransportActive",
+            |  "data": [
+            |    {
+            |      "code":"10",
+            |      "description":"IMO ship identification number"
+            |    },
+            |    {
+            |      "code":"11",
+            |      "description":"Name of a sea-going vessel"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(identificationCodesActiveResponseJson))
+        )
+
+        val expectedResult: Seq[active.Identification] = Seq(
+          active.Identification("10", "IMO ship identification number"),
+          active.Identification("11", "Name of a sea-going vessel")
+        )
+
+        connector.getMeansOfTransportIdentificationTypesActive().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getMeansOfTransportIdentificationTypesActive())
       }
     }
   }

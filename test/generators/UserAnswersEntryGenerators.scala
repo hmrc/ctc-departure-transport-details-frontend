@@ -21,8 +21,7 @@ import models.authorisations.AuthorisationType
 import models.equipment.PaymentMethod
 import models.reference._
 import models.supplyChainActors.SupplyChainActorType
-import models.transportMeans.active.{Identification => ActiveIdentification}
-import models.reference.transportMeans.departure.Identification
+import models.reference.transportMeans._
 import models.transportMeans.BorderModeOfTransport
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -88,7 +87,7 @@ trait UserAnswersEntryGenerators {
     import pages.transportMeans.departure._
     {
       case AddIdentificationTypeYesNoPage   => arbitrary[Boolean].map(JsBoolean)
-      case IdentificationPage               => arbitrary[Identification].map(Json.toJson(_))
+      case IdentificationPage               => arbitrary[departure.Identification].map(Json.toJson(_))
       case AddIdentificationNumberYesNoPage => arbitrary[Boolean].map(JsBoolean)
       case MeansIdentificationNumberPage    => Gen.alphaNumStr.map(JsString)
       case AddVehicleCountryYesNoPage       => arbitrary[Boolean].map(JsBoolean)
@@ -99,7 +98,7 @@ trait UserAnswersEntryGenerators {
   private def generateTransportMeansActiveAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.transportMeans.active._
     {
-      case IdentificationPage(_)                 => arbitrary[ActiveIdentification].map(Json.toJson(_))
+      case IdentificationPage(_)                 => arbitrary[active.Identification].map(Json.toJson(_))
       case IdentificationNumberPage(_)           => Gen.alphaNumStr.map(JsString)
       case AddNationalityYesNoPage(_)            => arbitrary[Boolean].map(JsBoolean)
       case NationalityPage(_)                    => arbitrary[Nationality].map(Json.toJson(_))

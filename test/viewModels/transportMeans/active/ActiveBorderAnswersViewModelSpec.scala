@@ -22,7 +22,7 @@ import models.Mode
 import models.SecurityDetailsType.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.BorderModeOfTransport.{Air, Sea}
-import models.transportMeans.active.Identification
+import models.reference.transportMeans.active.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

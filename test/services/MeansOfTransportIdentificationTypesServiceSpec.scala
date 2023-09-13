@@ -17,7 +17,6 @@
 package services
 
 import base.SpecBase
-import config.Constants._
 import connectors.ReferenceDataConnector
 import models.reference.InlandMode
 import models.reference.transportMeans.departure.Identification
@@ -53,7 +52,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
 
     "getMeansOfTransportIdentificationTypes" - {
       "must return a full list of sorted identification types when InlandMode is Fixed" in {
-        val inlandMode = InlandMode(Fixed, "Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods")
+        val inlandMode = InlandMode("7", "Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods")
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(
@@ -73,7 +72,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
             )
           )
 
-        service.getMeansOfTransportIdentificationTypesService(inlandMode).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
           Seq(
             identification10,
             identification9,
@@ -91,60 +90,60 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
       }
 
       "must return a list of sorted identification types beginning with number 1 when InlandMode is Maritime" in {
-        val inlandMode = InlandMode(Maritime, "Maritime")
+        val inlandMode = InlandMode("1", "Maritime")
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Seq(identification9, identification10)))
 
-        service.getMeansOfTransportIdentificationTypesService(inlandMode).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
           Seq(identification10, identification9)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
       }
 
       "must return a list of sorted identification types beginning with number 2 when InlandMode is Rail" in {
-        val inlandMode = InlandMode(Rail, "Rail")
+        val inlandMode = InlandMode("2", "Rail")
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Seq(identification7, identification8)))
 
-        service.getMeansOfTransportIdentificationTypesService(inlandMode).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
           Seq(identification8, identification7)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
       }
 
       "must return a list of sorted identification types beginning with number 3 when InlandMode is Road" in {
-        val inlandMode = InlandMode(Road, "Road")
+        val inlandMode = InlandMode("3", "Road")
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Seq(identification5, identification6)))
 
-        service.getMeansOfTransportIdentificationTypesService(inlandMode).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
           Seq(identification6, identification5)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
       }
 
       "must return a list of sorted identification types beginning with number 4 when InlandMode is Air" in {
-        val inlandMode = InlandMode(Air, "Air")
+        val inlandMode = InlandMode("4", "Air")
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Seq(identification3, identification4)))
 
-        service.getMeansOfTransportIdentificationTypesService(inlandMode).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
           Seq(identification4, identification3)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
       }
 
       "must return a list of sorted identification types beginning with number 8 when InlandMode is Inland waterway" in {
-        val inlandMode = InlandMode(Waterway, "Inland waterway")
+        val inlandMode = InlandMode("8", "Inland waterway")
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Seq(identification1, identification2)))
 
-        service.getMeansOfTransportIdentificationTypesService(inlandMode).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
           Seq(identification2, identification1)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
