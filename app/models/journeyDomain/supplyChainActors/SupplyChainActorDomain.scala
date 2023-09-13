@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxTuple2Semigroupal
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.supplyChainActors.SupplyChainActorType
+import models.reference.supplyChainActors.SupplyChainActorType
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
 import play.api.i18n.Messages
@@ -28,7 +28,7 @@ import play.api.mvc.Call
 
 case class SupplyChainActorDomain(role: SupplyChainActorType, identification: String)(index: Index) extends JourneyDomainModel {
 
-  def asString(implicit messages: Messages): String =
+  def asString: String =
     SupplyChainActorDomain.asString(role, identification)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
@@ -43,8 +43,8 @@ case class SupplyChainActorDomain(role: SupplyChainActorType, identification: St
 
 object SupplyChainActorDomain {
 
-  def asString(role: SupplyChainActorType, identification: String)(implicit messages: Messages): String =
-    s"${role.asString} - $identification"
+  def asString(role: SupplyChainActorType, identification: String): String =
+    s"${role.toString} - $identification"
 
   def userAnswersReader(index: Index): UserAnswersReader[SupplyChainActorDomain] =
     (

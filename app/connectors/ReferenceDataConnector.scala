@@ -17,6 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
+import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
 import models.reference.{Country, InlandMode, Nationality}
 import play.api.Logging
@@ -58,6 +59,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[active.Identification]] = {
     val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
     http.GET[Seq[active.Identification]](url, headers = version2Header)
+  }
+
+  def getSupplyChainActorTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[SupplyChainActorType]] = {
+    val url = s"${config.referenceDataUrl}/lists/AdditionalSupplyChainActorRoleCode"
+    http.GET[Seq[SupplyChainActorType]](url, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(

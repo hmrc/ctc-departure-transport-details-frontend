@@ -18,6 +18,7 @@ package generators
 
 import models._
 import models.reference._
+import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
 import models.transportMeans.BorderModeOfTransport
 import org.scalacheck.Arbitrary.arbitrary
@@ -208,9 +209,12 @@ trait ModelGenerators {
       } yield departure.Identification(code, description)
     }
 
-  implicit lazy val arbitrarySupplyChainActorType: Arbitrary[models.supplyChainActors.SupplyChainActorType] =
+  implicit lazy val arbitrarySupplyChainActorType: Arbitrary[SupplyChainActorType] =
     Arbitrary {
-      Gen.oneOf(models.supplyChainActors.SupplyChainActorType.values)
+      for {
+        code        <- Gen.oneOf("CS", "FW", "MF", "WH")
+        description <- nonEmptyString
+      } yield SupplyChainActorType(code, description)
     }
 
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {

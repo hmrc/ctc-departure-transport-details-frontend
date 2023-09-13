@@ -20,7 +20,7 @@ import models._
 import models.authorisations.AuthorisationType
 import models.equipment.PaymentMethod
 import models.reference._
-import models.supplyChainActors.SupplyChainActorType
+import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
 import models.transportMeans.BorderModeOfTransport
 import org.scalacheck.Arbitrary.arbitrary

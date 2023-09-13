@@ -18,31 +18,46 @@ package controllers.supplyChainActors.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
+import generators.Generators
 import models.NormalMode
-import models.supplyChainActors.SupplyChainActorType
+import models.reference.supplyChainActors.SupplyChainActorType
 import navigation.SupplyChainActorNavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.supplyChainActors.index.SupplyChainActorTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.SupplyChainActorTypesService
 import views.html.supplyChainActors.index.SupplyChainActorTypeView
 
 import scala.concurrent.Future
 
-class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+
+  private val supplyChainActorTypes = arbitrary[Seq[SupplyChainActorType]].sample.value
+  private val supplyChainActorType  = supplyChainActorTypes.head
 
   private val formProvider                   = new EnumerableFormProvider()
-  private val form                           = formProvider[SupplyChainActorType]("supplyChainActors.index.supplyChainActorType")
+  private val form                           = formProvider[SupplyChainActorType]("supplyChainActors.index.supplyChainActorType", supplyChainActorTypes)
   private val mode                           = NormalMode
   private lazy val supplyChainActorTypeRoute = routes.SupplyChainActorTypeController.onPageLoad(lrn, mode, actorIndex).url
+
+  private val mockSupplyChainActorTypesService: SupplyChainActorTypesService = mock[SupplyChainActorTypesService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[SupplyChainActorNavigatorProvider]).toInstance(fakeSupplyChainActorNavigatorProvider))
+      .overrides(bind(classOf[SupplyChainActorTypesService]).toInstance(mockSupplyChainActorTypesService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockSupplyChainActorTypesService)
+    when(mockSupplyChainActorTypesService.getSupplyChainActorTypes()(any())).thenReturn(Future.successful(supplyChainActorTypes))
+  }
 
   "SupplyChainActorType Controller" - {
 
@@ -59,26 +74,26 @@ class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, SupplyChainActorType.values, mode, actorIndex)(request, messages).toString
+        view(form, lrn, supplyChainActorTypes, mode, actorIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(SupplyChainActorTypePage(actorIndex), SupplyChainActorType.values.head)
+      val userAnswers = emptyUserAnswers.setValue(SupplyChainActorTypePage(actorIndex), supplyChainActorType)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, supplyChainActorTypeRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> SupplyChainActorType.values.head.toString))
+      val filledForm = form.bind(Map("value" -> supplyChainActorType.toString))
 
       val view = injector.instanceOf[SupplyChainActorTypeView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, SupplyChainActorType.values, mode, actorIndex)(request, messages).toString
+        view(filledForm, lrn, supplyChainActorTypes, mode, actorIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -88,7 +103,7 @@ class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, supplyChainActorTypeRoute)
-        .withFormUrlEncodedBody(("value", SupplyChainActorType.values.head.toString))
+        .withFormUrlEncodedBody(("value", supplyChainActorType.toString))
 
       val result = route(app, request).value
 
@@ -111,7 +126,7 @@ class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, SupplyChainActorType.values, mode, actorIndex)(request, messages).toString
+        view(boundForm, lrn, supplyChainActorTypes, mode, actorIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -131,7 +146,7 @@ class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, supplyChainActorTypeRoute)
-        .withFormUrlEncodedBody(("value", SupplyChainActorType.values.head.toString))
+        .withFormUrlEncodedBody(("value", supplyChainActorType.toString))
 
       val result = route(app, request).value
 

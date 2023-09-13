@@ -19,6 +19,7 @@ package connectors
 import base._
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import models.reference._
+import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
@@ -305,6 +306,54 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getMeansOfTransportIdentificationTypesActive())
+      }
+    }
+
+    "getSupplyChainActorTypes" - {
+      val url: String = s"/$baseUrl/lists/AdditionalSupplyChainActorRoleCode"
+
+      "must return Seq of SupplyChainActorType when successful" in {
+        val supplyChainActorTypesResponseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/AdditionalSupplyChainActorRoleCode"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "AdditionalSupplyChainActorRoleCode",
+            |  "data": [
+            |    {
+            |      "role":"CS",
+            |      "description":"Consolidator"
+            |    },
+            |    {
+            |      "role":"MF",
+            |      "description":"Manufacturer"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(supplyChainActorTypesResponseJson))
+        )
+
+        val expectedResult: Seq[SupplyChainActorType] = Seq(
+          SupplyChainActorType("CS", "Consolidator"),
+          SupplyChainActorType("MF", "Manufacturer")
+        )
+
+        connector.getSupplyChainActorTypes().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getSupplyChainActorTypes())
       }
     }
   }

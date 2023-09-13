@@ -19,7 +19,7 @@ package utils.cyaHelpers.supplyChainActors
 import base.SpecBase
 import controllers.supplyChainActors.index.routes
 import generators.Generators
-import models.supplyChainActors.SupplyChainActorType
+import models.reference.supplyChainActors.SupplyChainActorType
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -61,14 +61,14 @@ class SupplyChainActorsAnswersHelperSpec extends SpecBase with ScalaCheckPropert
               helper.listItems mustBe Seq(
                 Right(
                   ListItem(
-                    name = s"${actorRole.asString} - $actorId",
+                    name = s"${actorRole.toString} - $actorId",
                     changeUrl = routes.SupplyChainActorTypeController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
                     removeUrl = Some(routes.RemoveSupplyChainActorController.onPageLoad(userAnswers.lrn, mode, Index(0)).url)
                   )
                 ),
                 Right(
                   ListItem(
-                    name = s"${actorRole.asString} - $actorId",
+                    name = s"${actorRole.toString} - $actorId",
                     changeUrl = routes.SupplyChainActorTypeController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
                     removeUrl = Some(routes.RemoveSupplyChainActorController.onPageLoad(userAnswers.lrn, mode, Index(1)).url)
                   )
