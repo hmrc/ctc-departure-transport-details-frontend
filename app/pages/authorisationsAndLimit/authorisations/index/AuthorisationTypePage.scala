@@ -17,7 +17,7 @@
 package pages.authorisationsAndLimit.authorisations.index
 
 import controllers.authorisationsAndLimit.authorisations.index.routes
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.authorisationsAndLimit.AuthorisationSection

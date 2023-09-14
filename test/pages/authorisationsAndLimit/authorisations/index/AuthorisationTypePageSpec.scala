@@ -16,7 +16,7 @@
 
 package pages.authorisationsAndLimit.authorisations.index
 
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import pages.behaviours.PageBehaviours
 import org.scalacheck.Arbitrary.arbitrary
 

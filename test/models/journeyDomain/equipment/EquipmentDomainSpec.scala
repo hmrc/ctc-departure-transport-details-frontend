@@ -18,7 +18,7 @@ package models.journeyDomain.equipment
 
 import base.SpecBase
 import generators.Generators
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.equipment.seal.{SealDomain, SealsDomain}
 import models.{Index, ProcedureType}
@@ -35,6 +35,9 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
   private val containerId = nonEmptyString.sample.value
   private val sealId      = nonEmptyString.sample.value
+  private val authTypeACR = AuthorisationType("C521", "ACR")
+  private val authTypeSSE = AuthorisationType("C523", "SSE")
+  private val authTypeTRD = AuthorisationType("C524", "TRD")
 
   "Equipment domain" - {
 
@@ -267,8 +270,8 @@ class EquipmentDomainSpec extends SpecBase with Generators {
           "and seal identification number unanswered" in {
             val userAnswers = emptyUserAnswers
               .setValue(ProcedureTypePage, ProcedureType.Simplified)
-              .setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACR)
-              .setValue(AuthorisationTypePage(Index(1)), AuthorisationType.SSE)
+              .setValue(AuthorisationTypePage(Index(0)), authTypeACR)
+              .setValue(AuthorisationTypePage(Index(1)), authTypeSSE)
 
             val result: EitherType[Option[SealsDomain]] = UserAnswersReader[Option[SealsDomain]](
               EquipmentDomain.sealsReads(equipmentIndex)
@@ -282,8 +285,8 @@ class EquipmentDomainSpec extends SpecBase with Generators {
           "and add seals yes/no is unanswered" in {
             val userAnswers = emptyUserAnswers
               .setValue(ProcedureTypePage, ProcedureType.Simplified)
-              .setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACR)
-              .setValue(AuthorisationTypePage(Index(1)), AuthorisationType.TRD)
+              .setValue(AuthorisationTypePage(Index(0)), authTypeACR)
+              .setValue(AuthorisationTypePage(Index(1)), authTypeTRD)
 
             val result: EitherType[Option[SealsDomain]] = UserAnswersReader[Option[SealsDomain]](
               EquipmentDomain.sealsReads(equipmentIndex)
@@ -297,8 +300,8 @@ class EquipmentDomainSpec extends SpecBase with Generators {
           "and add seals yes/no is unanswered" in {
             val userAnswers = emptyUserAnswers
               .setValue(ProcedureTypePage, ProcedureType.Normal)
-              .setValue(AuthorisationTypePage(Index(0)), AuthorisationType.SSE)
-              .setValue(AuthorisationTypePage(Index(1)), AuthorisationType.ACR)
+              .setValue(AuthorisationTypePage(Index(0)), authTypeSSE)
+              .setValue(AuthorisationTypePage(Index(1)), authTypeACR)
 
             val result: EitherType[Option[SealsDomain]] = UserAnswersReader[Option[SealsDomain]](
               EquipmentDomain.sealsReads(equipmentIndex)
@@ -312,8 +315,8 @@ class EquipmentDomainSpec extends SpecBase with Generators {
           "and seal identification number unanswered" in {
             val userAnswers = emptyUserAnswers
               .setValue(ProcedureTypePage, ProcedureType.Normal)
-              .setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACR)
-              .setValue(AuthorisationTypePage(Index(1)), AuthorisationType.TRD)
+              .setValue(AuthorisationTypePage(Index(0)), authTypeACR)
+              .setValue(AuthorisationTypePage(Index(1)), authTypeTRD)
 
             val result: EitherType[Option[SealsDomain]] = UserAnswersReader[Option[SealsDomain]](
               EquipmentDomain.sealsReads(equipmentIndex)

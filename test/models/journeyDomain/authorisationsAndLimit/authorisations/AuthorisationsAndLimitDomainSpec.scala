@@ -19,10 +19,9 @@ package models.journeyDomain.authorisationsAndLimit.authorisations
 import base.SpecBase
 import forms.Constants.maxAuthorisationRefNumberLength
 import generators.Generators
-import models.SecurityDetailsType._
 import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
@@ -36,10 +35,13 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
       "can be parsed from UserAnswers" - {
 
         val authRefNumber = Gen.alphaNumStr.sample.value.take(maxAuthorisationRefNumberLength)
+        val authTypeACR   = AuthorisationType("C521", "ACR")
+        val authTypeSSE   = AuthorisationType("C523", "SSE")
+        val authTypeTRD   = AuthorisationType("C524", "TRD")
 
         "when AuthorisationType is ACR" in {
 
-          val authType             = AuthorisationType.ACR
+          val authType             = authTypeACR
           val authorisationsDomain = AuthorisationsDomain(Seq(AuthorisationDomain(authType, authRefNumber)(authorisationIndex)))
 
           val userAnswers = emptyUserAnswers
@@ -58,7 +60,7 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
 
         "when authorisation type is not ACR" in {
 
-          val authType             = Gen.oneOf(AuthorisationType.TRD, AuthorisationType.SSE).sample.value
+          val authType             = Gen.oneOf(authTypeTRD, authTypeSSE).sample.value
           val authorisationsDomain = AuthorisationsDomain(Seq(AuthorisationDomain(authType, authRefNumber)(authorisationIndex)))
 
           val result: EitherType[Option[LimitDomain]] = UserAnswersReader[Option[LimitDomain]](

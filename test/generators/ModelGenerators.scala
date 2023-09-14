@@ -18,6 +18,7 @@ package generators
 
 import models._
 import models.reference._
+import models.reference.authorisations.AuthorisationType
 import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
 import models.transportMeans.BorderModeOfTransport
@@ -188,9 +189,12 @@ trait ModelGenerators {
       Gen.oneOf(models.equipment.PaymentMethod.values)
     }
 
-  implicit lazy val arbitraryAuthorisationType: Arbitrary[models.authorisations.AuthorisationType] =
+  implicit lazy val arbitraryAuthorisationType: Arbitrary[AuthorisationType] =
     Arbitrary {
-      Gen.oneOf(models.authorisations.AuthorisationType.values)
+      for {
+        code        <- Gen.oneOf("C521", "C523", "C524")
+        description <- nonEmptyString
+      } yield AuthorisationType(code, description)
     }
 
   implicit lazy val arbitraryIdentificationActive: Arbitrary[active.Identification] =

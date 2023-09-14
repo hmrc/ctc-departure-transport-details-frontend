@@ -19,6 +19,7 @@ package connectors
 import base._
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import models.reference._
+import models.reference.authorisations.AuthorisationType
 import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
 import org.scalacheck.Gen
@@ -354,6 +355,57 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getSupplyChainActorTypes())
+      }
+    }
+
+    "getAuthorisationTypes" - {
+      val url: String = s"/$baseUrl/lists/AuthorisationTypeDeparture"
+
+      "must return Seq of AuthorisationType when successful" in {
+        val authorisationTypesResponseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/AuthorisationTypeDeparture"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "AuthorisationTypeDeparture",
+            |  "data": [
+            |    {
+            |      "code":"C521",
+            |      "description":"ACR - authorisation for the status of authorised consignor for Union transit"
+            |    },
+            |    {
+            |      "code":"C523",
+            |      "description":"SSE - authorisation for the use of seals of a special type"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(authorisationTypesResponseJson))
+        )
+
+        val expectedResult: Seq[AuthorisationType] = Seq(
+          AuthorisationType(
+            "C521",
+            "ACR - authorisation for the status of authorised consignor for Union transit"
+          ),
+          AuthorisationType("C523", "SSE - authorisation for the use of seals of a special type")
+        )
+
+        connector.getAuthorisationTypes().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getAuthorisationTypes())
       }
     }
   }

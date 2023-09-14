@@ -26,4 +26,8 @@ object Constants {
   val Air      = "4"
   val Mail     = "5"
   val Fixed    = "7"
+
+  val ACR = "C521"
+  val SSE = "C523"
+  val TRD = "C524"
 }

@@ -18,7 +18,6 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.reference.InlandMode
 import models.reference.supplyChainActors.SupplyChainActorType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}

@@ -17,6 +17,7 @@
 package connectors
 
 import config.FrontendAppConfig
+import models.reference.authorisations.AuthorisationType
 import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
 import models.reference.{Country, InlandMode, Nationality}
@@ -64,6 +65,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getSupplyChainActorTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[SupplyChainActorType]] = {
     val url = s"${config.referenceDataUrl}/lists/AdditionalSupplyChainActorRoleCode"
     http.GET[Seq[SupplyChainActorType]](url, headers = version2Header)
+  }
+
+  def getAuthorisationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AuthorisationType]] = {
+    val url = s"${config.referenceDataUrl}/lists/AuthorisationTypeDeparture"
+    http.GET[Seq[AuthorisationType]](url, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(

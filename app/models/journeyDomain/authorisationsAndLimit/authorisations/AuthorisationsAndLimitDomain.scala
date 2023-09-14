@@ -20,14 +20,13 @@ import cats.implicits.{catsSyntaxApplicativeId, none}
 import models.domain.UserAnswersReader
 import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
-import models.authorisations.AuthorisationType
 
 case class AuthorisationsAndLimitDomain(authorisationsDomain: AuthorisationsDomain, limitDomain: Option[LimitDomain]) extends JourneyDomainModel
 
 object AuthorisationsAndLimitDomain {
 
   def limitReader(authDomain: AuthorisationsDomain): UserAnswersReader[Option[LimitDomain]] =
-    authDomain.authorisations.exists(_.authorisationType == AuthorisationType.ACR) match {
+    authDomain.authorisations.exists(_.authorisationType.isACR) match {
       case true  => UserAnswersReader[LimitDomain].map(Some(_))
       case false => none[LimitDomain].pure[UserAnswersReader]
     }

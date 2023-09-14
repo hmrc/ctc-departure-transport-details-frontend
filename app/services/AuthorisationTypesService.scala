@@ -14,54 +14,41 @@
  * limitations under the License.
  */
 
-package models.authorisations
+package services
 
-import models._
+import connectors.ReferenceDataConnector
+import models.reference.authorisations.AuthorisationType
+import models.{Index, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
-import play.api.i18n.Messages
+import uk.gov.hmrc.http.HeaderCarrier
 
-sealed trait AuthorisationType extends Radioable[AuthorisationType] {
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-  override val messageKeyPrefix: String = AuthorisationType.messageKeyPrefix
+class AuthorisationTypesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def forDisplay(implicit messages: Messages): String =
-    messages(s"${AuthorisationType.messageKeyPrefix}.forDisplay.$this")
+  def getAuthorisationTypes(userAnswers: UserAnswers, index: Index)(implicit
+    hc: HeaderCarrier
+  ): Future[Seq[AuthorisationType]] =
+    referenceDataConnector.getAuthorisationTypes().map(filter(_, userAnswers, index)).map(sort)
 
-}
-
-object AuthorisationType extends EnumerableType[AuthorisationType] {
-
-  case object ACR extends WithName("ACR") with AuthorisationType {
-    override val code: String = ""
-  }
-
-  case object SSE extends WithName("SSE") with AuthorisationType {
-    override val code: String = ""
-  }
-
-  case object TRD extends WithName("TRD") with AuthorisationType {
-    override val code: String = ""
-  }
-
-  val messageKeyPrefix: String = "authorisations.authorisationType"
-
-  val values: Seq[AuthorisationType] = Seq(
-    ACR,
-    SSE,
-    TRD
-  )
-
-  def values(userAnswers: UserAnswers, index: Index): Seq[AuthorisationType] = {
+  private def filter(
+    authorisationTypes: Seq[AuthorisationType],
+    userAnswers: UserAnswers,
+    index: Index
+  ): Seq[AuthorisationType] = {
     val numberOfAuthorisations = userAnswers.getArraySize(AuthorisationsSection)
-    val authorisationTypes = (0 until numberOfAuthorisations).map(Index(_)).foldLeft[Seq[AuthorisationType]](Nil) {
+    val authorisationTypesEntered = (0 until numberOfAuthorisations).map(Index(_)).foldLeft[Seq[AuthorisationType]](Nil) {
       (acc, authorisationIndex) =>
         userAnswers.get(AuthorisationTypePage(authorisationIndex)) orElse userAnswers.get(InferredAuthorisationTypePage(authorisationIndex)) match {
           case Some(value) if authorisationIndex != index => acc :+ value
           case _                                          => acc
         }
     }
-
-    values.diff(authorisationTypes)
+    authorisationTypes.diff(authorisationTypesEntered)
   }
+
+  private def sort(authorisationTypes: Seq[AuthorisationType]): Seq[AuthorisationType] =
+    authorisationTypes.sortBy(_.code.toLowerCase)
 }

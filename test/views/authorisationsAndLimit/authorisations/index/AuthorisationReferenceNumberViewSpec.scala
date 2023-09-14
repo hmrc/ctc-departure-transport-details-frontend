@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.AuthorisationReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form

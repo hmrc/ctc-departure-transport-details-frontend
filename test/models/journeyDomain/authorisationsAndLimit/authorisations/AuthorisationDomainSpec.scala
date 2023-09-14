@@ -22,7 +22,7 @@ import controllers.authorisationsAndLimit.authorisations.{routes => authorisatio
 import forms.Constants.maxAuthorisationRefNumberLength
 import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.Stage
 import models.reference.InlandMode
@@ -40,6 +40,9 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
   "AuthorisationDomain" - {
 
     "userAnswersReader" - {
+
+      val authTypeACR = AuthorisationType("C521", "ACR")
+      val authTypeTRD = AuthorisationType("C524", "TRD")
 
       val referenceNumber    = Gen.alphaNumStr.sample.value.take(maxAuthorisationRefNumberLength)
       val maritimeInlandMode = InlandMode("1", "Maritime Transport")
@@ -90,11 +93,11 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                   .setValue(DeclarationTypePage, declarationType)
                   .setValue(ApprovedOperatorPage, true)
                   .setValue(InlandModePage, inlandMode)
-                  .setValue(InferredAuthorisationTypePage(authorisationIndex), AuthorisationType.TRD)
+                  .setValue(InferredAuthorisationTypePage(authorisationIndex), authTypeTRD)
                   .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
 
                 val expectedResult = AuthorisationDomain(
-                  authorisationType = AuthorisationType.TRD,
+                  authorisationType = authTypeTRD,
                   referenceNumber = referenceNumber
                 )(authorisationIndex)
 
@@ -116,11 +119,11 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                     .setValue(DeclarationTypePage, declarationType)
                     .setValue(ApprovedOperatorPage, true)
                     .setValue(InlandModePage, inlandMode)
-                    .setValue(InferredAuthorisationTypePage(authorisationIndex), AuthorisationType.ACR)
+                    .setValue(InferredAuthorisationTypePage(authorisationIndex), authTypeACR)
                     .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
 
                   val expectedResult = AuthorisationDomain(
-                    authorisationType = AuthorisationType.ACR,
+                    authorisationType = authTypeACR,
                     referenceNumber = referenceNumber
                   )(authorisationIndex)
 
@@ -244,7 +247,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                     .setValue(DeclarationTypePage, declarationType)
                     .setValue(ApprovedOperatorPage, true)
                     .setValue(InlandModePage, inlandMode)
-                    .setValue(InferredAuthorisationTypePage(authorisationIndex), AuthorisationType.TRD)
+                    .setValue(InferredAuthorisationTypePage(authorisationIndex), authTypeTRD)
 
                   val result: EitherType[AuthorisationDomain] = UserAnswersReader[AuthorisationDomain](
                     AuthorisationDomain.userAnswersReader(index)
@@ -266,7 +269,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                       .setValue(DeclarationTypePage, declarationType)
                       .setValue(ApprovedOperatorPage, true)
                       .setValue(InlandModePage, inlandMode)
-                      .setValue(InferredAuthorisationTypePage(authorisationIndex), AuthorisationType.ACR)
+                      .setValue(InferredAuthorisationTypePage(authorisationIndex), authTypeACR)
 
                     val result: EitherType[AuthorisationDomain] = UserAnswersReader[AuthorisationDomain](
                       AuthorisationDomain.userAnswersReader(index)

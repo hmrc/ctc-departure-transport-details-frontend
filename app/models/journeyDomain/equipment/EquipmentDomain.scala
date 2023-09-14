@@ -21,13 +21,12 @@ import controllers.equipment.index.routes
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.equipment.seal.SealsDomain
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.authorisations.AuthorisationType
 import models.{Index, Mode, Phase, ProcedureType, UserAnswers}
-import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
 import pages.equipment.index._
 import pages.external.ProcedureTypePage
 import pages.preRequisites.ContainerIndicatorPage
+import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
@@ -74,7 +73,7 @@ object EquipmentDomain {
   def sealsReads(equipmentIndex: Index): UserAnswersReader[Option[SealsDomain]] = for {
     procedureType      <- ProcedureTypePage.reader
     authorisationTypes <- AuthorisationsSection.fieldReader(AuthorisationTypePage)
-    hasSSEAuthorisation = authorisationTypes.contains(AuthorisationType.SSE)
+    hasSSEAuthorisation = authorisationTypes.exists(_.isSSE)
     reader <- (procedureType, hasSSEAuthorisation) match {
       case (ProcedureType.Simplified, true) =>
         UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(equipmentIndex)).map(Option(_))

@@ -19,7 +19,7 @@ package models.journeyDomain.authorisationsAndLimit.authorisations
 import cats.implicits._
 import controllers.authorisationsAndLimit.authorisations.index.{routes => authorisationRoutes}
 import controllers.authorisationsAndLimit.authorisations.{routes => authorisationsRoutes}
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, Stage}

@@ -19,7 +19,7 @@ package controllers.authorisationsAndLimit.authorisations.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AuthorisationReferenceNumberFormProvider
 import generators.Generators
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import models.{DeclarationType, NormalMode}
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
