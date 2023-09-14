@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.{Generators, UserAnswersGenerator}
 import models.SecurityDetailsType.NoSecurityDetails
 import models.domain.{EitherType, UserAnswersReader}
-import models.equipment.PaymentMethod
+import models.reference.equipment.PaymentMethod
 import models.{Index, SecurityDetailsType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

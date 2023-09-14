@@ -18,7 +18,7 @@ package generators
 
 import models._
 import models.reference.authorisations.AuthorisationType
-import models.equipment.PaymentMethod
+import models.reference.equipment.PaymentMethod
 import models.reference._
 import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._

@@ -189,8 +189,8 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
 
       setExistingUserAnswers(userAnswers)
 
-      val request   = FakeRequest(POST, removeAuthorisationYesNoRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form(authType).bind(Map("value" -> ""))
+      val request   = FakeRequest(POST, removeAuthorisationYesNoRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form(authType).bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
 

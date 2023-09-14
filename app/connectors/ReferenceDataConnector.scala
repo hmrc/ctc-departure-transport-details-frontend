@@ -18,6 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import models.reference.authorisations.AuthorisationType
+import models.reference.equipment.PaymentMethod
 import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
 import models.reference.{Country, InlandMode, Nationality}
@@ -70,6 +71,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getAuthorisationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AuthorisationType]] = {
     val url = s"${config.referenceDataUrl}/lists/AuthorisationTypeDeparture"
     http.GET[Seq[AuthorisationType]](url, headers = version2Header)
+  }
+
+  def getPaymentMethods()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PaymentMethod]] = {
+    val url = s"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
+    http.GET[Seq[PaymentMethod]](url, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(

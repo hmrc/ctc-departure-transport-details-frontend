@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package pages.equipment
+package services
 
+import connectors.ReferenceDataConnector
 import models.reference.equipment.PaymentMethod
-import pages.behaviours.PageBehaviours
+import uk.gov.hmrc.http.HeaderCarrier
 
-class PaymentMethodPageSpec extends PageBehaviours {
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-  "PaymentMethodPage" - {
+class PaymentMethodsService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-    beRetrievable[PaymentMethod](PaymentMethodPage)
+  def getPaymentMethods()(implicit hc: HeaderCarrier): Future[Seq[PaymentMethod]] =
+    referenceDataConnector.getPaymentMethods().map(sort)
 
-    beSettable[PaymentMethod](PaymentMethodPage)
-
-    beRemovable[PaymentMethod](PaymentMethodPage)
-  }
+  private def sort(paymentMethods: Seq[PaymentMethod]): Seq[PaymentMethod] =
+    paymentMethods.sortBy(_.code.toLowerCase)
 }

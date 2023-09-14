@@ -34,7 +34,7 @@ import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationD
 import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
-import models.equipment.PaymentMethod
+import models.reference.equipment.PaymentMethod
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -867,9 +867,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val result  = helper.paymentMethod.get
 
               result.key.value mustBe "Payment method"
-              val key = s"equipment.paymentMethod.$paymentMethod"
-              messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(key)
+              result.value.value mustBe paymentMethod.toString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

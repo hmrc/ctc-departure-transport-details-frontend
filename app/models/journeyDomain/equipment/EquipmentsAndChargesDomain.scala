@@ -20,7 +20,7 @@ import cats.implicits._
 import models.SecurityDetailsType.NoSecurityDetails
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.JourneyDomainModel
-import models.equipment.PaymentMethod
+import models.reference.equipment.PaymentMethod
 import pages.equipment._
 import pages.external.SecurityDetailsTypePage
 import pages.preRequisites.ContainerIndicatorPage

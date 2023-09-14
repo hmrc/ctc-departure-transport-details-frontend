@@ -23,7 +23,6 @@ import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.reference.supplyChainActors.SupplyChainActorType
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
-import play.api.i18n.Messages
 import play.api.mvc.Call
 
 case class SupplyChainActorDomain(role: SupplyChainActorType, identification: String)(index: Index) extends JourneyDomainModel {

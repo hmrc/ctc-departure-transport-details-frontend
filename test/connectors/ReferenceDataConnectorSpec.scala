@@ -20,6 +20,7 @@ import base._
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import models.reference._
 import models.reference.authorisations.AuthorisationType
+import models.reference.equipment.PaymentMethod
 import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
 import org.scalacheck.Gen
@@ -403,9 +404,53 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
         connector.getAuthorisationTypes().futureValue mustEqual expectedResult
       }
+    }
+
+    "getPaymentMethods" - {
+      val url: String = s"/$baseUrl/lists/TransportChargesMethodOfPayment"
+
+      "must return Seq of PaymentMethod when successful" in {
+        val paymentMethodsResponseJson: String =
+          """
+             |{
+             |  "_links": {
+             |    "self": {
+             |      "href": "/customs-reference-data/lists/TransportChargesMethodOfPayment"
+             |    }
+             |  },
+             |  "meta": {
+             |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+             |    "snapshotDate": "2023-01-01"
+             |  },
+             |  "id": "TransportChargesMethodOfPayment",
+             |  "data": [
+             |    {
+             |      "code":"A",
+             |      "description":"Payment in cash"
+             |    },
+             |    {
+             |      "code":"B",
+             |      "description":"Payment by credit card"
+             |    }
+             |  ]
+             |}
+             |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(paymentMethodsResponseJson))
+        )
+
+        val expectedResult: Seq[PaymentMethod] = Seq(
+          PaymentMethod("A", "Payment in cash"),
+          PaymentMethod("B", "Payment by credit card")
+        )
+
+        connector.getPaymentMethods().futureValue mustEqual expectedResult
+      }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getAuthorisationTypes())
+        checkErrorResponse(url, connector.getPaymentMethods())
       }
     }
   }
