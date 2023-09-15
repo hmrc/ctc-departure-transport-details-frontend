@@ -113,6 +113,9 @@ package object domain {
       val fn: UserAnswers => EitherType[Option[A]] = ua => Right(ua.get(a))
       UserAnswersReader(fn)
     }
+
+    def isPopulated(implicit reads: Reads[A]): UserAnswersReader[Boolean] =
+      optionalReader.map(_.isDefined)
   }
 
   implicit class JsArrayGettableAsReaderOps(jsArray: Gettable[JsArray]) {

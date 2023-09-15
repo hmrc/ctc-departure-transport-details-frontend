@@ -16,38 +16,32 @@
 
 package pages.transportMeans
 
-import models.transportMeans.{InlandMode, InlandModeYesNo}
+import models.transportMeans.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours
 
 class AddInlandModeYesNoPageSpec extends PageBehaviours {
 
   "AddInlandModeYesNoPage" - {
 
-    beRetrievable[InlandModeYesNo](AddInlandModeYesNoPage)
+    beRetrievable[Boolean](AddInlandModeYesNoPage)
 
-    beSettable[InlandModeYesNo](AddInlandModeYesNoPage)
+    beSettable[Boolean](AddInlandModeYesNoPage)
 
-    beRemovable[InlandModeYesNo](AddInlandModeYesNoPage)
+    beRemovable[Boolean](AddInlandModeYesNoPage)
 
     "cleanup" - {
-      "when answered no " - {
-        "must remove InlandModePage " in {
-          forAll(
-            Gen.oneOf(InlandModeYesNo.values).filter(_ == InlandModeYesNo.Yes),
-            Gen.oneOf(InlandModeYesNo.values).filter(_ == InlandModeYesNo.No),
-            arbitrary[InlandMode]
-          ) {
-            (inlandModeYes, inlandModeNo, inlandMode) =>
+      "when answered no" - {
+        "must remove InlandModePage" in {
+          forAll(arbitrary[InlandMode]) {
+            inlandMode =>
               val userAnswers = emptyUserAnswers
-                .setValue(AddInlandModeYesNoPage, inlandModeYes)
+                .setValue(AddInlandModeYesNoPage, true)
                 .setValue(InlandModePage, inlandMode)
 
-              val result = userAnswers.setValue(AddInlandModeYesNoPage, inlandModeNo)
+              val result = userAnswers.setValue(AddInlandModeYesNoPage, false)
 
               result.get(InlandModePage) must not be defined
-
           }
         }
       }

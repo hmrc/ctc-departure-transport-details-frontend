@@ -19,13 +19,13 @@ package pages.authorisationsAndLimit
 import controllers.authorisationsAndLimit.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.TransportSection
+import pages.sections.authorisationsAndLimit.AuthorisationsAndLimitSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case object AuthorisationsInferredPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = TransportSection.path \ toString
+  override def path: JsPath = AuthorisationsAndLimitSection.path \ toString
 
   override def toString: String = "authorisationsInferred"
 

@@ -17,9 +17,9 @@
 package utils
 
 import base.SpecBase
-import utils.Format.{RichLocalDate, RichLocalDateTime}
+import utils.Format.RichLocalDate
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDate
 
 class FormatSpec extends SpecBase {
 
@@ -52,24 +52,6 @@ class FormatSpec extends SpecBase {
           val date   = LocalDate.of(2023, 1, 13)
           val result = date.formatForText
           result mustBe "13 01 2023"
-        }
-      }
-    }
-  }
-
-  "RichLocalDateTime" - {
-    "formatAsString" - {
-      "must format date/time like d MMMM yyyy HH:mm" - {
-        "when day is 1 to 9" - {
-          val date   = LocalDateTime.of(2023, 1, 5, 21, 30)
-          val result = date.formatAsString
-          result mustBe "5 January 2023 21:30"
-        }
-
-        "when day is 10+" in {
-          val date   = LocalDateTime.of(2023, 1, 13, 21, 30)
-          val result = date.formatAsString
-          result mustBe "13 January 2023 21:30"
         }
       }
     }

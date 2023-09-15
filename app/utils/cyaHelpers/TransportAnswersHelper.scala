@@ -25,9 +25,9 @@ import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationD
 import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
-import models.{Index, Mode, UserAnswers}
-import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
-import pages.authorisationsAndLimit.limit.LimitDatePage
+import models.{Index, Mode, OptionalBoolean, UserAnswers}
+import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
+import pages.authorisationsAndLimit.limit.{AddLimitDateYesNoPage, LimitDatePage}
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
 import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
 import pages.equipment.{AddPaymentMethodYesNoPage, AddTransportEquipmentYesNoPage, PaymentMethodPage}
@@ -91,9 +91,9 @@ class TransportAnswersHelper(
     id = Some("change-country-of-destination")
   )
 
-  def usingContainersYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def usingContainersYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[OptionalBoolean](
     page = ContainerIndicatorPage,
-    formatAnswer = formatAsYesOrNo,
+    formatAnswer = formatAsOptionalYesOrNo,
     prefix = "preRequisites.containerIndicator",
     id = Some("change-using-containers")
   )
@@ -147,6 +147,13 @@ class TransportAnswersHelper(
       href = supplyChainActorsRoutes.AddAnotherSupplyChainActorController.onPageLoad(userAnswers.lrn, mode).url
     )
   }
+
+  def addLimitDateYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddLimitDateYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "authorisationsAndLimit.limit.addLimitDateYesNo",
+    id = Some("change-add-limit-date")
+  )
 
   def limitDate: Option[SummaryListRow] = getAnswerAndBuildRow[LocalDate](
     page = LimitDatePage,

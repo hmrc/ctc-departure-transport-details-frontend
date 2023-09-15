@@ -22,49 +22,151 @@ import generators.Generators
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, verify, when}
+import org.mockito.Mockito.{never, reset, verify, when}
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.equipment.EquipmentSection
-import pages.equipment.index.ContainerIdentificationNumberPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.equipment.index.RemoveTransportEquipmentView
 
 import scala.concurrent.Future
 
-class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val containerIdNumber                  = nonEmptyString.sample.value
-  private val equipmentIdNumber                  = equipmentIndex.display
   private val formProvider                       = new YesNoFormProvider()
-  private val form                               = formProvider("equipment.index.removeTransportEquipment", equipmentIdNumber)
+  private val form                               = formProvider("equipment.index.removeTransportEquipment", equipmentIndex.display)
   private val mode                               = NormalMode
   private lazy val removeTransportEquipmentRoute = routes.RemoveTransportEquipmentController.onPageLoad(lrn, mode, equipmentIndex).url
 
   "RemoveTransportEquipment Controller" - {
 
     "must return OK and the correct view for a GET" in {
+      forAll(arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
 
-      setExistingUserAnswers(emptyUserAnswers)
+          val request = FakeRequest(GET, removeTransportEquipmentRoute)
+          val result  = route(app, request).value
 
-      val request = FakeRequest(GET, removeTransportEquipmentRoute)
-      val result  = route(app, request).value
+          val view = injector.instanceOf[RemoveTransportEquipmentView]
 
-      val view = injector.instanceOf[RemoveTransportEquipmentView]
+          status(result) mustEqual OK
 
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, lrn, mode, equipmentIndex)(request, messages).toString
+          contentAsString(result) mustEqual
+            view(form, lrn, mode, equipmentIndex)(request, messages).toString
+      }
     }
 
     "must redirect to the next page" - {
       "when yes is submitted" in {
+        forAll(arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex)) {
+          userAnswers =>
+            reset(mockSessionRepository)
+            when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+            setExistingUserAnswers(userAnswers)
 
-        val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(equipmentIndex), containerIdNumber)
+            val request = FakeRequest(POST, removeTransportEquipmentRoute)
+              .withFormUrlEncodedBody(("value", "true"))
 
-        setExistingUserAnswers(userAnswers)
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.equipment.routes.AddAnotherEquipmentController.onPageLoad(lrn, mode).url
+
+            val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+            verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+            userAnswersCaptor.getValue.get(EquipmentSection(equipmentIndex)) mustNot be(defined)
+        }
+      }
+
+      "when no is submitted" in {
+        forAll(arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex)) {
+          userAnswers =>
+            reset(mockSessionRepository)
+            when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+            setExistingUserAnswers(userAnswers)
+
+            val request = FakeRequest(POST, removeTransportEquipmentRoute)
+              .withFormUrlEncodedBody(("value", "false"))
+
+            val result = route(app, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual
+              controllers.equipment.routes.AddAnotherEquipmentController.onPageLoad(lrn, mode).url
+
+            verify(mockSessionRepository, never()).set(any())(any())
+        }
+      }
+    }
+
+    "must return a Bad Request and errors when invalid data is submitted" in {
+      forAll(arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex)) {
+        userAnswers =>
+          setExistingUserAnswers(userAnswers)
+
+          val request   = FakeRequest(POST, removeTransportEquipmentRoute).withFormUrlEncodedBody(("value", ""))
+          val boundForm = form.bind(Map("value" -> ""))
+
+          val result = route(app, request).value
+
+          status(result) mustEqual BAD_REQUEST
+
+          val view = injector.instanceOf[RemoveTransportEquipmentView]
+
+          contentAsString(result) mustEqual
+            view(boundForm, lrn, mode, equipmentIndex)(request, messages).toString
+      }
+    }
+
+    "must redirect to Session Expired for a GET" - {
+      "when no existing data is found" in {
+        setNoExistingUserAnswers()
+
+        val request = FakeRequest(GET, removeTransportEquipmentRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
+
+      "when no transport equipment is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
+
+        val request = FakeRequest(GET, removeTransportEquipmentRoute)
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual
+          controllers.equipment.routes.AddAnotherEquipmentController.onPageLoad(lrn, mode).url
+      }
+    }
+
+    "must redirect to Session Expired for a POST" - {
+      "when no existing data is found" in {
+        setNoExistingUserAnswers()
+
+        val request = FakeRequest(POST, removeTransportEquipmentRoute)
+          .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(app, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      }
+
+      "when no transport equipment is found" in {
+        setExistingUserAnswers(emptyUserAnswers)
 
         val request = FakeRequest(POST, removeTransportEquipmentRoute)
           .withFormUrlEncodedBody(("value", "true"))
@@ -75,77 +177,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
 
         redirectLocation(result).value mustEqual
           controllers.equipment.routes.AddAnotherEquipmentController.onPageLoad(lrn, mode).url
-
-        val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
-        verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.get(EquipmentSection(equipmentIndex)) mustNot be(defined)
-
       }
-
-      "when no is submitted" in {
-
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
-
-        val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(equipmentIndex), containerIdNumber)
-
-        setExistingUserAnswers(userAnswers)
-
-        val request = FakeRequest(POST, removeTransportEquipmentRoute)
-          .withFormUrlEncodedBody(("value", "false"))
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual
-          controllers.equipment.routes.AddAnotherEquipmentController.onPageLoad(lrn, mode).url
-
-        verify(mockSessionRepository, never()).set(any())(any())
-      }
-    }
-
-    "must return a Bad Request and errors when invalid data is submitted" in {
-
-      setExistingUserAnswers(emptyUserAnswers)
-
-      val request   = FakeRequest(POST, removeTransportEquipmentRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual BAD_REQUEST
-
-      val view = injector.instanceOf[RemoveTransportEquipmentView]
-
-      contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, equipmentIndex)(request, messages).toString
-    }
-
-    "must redirect to Session Expired for a GET if no existing data is found" in {
-
-      setNoExistingUserAnswers()
-
-      val request = FakeRequest(GET, removeTransportEquipmentRoute)
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
-    }
-
-    "must redirect to Session Expired for a POST if no existing data is found" in {
-
-      setNoExistingUserAnswers()
-
-      val request = FakeRequest(POST, removeTransportEquipmentRoute)
-        .withFormUrlEncodedBody(("value", "true"))
-
-      val result = route(app, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
     }
   }
 }

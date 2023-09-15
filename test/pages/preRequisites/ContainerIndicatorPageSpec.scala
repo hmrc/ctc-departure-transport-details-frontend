@@ -16,6 +16,7 @@
 
 package pages.preRequisites
 
+import models.OptionalBoolean
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.sections.equipment.EquipmentsSection
@@ -26,33 +27,36 @@ class ContainerIndicatorPageSpec extends PageBehaviours {
 
   "ContainerIndicatorPage" - {
 
-    beRetrievable[Boolean](ContainerIndicatorPage)
+    beRetrievable[OptionalBoolean](ContainerIndicatorPage)
 
-    beSettable[Boolean](ContainerIndicatorPage)
+    beSettable[OptionalBoolean](ContainerIndicatorPage)
 
-    beRemovable[Boolean](ContainerIndicatorPage)
+    beRemovable[OptionalBoolean](ContainerIndicatorPage)
 
     "cleanup" - {
       "when answer changes" - {
         "must remove transport equipments and transport departure means section" in {
-          forAll(arbitrary[Boolean]) {
+          forAll(arbitrary[OptionalBoolean]) {
             indicator =>
-              val userAnswers = emptyUserAnswers
-                .setValue(ContainerIndicatorPage, indicator)
-                .setValue(EquipmentsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
-                .setValue(TransportMeansDepartureSection, Json.obj("foo" -> "bar"))
+              forAll(arbitrary[OptionalBoolean].retryUntil(_ != indicator)) {
+                differentIndicator =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(ContainerIndicatorPage, indicator)
+                    .setValue(EquipmentsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+                    .setValue(TransportMeansDepartureSection, Json.obj("foo" -> "bar"))
 
-              val result = userAnswers.setValue(ContainerIndicatorPage, !indicator)
+                  val result = userAnswers.setValue(ContainerIndicatorPage, differentIndicator)
 
-              result.get(EquipmentsSection) must not be defined
-              result.get(TransportMeansDepartureSection) must not be defined
+                  result.get(EquipmentsSection) must not be defined
+                  result.get(TransportMeansDepartureSection) must not be defined
+              }
           }
         }
       }
 
       "when answer doesn't change" - {
         "must do nothing" in {
-          forAll(arbitrary[Boolean]) {
+          forAll(arbitrary[OptionalBoolean]) {
             indicator =>
               val userAnswers = emptyUserAnswers
                 .setValue(ContainerIndicatorPage, indicator)

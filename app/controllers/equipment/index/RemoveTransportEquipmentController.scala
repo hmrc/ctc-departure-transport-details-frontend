@@ -26,7 +26,7 @@ import pages.equipment.index.UuidPage
 import pages.sections.equipment.EquipmentSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.equipment.index.RemoveTransportEquipmentView
@@ -45,31 +45,38 @@ class RemoveTransportEquipmentController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(equipmentIndex: Index): Form[Boolean] = formProvider("equipment.index.removeTransportEquipment", equipmentIndex.display)
+  private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
+    routes.AddAnotherEquipmentController.onPageLoad(lrn, mode)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      Ok(view(form(equipmentIndex), lrn, mode, equipmentIndex))
-  }
+  private def form(equipmentIndex: Index): Form[Boolean] =
+    formProvider("equipment.index.removeTransportEquipment", equipmentIndex.display)
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      lazy val redirect = routes.AddAnotherEquipmentController.onPageLoad(lrn, mode)
-      form(equipmentIndex)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, equipmentIndex))),
-          {
-            case true =>
-              EquipmentSection(equipmentIndex)
-                .removeFromUserAnswers()
-                .removeTransportEquipmentFromItems(request.userAnswers.get(UuidPage(equipmentIndex)))
-                .updateTask()
-                .writeToSession()
-                .navigateTo(redirect)
-            case false =>
-              Future.successful(Redirect(redirect))
-          }
-        )
-  }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions
+    .requireIndex(lrn, EquipmentSection(equipmentIndex), addAnother(lrn, mode)) {
+      implicit request =>
+        Ok(view(form(equipmentIndex), lrn, mode, equipmentIndex))
+    }
+
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions
+    .requireIndex(lrn, EquipmentSection(equipmentIndex), addAnother(lrn, mode))
+    .async {
+      implicit request =>
+        form(equipmentIndex)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, equipmentIndex))),
+            {
+              case true =>
+                // TODO - update items task status
+                EquipmentSection(equipmentIndex)
+                  .removeFromUserAnswers()
+                  .removeTransportEquipmentFromItems(request.userAnswers.get(UuidPage(equipmentIndex)))
+                  .updateTask()
+                  .writeToSession()
+                  .navigateTo(addAnother(lrn, mode))
+              case false =>
+                Future.successful(Redirect(addAnother(lrn, mode)))
+            }
+          )
+    }
 }

@@ -18,21 +18,22 @@
 @import controllers.transportMeans.active.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputTextViewModel._
-@import views.html.components.{Button, ErrorSummary, InputText}
+@import views.html.components.{Button, ErrorSummary, InputText, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputText: InputText,
+    insetText: InsetText,
     errorSummary: ErrorSummary,
     button: Button,
     phaseConfig: PhaseConfig
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index, prefix: String, args: String*)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index, identificationType: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages(s"$prefix.title", args: _*),
+    title = messages("transportMeans.active.identificationNumber.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -43,9 +44,10 @@
 
         @inputText(
             field = form("value"),
-            inputTextType = OrdinaryTextInput(
-                heading = messages(s"$prefix.heading", args: _*),
-                caption = Some(messages("activeBorderMeansOfTransport.caption"))
+            inputTextType = TextInputWithHiddenLabel(
+                heading = messages("transportMeans.active.identificationNumber.heading"),
+                caption = Some(messages("activeBorderMeansOfTransport.caption")),
+                additionalHtml = insetText(identificationType)
             ),
             inputClass = InputSize.Width20,
             hint = Some(messages(phaseConfig.activeIdentificationNumberHint))

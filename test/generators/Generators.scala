@@ -17,7 +17,6 @@
 package generators
 
 import cats.data.NonEmptyList
-import models.DateTime
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.{Arbitrary, Gen, Shrink}
@@ -117,6 +116,10 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with ViewMode
       .retryUntil(_ != "true")
       .retryUntil(_ != "false")
 
+  def nonOptionalBooleans: Gen[String] =
+    nonBooleans
+      .retryUntil(_ != "maybe")
+
   def nonEmptyString: Gen[String] =
     for {
       length <- choose(1, stringMaxLength)
@@ -215,17 +218,6 @@ trait Generators extends UserAnswersGenerator with ModelGenerators with ViewMode
     ).map(
       x => x.withNano(0).withSecond(0)
     )
-  }
-
-  implicit lazy val arbitraryDateTime: Arbitrary[DateTime] = Arbitrary {
-    dateTimesBetween(
-      min = LocalDateTime.of(2000, 1, 1, 23, 55, 0),
-      max = LocalDateTime.now(ZoneOffset.UTC)
-    ).map {
-      localDateTime =>
-        val dateTimeWithoutSeconds = localDateTime.minusSeconds(localDateTime.getSecond).minusNanos(localDateTime.getNano)
-        DateTime(dateTimeWithoutSeconds)
-    }
   }
 }
 // scalastyle:on number.of.methods

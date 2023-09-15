@@ -127,7 +127,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no seal number is found" in {
+      "if no seal is found" in {
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -137,7 +137,8 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          controllers.equipment.index.routes.AddAnotherSealController.onPageLoad(lrn, mode, equipmentIndex).url
       }
     }
 
@@ -156,7 +157,7 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
       }
 
-      "if no seal number is found" in {
+      "if no seal is found" in {
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -167,7 +168,8 @@ class RemoveSealYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual
+          controllers.equipment.index.routes.AddAnotherSealController.onPageLoad(lrn, mode, equipmentIndex).url
       }
     }
   }

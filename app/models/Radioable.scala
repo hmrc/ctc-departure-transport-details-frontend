@@ -34,6 +34,9 @@ trait Radioable[T] {
       if (messages.isDefinedAt(hintKey)) Some(Hint(content = Text(messages(hintKey)))) else None
     }
   )
+
+  def asString(implicit messages: Messages): String =
+    messages(s"$messageKeyPrefix.$this")
 }
 
 object Radioable {

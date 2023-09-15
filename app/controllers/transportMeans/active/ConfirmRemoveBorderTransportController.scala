@@ -22,8 +22,9 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.sections.transportMeans.TransportMeansActiveSection
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transportMeans.active.ConfirmRemoveBorderTransportView
@@ -42,31 +43,36 @@ class ConfirmRemoveBorderTransportController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn) {
-      implicit request =>
-        val form = formProvider("transportMeans.active.confirmRemoveBorderTransport", activeIndex.display)
+  private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
+    controllers.transportMeans.active.routes.AddAnotherBorderTransportController.onPageLoad(lrn, mode)
 
-        Ok(view(form, lrn, mode, activeIndex))
+  private def form(activeIndex: Index): Form[Boolean] =
+    formProvider("transportMeans.active.confirmRemoveBorderTransport", activeIndex.display)
+
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
+    .requireIndex(lrn, TransportMeansActiveSection(activeIndex), addAnother(lrn, mode)) {
+      implicit request =>
+        Ok(view(form(activeIndex), lrn, mode, activeIndex))
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      val form = formProvider("transportMeans.active.confirmRemoveBorderTransport", activeIndex.display)
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex))),
-          {
-            case true =>
-              TransportMeansActiveSection(activeIndex)
-                .removeFromUserAnswers()
-                .updateTask()
-                .writeToSession()
-                .navigateTo(routes.AddAnotherBorderTransportController.onPageLoad(lrn, mode))
-            case false =>
-              Future.successful(Redirect(routes.AddAnotherBorderTransportController.onPageLoad(lrn, mode)))
-          }
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
+    .requireIndex(lrn, TransportMeansActiveSection(activeIndex), addAnother(lrn, mode))
+    .async {
+      implicit request =>
+        form(activeIndex)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex))),
+            {
+              case true =>
+                TransportMeansActiveSection(activeIndex)
+                  .removeFromUserAnswers()
+                  .updateTask()
+                  .writeToSession()
+                  .navigateTo(addAnother(lrn, mode))
+              case false =>
+                Future.successful(Redirect(addAnother(lrn, mode)))
+            }
+          )
+    }
 }

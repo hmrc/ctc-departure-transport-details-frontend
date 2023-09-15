@@ -17,8 +17,8 @@
 package config
 
 import com.google.inject.AbstractModule
-import navigation._
 import controllers.actions._
+import navigation._
 
 import java.time.{Clock, ZoneOffset}
 
@@ -32,6 +32,7 @@ class Module extends AbstractModule {
     bind(classOf[LockActionProvider]).to(classOf[LockActionProviderImpl]).asEagerSingleton()
     bind(classOf[DependentTasksAction]).to(classOf[DependentTasksActionImpl]).asEagerSingleton()
     bind(classOf[SpecificDataRequiredActionProvider]).to(classOf[SpecificDataRequiredActionImpl]).asEagerSingleton()
+    bind(classOf[IndexRequiredActionProvider]).to(classOf[IndexRequiredActionProviderImpl]).asEagerSingleton()
 
     bind(classOf[TransportNavigatorProvider]).to(classOf[TransportNavigatorProviderImpl])
     bind(classOf[TransportMeansNavigatorProvider]).to(classOf[TransportMeansNavigatorProviderImpl])

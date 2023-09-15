@@ -20,4 +20,7 @@ object Constants {
   val GB = "GB"
   val XI = "XI"
   val AD = "AD"
+
+  val STANDARD    = "A"
+  val `PRE-LODGE` = "D"
 }

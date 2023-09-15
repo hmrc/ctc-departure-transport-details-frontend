@@ -27,10 +27,8 @@ import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
 import models.transportMeans.InlandMode
 import models.transportMeans.InlandMode.Mail
-import models.transportMeans.InlandModeYesNo._
 import models.{Mode, Phase, UserAnswers}
-import pages.authorisationsAndLimit.AuthorisationsInferredPage
-import pages.authorisationsAndLimit.authorisations.AddAuthorisationsYesNoPage
+import pages.authorisationsAndLimit.{AddAuthorisationsYesNoPage, AuthorisationsInferredPage}
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
 import pages.supplyChainActors.SupplyChainActorYesNoPage
@@ -63,7 +61,7 @@ object TransportDomain {
 
     for {
       preRequisites          <- UserAnswersReader[PreRequisitesDomain]
-      inlandMode             <- AddInlandModeYesNoPage.filterOptionalDependent(_ == Yes)(InlandModePage.reader)
+      inlandMode             <- AddInlandModeYesNoPage.filterOptionalDependent(identity)(InlandModePage.reader)
       transportMeans         <- transportMeansReads
       supplyChainActors      <- SupplyChainActorYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[SupplyChainActorsDomain])
       authorisationsAndLimit <- authorisationsAndLimitReads

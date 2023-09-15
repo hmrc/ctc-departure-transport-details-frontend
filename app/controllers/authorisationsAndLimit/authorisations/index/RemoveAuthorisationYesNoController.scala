@@ -28,7 +28,7 @@ import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage,
 import pages.sections.authorisationsAndLimit.AuthorisationSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.authorisationsAndLimit.authorisations.index.RemoveAuthorisationYesNoView
@@ -55,15 +55,18 @@ class RemoveAuthorisationYesNoController @Inject() (
   private def form(implicit request: Request): Form[Boolean] =
     formProvider("authorisations.index.removeAuthorisationYesNo", authType.forDisplay)
 
+  private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
+    authRoutes.AddAnotherAuthorisationController.onPageLoad(lrn, mode)
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
+    .requireIndex(lrn, AuthorisationSection(authorisationIndex), addAnother(lrn, mode))
     .andThen(getMandatoryPage.getFirst(AuthorisationTypePage(authorisationIndex), InferredAuthorisationTypePage(authorisationIndex))) {
       implicit request =>
         Ok(view(form, lrn, mode, authorisationIndex, authType.forDisplay))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions
-    .requireData(lrn)
+    .requireIndex(lrn, AuthorisationSection(authorisationIndex), addAnother(lrn, mode))
     .andThen(getMandatoryPage.getFirst(AuthorisationTypePage(authorisationIndex), InferredAuthorisationTypePage(authorisationIndex)))
     .async {
       implicit request =>
@@ -77,9 +80,9 @@ class RemoveAuthorisationYesNoController @Inject() (
                   .removeFromUserAnswers()
                   .updateTask()
                   .writeToSession()
-                  .navigateTo(authRoutes.AddAnotherAuthorisationController.onPageLoad(lrn, mode))
+                  .navigateTo(addAnother(lrn, mode))
               case false =>
-                Future.successful(Redirect(authRoutes.AddAnotherAuthorisationController.onPageLoad(lrn, mode)))
+                Future.successful(Redirect(addAnother(lrn, mode)))
             }
           )
     }

@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package models.transportMeans
+package forms
 
-import models.{EnumerableType, Radioable, WithName}
+import forms.mappings.Mappings
+import models.OptionalBoolean
+import play.api.data.Form
 
-sealed trait InlandModeYesNo extends Radioable[InlandModeYesNo] {
+import javax.inject.Inject
 
-  override val messageKeyPrefix: String = InlandModeYesNo.messageKeyPrefix
-}
+class OptionalYesNoFormProvider @Inject() extends Mappings {
 
-object InlandModeYesNo extends EnumerableType[InlandModeYesNo] {
-
-  case object Yes extends WithName("yes") with InlandModeYesNo
-
-  case object No extends WithName("no") with InlandModeYesNo
-
-  val messageKeyPrefix: String = "transportMeans.addInlandModeYesNo"
-
-  val values: Seq[InlandModeYesNo] = Seq(
-    Yes,
-    No
-  )
+  def apply(prefix: String, args: Any*): Form[OptionalBoolean] =
+    Form(
+      "value" -> optionalBoolean(s"$prefix.error.required", args = args)
+    )
 }
