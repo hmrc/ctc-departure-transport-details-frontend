@@ -32,7 +32,9 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.AuthorisationInferenceService
+import services.{AuthorisationInferenceService, AuthorisationTypesService}
+
+import scala.concurrent.Future
 
 class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
@@ -42,12 +44,14 @@ class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultM
   private lazy val authorisationInferenceRoute = routes.AuthorisationInferenceController.infer(lrn, mode).url
 
   private lazy val mockAuthorisationInferenceService = mock[AuthorisationInferenceService]
+  private lazy val mockAuthorisationTypesService     = mock[AuthorisationTypesService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
       .overrides(bind(classOf[AuthorisationInferenceService]).toInstance(mockAuthorisationInferenceService))
+      .overrides(bind(classOf[AuthorisationTypesService]).toInstance(mockAuthorisationTypesService))
 
   "AuthorisationInference Controller" - {
 
@@ -57,6 +61,7 @@ class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultM
       setExistingUserAnswers(userAnswersBeforeInference)
 
       val userAnswersAfterInference = userAnswersBeforeInference.copy(data = Json.obj("foo" -> "bar"))
+      when(mockAuthorisationTypesService.getAll()(any())).thenReturn(Future.successful(authorisationTypes))
       when(mockAuthorisationInferenceService.inferAuthorisations(any(), any())).thenReturn(userAnswersAfterInference)
 
       val request = FakeRequest(GET, authorisationInferenceRoute)
@@ -66,7 +71,7 @@ class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultM
 
       redirectLocation(result).value mustEqual onwardRoute.url
 
-      verify(mockAuthorisationInferenceService).inferAuthorisations(eqTo(userAnswersBeforeInference), authorisationTypes)
+      verify(mockAuthorisationInferenceService).inferAuthorisations(eqTo(userAnswersBeforeInference), eqTo(authorisationTypes))
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())

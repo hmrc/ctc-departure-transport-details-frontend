@@ -31,8 +31,8 @@ class AuthorisationInferenceService @Inject() () {
 
   def inferAuthorisations(userAnswers: UserAnswers, authorisationTypes: Seq[AuthorisationType]): UserAnswers = {
 
-    val authTypeACR = authorisationTypes.filter(_.isACR).head
-    val authTypeTRD = authorisationTypes.filter(_.isTRD).head
+    val authTypeACR = authorisationTypes.find(_.isACR)
+    val authTypeTRD = authorisationTypes.find(_.isTRD)
 
     val reader: UserAnswersReader[Option[UserAnswers]] = for {
       procedureType           <- ProcedureTypePage.reader
@@ -40,18 +40,30 @@ class AuthorisationInferenceService @Inject() () {
       inlandMode              <- InlandModePage.reader
     } yield (reducedDataSetIndicator, inlandMode.code, procedureType) match {
       case (true, Maritime | Rail | Air, Simplified) =>
-        userAnswers
-          .set(InferredAuthorisationTypePage(Index(0)), authTypeTRD)
-          .flatMap(_.set(InferredAuthorisationTypePage(Index(1)), authTypeACR))
-          .toOption
+        (authTypeACR, authTypeTRD) match {
+          case (Some(acr), Some(trd)) =>
+            userAnswers
+              .set(InferredAuthorisationTypePage(Index(0)), trd)
+              .flatMap(_.set(InferredAuthorisationTypePage(Index(1)), acr))
+              .toOption
+          case _ => Some(userAnswers) //TODO: fix this UserAnswersReader.fail[Option[UserAnswers]]
+        }
       case (true, Maritime | Rail | Air, Normal) =>
-        userAnswers
-          .set(InferredAuthorisationTypePage(Index(0)), authTypeTRD)
-          .toOption
+        authTypeTRD match {
+          case Some(trd) =>
+            userAnswers
+              .set(InferredAuthorisationTypePage(Index(0)), trd)
+              .toOption
+          case _ => Some(userAnswers) //TODO: fix this UserAnswersReader.fail[Option[UserAnswers]]
+        }
       case (_, _, Simplified) =>
-        userAnswers
-          .set(InferredAuthorisationTypePage(Index(0)), authTypeACR)
-          .toOption
+        authTypeACR match {
+          case Some(acr) =>
+            userAnswers
+              .set(InferredAuthorisationTypePage(Index(0)), acr)
+              .toOption
+          case _ => Some(userAnswers) //TODO: fix this UserAnswersReader.fail[Option[UserAnswers]]
+        }
       case _ =>
         Some(userAnswers)
     }
