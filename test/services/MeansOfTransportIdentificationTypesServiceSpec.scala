@@ -52,7 +52,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
 
     "getMeansOfTransportIdentificationTypes" - {
       "must return a full list of sorted identification types when InlandMode is Fixed" in {
-        val inlandMode = InlandMode("7", "Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods")
+        val inlandMode = Some(InlandMode("7", "Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods"))
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(
@@ -90,7 +90,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
       }
 
       "must return a list of sorted identification types beginning with number 1 when InlandMode is Maritime" in {
-        val inlandMode = InlandMode("1", "Maritime")
+        val inlandMode = Some(InlandMode("1", "Maritime"))
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Seq(identification9, identification10)))
@@ -102,7 +102,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
       }
 
       "must return a list of sorted identification types beginning with number 2 when InlandMode is Rail" in {
-        val inlandMode = InlandMode("2", "Rail")
+        val inlandMode = Some(InlandMode("2", "Rail"))
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Seq(identification7, identification8)))
@@ -114,7 +114,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
       }
 
       "must return a list of sorted identification types beginning with number 3 when InlandMode is Road" in {
-        val inlandMode = InlandMode("3", "Road")
+        val inlandMode = Some(InlandMode("3", "Road"))
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Seq(identification5, identification6)))
@@ -126,7 +126,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
       }
 
       "must return a list of sorted identification types beginning with number 4 when InlandMode is Air" in {
-        val inlandMode = InlandMode("4", "Air")
+        val inlandMode = Some(InlandMode("4", "Air"))
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Seq(identification3, identification4)))
@@ -138,7 +138,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
       }
 
       "must return a list of sorted identification types beginning with number 8 when InlandMode is Inland waterway" in {
-        val inlandMode = InlandMode("8", "Inland waterway")
+        val inlandMode = Some(InlandMode("8", "Inland waterway"))
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Seq(identification1, identification2)))

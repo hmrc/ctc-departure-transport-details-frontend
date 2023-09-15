@@ -49,6 +49,9 @@ class AuthorisationTypesService @Inject() (referenceDataConnector: ReferenceData
     authorisationTypes.diff(authorisationTypesEntered)
   }
 
+  def getAll()(implicit hc: HeaderCarrier): Future[Seq[AuthorisationType]] =
+    referenceDataConnector.getAuthorisationTypes().map(sort)
+
   private def sort(authorisationTypes: Seq[AuthorisationType]): Seq[AuthorisationType] =
     authorisationTypes.sortBy(_.code.toLowerCase)
 }

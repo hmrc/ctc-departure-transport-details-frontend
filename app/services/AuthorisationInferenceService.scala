@@ -29,17 +29,10 @@ import javax.inject.Inject
 
 class AuthorisationInferenceService @Inject() () {
 
-  def inferAuthorisations(userAnswers: UserAnswers): UserAnswers = {
+  def inferAuthorisations(userAnswers: UserAnswers, authorisationTypes: Seq[AuthorisationType]): UserAnswers = {
 
-    //TODO: Come back to hard coded values
-    val authTypeACR = AuthorisationType(
-      ACR,
-      "ACR - authorisation for the status of authorised consignor for Union transit"
-    )
-    val authTypeTRD = AuthorisationType(
-      TRD,
-      "TRD - authorisation to use transit declaration with a reduced dataset"
-    )
+    val authTypeACR = authorisationTypes.filter(_.isACR).head
+    val authTypeTRD = authorisationTypes.filter(_.isTRD).head
 
     val reader: UserAnswersReader[Option[UserAnswers]] = for {
       procedureType           <- ProcedureTypePage.reader

@@ -41,7 +41,6 @@ class IdentificationController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationView,
@@ -55,10 +54,9 @@ class IdentificationController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(InlandModePage))
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypes(request.arg).map {
+        service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).map {
           identificationTypes =>
             val preparedForm = request.userAnswers.get(IdentificationPage) match {
               case None        => form(identificationTypes)
@@ -71,10 +69,9 @@ class IdentificationController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(InlandModePage))
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypes(request.arg).flatMap {
+        service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).flatMap {
           identificationTypes =>
             form(identificationTypes)
               .bindFromRequest()

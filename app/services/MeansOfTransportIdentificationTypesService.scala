@@ -27,16 +27,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MeansOfTransportIdentificationTypesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getMeansOfTransportIdentificationTypes(inlandMode: InlandMode)(implicit hc: HeaderCarrier): Future[Seq[Identification]] =
+  def getMeansOfTransportIdentificationTypes(inlandMode: Option[InlandMode])(implicit hc: HeaderCarrier): Future[Seq[Identification]] =
     referenceDataConnector.getMeansOfTransportIdentificationTypes().map(filter(_, inlandMode)).map(sort)
 
   private def filter(
     identificationTypes: Seq[Identification],
-    inlandMode: InlandMode
+    inlandMode: Option[InlandMode]
   ): Seq[Identification] =
-    inlandMode.code match {
-      case inlandModeCode if inlandModeCode != Fixed => identificationTypes.filter(_.code.startsWith(inlandModeCode))
-      case _                                         => identificationTypes
+    inlandMode match {
+      case Some(InlandMode(code, _)) if code != Fixed => identificationTypes.filter(_.code.startsWith(code))
+      case _                                          => identificationTypes
     }
 
   private def sort(identificationTypes: Seq[Identification]): Seq[Identification] =

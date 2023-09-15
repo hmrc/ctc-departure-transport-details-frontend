@@ -17,11 +17,14 @@
 package controllers.authorisationsAndLimit
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import generators.Generators
+import models.reference.authorisations.AuthorisationType
 import models.{NormalMode, TaskStatus, UserAnswers}
 import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
 import pages.authorisationsAndLimit.AuthorisationsInferredPage
 import play.api.inject.bind
@@ -31,7 +34,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.AuthorisationInferenceService
 
-class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
+
+  private val authorisationTypes = arbitrary[Seq[AuthorisationType]].sample.value
 
   private val mode                             = NormalMode
   private lazy val authorisationInferenceRoute = routes.AuthorisationInferenceController.infer(lrn, mode).url
@@ -52,7 +57,7 @@ class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultM
       setExistingUserAnswers(userAnswersBeforeInference)
 
       val userAnswersAfterInference = userAnswersBeforeInference.copy(data = Json.obj("foo" -> "bar"))
-      when(mockAuthorisationInferenceService.inferAuthorisations(any())).thenReturn(userAnswersAfterInference)
+      when(mockAuthorisationInferenceService.inferAuthorisations(any(), any())).thenReturn(userAnswersAfterInference)
 
       val request = FakeRequest(GET, authorisationInferenceRoute)
       val result  = route(app, request).value
@@ -61,7 +66,7 @@ class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultM
 
       redirectLocation(result).value mustEqual onwardRoute.url
 
-      verify(mockAuthorisationInferenceService).inferAuthorisations(eqTo(userAnswersBeforeInference))
+      verify(mockAuthorisationInferenceService).inferAuthorisations(eqTo(userAnswersBeforeInference), authorisationTypes)
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())

@@ -28,14 +28,16 @@ case class AuthorisationType(code: String, description: String) extends Radioabl
 
   override val messageKeyPrefix: String = AuthorisationType.messageKeyPrefix
 
-  def isACR = code == ACR
-  def isSSE = code == SSE
+  def isACR: Boolean = code == ACR
+  def isTRD: Boolean = code == TRD
+  def isSSE: Boolean = code == SSE
 
   def forDisplay(implicit messages: Messages): String =
     code match {
       case ACR => messages(s"${AuthorisationType.messageKeyPrefix}.forDisplay.ACR")
       case SSE => messages(s"${AuthorisationType.messageKeyPrefix}.forDisplay.SSE")
       case TRD => messages(s"${AuthorisationType.messageKeyPrefix}.forDisplay.TRD")
+      case _   => code
     }
 }
 

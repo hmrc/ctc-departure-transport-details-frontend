@@ -112,17 +112,28 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
           verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
         }
       }
+
+      "when one auth type has been added and we are that index" - {
+        "must return all 3 auth types" in {
+          when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
+            .thenReturn(Future.successful(Seq(authorisationType1, authorisationType2, authorisationType3)))
+
+          val userAnswers = emptyUserAnswers
+            .setValue(InferredAuthorisationTypePage(Index(0)), authorisationType3)
+
+          service.getAuthorisationTypes(userAnswers, Index(0)).futureValue mustBe Seq(authorisationType3, authorisationType2, authorisationType1)
+
+          verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
+        }
+      }
     }
 
-    "when one auth type has been added and we are that index" - {
-      "must return all 3 auth types" in {
+    "getAll" - {
+      "must return all authorisation types" in {
         when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
           .thenReturn(Future.successful(Seq(authorisationType1, authorisationType2, authorisationType3)))
 
-        val userAnswers = emptyUserAnswers
-          .setValue(InferredAuthorisationTypePage(Index(0)), authorisationType3)
-
-        service.getAuthorisationTypes(userAnswers, Index(0)).futureValue mustBe Seq(authorisationType3, authorisationType2, authorisationType1)
+        service.getAll().futureValue mustBe Seq(authorisationType3, authorisationType2, authorisationType1)
 
         verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
       }
