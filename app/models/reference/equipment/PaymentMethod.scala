@@ -20,7 +20,9 @@ import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Format, Json}
 
-case class PaymentMethod(code: String, description: String) extends Radioable[PaymentMethod] {
+case class PaymentMethod(method: String, description: String) extends Radioable[PaymentMethod] {
+
+  override val code: String = method
 
   override def toString: String = StringEscapeUtils.unescapeXml(description)
 

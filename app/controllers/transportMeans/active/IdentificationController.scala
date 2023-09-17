@@ -21,8 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.reference.transportMeans.active.Identification
-import models.requests.SpecificDataRequestProvider1
-import models.transportMeans.BorderModeOfTransport
+import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.BorderModeOfTransportPage
@@ -43,7 +42,6 @@ class IdentificationController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationView,
@@ -52,17 +50,14 @@ class IdentificationController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[BorderModeOfTransport]#SpecificDataRequest[_]
-
   private def form(identificationTypes: Seq[Identification]): Form[Identification] =
     formProvider[Identification]("transportMeans.active.identification", identificationTypes)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(BorderModeOfTransportPage))
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypesActive(activeIndex, request.arg).flatMap {
+        service.getMeansOfTransportIdentificationTypesActive(activeIndex, request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
           case identifier :: Nil =>
             redirect(mode, activeIndex, InferredIdentificationPage, identifier)
           case identifiers =>
@@ -77,10 +72,9 @@ class IdentificationController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
-    .andThen(getMandatoryPage(BorderModeOfTransportPage))
     .async {
       implicit request =>
-        service.getMeansOfTransportIdentificationTypesActive(activeIndex, request.arg).flatMap {
+        service.getMeansOfTransportIdentificationTypesActive(activeIndex, request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
           identificationTypeList =>
             form(identificationTypeList)
               .bindFromRequest()
@@ -99,7 +93,7 @@ class IdentificationController @Inject() (
     index: Index,
     page: Index => BaseIdentificationPage,
     value: Identification
-  )(implicit request: Request): Future[Result] = {
+  )(implicit request: DataRequest[_]): Future[Result] = {
     implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
     page(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
   }

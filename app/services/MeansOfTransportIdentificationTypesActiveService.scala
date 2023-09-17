@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getMeansOfTransportIdentificationTypesActive(index: Index, borderModeOfTransport: BorderModeOfTransport)(implicit
+  def getMeansOfTransportIdentificationTypesActive(index: Index, borderModeOfTransport: Option[BorderModeOfTransport])(implicit
     hc: HeaderCarrier
   ): Future[Seq[Identification]] =
     referenceDataConnector.getMeansOfTransportIdentificationTypesActive().map(filter(_, index, borderModeOfTransport)).map(sort)
@@ -35,10 +35,13 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
   private def filter(
     identificationTypes: Seq[Identification],
     index: Index,
-    borderModeOfTransport: BorderModeOfTransport
+    borderModeOfTransport: Option[BorderModeOfTransport]
   ): Seq[Identification] =
     if (index.isFirst) {
-      identificationTypes.filter(_.code.startsWith(borderModeOfTransport.borderModeType.toString))
+      borderModeOfTransport match {
+        case Some(borderMode) => identificationTypes.filter(_.code.startsWith(borderMode.borderModeType.toString))
+        case _                => identificationTypes
+      }
     } else {
       identificationTypes
     }

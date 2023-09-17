@@ -32,7 +32,6 @@ import pages.external.SecurityDetailsTypePage
 import pages.sections.external.OfficesOfTransitSection
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.active._
-import play.api.i18n.Messages
 import play.api.mvc.Call
 
 sealed trait TransportMeansActiveDomain extends JourneyDomainModel
@@ -137,7 +136,7 @@ case class PostTransitionTransportMeansActiveDomain(
     extends TransportMeansActiveDomain
     with JourneyDomainModel {
 
-  def asString(implicit messages: Messages): String =
+  def asString: String =
     PostTransitionTransportMeansActiveDomain.asString(identification, identificationNumber)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
@@ -150,8 +149,8 @@ case class PostTransitionTransportMeansActiveDomain(
 
 object PostTransitionTransportMeansActiveDomain {
 
-  def asString(identification: Identification, identificationNumber: String)(implicit messages: Messages): String =
-    s"${identification.asString} - $identificationNumber"
+  def asString(identification: Identification, identificationNumber: String): String =
+    s"${identification.toString} - $identificationNumber"
 
   def hasMultiplicity(userAnswers: UserAnswers): Boolean = userAnswers.get(OfficesOfTransitSection).isDefined
 

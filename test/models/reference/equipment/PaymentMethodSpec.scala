@@ -31,7 +31,7 @@ class PaymentMethodSpec extends SpecBase with ScalaCheckPropertyChecks {
           val paymentMethod = PaymentMethod(code, description)
           Json.toJson(paymentMethod) mustBe Json.parse(s"""
                |{
-               |  "code": "$code",
+               |  "method": "$code",
                |  "description": "$description"
                |}
                |""".stripMargin)
@@ -45,7 +45,7 @@ class PaymentMethodSpec extends SpecBase with ScalaCheckPropertyChecks {
           Json
             .parse(s"""
                  |{
-                 |  "code": "$code",
+                 |  "method": "$code",
                  |  "description": "$description"
                  |}
                  |""".stripMargin)

@@ -425,11 +425,11 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
              |  "id": "TransportChargesMethodOfPayment",
              |  "data": [
              |    {
-             |      "code":"A",
+             |      "method":"A",
              |      "description":"Payment in cash"
              |    },
              |    {
-             |      "code":"B",
+             |      "method":"B",
              |      "description":"Payment by credit card"
              |    }
              |  ]

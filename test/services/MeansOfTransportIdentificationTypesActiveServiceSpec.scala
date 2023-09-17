@@ -32,12 +32,12 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new MeansOfTransportIdentificationTypesActiveService(mockRefDataConnector)
 
-  private val identification3 = Identification("41", "Registration Number of the Aircraft")
-  private val identification4 = Identification("40", "IATA flight number")
-  private val identification5 = Identification("30", "Registration Number of the Road Vehicle")
-  private val identification6 = Identification("21", "Train Number")
-  private val identification7 = Identification("11", "Name of the sea-going vessel")
-  private val identification8 = Identification("10", "IMO Ship Identification Number")
+  private val identification1 = Identification("41", "Registration Number of the Aircraft")
+  private val identification2 = Identification("40", "IATA flight number")
+  private val identification3 = Identification("30", "Registration Number of the Road Vehicle")
+  private val identification4 = Identification("21", "Train Number")
+  private val identification5 = Identification("11", "Name of the sea-going vessel")
+  private val identification6 = Identification("10", "IMO Ship Identification Number")
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -51,10 +51,10 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
         val borderMode = Sea
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
-          .thenReturn(Future.successful(Seq(identification7, identification8)))
+          .thenReturn(Future.successful(Seq(identification5, identification6)))
 
-        service.getMeansOfTransportIdentificationTypesActive(activeIndex, borderMode).futureValue mustBe
-          Seq(identification8, identification7)
+        service.getMeansOfTransportIdentificationTypesActive(activeIndex, Some(borderMode)).futureValue mustBe
+          Seq(identification6, identification5)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
       }
@@ -63,10 +63,10 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
         val borderMode = ChannelTunnel
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
-          .thenReturn(Future.successful(Seq(identification6)))
+          .thenReturn(Future.successful(Seq(identification4)))
 
-        service.getMeansOfTransportIdentificationTypesActive(activeIndex, borderMode).futureValue mustBe
-          Seq(identification6)
+        service.getMeansOfTransportIdentificationTypesActive(activeIndex, Some(borderMode)).futureValue mustBe
+          Seq(identification4)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
       }
@@ -75,10 +75,10 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
         val borderMode = IrishLandBoundary
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
-          .thenReturn(Future.successful(Seq(identification5)))
+          .thenReturn(Future.successful(Seq(identification3)))
 
-        service.getMeansOfTransportIdentificationTypesActive(activeIndex, borderMode).futureValue mustBe
-          Seq(identification5)
+        service.getMeansOfTransportIdentificationTypesActive(activeIndex, Some(borderMode)).futureValue mustBe
+          Seq(identification3)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
       }
@@ -87,10 +87,21 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
         val borderMode = Air
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
-          .thenReturn(Future.successful(Seq(identification3, identification4)))
+          .thenReturn(Future.successful(Seq(identification1, identification2)))
 
-        service.getMeansOfTransportIdentificationTypesActive(activeIndex, borderMode).futureValue mustBe
-          Seq(identification4, identification3)
+        service.getMeansOfTransportIdentificationTypesActive(activeIndex, Some(borderMode)).futureValue mustBe
+          Seq(identification2, identification1)
+
+        verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
+      }
+
+      "must return a full list of sorted identification types when BorderModeOfTransport is None" in {
+
+        when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
+          .thenReturn(Future.successful(Seq(identification1, identification2, identification3, identification4)))
+
+        service.getMeansOfTransportIdentificationTypesActive(activeIndex, None).futureValue mustBe
+          Seq(identification4, identification3, identification2, identification1)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
       }
