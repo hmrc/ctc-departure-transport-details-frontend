@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import models.{Enumerable, Radioable, Selectable, SelectableList}
+import models.{Enumerable, OptionalBoolean, Radioable, Selectable, SelectableList}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -151,6 +151,61 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     "must unbind" in {
       val result = testForm.fill(true)
       result.apply("value").value.value mustEqual "true"
+    }
+  }
+
+  "optionalBoolean" - {
+
+    val testForm: Form[OptionalBoolean] =
+      Form(
+        "value" -> optionalBoolean()
+      )
+
+    "must bind true" in {
+      val result = testForm.bind(Map("value" -> "true"))
+      result.value.value mustBe OptionalBoolean.yes
+    }
+
+    "must bind false" in {
+      val result = testForm.bind(Map("value" -> "false"))
+      result.value.value mustBe OptionalBoolean.no
+    }
+
+    "must bind maybe" in {
+      val result = testForm.bind(Map("value" -> "maybe"))
+      result.value.value mustBe OptionalBoolean.maybe
+    }
+
+    "must not bind a non-boolean" in {
+      val result = testForm.bind(Map("value" -> "not a boolean"))
+      result.errors must contain(FormError("value", "error.boolean"))
+    }
+
+    "must not bind an empty value" in {
+      val result = testForm.bind(Map("value" -> ""))
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must not bind an empty map" in {
+      val result = testForm.bind(Map.empty[String, String])
+      result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must unbind" - {
+      "when true" in {
+        val result = testForm.fill(OptionalBoolean.yes)
+        result.apply("value").value.value mustEqual "true"
+      }
+
+      "when false" in {
+        val result = testForm.fill(OptionalBoolean.no)
+        result.apply("value").value.value mustEqual "false"
+      }
+
+      "when maybe" in {
+        val result = testForm.fill(OptionalBoolean.maybe)
+        result.apply("value").value.value mustEqual "maybe"
+      }
     }
   }
 

@@ -21,7 +21,7 @@ import generators.Generators
 import models.reference.authorisations.AuthorisationType
 import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.equipment.seal.{SealDomain, SealsDomain}
-import models.{Index, ProcedureType}
+import models.{Index, OptionalBoolean, ProcedureType}
 import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
 import pages.equipment.AddTransportEquipmentYesNoPage
 import pages.equipment.index._
@@ -46,7 +46,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
         "when there are seals" in {
           val userAnswers = emptyUserAnswers
             .setValue(ProcedureTypePage, ProcedureType.Normal)
-            .setValue(ContainerIndicatorPage, true)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
             .setValue(AddSealYesNoPage(equipmentIndex), true)
             .setValue(IdentificationNumberPage(equipmentIndex, sealIndex), sealId)
@@ -72,7 +72,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
         "when there are no seals" in {
           val userAnswers = emptyUserAnswers
             .setValue(ProcedureTypePage, ProcedureType.Normal)
-            .setValue(ContainerIndicatorPage, true)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
             .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
             .setValue(AddSealYesNoPage(equipmentIndex), false)
 
@@ -95,7 +95,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
           "and normal procedure type" in {
             val userAnswers = emptyUserAnswers
               .setValue(ProcedureTypePage, ProcedureType.Normal)
-              .setValue(ContainerIndicatorPage, false)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.no)
               .setValue(AddTransportEquipmentYesNoPage, true)
 
             val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](
@@ -115,7 +115,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
             val index = Index(0)
 
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, true)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
               .setValue(ContainerIdentificationNumberPage(index), containerId)
 
             val expectedResult = Some(containerId)
@@ -132,7 +132,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
             "and add container id yes/no is true" in {
               val userAnswers = emptyUserAnswers
-                .setValue(ContainerIndicatorPage, true)
+                .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
                 .setValue(EquipmentSection(Index(0)), Json.obj("foo" -> "bar"))
                 .setValue(AddContainerIdentificationNumberYesNoPage(index), true)
                 .setValue(ContainerIdentificationNumberPage(index), containerId)
@@ -148,7 +148,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
             "and add container id yes/no is false" in {
               val userAnswers = emptyUserAnswers
-                .setValue(ContainerIndicatorPage, true)
+                .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
                 .setValue(EquipmentSection(Index(0)), Json.obj("foo" -> "bar"))
                 .setValue(AddContainerIdentificationNumberYesNoPage(index), false)
 
@@ -165,7 +165,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
         "when container indicator is false" in {
           val userAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, false)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.no)
 
           val expectedResult = None
 
@@ -183,7 +183,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
           "and container id is unanswered" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, true)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
             val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
               EquipmentDomain.containerIdReads(index)
@@ -199,7 +199,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
           "and container indicator is true" - {
             "and add container id yes/no is unanswered" in {
               val userAnswers = emptyUserAnswers
-                .setValue(ContainerIndicatorPage, true)
+                .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
               val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
                 EquipmentDomain.containerIdReads(index)
@@ -211,7 +211,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
             "and add container id yes/no is true" - {
               "and container id is unanswered" in {
                 val userAnswers = emptyUserAnswers
-                  .setValue(ContainerIndicatorPage, true)
+                  .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
                   .setValue(EquipmentSection(Index(0)), Json.obj("foo" -> "bar"))
                   .setValue(AddContainerIdentificationNumberYesNoPage(index), true)
 

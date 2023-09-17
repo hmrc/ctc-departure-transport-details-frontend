@@ -14,39 +14,38 @@
  * limitations under the License.
  *@
 
-@import config.Constants._
-@import controllers.preRequisites.routes
-@import models.{LocalReferenceNumber, OptionalBoolean}
+@import controllers.authorisationsAndLimit.limit.routes
+@import models.LocalReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputOptionalYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputOptionalYesNo: InputOptionalYesNo,
+    inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[OptionalBoolean], lrn: LocalReferenceNumber, mode: Mode, additionalDeclarationType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("preRequisites.containerIndicator.title"),
+    title = messages("authorisationsAndLimit.limit.addLimitDateYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.ContainerIndicatorController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AddLimitDateYesNoController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputOptionalYesNo(
+        @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("preRequisites.containerIndicator.heading"),
-                caption = Some(messages("caption"))
-            ),
-            showJustYesAndNo = additionalDeclarationType == STANDARD
+            yesNoType = YesNoWithAdditionalHtml(
+                heading = messages("authorisationsAndLimit.limit.addLimitDateYesNo.heading"),
+                caption = Some(messages("authorisations.caption")),
+                additionalHtml = messages("authorisationsAndLimit.limit.addLimitDateYesNo.paragraph").toParagraph
+            )
         )
 
         @button(attributes = Map("id" -> "submit"))

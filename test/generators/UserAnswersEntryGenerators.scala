@@ -16,6 +16,7 @@
 
 package generators
 
+import config.Constants.{`PRE-LODGE`, STANDARD}
 import models._
 import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
@@ -40,12 +41,13 @@ trait UserAnswersEntryGenerators {
   private def generateExternalAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.external._
     {
-      case ApprovedOperatorPage         => arbitrary[Boolean].map(JsBoolean)
-      case DeclarationTypePage          => arbitrary[DeclarationType].map(Json.toJson(_))
-      case OfficeOfDestinationPage      => arbitrary[CustomsOffice].map(Json.toJson(_))
-      case OfficeOfDepartureInCL010Page => arbitrary[Boolean].map(JsBoolean)
-      case ProcedureTypePage            => arbitrary[ProcedureType].map(Json.toJson(_))
-      case SecurityDetailsTypePage      => arbitrary[SecurityDetailsType].map(Json.toJson(_))
+      case ApprovedOperatorPage          => arbitrary[Boolean].map(JsBoolean)
+      case DeclarationTypePage           => arbitrary[DeclarationType].map(Json.toJson(_))
+      case OfficeOfDestinationPage       => arbitrary[CustomsOffice].map(Json.toJson(_))
+      case OfficeOfDepartureInCL010Page  => arbitrary[Boolean].map(JsBoolean)
+      case ProcedureTypePage             => arbitrary[ProcedureType].map(Json.toJson(_))
+      case SecurityDetailsTypePage       => arbitrary[SecurityDetailsType].map(Json.toJson(_))
+      case AdditionalDeclarationTypePage => Gen.oneOf(STANDARD, `PRE-LODGE`).map(JsString)
     }
   }
 
@@ -66,7 +68,7 @@ trait UserAnswersEntryGenerators {
       case CountryOfDispatchPage             => arbitrary[Country].map(Json.toJson(_))
       case TransportedToSameCountryYesNoPage => arbitrary[Boolean].map(JsBoolean)
       case ItemsDestinationCountryPage       => arbitrary[Country].map(Json.toJson(_))
-      case ContainerIndicatorPage            => arbitrary[Boolean].map(JsBoolean)
+      case ContainerIndicatorPage            => arbitrary[Option[Boolean]].map(Json.toJson(_))
     }
   }
 
@@ -147,9 +149,10 @@ trait UserAnswersEntryGenerators {
   }
 
   private def generateLimitAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
-    import pages.authorisationsAndLimit.limit.LimitDatePage
+    import pages.authorisationsAndLimit.limit._
     {
-      case LimitDatePage => arbitrary[LocalDate].map(Json.toJson(_))
+      case AddLimitDateYesNoPage => arbitrary[Boolean].map(JsBoolean)
+      case LimitDatePage         => arbitrary[LocalDate].map(Json.toJson(_))
     }
   }
 

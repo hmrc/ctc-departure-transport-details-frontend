@@ -234,4 +234,9 @@ trait ModelGenerators {
       Gen.oneOf(SecurityDetailsType.values.filterNot(_ == SecurityDetailsType.NoSecurityDetails))
     }
 
+  implicit lazy val arbitraryOptionalBoolean: Arbitrary[OptionalBoolean] =
+    Arbitrary {
+      Gen.oneOf(OptionalBoolean.yes, OptionalBoolean.no, OptionalBoolean.maybe)
+    }
+
 }

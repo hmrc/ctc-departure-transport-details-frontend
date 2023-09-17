@@ -17,19 +17,25 @@
 package models.journeyDomain.authorisationsAndLimit.authorisations
 
 import cats.implicits.{catsSyntaxApplicativeId, none}
-import models.domain.UserAnswersReader
+import config.Constants.{`PRE-LODGE`, STANDARD}
+import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
+import pages.authorisationsAndLimit.limit.AddLimitDateYesNoPage
+import pages.external.AdditionalDeclarationTypePage
 
 case class AuthorisationsAndLimitDomain(authorisationsDomain: AuthorisationsDomain, limitDomain: Option[LimitDomain]) extends JourneyDomainModel
 
 object AuthorisationsAndLimitDomain {
 
-  def limitReader(authDomain: AuthorisationsDomain): UserAnswersReader[Option[LimitDomain]] =
-    authDomain.authorisations.exists(_.authorisationType.isACR) match {
-      case true  => UserAnswersReader[LimitDomain].map(Some(_))
-      case false => none[LimitDomain].pure[UserAnswersReader]
+  def limitReader(authDomain: AuthorisationsDomain): UserAnswersReader[Option[LimitDomain]] = {
+    lazy val anyAuthTypeIsC521 = authDomain.authorisations.exists(_.authorisationType.isACR)
+    AdditionalDeclarationTypePage.reader.flatMap {
+      case `PRE-LODGE` if anyAuthTypeIsC521 => AddLimitDateYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[LimitDomain])
+      case STANDARD if anyAuthTypeIsC521    => UserAnswersReader[LimitDomain].map(Some(_))
+      case _                                => none[LimitDomain].pure[UserAnswersReader]
     }
+  }
 
   implicit val userAnswersReader: UserAnswersReader[AuthorisationsAndLimitDomain] = {
     for {

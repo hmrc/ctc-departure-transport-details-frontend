@@ -59,14 +59,14 @@ object EquipmentDomain {
     ).tupled.map((EquipmentDomain.apply _).tupled).map(_(equipmentIndex))
 
   def containerIdReads(equipmentIndex: Index): UserAnswersReader[Option[String]] =
-    ContainerIndicatorPage.reader.flatMap {
-      case true if equipmentIndex.isFirst =>
+    ContainerIndicatorPage.reader.map(_.value).flatMap {
+      case Some(true) if equipmentIndex.isFirst =>
         ContainerIdentificationNumberPage(equipmentIndex).reader.map(Option(_))
-      case true =>
+      case Some(true) =>
         AddContainerIdentificationNumberYesNoPage(equipmentIndex).filterOptionalDependent(identity) {
           ContainerIdentificationNumberPage(equipmentIndex).reader
         }
-      case false =>
+      case _ =>
         none[String].pure[UserAnswersReader]
     }
 

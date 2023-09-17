@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package config
+package forms
 
-object Constants {
-  val GB = "GB"
-  val XI = "XI"
-  val AD = "AD"
+import forms.mappings.Mappings
+import models.OptionalBoolean
+import play.api.data.Form
 
-  val STANDARD    = "A"
-  val `PRE-LODGE` = "D"
+import javax.inject.Inject
 
-  val Maritime = "1"
-  val Rail     = "2"
-  val Air      = "4"
-  val Mail     = "5"
-  val Fixed    = "7"
+class OptionalYesNoFormProvider @Inject() extends Mappings {
 
-  val ACR = "C521"
-  val SSE = "C523"
-  val TRD = "C524"
+  def apply(prefix: String, args: Any*): Form[OptionalBoolean] =
+    Form(
+      "value" -> optionalBoolean(s"$prefix.error.required", args = args)
+    )
 }

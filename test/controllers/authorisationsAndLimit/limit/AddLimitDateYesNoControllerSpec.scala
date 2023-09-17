@@ -14,85 +14,80 @@
  * limitations under the License.
  */
 
-package controllers.preRequisites
+package controllers.authorisationsAndLimit.limit
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.OptionalYesNoFormProvider
-import models.{NormalMode, OptionalBoolean}
+import controllers.authorisationsAndLimit.limit.routes
+import forms.YesNoFormProvider
+import models.NormalMode
 import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import pages.external.AdditionalDeclarationTypePage
-import pages.preRequisites.ContainerIndicatorPage
+import pages.authorisationsAndLimit.limit.AddLimitDateYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.preRequisites.ContainerIndicatorView
+import views.html.authorisationsAndLimit.limit.AddLimitDateYesNoView
 
 import scala.concurrent.Future
 
-class ContainerIndicatorControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AddLimitDateYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
-  private val formProvider                 = new OptionalYesNoFormProvider()
-  private val form                         = formProvider("preRequisites.containerIndicator")
-  private val mode                         = NormalMode
-  private lazy val containerIndicatorRoute = routes.ContainerIndicatorController.onPageLoad(lrn, mode).url
+  private val formProvider                  = new YesNoFormProvider()
+  private val form                          = formProvider("authorisationsAndLimit.limit.addLimitDateYesNo")
+  private val mode                          = NormalMode
+  private lazy val addArrivalDateYesNoRoute = routes.AddLimitDateYesNoController.onPageLoad(lrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
 
-  private val additionalDeclarationType = Gen.oneOf("A", "D").sample.value
-  private val baseAnswers               = emptyUserAnswers.setValue(AdditionalDeclarationTypePage, additionalDeclarationType)
-
-  "ContainerIndicator Controller" - {
+  "AddArrivalDateYesNo Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
-      val userAnswers = baseAnswers
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, containerIndicatorRoute)
+      val request = FakeRequest(GET, addArrivalDateYesNoRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[ContainerIndicatorView]
+      val view = injector.instanceOf[AddLimitDateYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, additionalDeclarationType)(request, messages).toString
+        view(form, lrn, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = baseAnswers.setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+      val userAnswers = emptyUserAnswers.setValue(AddLimitDateYesNoPage, true)
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, containerIndicatorRoute)
+      val request = FakeRequest(GET, addArrivalDateYesNoRoute)
 
       val result = route(app, request).value
 
       val filledForm = form.bind(Map("value" -> "true"))
 
-      val view = injector.instanceOf[ContainerIndicatorView]
+      val view = injector.instanceOf[AddLimitDateYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, additionalDeclarationType)(request, messages).toString
+        view(filledForm, lrn, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(baseAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, containerIndicatorRoute)
+      val request = FakeRequest(POST, addArrivalDateYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -104,27 +99,26 @@ class ContainerIndicatorControllerSpec extends SpecBase with AppWithDefaultMockF
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val userAnswers = baseAnswers
-      setExistingUserAnswers(userAnswers)
+      setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, containerIndicatorRoute).withFormUrlEncodedBody(("value", ""))
+      val request   = FakeRequest(POST, addArrivalDateYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[ContainerIndicatorView]
+      val view = injector.instanceOf[AddLimitDateYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, additionalDeclarationType)(request, messages).toString
+        view(boundForm, lrn, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, containerIndicatorRoute)
+      val request = FakeRequest(GET, addArrivalDateYesNoRoute)
 
       val result = route(app, request).value
 
@@ -137,7 +131,7 @@ class ContainerIndicatorControllerSpec extends SpecBase with AppWithDefaultMockF
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, containerIndicatorRoute)
+      val request = FakeRequest(POST, addArrivalDateYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value

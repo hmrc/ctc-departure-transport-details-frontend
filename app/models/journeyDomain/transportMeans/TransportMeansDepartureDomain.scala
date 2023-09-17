@@ -24,7 +24,7 @@ import models.journeyDomain.JourneyDomainModel
 import models.reference.Nationality
 import models.reference.transportMeans.departure.Identification
 import pages.preRequisites.ContainerIndicatorPage
-import pages.transportMeans.InlandModePage
+import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
 import pages.transportMeans.departure._
 
 sealed trait TransportMeansDepartureDomain extends JourneyDomainModel
@@ -66,15 +66,20 @@ object TransitionTransportMeansDepartureDomain {
 
   implicit val userAnswersReader: UserAnswersReader[TransitionTransportMeansDepartureDomain] = {
     val identificationReader: UserAnswersReader[Option[Identification]] =
-      ContainerIndicatorPage.reader.flatMap {
-        case true  => AddIdentificationTypeYesNoPage.filterOptionalDependent(identity)(IdentificationPage.reader)
-        case false => IdentificationPage.reader.map(Some(_))
+      AddDepartureTransportMeansYesNoPage.isPopulated.flatMap {
+        case true =>
+          ContainerIndicatorPage.reader.map(_.value).flatMap {
+            case Some(false) => IdentificationPage.reader.map(Some(_))
+            case _           => AddIdentificationTypeYesNoPage.filterOptionalDependent(identity)(IdentificationPage.reader)
+          }
+        case false =>
+          IdentificationPage.reader.map(Some(_))
       }
 
     val identificationNumberReader: UserAnswersReader[Option[String]] =
-      ContainerIndicatorPage.reader.flatMap {
-        case true  => AddIdentificationNumberYesNoPage.filterOptionalDependent(identity)(MeansIdentificationNumberPage.reader)
-        case false => MeansIdentificationNumberPage.reader.map(Some(_))
+      ContainerIndicatorPage.reader.map(_.value).flatMap {
+        case Some(false) => MeansIdentificationNumberPage.reader.map(Some(_))
+        case _           => AddIdentificationNumberYesNoPage.filterOptionalDependent(identity)(MeansIdentificationNumberPage.reader)
       }
 
     val nationalityReader: UserAnswersReader[Option[Nationality]] =
@@ -82,9 +87,9 @@ object TransitionTransportMeansDepartureDomain {
         case Some(inlandMode) if inlandMode.isRail =>
           none[Nationality].pure[UserAnswersReader]
         case _ =>
-          ContainerIndicatorPage.reader.flatMap {
-            case true  => AddVehicleCountryYesNoPage.filterOptionalDependent(identity)(VehicleCountryPage.reader)
-            case false => VehicleCountryPage.reader.map(Some(_))
+          ContainerIndicatorPage.reader.map(_.value).flatMap {
+            case Some(true) => AddVehicleCountryYesNoPage.filterOptionalDependent(identity)(VehicleCountryPage.reader)
+            case _          => VehicleCountryPage.reader.map(Some(_))
           }
       }
 

@@ -17,7 +17,7 @@
 package forms.mappings
 
 import models.reference.CountryCode
-import models.{Enumerable, Radioable, RichString, Selectable, SelectableList}
+import models.{Enumerable, OptionalBoolean, Radioable, RichString, Selectable, SelectableList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -84,6 +84,30 @@ trait Formatters {
           }
 
       def unbind(key: String, value: Boolean): Map[String, String] = Map(key -> value.toString)
+    }
+
+  private[mappings] def optionalBooleanFormatter(requiredKey: String, invalidKey: String, args: Seq[Any] = Seq.empty): Formatter[OptionalBoolean] =
+    new Formatter[OptionalBoolean] {
+
+      private val baseFormatter = stringFormatter(requiredKey, args)
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], OptionalBoolean] =
+        baseFormatter
+          .bind(key, data)
+          .flatMap {
+            case "true"  => Right(OptionalBoolean.yes)
+            case "false" => Right(OptionalBoolean.no)
+            case "maybe" => Right(OptionalBoolean.maybe)
+            case _       => Left(Seq(FormError(key, invalidKey, args)))
+          }
+
+      def unbind(key: String, value: OptionalBoolean): Map[String, String] = {
+        val str = value.value match {
+          case Some(bool) => bool.toString
+          case None       => "maybe"
+        }
+        Map(key -> str)
+      }
     }
 
   private[mappings] def intFormatter(requiredKey: String, wholeNumberKey: String, nonNumericKey: String, args: Seq[String] = Seq.empty): Formatter[Int] =

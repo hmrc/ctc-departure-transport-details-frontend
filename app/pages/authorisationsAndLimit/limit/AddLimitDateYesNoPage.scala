@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package pages.preRequisites
+package pages.authorisationsAndLimit.limit
 
-import controllers.preRequisites.routes
-import models.{Mode, OptionalBoolean, UserAnswers}
+import controllers.authorisationsAndLimit.limit.routes
+import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.PreRequisitesSection
-import pages.sections.equipment.EquipmentsSection
-import play.api.libs.json._
+import pages.sections.authorisationsAndLimit.LimitSection
+import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 import scala.util.Try
 
-case object ContainerIndicatorPage extends QuestionPage[OptionalBoolean] {
+case object AddLimitDateYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = PreRequisitesSection.path \ toString
+  override def path: JsPath = LimitSection.path \ toString
 
-  override def toString: String = "containerIndicator"
+  override def toString: String = "addArrivalDateYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.ContainerIndicatorController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.AddLimitDateYesNoController.onPageLoad(userAnswers.lrn, mode))
 
-  override def cleanup(value: Option[OptionalBoolean], userAnswers: UserAnswers): Try[UserAnswers] =
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(_) => userAnswers.remove(EquipmentsSection)
-      case None    => super.cleanup(value, userAnswers)
+      case Some(false) => userAnswers.remove(LimitDatePage)
+      case _           => super.cleanup(value, userAnswers)
     }
 }

@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import models.{Enumerable, Radioable, Selectable, SelectableList}
+import models.{Enumerable, OptionalBoolean, Radioable, Selectable, SelectableList}
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import play.api.data.format.Formats.ignoredFormat
@@ -47,6 +47,13 @@ trait Mappings extends Formatters with Constraints {
 
   protected def boolean(requiredKey: String = "error.required", invalidKey: String = "error.boolean", args: Seq[Any] = Seq.empty): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey, args))
+
+  protected def optionalBoolean(
+    requiredKey: String = "error.required",
+    invalidKey: String = "error.boolean",
+    args: Seq[Any] = Seq.empty
+  ): FieldMapping[OptionalBoolean] =
+    of(optionalBooleanFormatter(requiredKey, invalidKey, args))
 
   protected def enumerable[A <: Radioable[A]](requiredKey: String = "error.required", invalidKey: String = "error.invalid")(implicit
     ev: Enumerable[A]

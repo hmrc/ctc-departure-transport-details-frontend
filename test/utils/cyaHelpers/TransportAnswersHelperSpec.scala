@@ -35,18 +35,18 @@ import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
 import models.reference.equipment.PaymentMethod
-import models.{Index, Mode}
+import models.{Index, Mode, OptionalBoolean}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
-import pages.sections.authorisationsAndLimit.AuthorisationSection
-import pages.sections.equipment.EquipmentSection
-import pages.sections.supplyChainActors.SupplyChainActorSection
-import pages.authorisationsAndLimit.limit.LimitDatePage
+import pages.authorisationsAndLimit.limit.{AddLimitDateYesNoPage, LimitDatePage}
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
 import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
 import pages.equipment.{AddPaymentMethodYesNoPage, AddTransportEquipmentYesNoPage, PaymentMethodPage}
 import pages.preRequisites._
+import pages.sections.authorisationsAndLimit.AuthorisationSection
+import pages.sections.equipment.EquipmentSection
+import pages.sections.supplyChainActors.SupplyChainActorSection
 import pages.supplyChainActors.SupplyChainActorYesNoPage
 import play.api.libs.json.Json
 
@@ -273,15 +273,53 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
 
       "must return Some(Row)" - {
-        s"when $ContainerIndicatorPage defined" in {
+        s"when $ContainerIndicatorPage true" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val answers = emptyUserAnswers.setValue(ContainerIndicatorPage, true)
+              val answers = emptyUserAnswers.setValue(ContainerIndicatorPage, OptionalBoolean.yes)
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.usingContainersYesNo.get
 
               result.key.value mustBe "Are you using any containers?"
               result.value.value mustBe "Yes"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe preRequisitesRoutes.ContainerIndicatorController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustBe "if you are using any containers"
+              action.id mustBe "change-using-containers"
+          }
+        }
+
+        s"when $ContainerIndicatorPage false" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(ContainerIndicatorPage, OptionalBoolean.no)
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.usingContainersYesNo.get
+
+              result.key.value mustBe "Are you using any containers?"
+              result.value.value mustBe "No"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe preRequisitesRoutes.ContainerIndicatorController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustBe "if you are using any containers"
+              action.id mustBe "change-using-containers"
+          }
+        }
+
+        s"when $ContainerIndicatorPage maybe" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(ContainerIndicatorPage, OptionalBoolean.maybe)
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.usingContainersYesNo.get
+
+              result.key.value mustBe "Are you using any containers?"
+              result.value.value mustBe "Not sure"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
@@ -486,6 +524,40 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
     }
 
+    "addLimitDateYesNo" - {
+      "must return None" - {
+        s"when $AddLimitDateYesNoPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addLimitDateYesNo
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $AddLimitDateYesNoPage defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddLimitDateYesNoPage, true)
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.addLimitDateYesNo.get
+
+              result.key.value mustBe "Do you want to add the arrival date at the office of destination?"
+              result.value.value mustBe "Yes"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe limitRoutes.AddLimitDateYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustBe "if you want to add the arrival date at the office of destination"
+              action.id mustBe "change-add-limit-date"
+          }
+        }
+      }
+    }
+
     "limitDate" - {
       "must return None" - {
         s"when $LimitDatePage undefined" in {
@@ -507,14 +579,14 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper    = new TransportAnswersHelper(answers, mode)
               val result    = helper.limitDate.get
 
-              result.key.value mustBe "Limit date"
+              result.key.value mustBe "Estimated arrival date at the office of destination"
               result.value.value mustBe "8 January 2000"
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe limitRoutes.LimitDateController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "limit date"
+              action.visuallyHiddenText.get mustBe "estimated arrival date at the office of destination"
               action.id mustBe "change-limit-date"
           }
         }
@@ -740,7 +812,28 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       "must return Some(Row)" - {
         "when equipment is defined and container id is undefined" in {
           val initialUserAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, false)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.no)
+
+          forAll(arbitraryEquipmentAnswers(initialUserAnswers, index), arbitrary[Mode]) {
+            (userAnswers, mode) =>
+              val helper = new TransportAnswersHelper(userAnswers, mode)
+              val result = helper.equipment(index).get
+
+              result.key.value mustBe "Transport equipment 1"
+              result.value.value mustBe "No container identification number"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe equipmentRoutes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, index).url
+              action.visuallyHiddenText.get mustBe "transport equipment 1"
+              action.id mustBe "change-transport-equipment-1"
+          }
+        }
+
+        "when equipment is defined and container id is unknown" in {
+          val initialUserAnswers = emptyUserAnswers
+            .setValue(ContainerIndicatorPage, OptionalBoolean.maybe)
 
           forAll(arbitraryEquipmentAnswers(initialUserAnswers, index), arbitrary[Mode]) {
             (userAnswers, mode) =>
@@ -761,7 +854,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
         "when equipment is  defined and container id is defined" in {
           val initialUserAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, true)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
           forAll(arbitraryEquipmentAnswers(initialUserAnswers, index), arbitrary[Mode]) {
             (userAnswers, mode) =>
