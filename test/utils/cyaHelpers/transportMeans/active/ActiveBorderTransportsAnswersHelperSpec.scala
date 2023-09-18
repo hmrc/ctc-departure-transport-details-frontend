@@ -38,11 +38,9 @@ import viewModels.ListItem
 
 class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  private val prefix = "transportMeans.active.identification"
-
   private val officesOfTransit: JsArray = JsArray(Seq(Json.obj("foo" -> "bar")))
 
-  "ActiveBorderTransportCheckYourAnswersHelperSpec" - {
+  "ActiveBorderTransportsAnswersHelperSpec" - {
 
     "when empty user answers" - {
       "must return empty list of list items" in {
@@ -100,7 +98,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
                 helper.listItems mustBe Seq(
                   Left(
                     ListItem(
-                      name = s"${messages(s"$prefix.$identificationType")}",
+                      name = identificationType.toString,
                       changeUrl = routes.IdentificationNumberController.onPageLoad(userAnswers.lrn, mode, index).url,
                       removeUrl = Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(userAnswers.lrn, mode, index).url)
                     )
@@ -148,7 +146,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
             helper.listItems mustBe Seq(
               Left(
                 ListItem(
-                  name = s"${messages(s"$prefix.$identificationType")} - $identificationNumber",
+                  name = s"${identificationType.toString} - $identificationNumber",
                   changeUrl = routes.AddNationalityYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
                   removeUrl = Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(userAnswers.lrn, mode, index).url)
                 )

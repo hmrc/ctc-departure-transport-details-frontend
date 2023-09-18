@@ -39,7 +39,7 @@ class DeclarationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       forAll(gen) {
         invalidValue =>
-          JsString(invalidValue).validate[DeclarationType.Value] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[DeclarationType.Value] mustEqual JsError("error.expected.validenumvalue")
       }
     }
 
