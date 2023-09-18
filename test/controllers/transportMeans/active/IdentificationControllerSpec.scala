@@ -121,7 +121,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> identificationType.toString))
+      val filledForm = form.bind(Map("value" -> identificationType.code))
 
       val view = injector.instanceOf[IdentificationView]
 
@@ -142,7 +142,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, identificationRoute)
-        .withFormUrlEncodedBody(("value", identificationType.toString))
+        .withFormUrlEncodedBody(("value", identificationType.code))
 
       val result = route(app, request).value
 
@@ -189,7 +189,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, identificationRoute)
-        .withFormUrlEncodedBody(("value", identificationType.toString))
+        .withFormUrlEncodedBody(("value", identificationType.code))
 
       val result = route(app, request).value
 

@@ -32,7 +32,7 @@ class SecurityDetailsTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
       forAll(gen) {
         securityDetailsType =>
-          JsString(securityDetailsType.toString).validate[SecurityDetailsType].asOpt.value mustEqual securityDetailsType
+          JsString(securityDetailsType.toString).validate[SecurityDetailsType.Value].asOpt.value mustEqual securityDetailsType
       }
     }
 
@@ -42,7 +42,7 @@ class SecurityDetailsTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
       forAll(gen) {
         invalidValue =>
-          JsString(invalidValue).validate[SecurityDetailsType] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[SecurityDetailsType.Value] mustEqual JsError("error.invalid")
       }
     }
 

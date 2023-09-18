@@ -32,7 +32,7 @@ class ProcedureTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
       forAll(gen) {
         procedureType =>
-          JsString(procedureType.toString).validate[ProcedureType].asOpt.value mustEqual procedureType
+          JsString(procedureType.toString).validate[ProcedureType.Value].asOpt.value mustEqual procedureType
       }
     }
 
@@ -42,7 +42,7 @@ class ProcedureTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
       forAll(gen) {
         invalidValue =>
-          JsString(invalidValue).validate[ProcedureType] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[ProcedureType.Value] mustEqual JsError("error.invalid")
       }
     }
 

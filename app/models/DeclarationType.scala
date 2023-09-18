@@ -16,21 +16,19 @@
 
 package models
 
+import play.api.libs.json.{Format, Json}
+
 sealed trait DeclarationType
 
-object DeclarationType extends EnumerableType[DeclarationType] {
+object DeclarationType extends Enumeration {
 
-  case object Option1 extends WithName("T1") with DeclarationType
-  case object Option2 extends WithName("T2") with DeclarationType
-  case object Option3 extends WithName("T2F") with DeclarationType
-  case object Option4 extends WithName("TIR") with DeclarationType
-  case object Option5 extends WithName("T") with DeclarationType
+  type DeclarationType = Value
 
-  override val values: Seq[DeclarationType] = Seq(
-    Option1,
-    Option2,
-    Option3,
-    Option4,
-    Option5
-  )
+  val T1: DeclarationType  = Value("T1")
+  val T2: DeclarationType  = Value("T2")
+  val T2F: DeclarationType = Value("T2F")
+  val TIR: DeclarationType = Value("TIR")
+  val T: DeclarationType   = Value("T")
+
+  implicit val format: Format[DeclarationType] = Json.formatEnum(this)
 }

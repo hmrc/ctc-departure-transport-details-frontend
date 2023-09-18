@@ -48,7 +48,7 @@ class ActiveBorderTransportAnswersHelper(
 
   def activeBorderIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
     page = IdentificationPage(index),
-    formatAnswer = formatAsText,
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "transportMeans.active.identification",
     id = Some("change-transport-means-active-identification")
   )

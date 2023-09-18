@@ -83,7 +83,7 @@ class TransportMeansCheckYourAnswersHelper(
 
   def inlandMode: Option[SummaryListRow] = getAnswerAndBuildRow[InlandMode](
     page = InlandModePage,
-    formatAnswer = formatAsText,
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "transportMeans.inlandMode",
     id = Some("change-transport-means-inland-mode")
   )
@@ -97,7 +97,7 @@ class TransportMeansCheckYourAnswersHelper(
 
   def departureIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
     page = IdentificationPage,
-    formatAnswer = formatAsText,
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "transportMeans.departure.identification",
     id = Some("change-transport-means-departure-identification")
   )

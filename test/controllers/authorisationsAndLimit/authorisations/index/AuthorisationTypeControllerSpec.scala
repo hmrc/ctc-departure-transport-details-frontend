@@ -77,7 +77,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
         val userAnswers = emptyUserAnswers
           .setValue(AuthorisationTypePage(Index(0)), authorisationType1)
           .setValue(AuthorisationTypePage(Index(1)), authorisationType2)
-          .setValue(DeclarationTypePage, DeclarationType.Option1)
+          .setValue(DeclarationTypePage, DeclarationType.T1)
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(GET, authorisationTypeRouteAtIndex(index))
@@ -125,7 +125,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> authorisationTypes.head.toString))
+      val filledForm = form.bind(Map("value" -> authorisationTypes.head.code))
 
       val view = injector.instanceOf[AuthorisationTypeView]
 
@@ -144,7 +144,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, authorisationTypeRoute)
-        .withFormUrlEncodedBody(("value", authorisationTypes.head.toString))
+        .withFormUrlEncodedBody(("value", authorisationTypes.head.code))
 
       val result = route(app, request).value
 
@@ -190,7 +190,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, authorisationTypeRoute)
-        .withFormUrlEncodedBody(("value", authorisationTypes.head.toString))
+        .withFormUrlEncodedBody(("value", authorisationTypes.head.code))
 
       val result = route(app, request).value
 

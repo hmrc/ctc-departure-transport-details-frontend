@@ -85,7 +85,7 @@ class PaymentMethodControllerSpec extends SpecBase with AppWithDefaultMockFixtur
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> paymentMethods.head.toString))
+      val filledForm = form.bind(Map("value" -> paymentMethods.head.code))
 
       val view = injector.instanceOf[PaymentMethodView]
 
@@ -102,7 +102,7 @@ class PaymentMethodControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, paymentMethodRoute)
-        .withFormUrlEncodedBody(("value", paymentMethods.head.toString))
+        .withFormUrlEncodedBody(("value", paymentMethods.head.code))
 
       val result = route(app, request).value
 
@@ -145,7 +145,7 @@ class PaymentMethodControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, paymentMethodRoute)
-        .withFormUrlEncodedBody(("value", paymentMethods.head.toString))
+        .withFormUrlEncodedBody(("value", paymentMethods.head.code))
 
       val result = route(app, request).value
 

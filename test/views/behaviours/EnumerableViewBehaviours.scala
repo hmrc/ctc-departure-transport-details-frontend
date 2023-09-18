@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-package pages.external
+package views.behaviours
 
-import models.DeclarationType
-import pages.ReadOnlyPage
-import play.api.libs.json.JsPath
+import models.Radioable
 
-case object DeclarationTypePage extends ReadOnlyPage[DeclarationType.Value] {
-
-  override def path: JsPath = preTaskListPath \ toString
-
-  override def toString: String = "declarationType"
+trait EnumerableViewBehaviours[T <: Radioable[T]] extends RadioViewBehaviours[T] {
+  override val getValue: T => String = _.code
 }

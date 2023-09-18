@@ -22,10 +22,10 @@ import models.reference.InlandMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.transportMeans.InlandModeView
 
-class InlandModeViewSpec extends RadioViewBehaviours[InlandMode] {
+class InlandModeViewSpec extends EnumerableViewBehaviours[InlandMode] {
 
   override def form: Form[InlandMode] = new EnumerableFormProvider()(prefix, values)
 

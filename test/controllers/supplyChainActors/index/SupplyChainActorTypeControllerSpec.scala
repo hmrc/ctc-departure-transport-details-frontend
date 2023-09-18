@@ -86,7 +86,7 @@ class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMoc
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> supplyChainActorType.toString))
+      val filledForm = form.bind(Map("value" -> supplyChainActorType.code))
 
       val view = injector.instanceOf[SupplyChainActorTypeView]
 
@@ -103,7 +103,7 @@ class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, supplyChainActorTypeRoute)
-        .withFormUrlEncodedBody(("value", supplyChainActorType.toString))
+        .withFormUrlEncodedBody(("value", supplyChainActorType.code))
 
       val result = route(app, request).value
 
@@ -146,7 +146,7 @@ class SupplyChainActorTypeControllerSpec extends SpecBase with AppWithDefaultMoc
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, supplyChainActorTypeRoute)
-        .withFormUrlEncodedBody(("value", supplyChainActorType.toString))
+        .withFormUrlEncodedBody(("value", supplyChainActorType.code))
 
       val result = route(app, request).value
 

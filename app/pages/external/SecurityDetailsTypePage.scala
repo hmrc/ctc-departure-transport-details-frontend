@@ -20,7 +20,7 @@ import models.SecurityDetailsType
 import pages.ReadOnlyPage
 import play.api.libs.json.JsPath
 
-case object SecurityDetailsTypePage extends ReadOnlyPage[SecurityDetailsType] {
+case object SecurityDetailsTypePage extends ReadOnlyPage[SecurityDetailsType.Value] {
 
   override def path: JsPath = preTaskListPath \ toString
 

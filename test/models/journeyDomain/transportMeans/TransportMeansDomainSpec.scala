@@ -262,7 +262,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
         }
 
         "securityDetails is not type NoSecurityDetails" in {
-          val securityType = arbitrary[SecurityDetailsType].retryUntil(_ != NoSecurityDetails).sample.value
+          val securityType = arbitrary[SecurityDetailsType.Value].retryUntil(_ != NoSecurityDetails).sample.value
 
           val userAnswers = emptyUserAnswers
             .setValue(AddDepartureTransportMeansYesNoPage, true)

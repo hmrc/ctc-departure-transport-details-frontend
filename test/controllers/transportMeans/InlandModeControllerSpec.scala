@@ -37,9 +37,7 @@ import scala.concurrent.Future
 
 class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val inlandMode1 = arbitrary[InlandMode].sample.value
-  private val inlandMode2 = arbitrary[InlandMode].sample.value
-  private val inlandModes = Seq(inlandMode1, inlandMode2)
+  private val inlandModes = arbitrary[Seq[InlandMode]].sample.value
 
   private val formProvider         = new EnumerableFormProvider()
   private val form                 = formProvider[InlandMode]("transportMeans.inlandMode", inlandModes)
@@ -87,7 +85,7 @@ class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> inlandModes.head.toString))
+      val filledForm = form.bind(Map("value" -> inlandModes.head.code))
 
       val view = injector.instanceOf[InlandModeView]
 
@@ -104,7 +102,7 @@ class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, inlandModeRoute)
-        .withFormUrlEncodedBody(("value", inlandModes.head.toString))
+        .withFormUrlEncodedBody(("value", inlandModes.head.code))
 
       val result = route(app, request).value
 
@@ -147,7 +145,7 @@ class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, inlandModeRoute)
-        .withFormUrlEncodedBody(("value", inlandModes.head.toString))
+        .withFormUrlEncodedBody(("value", inlandModes.head.code))
 
       val result = route(app, request).value
 

@@ -16,15 +16,16 @@
 
 package models
 
+import play.api.libs.json.{Format, Json}
+
 sealed trait ProcedureType
 
-object ProcedureType extends EnumerableType[ProcedureType] {
+object ProcedureType extends Enumeration {
 
-  case object Normal extends WithName("normal") with ProcedureType
-  case object Simplified extends WithName("simplified") with ProcedureType
+  type ProcedureType = Value
 
-  override val values: Seq[ProcedureType] = Seq(
-    Normal,
-    Simplified
-  )
+  val Normal: ProcedureType     = Value("normal")
+  val Simplified: ProcedureType = Value("simplified")
+
+  implicit val format: Format[ProcedureType] = Json.formatEnum(this)
 }

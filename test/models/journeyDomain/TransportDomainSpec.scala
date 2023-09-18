@@ -77,7 +77,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
       }
 
       "when reduced data set indicator is true" in {
-        forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+        forAll(arbitrary[DeclarationType.Value](arbitraryNonTIRDeclarationType)) {
           declarationType =>
             val initialUserAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
@@ -94,7 +94,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
       "when procedure type is Normal and reduced data set indicator is undefined" - {
         "and not adding authorisations" in {
           val initialUserAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, DeclarationType.Option4)
+            .setValue(DeclarationTypePage, DeclarationType.TIR)
             .setValue(ProcedureTypePage, Normal)
             .setValue(AddAuthorisationsYesNoPage, false)
 
@@ -107,7 +107,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
         "and adding authorisations" in {
           val initialUserAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, DeclarationType.Option4)
+            .setValue(DeclarationTypePage, DeclarationType.TIR)
             .setValue(AddAuthorisationsYesNoPage, true)
 
           forAll(arbitraryTransportAnswers(initialUserAnswers)) {
@@ -120,7 +120,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
       "when reduced data set indicator is false and procedure type is Normal" - {
         "and not adding authorisations" in {
-          forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+          forAll(arbitrary[DeclarationType.Value](arbitraryNonTIRDeclarationType)) {
             declarationType =>
               val initialUserAnswers = emptyUserAnswers
                 .setValue(DeclarationTypePage, declarationType)
@@ -137,7 +137,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
         }
 
         "and adding authorisations" in {
-          forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+          forAll(arbitrary[DeclarationType.Value](arbitraryNonTIRDeclarationType)) {
             declarationType =>
               val initialUserAnswers = emptyUserAnswers
                 .setValue(DeclarationTypePage, declarationType)
@@ -155,7 +155,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
       }
 
       "when reduced data set indicator is false and procedure type is Simplified" - {
-        forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+        forAll(arbitrary[DeclarationType.Value](arbitraryNonTIRDeclarationType)) {
           declarationType =>
             val initialUserAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
@@ -171,7 +171,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
       }
 
       "when reduced data set indicator is true and procedure type is Normal" in {
-        forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+        forAll(arbitrary[DeclarationType.Value](arbitraryNonTIRDeclarationType)) {
           declarationType =>
             val initialUserAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
@@ -225,7 +225,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
       "authorisationsAndLimitReads" - {
         "can not be parsed from user answers" - {
           "when inference is not flagged as true" in {
-            forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+            forAll(arbitrary[DeclarationType.Value](arbitraryNonTIRDeclarationType)) {
               declarationType =>
                 val userAnswers = emptyUserAnswers
                   .setValue(DeclarationTypePage, declarationType)

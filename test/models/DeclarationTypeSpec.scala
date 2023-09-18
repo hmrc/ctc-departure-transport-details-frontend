@@ -27,9 +27,9 @@ class DeclarationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
   "DeclarationType" - {
 
     "must deserialise valid values" in {
-      forAll(arbitrary[DeclarationType]) {
+      forAll(arbitrary[DeclarationType.Value]) {
         declarationType =>
-          JsString(declarationType.toString).validate[DeclarationType].asOpt.value mustEqual declarationType
+          JsString(declarationType.toString).validate[DeclarationType.Value].asOpt.value mustEqual declarationType
       }
     }
 
@@ -39,12 +39,12 @@ class DeclarationTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       forAll(gen) {
         invalidValue =>
-          JsString(invalidValue).validate[DeclarationType] mustEqual JsError("error.invalid")
+          JsString(invalidValue).validate[DeclarationType.Value] mustEqual JsError("error.invalid")
       }
     }
 
     "must serialise" in {
-      forAll(arbitrary[DeclarationType]) {
+      forAll(arbitrary[DeclarationType.Value]) {
         declarationType =>
           Json.toJson(declarationType) mustEqual JsString(declarationType.toString)
       }

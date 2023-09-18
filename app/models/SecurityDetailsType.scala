@@ -16,22 +16,18 @@
 
 package models
 
+import play.api.libs.json.{Format, Json}
+
 sealed trait SecurityDetailsType
 
-object SecurityDetailsType extends EnumerableType[SecurityDetailsType] {
+object SecurityDetailsType extends Enumeration {
 
-  case object NoSecurityDetails extends WithName("noSecurity") with SecurityDetailsType
+  type SecurityDetailsType = Value
 
-  case object EntrySummaryDeclarationSecurityDetails extends WithName("entrySummaryDeclaration") with SecurityDetailsType
+  val NoSecurityDetails: SecurityDetailsType                             = Value("noSecurityDetails")
+  val EntrySummaryDeclarationSecurityDetails: SecurityDetailsType        = Value("entrySummaryDeclarationSecurityDetails")
+  val ExitSummaryDeclarationSecurityDetails: SecurityDetailsType         = Value("exitSummaryDeclarationSecurityDetails")
+  val EntryAndExitSummaryDeclarationSecurityDetails: SecurityDetailsType = Value("entryAndExitSummaryDeclarationSecurityDetails")
 
-  case object ExitSummaryDeclarationSecurityDetails extends WithName("exitSummaryDeclaration") with SecurityDetailsType
-
-  case object EntryAndExitSummaryDeclarationSecurityDetails extends WithName("entryAndExitSummaryDeclaration") with SecurityDetailsType
-
-  override val values: Seq[SecurityDetailsType] = Seq(
-    NoSecurityDetails,
-    EntrySummaryDeclarationSecurityDetails,
-    ExitSummaryDeclarationSecurityDetails,
-    EntryAndExitSummaryDeclarationSecurityDetails
-  )
+  implicit val format: Format[SecurityDetailsType] = Json.formatEnum(this)
 }

@@ -22,10 +22,10 @@ import models.transportMeans.BorderModeOfTransport
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.transportMeans.BorderModeOfTransportView
 
-class BorderModeOfTransportViewSpec extends RadioViewBehaviours[BorderModeOfTransport] {
+class BorderModeOfTransportViewSpec extends EnumerableViewBehaviours[BorderModeOfTransport] {
 
   override def form: Form[BorderModeOfTransport] = new EnumerableFormProvider()(prefix)
 

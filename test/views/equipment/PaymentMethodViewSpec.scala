@@ -22,10 +22,10 @@ import models.reference.equipment.PaymentMethod
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.equipment.PaymentMethodView
 
-class PaymentMethodViewSpec extends RadioViewBehaviours[PaymentMethod] {
+class PaymentMethodViewSpec extends EnumerableViewBehaviours[PaymentMethod] {
 
   override def form: Form[PaymentMethod] = new EnumerableFormProvider()(prefix, values)
 

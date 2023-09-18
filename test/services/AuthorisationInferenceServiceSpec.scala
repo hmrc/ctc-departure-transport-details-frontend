@@ -31,7 +31,7 @@ import pages.transportMeans.InlandModePage
 
 class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val declarationTypeGen: Gen[DeclarationType] = arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)
+  val declarationTypeGen: Gen[DeclarationType.Value] = arbitrary[DeclarationType.Value](arbitraryNonTIRDeclarationType)
 
   val authTypeACR: AuthorisationType = AuthorisationType(
     "C521",

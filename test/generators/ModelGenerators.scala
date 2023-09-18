@@ -31,14 +31,14 @@ import uk.gov.hmrc.http.HttpVerbs._
 trait ModelGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType] =
+  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType.Value] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values)
+      Gen.oneOf(DeclarationType.values.toSeq)
     }
 
-  lazy val arbitraryNonOption4DeclarationType: Arbitrary[DeclarationType] =
+  lazy val arbitraryNonTIRDeclarationType: Arbitrary[DeclarationType.Value] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values.filterNot(_ == DeclarationType.Option4))
+      Gen.oneOf(DeclarationType.values.toSeq.filterNot(_ == DeclarationType.TIR))
     }
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
@@ -85,14 +85,14 @@ trait ModelGenerators {
     } yield Call(method, url)
   }
 
-  implicit lazy val arbitraryProcedureType: Arbitrary[ProcedureType] =
+  implicit lazy val arbitraryProcedureType: Arbitrary[ProcedureType.Value] =
     Arbitrary {
-      Gen.oneOf(ProcedureType.values)
+      Gen.oneOf(ProcedureType.values.toSeq)
     }
 
-  implicit lazy val arbitrarySecurityDetailsType: Arbitrary[SecurityDetailsType] =
+  implicit lazy val arbitrarySecurityDetailsType: Arbitrary[SecurityDetailsType.Value] =
     Arbitrary {
-      Gen.oneOf(SecurityDetailsType.values)
+      Gen.oneOf(SecurityDetailsType.values.toSeq)
     }
 
   implicit lazy val arbitraryBorderModeOfTransport: Arbitrary[BorderModeOfTransport] =
@@ -229,14 +229,20 @@ trait ModelGenerators {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
 
-  lazy val arbitrarySomeSecurityDetailsType: Arbitrary[SecurityDetailsType] =
+  lazy val arbitrarySomeSecurityDetailsType: Arbitrary[SecurityDetailsType.Value] =
     Arbitrary {
-      Gen.oneOf(SecurityDetailsType.values.filterNot(_ == SecurityDetailsType.NoSecurityDetails))
+      Gen.oneOf(SecurityDetailsType.values.toSeq.filterNot(_ == SecurityDetailsType.NoSecurityDetails))
     }
 
   implicit lazy val arbitraryOptionalBoolean: Arbitrary[OptionalBoolean] =
     Arbitrary {
       Gen.oneOf(OptionalBoolean.yes, OptionalBoolean.no, OptionalBoolean.maybe)
     }
+
+  implicit def arbitraryRadioableList[T <: Radioable[T]](implicit arbitrary: Arbitrary[T]): Arbitrary[Seq[T]] = Arbitrary {
+    for {
+      values <- listWithMaxLength[T]()
+    } yield values.distinctBy(_.code)
+  }
 
 }

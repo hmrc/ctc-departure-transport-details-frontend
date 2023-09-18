@@ -23,6 +23,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 trait YesNoViewBehaviours extends RadioViewBehaviours[Boolean] {
 
+  override val getValue: Boolean => String = _.toString
+
   val yesContent: String = "Yes"
   val noContent: String  = "No"
 

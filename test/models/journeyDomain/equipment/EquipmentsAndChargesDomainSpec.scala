@@ -136,7 +136,7 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
         "when there is security" - {
           "and add payment method yes/no is false" in {
-            forAll(arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType)) {
+            forAll(arbitrary[SecurityDetailsType.Value](arbitrarySomeSecurityDetailsType)) {
               security =>
                 val userAnswers = emptyUserAnswers
                   .setValue(SecurityDetailsTypePage, security)
@@ -153,7 +153,7 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
           }
 
           "and add payment method yes/no is true" in {
-            forAll(arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType), arbitrary[PaymentMethod]) {
+            forAll(arbitrary[SecurityDetailsType.Value](arbitrarySomeSecurityDetailsType), arbitrary[PaymentMethod]) {
               (security, paymentMethod) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(SecurityDetailsTypePage, security)
@@ -175,7 +175,7 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
       "cannot be read from user answers" - {
         "when there is security" - {
           "and add payment method yes/no is unanswered" in {
-            forAll(arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType)) {
+            forAll(arbitrary[SecurityDetailsType.Value](arbitrarySomeSecurityDetailsType)) {
               security =>
                 val userAnswers = emptyUserAnswers
                   .setValue(SecurityDetailsTypePage, security)
@@ -190,7 +190,7 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
           "and add payment method yes/no is true" - {
             "and payment method is unanswered" in {
-              forAll(arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType)) {
+              forAll(arbitrary[SecurityDetailsType.Value](arbitrarySomeSecurityDetailsType)) {
                 security =>
                   val userAnswers = emptyUserAnswers
                     .setValue(SecurityDetailsTypePage, security)

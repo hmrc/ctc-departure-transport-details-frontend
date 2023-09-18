@@ -22,10 +22,10 @@ import models.reference.transportMeans.departure.Identification
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.transportMeans.departure.IdentificationView
 
-class IdentificationViewSpec extends RadioViewBehaviours[Identification] {
+class IdentificationViewSpec extends EnumerableViewBehaviours[Identification] {
 
   override def form: Form[Identification] = new EnumerableFormProvider()(prefix, values)
 

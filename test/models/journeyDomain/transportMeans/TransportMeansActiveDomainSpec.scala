@@ -231,7 +231,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
         "when security is in set {1,2,3}" - {
           "and border mode of transport is 4 (Air)" in {
-            val securityGen       = arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType)
+            val securityGen       = arbitrary[SecurityDetailsType.Value](arbitrarySomeSecurityDetailsType)
             val identificationGen = Gen.oneOf(Identification("40", "IATA flight number"), Identification("41", "Registration Number of the Aircraft"))
             forAll(securityGen, identificationGen) {
               (securityType, identification) =>
@@ -252,7 +252,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           }
 
           "and border mode of transport is not 4 (Air)" in {
-            val securityGen       = arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType)
+            val securityGen       = arbitrary[SecurityDetailsType.Value](arbitrarySomeSecurityDetailsType)
             val borderModeGen     = Gen.oneOf(BorderModeOfTransport.values.filterNot(_ == Air))
             val identificationGen = Gen.oneOf(Identification("40", "IATA flight number"), Identification("41", "Registration Number of the Aircraft"))
             forAll(securityGen, borderModeGen, identificationGen) {
@@ -517,7 +517,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         "can not be parsed from user answers" - {
           "when there is security and mode of transport is 4 (air)" - {
             "and conveyance reference number is undefined" in {
-              forAll(arbitrary[SecurityDetailsType](arbitrarySomeSecurityDetailsType)) {
+              forAll(arbitrary[SecurityDetailsType.Value](arbitrarySomeSecurityDetailsType)) {
                 securityType =>
                   val userAnswers = emptyUserAnswers
                     .setValue(SecurityDetailsTypePage, securityType)
@@ -547,7 +547,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
           "when mode of transport is not 4 (air)" - {
             "and add conveyance reference number yes/no is undefined" in {
-              forAll(arbitrary[SecurityDetailsType], arbitrary[Option[BorderModeOfTransport]](arbitraryOptionalNonAirBorderModeOfTransport)) {
+              forAll(arbitrary[SecurityDetailsType.Value], arbitrary[Option[BorderModeOfTransport]](arbitraryOptionalNonAirBorderModeOfTransport)) {
                 (securityType, borderMode) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(SecurityDetailsTypePage, securityType)

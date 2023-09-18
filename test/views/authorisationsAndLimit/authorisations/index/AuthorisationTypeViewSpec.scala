@@ -22,10 +22,10 @@ import models.reference.authorisations.AuthorisationType
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.authorisationsAndLimit.authorisations.index.AuthorisationTypeView
 
-class AuthorisationTypeViewSpec extends RadioViewBehaviours[AuthorisationType] {
+class AuthorisationTypeViewSpec extends EnumerableViewBehaviours[AuthorisationType] {
 
   override def form: Form[AuthorisationType] = new EnumerableFormProvider()(prefix, values)
 

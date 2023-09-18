@@ -231,7 +231,7 @@ class TransportAnswersHelper(
 
   def paymentMethod: Option[SummaryListRow] = getAnswerAndBuildRow[PaymentMethod](
     page = PaymentMethodPage,
-    formatAnswer = formatAsText,
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "equipment.paymentMethod",
     id = Some("change-payment-method")
   )

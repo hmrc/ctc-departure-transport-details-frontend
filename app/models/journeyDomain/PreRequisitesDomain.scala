@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import cats.implicits._
-import models.DeclarationType.Option4
+import models.DeclarationType.TIR
 import models.OptionalBoolean
 import models.domain.{UserAnswersReader, _}
 import models.reference.Country
@@ -35,8 +35,8 @@ object PreRequisitesDomain {
 
   implicit val countryOfDispatchReader: UserAnswersReader[Option[Country]] =
     DeclarationTypePage.reader.flatMap {
-      case Option4 => SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
-      case _       => none[Country].pure[UserAnswersReader]
+      case TIR => SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
+      case _   => none[Country].pure[UserAnswersReader]
     }
 
   implicit val userAnswersReader: UserAnswersReader[PreRequisitesDomain] = (
