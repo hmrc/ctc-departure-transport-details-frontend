@@ -46,7 +46,7 @@ class AuthorisationInferenceService @Inject() () {
               .set(InferredAuthorisationTypePage(Index(0)), trd)
               .flatMap(_.set(InferredAuthorisationTypePage(Index(1)), acr))
               .toOption
-          case _ => Some(userAnswers) //TODO: fix this UserAnswersReader.fail[Option[UserAnswers]]
+          case _ => None
         }
       case (true, Maritime | Rail | Air, Normal) =>
         authTypeTRD match {
@@ -54,7 +54,7 @@ class AuthorisationInferenceService @Inject() () {
             userAnswers
               .set(InferredAuthorisationTypePage(Index(0)), trd)
               .toOption
-          case _ => Some(userAnswers) //TODO: fix this UserAnswersReader.fail[Option[UserAnswers]]
+          case _ => None
         }
       case (_, _, Simplified) =>
         authTypeACR match {
@@ -62,7 +62,7 @@ class AuthorisationInferenceService @Inject() () {
             userAnswers
               .set(InferredAuthorisationTypePage(Index(0)), acr)
               .toOption
-          case _ => Some(userAnswers) //TODO: fix this UserAnswersReader.fail[Option[UserAnswers]]
+          case _ => None
         }
       case _ =>
         Some(userAnswers)

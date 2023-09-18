@@ -19,8 +19,8 @@ package services
 import base.SpecBase
 import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
-import models.reference.authorisations.AuthorisationType
 import models.reference.InlandMode
+import models.reference.authorisations.AuthorisationType
 import models.{DeclarationType, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -67,6 +67,26 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
             result mustBe expectedResult
         }
       }
+
+      "must not infer index 0 as TRD when TRD isn't present in reference data" in {
+        forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
+          (inlandMode, declarationType) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InlandModePage, inlandMode)
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, true)
+              .setValue(ProcedureTypePage, Normal)
+
+            val service = new AuthorisationInferenceService()
+
+            val result = service.inferAuthorisations(userAnswers, Seq.empty)
+
+            val expectedResult = userAnswers
+              .setValue(InferredAuthorisationTypePage(Index(0)), None)
+
+            result mustBe expectedResult
+        }
+      }
     }
 
     "when reduced dataset indicator is 1 and inland mode is Maritime/Rail/Air and ProcedureType is Simplified" - {
@@ -86,6 +106,27 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
             val expectedResult = userAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), authTypeTRD)
               .setValue(InferredAuthorisationTypePage(Index(1)), authTypeACR)
+
+            result mustBe expectedResult
+        }
+      }
+
+      "must not infer index 0 as TRD and index 1 as ACR when they are not present in reference data" in {
+        forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
+          (inlandMode, declarationType) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InlandModePage, inlandMode)
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, true)
+              .setValue(ProcedureTypePage, Simplified)
+
+            val service = new AuthorisationInferenceService()
+
+            val result = service.inferAuthorisations(userAnswers, Seq.empty)
+
+            val expectedResult = userAnswers
+              .setValue(InferredAuthorisationTypePage(Index(0)), None)
+              .setValue(InferredAuthorisationTypePage(Index(1)), None)
 
             result mustBe expectedResult
         }
@@ -169,6 +210,26 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
             result mustBe expectedResult
         }
       }
+
+      "must not infer index 0 as ACR when ACR is not present in reference data" in {
+        forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
+          (inlandMode, declarationType) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InlandModePage, inlandMode)
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, false)
+              .setValue(ProcedureTypePage, Simplified)
+
+            val service = new AuthorisationInferenceService()
+
+            val result = service.inferAuthorisations(userAnswers, Seq.empty)
+
+            val expectedResult = userAnswers
+              .setValue(InferredAuthorisationTypePage(Index(0)), None)
+
+            result mustBe expectedResult
+        }
+      }
     }
 
     "when reduced dataset indicator is 1 and inland mode is not Maritime/Rail/Air and ProcedureType is Simplified" - {
@@ -191,6 +252,26 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
             result mustBe expectedResult
         }
       }
+
+      "must not infer index 0 as ACR when ACR is not present in reference data" in {
+        forAll(arbitrary[InlandMode](arbitraryNonMaritimeRailAirInlandMode), declarationTypeGen) {
+          (inlandMode, declarationType) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InlandModePage, inlandMode)
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, true)
+              .setValue(ProcedureTypePage, Simplified)
+
+            val service = new AuthorisationInferenceService()
+
+            val result = service.inferAuthorisations(userAnswers, Seq.empty)
+
+            val expectedResult = userAnswers
+              .setValue(InferredAuthorisationTypePage(Index(0)), None)
+
+            result mustBe expectedResult
+        }
+      }
     }
 
     "when reduced dataset indicator is 0 and inland mode is not Maritime/Rail/Air and ProcedureType is Simplified" - {
@@ -209,6 +290,26 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val expectedResult = userAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), authTypeACR)
+
+            result mustBe expectedResult
+        }
+      }
+
+      "must not infer index 0 as ACR when ACR is not present in reference data" in {
+        forAll(arbitrary[InlandMode](arbitraryNonMaritimeRailAirInlandMode), declarationTypeGen) {
+          (inlandMode, declarationType) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InlandModePage, inlandMode)
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, false)
+              .setValue(ProcedureTypePage, Simplified)
+
+            val service = new AuthorisationInferenceService()
+
+            val result = service.inferAuthorisations(userAnswers, Seq.empty)
+
+            val expectedResult = userAnswers
+              .setValue(InferredAuthorisationTypePage(Index(0)), None)
 
             result mustBe expectedResult
         }
