@@ -24,6 +24,10 @@ object Constants {
   val STANDARD    = "A"
   val `PRE-LODGE` = "D"
 
+  val T1                = "T1"
+  val TIR               = "TIR"
+  val NoSecurityDetails = "0"
+
   val Maritime = "1"
   val Rail     = "2"
   val Air      = "4"

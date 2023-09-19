@@ -17,15 +17,15 @@
 package models.journeyDomain.transportMeans
 
 import base.SpecBase
+import config.Constants._
 import config.PhaseConfig
 import generators.Generators
-import models.SecurityDetailsType.{EntrySummaryDeclarationSecurityDetails, NoSecurityDetails}
+import models.Phase
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.transportMeans.active.Identification
 import models.reference.{CustomsOffice, Nationality}
 import models.transportMeans.BorderModeOfTransport
 import models.transportMeans.BorderModeOfTransport.{Air, _}
-import models.{Phase, SecurityDetailsType}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -101,29 +101,33 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           }
 
           "and security detail type is 1 and inland mode is Air" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(SecurityDetailsTypePage, EntrySummaryDeclarationSecurityDetails)
-              .setValue(BorderModeOfTransportPage, Air)
-              .setValue(IdentificationPage(index), identification)
-              .setValue(IdentificationNumberPage(index), identificationNumber)
-              .setValue(AddNationalityYesNoPage(index), true)
-              .setValue(NationalityPage(index), nationality)
-              .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
-              .setValue(ConveyanceReferenceNumberPage(index), conveyanceNumber)
+            val securityGen = arbitrary[String](arbitrarySomeSecurityDetailsType)
+            forAll(securityGen) {
+              securityType =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(SecurityDetailsTypePage, securityType)
+                  .setValue(BorderModeOfTransportPage, Air)
+                  .setValue(IdentificationPage(index), identification)
+                  .setValue(IdentificationNumberPage(index), identificationNumber)
+                  .setValue(AddNationalityYesNoPage(index), true)
+                  .setValue(NationalityPage(index), nationality)
+                  .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
+                  .setValue(ConveyanceReferenceNumberPage(index), conveyanceNumber)
 
-            val expectedResult = PostTransitionTransportMeansActiveDomain(
-              identification = identification,
-              identificationNumber = identificationNumber,
-              nationality = Option(nationality),
-              customsOffice = customsOffice,
-              conveyanceReferenceNumber = Some(conveyanceNumber)
-            )(index)
+                val expectedResult = PostTransitionTransportMeansActiveDomain(
+                  identification = identification,
+                  identificationNumber = identificationNumber,
+                  nationality = Option(nationality),
+                  customsOffice = customsOffice,
+                  conveyanceReferenceNumber = Some(conveyanceNumber)
+                )(index)
 
-            val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
-              TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
-            ).run(userAnswers)
+                val result: EitherType[TransportMeansActiveDomain] = UserAnswersReader[TransportMeansActiveDomain](
+                  TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig)
+                ).run(userAnswers)
 
-            result.value mustBe expectedResult
+                result.value mustBe expectedResult
+            }
           }
         }
 
@@ -231,7 +235,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
         "when security is in set {1,2,3}" - {
           "and border mode of transport is 4 (Air)" in {
-            val securityGen       = arbitrary[SecurityDetailsType.Value](arbitrarySomeSecurityDetailsType)
+            val securityGen       = arbitrary[String](arbitrarySomeSecurityDetailsType)
             val identificationGen = Gen.oneOf(Identification("40", "IATA flight number"), Identification("41", "Registration Number of the Aircraft"))
             forAll(securityGen, identificationGen) {
               (securityType, identification) =>
@@ -252,7 +256,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           }
 
           "and border mode of transport is not 4 (Air)" in {
-            val securityGen       = arbitrary[SecurityDetailsType.Value](arbitrarySomeSecurityDetailsType)
+            val securityGen       = arbitrary[String](arbitrarySomeSecurityDetailsType)
             val borderModeGen     = Gen.oneOf(BorderModeOfTransport.values.filterNot(_ == Air))
             val identificationGen = Gen.oneOf(Identification("40", "IATA flight number"), Identification("41", "Registration Number of the Aircraft"))
             forAll(securityGen, borderModeGen, identificationGen) {
@@ -517,7 +521,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         "can not be parsed from user answers" - {
           "when there is security and mode of transport is 4 (air)" - {
             "and conveyance reference number is undefined" in {
-              forAll(arbitrary[SecurityDetailsType.Value](arbitrarySomeSecurityDetailsType)) {
+              forAll(arbitrary[String](arbitrarySomeSecurityDetailsType)) {
                 securityType =>
                   val userAnswers = emptyUserAnswers
                     .setValue(SecurityDetailsTypePage, securityType)
@@ -547,7 +551,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
           "when mode of transport is not 4 (air)" - {
             "and add conveyance reference number yes/no is undefined" in {
-              forAll(arbitrary[SecurityDetailsType.Value], arbitrary[Option[BorderModeOfTransport]](arbitraryOptionalNonAirBorderModeOfTransport)) {
+              forAll(arbitrary[String](arbitrarySecurityDetailsType), arbitrary[Option[BorderModeOfTransport]](arbitraryOptionalNonAirBorderModeOfTransport)) {
                 (securityType, borderMode) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(SecurityDetailsTypePage, securityType)

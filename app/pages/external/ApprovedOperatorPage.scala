@@ -16,10 +16,10 @@
 
 package pages.external
 
-import pages.ReadOnlyPage
-import models.DeclarationType.TIR
-import play.api.libs.json.JsPath
+import config.Constants._
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
+import pages.ReadOnlyPage
+import play.api.libs.json.JsPath
 
 case object ApprovedOperatorPage extends ReadOnlyPage[Boolean] {
 

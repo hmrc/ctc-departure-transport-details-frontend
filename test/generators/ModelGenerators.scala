@@ -31,14 +31,19 @@ import uk.gov.hmrc.http.HttpVerbs._
 trait ModelGenerators {
   self: Generators =>
 
-  implicit lazy val arbitraryDeclarationType: Arbitrary[DeclarationType.Value] =
+  lazy val arbitraryDeclarationType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values.toSeq)
+      Gen.oneOf("T", "T1", "T2", "T2F", "TIR")
     }
 
-  lazy val arbitraryNonTIRDeclarationType: Arbitrary[DeclarationType.Value] =
+  lazy val arbitraryNonTIRDeclarationType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(DeclarationType.values.toSeq.filterNot(_ == DeclarationType.TIR))
+      Gen.oneOf("T", "T1", "T2", "T2F")
+    }
+
+  lazy val arbitraryAdditionalDeclarationType: Arbitrary[String] =
+    Arbitrary {
+      Gen.oneOf("A", "D")
     }
 
   implicit lazy val arbitraryLocalReferenceNumber: Arbitrary[LocalReferenceNumber] =
@@ -87,12 +92,12 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryProcedureType: Arbitrary[ProcedureType.Value] =
     Arbitrary {
-      Gen.oneOf(ProcedureType.values.toSeq)
+      Gen.oneOf(ProcedureType.values)
     }
 
-  implicit lazy val arbitrarySecurityDetailsType: Arbitrary[SecurityDetailsType.Value] =
+  lazy val arbitrarySecurityDetailsType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(SecurityDetailsType.values.toSeq)
+      Gen.oneOf("0", "1", "2", "3")
     }
 
   implicit lazy val arbitraryBorderModeOfTransport: Arbitrary[BorderModeOfTransport] =
@@ -229,9 +234,9 @@ trait ModelGenerators {
     Gen.oneOf(TaskStatus.InProgress, TaskStatus.NotStarted, TaskStatus.CannotStartYet)
   }
 
-  lazy val arbitrarySomeSecurityDetailsType: Arbitrary[SecurityDetailsType.Value] =
+  lazy val arbitrarySomeSecurityDetailsType: Arbitrary[String] =
     Arbitrary {
-      Gen.oneOf(SecurityDetailsType.values.toSeq.filterNot(_ == SecurityDetailsType.NoSecurityDetails))
+      Gen.oneOf("1", "2", "3")
     }
 
   implicit lazy val arbitraryOptionalBoolean: Arbitrary[OptionalBoolean] =

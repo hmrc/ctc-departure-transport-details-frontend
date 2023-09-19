@@ -17,11 +17,11 @@
 package models.journeyDomain
 
 import base.SpecBase
+import config.Constants._
 import generators.Generators
-import models.DeclarationType.TIR
+import models.OptionalBoolean
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.Country
-import models.{DeclarationType, OptionalBoolean}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
@@ -39,7 +39,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
     "can be parsed from user answers" - {
       "when using same UCR for all items " in {
         val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, arbitrary[DeclarationType.Value](arbitraryNonTIRDeclarationType).sample.value)
+          .setValue(DeclarationTypePage, arbitrary[String](arbitraryNonTIRDeclarationType).sample.value)
           .setValue(SameUcrYesNoPage, true)
           .setValue(UniqueConsignmentReferencePage, ucr)
           .setValue(TransportedToSameCountryYesNoPage, true)
@@ -154,7 +154,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           )
 
           val userAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, arbitrary[DeclarationType.Value](arbitraryNonTIRDeclarationType).sample.value)
+            .setValue(DeclarationTypePage, arbitrary[String](arbitraryNonTIRDeclarationType).sample.value)
             .setValue(SameUcrYesNoPage, true)
             .setValue(UniqueConsignmentReferencePage, ucr)
             .setValue(TransportedToSameCountryYesNoPage, true)

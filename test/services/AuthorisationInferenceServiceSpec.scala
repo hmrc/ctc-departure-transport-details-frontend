@@ -18,10 +18,10 @@ package services
 
 import base.SpecBase
 import generators.Generators
+import models.Index
 import models.ProcedureType.{Normal, Simplified}
 import models.reference.InlandMode
 import models.reference.authorisations.AuthorisationType
-import models.{DeclarationType, Index}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -31,7 +31,7 @@ import pages.transportMeans.InlandModePage
 
 class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val declarationTypeGen: Gen[DeclarationType.Value] = arbitrary[DeclarationType.Value](arbitraryNonTIRDeclarationType)
+  val declarationTypeGen: Gen[String] = arbitrary[String](arbitraryNonTIRDeclarationType)
 
   val authTypeACR: AuthorisationType = AuthorisationType(
     "C521",

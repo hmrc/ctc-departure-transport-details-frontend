@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import cats.implicits._
-import models.DeclarationType.TIR
+import config.Constants._
 import models.OptionalBoolean
 import models.domain.{UserAnswersReader, _}
 import models.reference.Country

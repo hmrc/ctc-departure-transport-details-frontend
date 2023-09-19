@@ -17,10 +17,10 @@
 package utils.cyaHelpers.transportMeans.active
 
 import base.SpecBase
+import config.Constants._
 import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import generators.Generators
-import models.SecurityDetailsType.NoSecurityDetails
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
 import models.reference.Nationality
 import models.reference.transportMeans.active.Identification
