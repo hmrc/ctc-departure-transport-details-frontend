@@ -85,7 +85,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
       "and identification type is defined" in {
         forAll(arbitrary[Nationality]) {
           nationality =>
-            val identificationType = Identification("11", "Name of the sea-going vessel")
+            val identificationType = Identification("11", "Name of a sea-going vessel")
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
               .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
@@ -98,7 +98,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
                 helper.listItems mustBe Seq(
                   Left(
                     ListItem(
-                      name = identificationType.toString,
+                      name = identificationType.asString,
                       changeUrl = routes.IdentificationNumberController.onPageLoad(userAnswers.lrn, mode, index).url,
                       removeUrl = Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(userAnswers.lrn, mode, index).url)
                     )
@@ -113,7 +113,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         val userAnswers = emptyUserAnswers
           .setValue(SecurityDetailsTypePage, NoSecurityDetails)
           .setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
-          .setValue(InferredIdentificationPage(index), Identification("21", "Train Number"))
+          .setValue(InferredIdentificationPage(index), Identification("21", "Train number"))
           .setValue(IdentificationNumberPage(index), identificationNumber)
 
         forAll(arbitrary[Mode]) {
@@ -132,7 +132,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
       }
 
       "and identification type and identification number is defined" in {
-        val identificationType   = Identification("11", "Name of the sea-going vessel")
+        val identificationType   = Identification("11", "Name of a sea-going vessel")
         val identificationNumber = nonEmptyString.sample.value
         val userAnswers = emptyUserAnswers
           .setValue(SecurityDetailsTypePage, NoSecurityDetails)
@@ -146,7 +146,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
             helper.listItems mustBe Seq(
               Left(
                 ListItem(
-                  name = s"${identificationType.toString} - $identificationNumber",
+                  name = s"${identificationType.asString} - $identificationNumber",
                   changeUrl = routes.AddNationalityYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
                   removeUrl = Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(userAnswers.lrn, mode, index).url)
                 )

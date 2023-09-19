@@ -62,7 +62,7 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
     }
 
     "when description contains raw HTML" in {
-      val authorisationType = AuthorisationType("3", "one &amp; two")
+      val authorisationType = AuthorisationType("test", "one &amp; two")
       authorisationType.toString mustBe "one & two"
     }
   }

@@ -62,7 +62,7 @@ class PaymentMethodSpec extends SpecBase with ScalaCheckPropertyChecks {
     }
 
     "when description contains raw HTML" in {
-      val paymentMethod = PaymentMethod("3", "one &amp; two")
+      val paymentMethod = PaymentMethod("test", "one &amp; two")
       paymentMethod.toString mustBe "one & two"
     }
   }

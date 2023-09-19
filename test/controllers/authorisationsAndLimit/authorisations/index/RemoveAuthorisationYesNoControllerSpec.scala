@@ -52,7 +52,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
   )
 
   val authTypeSSE: AuthorisationType =
-    AuthorisationType("C524", "SSE")
+    AuthorisationType("C524", "SSE - authorisation for the use of seals of a special type")
 
   val authTypeTRD: AuthorisationType = AuthorisationType(
     "C524",

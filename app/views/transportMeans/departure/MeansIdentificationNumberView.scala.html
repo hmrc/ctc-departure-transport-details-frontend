@@ -50,7 +50,7 @@
             inputTextType = InputTextViewModel.apply(
                 heading = messages(viewModel.heading),
                 caption = Some(messages("departureMeansOfTransport.caption")),
-                additionalHtml = viewModel.identification.map(_.toString).map(insetText(_))
+                additionalHtml = viewModel.identification.map(_.asString).map(insetText(_))
             ),
             inputClass = InputSize.Width20,
             hint = Some(messages(phaseConfig.departureIdentificationNumberHint))

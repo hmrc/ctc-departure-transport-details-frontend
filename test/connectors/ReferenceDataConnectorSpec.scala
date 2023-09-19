@@ -426,11 +426,11 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
              |  "data": [
              |    {
              |      "method":"A",
-             |      "description":"Payment in cash"
+             |      "description":"Cash"
              |    },
              |    {
              |      "method":"B",
-             |      "description":"Payment by credit card"
+             |      "description":"Credit card"
              |    }
              |  ]
              |}
@@ -442,8 +442,8 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         val expectedResult: Seq[PaymentMethod] = Seq(
-          PaymentMethod("A", "Payment in cash"),
-          PaymentMethod("B", "Payment by credit card")
+          PaymentMethod("A", "Cash"),
+          PaymentMethod("B", "Credit card")
         )
 
         connector.getPaymentMethods().futureValue mustEqual expectedResult

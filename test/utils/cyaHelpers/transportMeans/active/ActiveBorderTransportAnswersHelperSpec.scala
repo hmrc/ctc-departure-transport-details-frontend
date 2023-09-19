@@ -113,7 +113,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Identification type".toText),
-                  value = Value(activeIdentification.toString.toText),
+                  value = Value(activeIdentification.asString.toText),
                   actions = Some(
                     Actions(
                       items = List(

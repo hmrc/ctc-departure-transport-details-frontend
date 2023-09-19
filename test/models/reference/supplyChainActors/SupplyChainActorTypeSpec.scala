@@ -62,7 +62,7 @@ class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
     }
 
     "when description contains raw HTML" in {
-      val supplyChainActorType = SupplyChainActorType("3", "one &amp; two")
+      val supplyChainActorType = SupplyChainActorType("test", "one &amp; two")
       supplyChainActorType.toString mustBe "one & two"
     }
   }

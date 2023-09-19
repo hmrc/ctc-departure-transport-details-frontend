@@ -41,7 +41,7 @@ import scala.concurrent.Future
 class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val identificationType1 = Identification("40", "IATA flight number")
-  private val identificationType2 = Identification("41", "Registration Number of the Aircraft")
+  private val identificationType2 = Identification("41", "Registration number of an aircraft")
   private val identificationTypes = Seq(identificationType1, identificationType2)
 
   private val formProvider             = new EnumerableFormProvider()

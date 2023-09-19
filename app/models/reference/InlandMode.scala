@@ -34,5 +34,5 @@ case class InlandMode(code: String, description: String) extends Radioable[Inlan
 object InlandMode extends DynamicEnumerableType[InlandMode] {
   implicit val format: Format[InlandMode] = Json.format[InlandMode]
 
-  val messageKeyPrefix = "inlandMode"
+  val messageKeyPrefix = "transportMeans.inlandMode"
 }

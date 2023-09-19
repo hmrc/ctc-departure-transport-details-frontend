@@ -26,8 +26,5 @@ import scala.concurrent.{ExecutionContext, Future}
 class PaymentMethodsService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
   def getPaymentMethods()(implicit hc: HeaderCarrier): Future[Seq[PaymentMethod]] =
-    referenceDataConnector.getPaymentMethods().map(sort)
-
-  private def sort(paymentMethods: Seq[PaymentMethod]): Seq[PaymentMethod] =
-    paymentMethods.sortBy(_.code.toLowerCase)
+    referenceDataConnector.getPaymentMethods()
 }

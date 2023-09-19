@@ -62,7 +62,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
     }
 
     "when description contains raw HTML" in {
-      val identification = Identification("3", "one &amp; two")
+      val identification = Identification("test", "one &amp; two")
       identification.toString mustBe "one & two"
     }
   }

@@ -38,8 +38,8 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[Identification] {
     values.toRadioItems(fieldId, checkedValue)
 
   override def values: Seq[Identification] = Seq(
-    Identification("11", "Name of the sea-going vessel"),
-    Identification("20", "Wagon Number")
+    Identification("11", "Name of a sea-going vessel"),
+    Identification("20", "Wagon number")
   )
 
   behave like pageWithTitle()

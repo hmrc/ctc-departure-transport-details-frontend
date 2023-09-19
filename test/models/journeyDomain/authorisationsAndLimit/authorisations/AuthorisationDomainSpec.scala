@@ -42,13 +42,13 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
     "userAnswersReader" - {
 
-      val authTypeACR = AuthorisationType("C521", "ACR")
-      val authTypeTRD = AuthorisationType("C524", "TRD")
+      val authTypeACR = AuthorisationType("C521", "ACR - authorisation for the status of authorised consignor for Union transit")
+      val authTypeTRD = AuthorisationType("C524", "TRD - authorisation to use transit declaration with a reduced dataset")
 
       val referenceNumber    = Gen.alphaNumStr.sample.value.take(maxAuthorisationRefNumberLength)
-      val maritimeInlandMode = InlandMode("1", "Maritime Transport")
-      val railInlandMode     = InlandMode("2", "Rail Transport")
-      val airInlandMode      = InlandMode("4", "Air transport")
+      val maritimeInlandMode = InlandMode("1", "Maritime")
+      val railInlandMode     = InlandMode("2", "Rail")
+      val airInlandMode      = InlandMode("4", "Air")
       val diffInlandMode     = arbitraryNonMaritimeRailAirInlandMode.arbitrary.sample.value
 
       val inlandModes                  = Seq(maritimeInlandMode, railInlandMode, airInlandMode, diffInlandMode)

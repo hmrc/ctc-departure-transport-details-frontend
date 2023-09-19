@@ -59,7 +59,7 @@ class InlandModePageSpec extends PageBehaviours {
 
     "when answer changes to Mail" - {
       "must remove departure, active and authorisationsAndLimit sections" in {
-        val mailInlandMode = InlandMode("5", "Mail (Active mode of transport unknown)")
+        val mailInlandMode = InlandMode("5", "Mail (active mode of transport unknown)")
 
         forAll(arbitrary[InlandMode].suchThat(_.code != "5")) {
           inlandMode =>

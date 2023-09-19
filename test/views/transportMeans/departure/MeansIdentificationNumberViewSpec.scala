@@ -104,6 +104,6 @@ class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] 
 
     behave like pageWithHeading(doc, prefix)
 
-    behave like pageWithInsetText(doc, identification.toString)
+    behave like pageWithInsetText(doc, identification.asString)
   }
 }

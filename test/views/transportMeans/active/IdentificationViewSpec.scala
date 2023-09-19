@@ -38,8 +38,8 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[Identification] {
     values.toRadioItems(fieldId, checkedValue)
 
   override def values: Seq[Identification] = Seq(
-    Identification("80", "European Vessel Identification Number (ENI Code)"),
-    Identification("81", "Name of the inland waterways vessel")
+    Identification("80", "European vessel identification number (ENI Code)"),
+    Identification("81", "Name of an inland waterways vehicle")
   )
 
   behave like pageWithTitle()

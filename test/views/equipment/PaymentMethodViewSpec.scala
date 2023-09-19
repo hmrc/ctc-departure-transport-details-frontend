@@ -38,8 +38,8 @@ class PaymentMethodViewSpec extends EnumerableViewBehaviours[PaymentMethod] {
     values.toRadioItems(fieldId, checkedValue)
 
   override def values: Seq[PaymentMethod] = Seq(
-    PaymentMethod("A", "Payment in cash"),
-    PaymentMethod("B", "Payment by credit card")
+    PaymentMethod("A", "Cash"),
+    PaymentMethod("B", "Credit card")
   )
 
   behave like pageWithTitle()

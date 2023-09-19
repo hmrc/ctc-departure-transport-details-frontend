@@ -35,9 +35,9 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
   private val containerId = nonEmptyString.sample.value
   private val sealId      = nonEmptyString.sample.value
-  private val authTypeACR = AuthorisationType("C521", "ACR")
-  private val authTypeSSE = AuthorisationType("C523", "SSE")
-  private val authTypeTRD = AuthorisationType("C524", "TRD")
+  private val authTypeACR = AuthorisationType("C521", "ACR - authorisation for the status of authorised consignor for Union transit")
+  private val authTypeSSE = AuthorisationType("C523", "SSE - authorisation for the use of seals of a special type")
+  private val authTypeTRD = AuthorisationType("C524", "TRD - authorisation to use transit declaration with a reduced dataset")
 
   "Equipment domain" - {
 

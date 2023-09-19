@@ -216,7 +216,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Mode".toText),
-                  value = Value(s"$inlandMode".toText),
+                  value = Value(s"${inlandMode.asString}".toText),
                   actions = Some(
                     Actions(
                       items = List(
@@ -439,7 +439,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Identification type".toText),
-                  value = Value(departureIdentification.toString.toText),
+                  value = Value(departureIdentification.asString.toText),
                   actions = Some(
                     Actions(
                       items = List(

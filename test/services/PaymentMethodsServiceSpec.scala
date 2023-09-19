@@ -31,13 +31,13 @@ class PaymentMethodsServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new PaymentMethodsService(mockRefDataConnector)
 
-  private val paymentMethod1 = PaymentMethod("Z", "Not pre-paid")
-  private val paymentMethod2 = PaymentMethod("Y", "Account holder with carrier")
-  private val paymentMethod3 = PaymentMethod("H", "Electronic credit transfer")
-  private val paymentMethod4 = PaymentMethod("D", "Other")
-  private val paymentMethod5 = PaymentMethod("C", "Payment by cheque")
-  private val paymentMethod6 = PaymentMethod("B", "Payment by credit card")
-  private val paymentMethod7 = PaymentMethod("A", "Payment in cash")
+  private val paymentMethod1 = PaymentMethod("A", "Cash")
+  private val paymentMethod2 = PaymentMethod("B", "Credit card")
+  private val paymentMethod3 = PaymentMethod("C", "Cheque")
+  private val paymentMethod4 = PaymentMethod("H", "Electronic credit transfer")
+  private val paymentMethod5 = PaymentMethod("Y", "Account holder with carrier")
+  private val paymentMethod6 = PaymentMethod("Z", "Not pre-paid")
+  private val paymentMethod7 = PaymentMethod("D", "Other")
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -47,12 +47,12 @@ class PaymentMethodsServiceSpec extends SpecBase with BeforeAndAfterEach {
   "PaymentMethodsService" - {
 
     "getPaymentMethods" - {
-      "must return a list of sorted payment methods" in {
+      "must return a list of payment methods" in {
         when(mockRefDataConnector.getPaymentMethods()(any(), any()))
           .thenReturn(Future.successful(Seq(paymentMethod1, paymentMethod2, paymentMethod3, paymentMethod4, paymentMethod5, paymentMethod6, paymentMethod7)))
 
         service.getPaymentMethods().futureValue mustBe
-          Seq(paymentMethod7, paymentMethod6, paymentMethod5, paymentMethod4, paymentMethod3, paymentMethod2, paymentMethod1)
+          Seq(paymentMethod1, paymentMethod2, paymentMethod3, paymentMethod4, paymentMethod5, paymentMethod6, paymentMethod7)
 
         verify(mockRefDataConnector).getPaymentMethods()(any(), any())
       }

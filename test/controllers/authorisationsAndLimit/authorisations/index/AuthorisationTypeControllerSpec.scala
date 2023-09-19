@@ -40,9 +40,9 @@ import scala.concurrent.Future
 
 class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val authorisationType1 = AuthorisationType("C521", "ACR")
-  private val authorisationType2 = AuthorisationType("C523", "SSE")
-  private val authorisationType3 = AuthorisationType("C524", "TRD")
+  private val authorisationType1 = AuthorisationType("C521", "ACR - authorisation for the status of authorised consignor for Union transit")
+  private val authorisationType2 = AuthorisationType("C523", "SSE - authorisation for the use of seals of a special type")
+  private val authorisationType3 = AuthorisationType("C524", "TRD - authorisation to use transit declaration with a reduced dataset")
   private val authorisationTypes = Seq(authorisationType1, authorisationType2, authorisationType3)
 
   private val formProvider                                = new EnumerableFormProvider()

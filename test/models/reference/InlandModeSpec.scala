@@ -62,7 +62,7 @@ class InlandModeSpec extends SpecBase with ScalaCheckPropertyChecks {
     }
 
     "when description contains raw HTML" in {
-      val inlandMode = InlandMode("3", "one &amp; two")
+      val inlandMode = InlandMode("test", "one &amp; two")
       inlandMode.toString mustBe "one & two"
     }
   }

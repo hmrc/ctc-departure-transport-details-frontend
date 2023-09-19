@@ -960,7 +960,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val result  = helper.paymentMethod.get
 
               result.key.value mustBe "Payment method"
-              result.value.value mustBe paymentMethod.toString
+              result.value.value mustBe paymentMethod.asString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

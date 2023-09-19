@@ -52,7 +52,7 @@ class IdentificationNumberController @Inject() (
     .requireData(lrn)
     .andThen(getMandatoryPage(SupplyChainActorTypePage(actorIndex))) {
       implicit request =>
-        val supplyChainActor = request.arg.toString.toLowerCase
+        val supplyChainActor = request.arg.asString.toLowerCase
 
         val preparedForm = request.userAnswers.get(IdentificationNumberPage(actorIndex)) match {
           case None        => form

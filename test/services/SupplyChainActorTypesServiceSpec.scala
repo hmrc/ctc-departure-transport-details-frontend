@@ -31,9 +31,9 @@ class SupplyChainActorTypesServiceSpec extends SpecBase with BeforeAndAfterEach 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new SupplyChainActorTypesService(mockRefDataConnector)
 
-  private val supplyChainActorType1 = SupplyChainActorType("WH", "Warehouse Keeper")
+  private val supplyChainActorType1 = SupplyChainActorType("WH", "Warehouse keeper")
   private val supplyChainActorType2 = SupplyChainActorType("MF", "Manufacturer")
-  private val supplyChainActorType3 = SupplyChainActorType("FW", "Freight Forwarder")
+  private val supplyChainActorType3 = SupplyChainActorType("FW", "Freight forwarder")
   private val supplyChainActorType4 = SupplyChainActorType("CS", "Consolidator")
 
   override def beforeEach(): Unit = {

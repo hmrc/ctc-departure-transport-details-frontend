@@ -38,8 +38,8 @@ class SupplyChainActorTypeViewSpec extends EnumerableViewBehaviours[SupplyChainA
     values.toRadioItems(fieldId, checkedValue)
 
   override def values: Seq[SupplyChainActorType] = Seq(
-    SupplyChainActorType("FW", "Freight Forwarder"),
-    SupplyChainActorType("WH", "Warehouse Keeper")
+    SupplyChainActorType("FW", "Freight forwarder"),
+    SupplyChainActorType("WH", "Warehouse keeper")
   )
 
   behave like pageWithTitle()

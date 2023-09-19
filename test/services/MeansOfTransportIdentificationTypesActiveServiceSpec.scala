@@ -32,12 +32,12 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new MeansOfTransportIdentificationTypesActiveService(mockRefDataConnector)
 
-  private val identification1 = Identification("41", "Registration Number of the Aircraft")
+  private val identification1 = Identification("41", "Registration number of an aircraft")
   private val identification2 = Identification("40", "IATA flight number")
-  private val identification3 = Identification("30", "Registration Number of the Road Vehicle")
-  private val identification4 = Identification("21", "Train Number")
-  private val identification5 = Identification("11", "Name of the sea-going vessel")
-  private val identification6 = Identification("10", "IMO Ship Identification Number")
+  private val identification3 = Identification("30", "Registration number of a road vehicle")
+  private val identification4 = Identification("21", "Train number")
+  private val identification5 = Identification("11", "Name of a sea-going vessel")
+  private val identification6 = Identification("10", "IMO ship identification number")
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
