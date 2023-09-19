@@ -26,7 +26,6 @@ import navigation.TransportMeansActiveNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.active.{IdentificationPage, InferredIdentificationPage}
@@ -41,8 +40,9 @@ import scala.concurrent.Future
 
 class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val identificationTypes = arbitrary[Seq[Identification]].sample.value
-  private val identificationType  = identificationTypes.head
+  private val identificationType1 = Identification("40", "IATA flight number")
+  private val identificationType2 = Identification("41", "Registration Number of the Aircraft")
+  private val identificationTypes = Seq(identificationType1, identificationType2)
 
   private val formProvider             = new EnumerableFormProvider()
   private val form                     = formProvider[Identification]("transportMeans.active.identification", identificationTypes)
@@ -68,7 +68,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     "when value is inferred" - {
       "must redirect to next page" in {
         when(mockMeansOfTransportIdentificationTypesActiveService.getMeansOfTransportIdentificationTypesActive(any(), any())(any()))
-          .thenReturn(Future.successful(Seq(identificationType)))
+          .thenReturn(Future.successful(Seq(identificationType1)))
 
         val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
         setExistingUserAnswers(userAnswers)
@@ -83,7 +83,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.getValue(InferredIdentificationPage(activeIndex)) mustBe identificationType
+        userAnswersCaptor.getValue.getValue(InferredIdentificationPage(activeIndex)) mustBe identificationType1
         userAnswersCaptor.getValue.get(IdentificationPage(activeIndex)) must not be defined
       }
     }
@@ -114,14 +114,14 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       val userAnswers = emptyUserAnswers
         .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Air)
-        .setValue(IdentificationPage(activeIndex), identificationType)
+        .setValue(IdentificationPage(activeIndex), identificationType1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, identificationRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> identificationType.code))
+      val filledForm = form.bind(Map("value" -> identificationType1.code))
 
       val view = injector.instanceOf[IdentificationView]
 
@@ -142,7 +142,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, identificationRoute)
-        .withFormUrlEncodedBody(("value", identificationType.code))
+        .withFormUrlEncodedBody(("value", identificationType1.code))
 
       val result = route(app, request).value
 
@@ -189,7 +189,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, identificationRoute)
-        .withFormUrlEncodedBody(("value", identificationType.code))
+        .withFormUrlEncodedBody(("value", identificationType1.code))
 
       val result = route(app, request).value
 

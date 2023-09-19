@@ -25,7 +25,6 @@ import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
 import pages.external.DeclarationTypePage
@@ -40,9 +39,9 @@ import scala.concurrent.Future
 
 class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
-  private val authorisationType1 = arbitrary[AuthorisationType].sample.value
-  private val authorisationType2 = arbitrary[AuthorisationType].sample.value
-  private val authorisationType3 = arbitrary[AuthorisationType].sample.value
+  private val authorisationType1 = AuthorisationType("C521", "ACR")
+  private val authorisationType2 = AuthorisationType("C523", "SSE")
+  private val authorisationType3 = AuthorisationType("C524", "TRD")
   private val authorisationTypes = Seq(authorisationType1, authorisationType2, authorisationType3)
 
   private val formProvider                                = new EnumerableFormProvider()
