@@ -16,7 +16,7 @@
 
 package services
 
-import config.Constants.Fixed
+import config.Constants._
 import connectors.ReferenceDataConnector
 import models.reference.InlandMode
 import models.reference.transportMeans.departure.Identification
@@ -35,8 +35,8 @@ class MeansOfTransportIdentificationTypesService @Inject() (referenceDataConnect
     inlandMode: Option[InlandMode]
   ): Seq[Identification] =
     inlandMode match {
-      case Some(InlandMode(code, _)) if code != Fixed => identificationTypes.filter(_.code.startsWith(code))
-      case _                                          => identificationTypes
+      case Some(InlandMode(code, _)) if code != Fixed && code != Unknown => identificationTypes.filter(_.code.startsWith(code))
+      case _                                                             => identificationTypes.filterNot(_.code == UnknownIdentification)
     }
 
   private def sort(identificationTypes: Seq[Identification]): Seq[Identification] =

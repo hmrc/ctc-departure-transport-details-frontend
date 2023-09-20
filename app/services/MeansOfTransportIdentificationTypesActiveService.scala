@@ -16,6 +16,7 @@
 
 package services
 
+import config.Constants.UnknownIdentificationActive
 import connectors.ReferenceDataConnector
 import models.Index
 import models.reference.transportMeans.active.Identification
@@ -39,11 +40,12 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
   ): Seq[Identification] =
     if (index.isFirst) {
       borderModeOfTransport match {
-        case Some(borderMode) => identificationTypes.filter(_.code.startsWith(borderMode.borderModeType.toString))
-        case _                => identificationTypes
+        case Some(borderMode) =>
+          identificationTypes.filterNot(_.code == UnknownIdentificationActive).filter(_.code.startsWith(borderMode.borderModeType.toString))
+        case _ => identificationTypes.filterNot(_.code == UnknownIdentificationActive)
       }
     } else {
-      identificationTypes
+      identificationTypes.filterNot(_.code == UnknownIdentificationActive)
     }
 
   private def sort(identificationTypes: Seq[Identification]): Seq[Identification] =

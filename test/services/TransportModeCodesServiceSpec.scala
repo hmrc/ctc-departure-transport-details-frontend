@@ -38,6 +38,7 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val inlandMode5 = InlandMode("3", "Road")
   private val inlandMode6 = InlandMode("2", "Rail")
   private val inlandMode7 = InlandMode("1", "Maritime")
+  private val inlandMode8 = InlandMode("9", "Mode unknown (Own propulsion)")
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -47,9 +48,9 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
   "TransportModeCodesService" - {
 
     "getTransportModeCodes" - {
-      "must return a list of sorted inland modes" in {
+      "must return a list of sorted inland modes excluding Unknown" in {
         when(mockRefDataConnector.getTransportModeCodes()(any(), any()))
-          .thenReturn(Future.successful(Seq(inlandMode1, inlandMode2, inlandMode3, inlandMode4, inlandMode5, inlandMode6, inlandMode7)))
+          .thenReturn(Future.successful(Seq(inlandMode1, inlandMode2, inlandMode3, inlandMode4, inlandMode5, inlandMode6, inlandMode7, inlandMode8)))
 
         service.getTransportModeCodes().futureValue mustBe
           Seq(inlandMode7, inlandMode6, inlandMode5, inlandMode4, inlandMode3, inlandMode2, inlandMode1)

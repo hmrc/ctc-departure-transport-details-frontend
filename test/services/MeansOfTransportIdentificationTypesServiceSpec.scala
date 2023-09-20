@@ -22,6 +22,7 @@ import models.reference.InlandMode
 import models.reference.transportMeans.departure.Identification
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Gen
 import org.scalatest.BeforeAndAfterEach
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -42,6 +43,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
   private val identification8  = Identification("20", "Wagon number")
   private val identification9  = Identification("11", "Name of a sea-going vessel")
   private val identification10 = Identification("10", "IMO ship identification number")
+  private val identification11 = Identification("99", "Unknown – Valid only during the Transitional Period")
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -145,6 +147,49 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
 
         service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
           Seq(identification2, identification1)
+
+        verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
+      }
+
+      "must return a list of sorted identification types excluding Unknown identification when InlandMode is Fixed, Unknown or None" in {
+        val inlandModeFixed =
+          Some(InlandMode("7", "Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods"))
+        val inlandModeUnknown = Some(InlandMode("9", "Mode unknown (Own propulsion)"))
+        val inlandModeNone    = None
+        val inlandMode        = Gen.oneOf(inlandModeFixed, inlandModeUnknown, inlandModeNone).sample.value
+
+        when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
+          .thenReturn(
+            Future.successful(
+              Seq(
+                identification1,
+                identification2,
+                identification3,
+                identification4,
+                identification5,
+                identification6,
+                identification7,
+                identification8,
+                identification9,
+                identification10,
+                identification11
+              )
+            )
+          )
+
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
+          Seq(
+            identification10,
+            identification9,
+            identification8,
+            identification7,
+            identification6,
+            identification5,
+            identification4,
+            identification3,
+            identification2,
+            identification1
+          )
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
       }

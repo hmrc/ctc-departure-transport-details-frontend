@@ -38,6 +38,7 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
   private val identification4 = Identification("21", "Train number")
   private val identification5 = Identification("11", "Name of a sea-going vessel")
   private val identification6 = Identification("10", "IMO ship identification number")
+  private val identification7 = Identification("99", "Unknown – Valid only during the Transitional Period")
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -47,11 +48,11 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
   "MeansOfTransportIdentificationTypesService" - {
 
     "getMeansOfTransportIdentificationTypes" - {
-      "must return a list of sorted identification types beginning with number 1 when BorderModeOfTransport is Sea" in {
+      "must return a list of sorted identification types beginning with number 1 and exclude Unknown identification when BorderModeOfTransport is Sea" in {
         val borderMode = Sea
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
-          .thenReturn(Future.successful(Seq(identification5, identification6)))
+          .thenReturn(Future.successful(Seq(identification5, identification6, identification7)))
 
         service.getMeansOfTransportIdentificationTypesActive(activeIndex, Some(borderMode)).futureValue mustBe
           Seq(identification6, identification5)
@@ -59,11 +60,11 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
       }
 
-      "must return a list of sorted identification types beginning with number 2 when BorderModeOfTransport is ChannelTunnel" in {
+      "must return a list of sorted identification types beginning with number 2 and exclude Unknown identification when BorderModeOfTransport is ChannelTunnel" in {
         val borderMode = ChannelTunnel
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
-          .thenReturn(Future.successful(Seq(identification4)))
+          .thenReturn(Future.successful(Seq(identification4, identification7)))
 
         service.getMeansOfTransportIdentificationTypesActive(activeIndex, Some(borderMode)).futureValue mustBe
           Seq(identification4)
@@ -71,11 +72,11 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
       }
 
-      "must return a list of sorted identification types beginning with number 3 when BorderModeOfTransport is IrishLandBoundary" in {
+      "must return a list of sorted identification types beginning with number 3 and exclude Unknown identification when BorderModeOfTransport is IrishLandBoundary" in {
         val borderMode = IrishLandBoundary
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
-          .thenReturn(Future.successful(Seq(identification3)))
+          .thenReturn(Future.successful(Seq(identification3, identification7)))
 
         service.getMeansOfTransportIdentificationTypesActive(activeIndex, Some(borderMode)).futureValue mustBe
           Seq(identification3)
@@ -83,11 +84,11 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
       }
 
-      "must return a list of sorted identification types beginning with number 4 when BorderModeOfTransport is Air" in {
+      "must return a list of sorted identification types beginning with number 4 and exclude Unknown identification when BorderModeOfTransport is Air" in {
         val borderMode = Air
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
-          .thenReturn(Future.successful(Seq(identification1, identification2)))
+          .thenReturn(Future.successful(Seq(identification1, identification2, identification7)))
 
         service.getMeansOfTransportIdentificationTypesActive(activeIndex, Some(borderMode)).futureValue mustBe
           Seq(identification2, identification1)
@@ -95,13 +96,15 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
       }
 
-      "must return a full list of sorted identification types when BorderModeOfTransport is None" in {
+      "must return a list of sorted identification types excluding Unknown identification when BorderModeOfTransport is None" in {
 
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
-          .thenReturn(Future.successful(Seq(identification1, identification2, identification3, identification4)))
+          .thenReturn(
+            Future.successful(Seq(identification1, identification2, identification3, identification4, identification5, identification6, identification7))
+          )
 
         service.getMeansOfTransportIdentificationTypesActive(activeIndex, None).futureValue mustBe
-          Seq(identification4, identification3, identification2, identification1)
+          Seq(identification6, identification5, identification4, identification3, identification2, identification1)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypesActive()(any(), any())
       }
