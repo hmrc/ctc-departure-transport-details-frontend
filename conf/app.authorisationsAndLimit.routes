@@ -7,4 +7,4 @@ GET        /authorisations/change-add/:lrn                            controller
 POST       /authorisations/change-add/:lrn                            controllers.authorisationsAndLimit.AddAuthorisationsYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /authorisations/infer/:lrn                                 controllers.authorisationsAndLimit.AuthorisationInferenceController.infer(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /authorisations/change-add/:lrn                            controllers.authorisationsAndLimit.AuthorisationInferenceController.infer(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+GET        /authorisations/change-infer/:lrn                          controllers.authorisationsAndLimit.AuthorisationInferenceController.infer(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
