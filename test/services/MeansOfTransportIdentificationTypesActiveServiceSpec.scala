@@ -120,8 +120,8 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
         }
       }
 
-      "when the first index position already has an entry" - {
-        "must return a list of sorted identification types excluding Unknown identification when it is not the first index position" in {
+      "when it is not the first index position" - {
+        "must return a list of sorted identification types excluding Unknown identification" in {
 
           when(mockRefDataConnector.getMeansOfTransportIdentificationTypesActive()(any(), any()))
             .thenReturn(

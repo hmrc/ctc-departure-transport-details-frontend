@@ -40,14 +40,10 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
   ): Seq[Identification] = {
     val identificationTypesExcludingUnknown = identificationTypes.filterNot(_.code == UnknownIdentificationActive)
 
-    if (index.isFirst) {
-      borderModeOfTransport match {
-        case Some(borderMode) =>
-          identificationTypesExcludingUnknown.filter(_.code.startsWith(borderMode.borderModeType.toString))
-        case _ => identificationTypesExcludingUnknown
-      }
-    } else {
-      identificationTypesExcludingUnknown
+    borderModeOfTransport match {
+      case Some(borderMode) if index.isFirst =>
+        identificationTypesExcludingUnknown.filter(_.code.startsWith(borderMode.borderModeType.toString))
+      case _ => identificationTypesExcludingUnknown
     }
   }
 
