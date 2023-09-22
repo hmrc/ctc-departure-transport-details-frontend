@@ -37,16 +37,19 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
     identificationTypes: Seq[Identification],
     index: Index,
     borderModeOfTransport: Option[BorderModeOfTransport]
-  ): Seq[Identification] =
+  ): Seq[Identification] = {
+    val identificationTypesExcludingUnknown = identificationTypes.filterNot(_.code == UnknownIdentificationActive)
+
     if (index.isFirst) {
       borderModeOfTransport match {
         case Some(borderMode) =>
-          identificationTypes.filterNot(_.code == UnknownIdentificationActive).filter(_.code.startsWith(borderMode.borderModeType.toString))
-        case _ => identificationTypes.filterNot(_.code == UnknownIdentificationActive)
+          identificationTypesExcludingUnknown.filter(_.code.startsWith(borderMode.borderModeType.toString))
+        case _ => identificationTypesExcludingUnknown
       }
     } else {
-      identificationTypes.filterNot(_.code == UnknownIdentificationActive)
+      identificationTypesExcludingUnknown
     }
+  }
 
   private def sort(identificationTypes: Seq[Identification]): Seq[Identification] =
     identificationTypes.sortBy(_.code.toLowerCase)
