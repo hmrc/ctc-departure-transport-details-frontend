@@ -18,7 +18,6 @@ package models.journeyDomain.authorisationsAndLimit.authorisations
 
 import base.SpecBase
 import generators.Generators
-import models.SecurityDetailsType._
 import models.authorisations.AuthorisationType
 import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain

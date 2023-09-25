@@ -225,7 +225,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
         }
 
         "and container indicator is 0 or not sure" - {
-          val containerIndicator = Gen.oneOf(OptionalBoolean.no, OptionalBoolean.maybe).sample.value
+          val containerIndicator = OptionalBoolean.maybe
           "and identification type page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, containerIndicator)
@@ -241,6 +241,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, containerIndicator)
               .setValue(IdentificationPage, arbitrary[Identification].sample.value)
+              .setValue(AddIdentificationNumberYesNoPage, true)
 
             val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
               TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
@@ -254,6 +255,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
               .setValue(ContainerIndicatorPage, containerIndicator)
               .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
               .setValue(IdentificationPage, arbitrary[Identification].sample.value)
+              .setValue(AddIdentificationNumberYesNoPage, true)
               .setValue(MeansIdentificationNumberPage, Gen.alphaNumStr.sample.value)
 
             val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](

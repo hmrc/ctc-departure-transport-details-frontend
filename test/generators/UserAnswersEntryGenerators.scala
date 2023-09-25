@@ -16,7 +16,6 @@
 
 package generators
 
-import config.Constants.{`PRE-LODGE`, STANDARD}
 import models._
 import models.authorisations.AuthorisationType
 import models.equipment.PaymentMethod
@@ -43,12 +42,12 @@ trait UserAnswersEntryGenerators {
     import pages.external._
     {
       case ApprovedOperatorPage          => arbitrary[Boolean].map(JsBoolean)
-      case DeclarationTypePage           => arbitrary[DeclarationType].map(Json.toJson(_))
+      case DeclarationTypePage           => arbitrary[String](arbitraryDeclarationType).map(Json.toJson(_))
       case OfficeOfDestinationPage       => arbitrary[CustomsOffice].map(Json.toJson(_))
       case OfficeOfDepartureInCL010Page  => arbitrary[Boolean].map(JsBoolean)
       case ProcedureTypePage             => arbitrary[ProcedureType].map(Json.toJson(_))
-      case SecurityDetailsTypePage       => arbitrary[SecurityDetailsType].map(Json.toJson(_))
-      case AdditionalDeclarationTypePage => Gen.oneOf(STANDARD, `PRE-LODGE`).map(JsString)
+      case SecurityDetailsTypePage       => arbitrary[String](arbitrarySecurityDetailsType).map(Json.toJson(_))
+      case AdditionalDeclarationTypePage => arbitrary[String](arbitraryAdditionalDeclarationType).map(Json.toJson(_))
     }
   }
 

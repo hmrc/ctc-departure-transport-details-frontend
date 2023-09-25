@@ -17,11 +17,11 @@
 package models.journeyDomain
 
 import base.SpecBase
+import config.Constants._
 import generators.Generators
-import models.DeclarationType.Option4
+import models.OptionalBoolean
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.Country
-import models.{DeclarationType, OptionalBoolean}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.QuestionPage
@@ -39,7 +39,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
     "can be parsed from user answers" - {
       "when using same UCR for all items " in {
         val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value)
+          .setValue(DeclarationTypePage, arbitrary[String](arbitraryNonTIRDeclarationType).sample.value)
           .setValue(SameUcrYesNoPage, true)
           .setValue(UniqueConsignmentReferencePage, ucr)
           .setValue(TransportedToSameCountryYesNoPage, true)
@@ -61,7 +61,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
       "when TIR declaration type" - {
         "when using the same country of dispatch" in {
           val userAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, Option4)
+            .setValue(DeclarationTypePage, TIR)
             .setValue(SameUcrYesNoPage, false)
             .setValue(SameCountryOfDispatchYesNoPage, true)
             .setValue(CountryOfDispatchPage, country)
@@ -83,7 +83,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
 
         "when not using the same country of dispatch" in {
           val userAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, Option4)
+            .setValue(DeclarationTypePage, TIR)
             .setValue(SameUcrYesNoPage, false)
             .setValue(SameCountryOfDispatchYesNoPage, false)
             .setValue(TransportedToSameCountryYesNoPage, true)
@@ -125,7 +125,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           )
 
           val userAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, Option4)
+            .setValue(DeclarationTypePage, TIR)
             .setValue(SameUcrYesNoPage, true)
             .setValue(UniqueConsignmentReferencePage, ucr)
             .setValue(SameCountryOfDispatchYesNoPage, true)
@@ -154,7 +154,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           )
 
           val userAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, arbitrary[DeclarationType](arbitraryNonOption4DeclarationType).sample.value)
+            .setValue(DeclarationTypePage, arbitrary[String](arbitraryNonTIRDeclarationType).sample.value)
             .setValue(SameUcrYesNoPage, true)
             .setValue(UniqueConsignmentReferencePage, ucr)
             .setValue(TransportedToSameCountryYesNoPage, true)

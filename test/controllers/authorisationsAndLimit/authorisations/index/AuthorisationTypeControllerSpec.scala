@@ -17,10 +17,11 @@
 package controllers.authorisationsAndLimit.authorisations.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.Constants._
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.authorisations.AuthorisationType
-import models.{DeclarationType, Index, NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -58,7 +59,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
         val userAnswers = emptyUserAnswers
           .setValue(AuthorisationTypePage(Index(0)), AuthorisationType.ACR)
           .setValue(AuthorisationTypePage(Index(1)), AuthorisationType.SSE)
-          .setValue(DeclarationTypePage, DeclarationType.Option1)
+          .setValue(DeclarationTypePage, T1)
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(GET, authorisationTypeRouteAtIndex(index))

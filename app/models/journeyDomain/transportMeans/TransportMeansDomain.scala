@@ -17,9 +17,9 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
+import config.Constants.NoSecurityDetails
 import config.PhaseConfig
 import controllers.transportMeans.routes
-import models.SecurityDetailsType.NoSecurityDetails
 import models.domain._
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.transportMeans.BorderModeOfTransport
