@@ -17,8 +17,8 @@
 package models.journeyDomain
 
 import base.SpecBase
+import config.Constants.TIR
 import generators.Generators
-import models.DeclarationType
 import models.ProcedureType.{Normal, Simplified}
 import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
@@ -73,7 +73,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
     }
 
     "when reduced data set indicator is true" in {
-      forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+      forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
         declarationType =>
           val initialUserAnswers = emptyUserAnswers
             .setValue(DeclarationTypePage, declarationType)
@@ -90,7 +90,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
     "when procedure type is Normal and reduced data set indicator is undefined" - {
       "and not adding authorisations" in {
         val initialUserAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, DeclarationType.Option4)
+          .setValue(DeclarationTypePage, TIR)
           .setValue(ProcedureTypePage, Normal)
           .setValue(AddAuthorisationsYesNoPage, false)
 
@@ -103,7 +103,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
       "and adding authorisations" in {
         val initialUserAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, DeclarationType.Option4)
+          .setValue(DeclarationTypePage, TIR)
           .setValue(AddAuthorisationsYesNoPage, true)
 
         forAll(arbitraryTransportAnswers(initialUserAnswers)) {
@@ -116,7 +116,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
     "when reduced data set indicator is false and procedure type is Normal" - {
       "and not adding authorisations" in {
-        forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+        forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
           declarationType =>
             val initialUserAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
@@ -133,7 +133,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
       }
 
       "and adding authorisations" in {
-        forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+        forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
           declarationType =>
             val initialUserAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
@@ -151,7 +151,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
     }
 
     "when reduced data set indicator is false and procedure type is Simplified" - {
-      forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+      forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
         declarationType =>
           val initialUserAnswers = emptyUserAnswers
             .setValue(DeclarationTypePage, declarationType)
@@ -167,7 +167,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
     }
 
     "when reduced data set indicator is true and procedure type is Normal" in {
-      forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+      forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
         declarationType =>
           val initialUserAnswers = emptyUserAnswers
             .setValue(DeclarationTypePage, declarationType)
@@ -221,7 +221,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
     "authorisationsAndLimitReads" - {
       "can not be parsed from user answers" - {
         "when inference is not flagged as true" in {
-          forAll(arbitrary[DeclarationType](arbitraryNonOption4DeclarationType)) {
+          forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
             declarationType =>
               val userAnswers = emptyUserAnswers
                 .setValue(DeclarationTypePage, declarationType)

@@ -27,7 +27,7 @@ import pages.QuestionPage
 import pages.equipment.index.UuidPage
 import play.api.libs.json.Format
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{Call, RequestHeader, Result}
+import play.api.mvc.{Call, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpVerbs.GET
