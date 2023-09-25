@@ -16,6 +16,7 @@
 
 package generators
 
+import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
 import models.transportMeans.InlandMode.{Mail, Rail}
@@ -214,6 +215,11 @@ trait ModelGenerators {
   implicit lazy val arbitraryOptionalBoolean: Arbitrary[OptionalBoolean] =
     Arbitrary {
       Gen.oneOf(OptionalBoolean.yes, OptionalBoolean.no, OptionalBoolean.maybe)
+    }
+
+  implicit lazy val arbitraryLockCheck: Arbitrary[LockCheck] =
+    Arbitrary {
+      Gen.oneOf(Locked, Unlocked, LockCheckFailure)
     }
 
 }
