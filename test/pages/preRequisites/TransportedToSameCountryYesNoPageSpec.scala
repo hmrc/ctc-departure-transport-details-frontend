@@ -19,8 +19,12 @@ package pages.preRequisites
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.sections.external.ItemsSection
+import play.api.libs.json.{JsArray, Json}
 
 class TransportedToSameCountryYesNoPageSpec extends PageBehaviours {
+
+  private val array = JsArray(Seq(Json.obj("foo" -> "bar")))
 
   "TransportedToSameCountryYesNoPage" - {
 
@@ -32,13 +36,15 @@ class TransportedToSameCountryYesNoPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when no selected" - {
-        "must remove country of destination answer" in {
+        "must remove country of destination answer and Items Section" in {
           val userAnswers = emptyUserAnswers
             .setValue(ItemsDestinationCountryPage, arbitrary[Country].sample.value)
+            .setValue(ItemsSection, array)
 
           val result = userAnswers.setValue(TransportedToSameCountryYesNoPage, false)
 
           result.get(ItemsDestinationCountryPage) must not be defined
+          result.get(ItemsSection) must not be defined
         }
       }
     }

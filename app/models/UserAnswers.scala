@@ -16,7 +16,7 @@
 
 package models
 
-import pages.QuestionPage
+import pages.{QuestionPage, ReadOnlyPage}
 import pages.external.TransportEquipmentPage
 import pages.sections.external.ItemsSection
 import play.api.libs.json._
@@ -60,6 +60,11 @@ final case class UserAnswers(
     val updatedData    = data.removeObject(page.path).getOrElse(data)
     val updatedAnswers = copy(data = updatedData)
     page.cleanup(None, updatedAnswers)
+  }
+
+  def remove[A](page: ReadOnlyPage[A]): UserAnswers = {
+    val updatedData = data.removeObject(page.path).getOrElse(data)
+    copy(data = updatedData)
   }
 
   def updateTask(section: String, status: TaskStatus): UserAnswers = {

@@ -19,8 +19,12 @@ package pages.preRequisites
 import models.reference.Country
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.sections.external.ItemsSection
+import play.api.libs.json.{JsArray, Json}
 
 class SameCountryOfDispatchYesNoPageSpec extends PageBehaviours {
+
+  private val array = JsArray(Seq(Json.obj("foo" -> "bar")))
 
   "SameCountryOfDispatchYesNoPage" - {
 
@@ -35,10 +39,12 @@ class SameCountryOfDispatchYesNoPageSpec extends PageBehaviours {
         "must remove country of destination answer" in {
           val userAnswers = emptyUserAnswers
             .setValue(CountryOfDispatchPage, arbitrary[Country].sample.value)
+            .setValue(ItemsSection, array)
 
           val result = userAnswers.setValue(SameCountryOfDispatchYesNoPage, false)
 
           result.get(CountryOfDispatchPage) must not be defined
+          result.get(ItemsSection) must not be defined
         }
       }
     }

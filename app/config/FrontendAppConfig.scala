@@ -67,6 +67,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/declaration-summary"
 
   val cacheUrl: String = servicesConfig.fullServiceUrl("manage-transit-movements-departure-cache")
+  val itemsUrl: String = configuration.get[String]("urls.manageTransitMovementsDepartureItemsFrontend")
+
+  def absoluteURL(url: String): String = configuration.get[String]("host") + url
 
   val dependentTasks: Seq[String] = configuration.get[Seq[String]]("dependent-tasks")
 }

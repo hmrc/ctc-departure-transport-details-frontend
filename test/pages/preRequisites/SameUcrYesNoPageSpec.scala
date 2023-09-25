@@ -17,8 +17,11 @@
 package pages.preRequisites
 
 import pages.behaviours.PageBehaviours
+import pages.sections.external.ItemsSection
+import play.api.libs.json.{JsArray, Json}
 
 class SameUcrYesNoPageSpec extends PageBehaviours {
+  private val array = JsArray(Seq(Json.obj("foo" -> "bar")))
 
   "SameUcrYesNoPage" - {
 
@@ -30,13 +33,15 @@ class SameUcrYesNoPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when no selected" - {
-        "must remove unique consignment reference number" in {
+        "must remove unique consignment reference number and Items sections" in {
           val userAnswers = emptyUserAnswers
             .setValue(UniqueConsignmentReferencePage, nonEmptyString.sample.value)
+            .setValue(ItemsSection, array)
 
           val result = userAnswers.setValue(SameUcrYesNoPage, false)
 
           result.get(UniqueConsignmentReferencePage) must not be defined
+          result.get(ItemsSection) must not be defined
         }
       }
     }
