@@ -16,6 +16,7 @@
 
 package generators
 
+import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
 import models.reference.authorisations.AuthorisationType
@@ -242,6 +243,11 @@ trait ModelGenerators {
   implicit lazy val arbitraryOptionalBoolean: Arbitrary[OptionalBoolean] =
     Arbitrary {
       Gen.oneOf(OptionalBoolean.yes, OptionalBoolean.no, OptionalBoolean.maybe)
+    }
+
+  implicit lazy val arbitraryLockCheck: Arbitrary[LockCheck] =
+    Arbitrary {
+      Gen.oneOf(Locked, Unlocked, LockCheckFailure)
     }
 
   implicit def arbitraryRadioableList[T <: Radioable[T]](implicit arbitrary: Arbitrary[T]): Arbitrary[Seq[T]] = Arbitrary {

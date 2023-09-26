@@ -45,8 +45,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val departureHubUrl: String = configuration.get[String]("urls.manageTransitMovementsDepartureFrontend")
 
-  val notFoundUrl: String       = s"$departureHubUrl/not-found"
-  val sessionExpiredUrl: String = s"$departureHubUrl/this-service-has-been-reset"
+  val notFoundUrl: String              = s"$departureHubUrl/not-found"
+  val technicalDifficultiesUrl: String = s"$departureHubUrl/technical-difficulties"
+  val sessionExpiredUrl: String        = s"$departureHubUrl/this-service-has-been-reset"
 
   val unauthorisedUrl: String                = s"$departureHubUrl/error/cannot-use-service-no-eori"
   val unauthorisedWithGroupAccessUrl: String = s"$departureHubUrl/unauthorised-group-access"
@@ -67,6 +68,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/declaration-summary"
 
   val cacheUrl: String = servicesConfig.fullServiceUrl("manage-transit-movements-departure-cache")
+  val itemsUrl: String = configuration.get[String]("urls.manageTransitMovementsDepartureItemsFrontend")
+
+  def absoluteURL(url: String): String = configuration.get[String]("host") + url
 
   val dependentTasks: Seq[String] = configuration.get[Seq[String]]("dependent-tasks")
 }

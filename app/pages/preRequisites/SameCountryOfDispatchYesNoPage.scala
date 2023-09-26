@@ -20,10 +20,11 @@ import controllers.preRequisites.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.PreRequisitesSection
+import pages.sections.external.ItemsSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 case object SameCountryOfDispatchYesNoPage extends QuestionPage[Boolean] {
 
@@ -34,9 +35,13 @@ case object SameCountryOfDispatchYesNoPage extends QuestionPage[Boolean] {
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.SameCountryOfDispatchYesNoController.onPageLoad(userAnswers.lrn, mode))
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+    lazy val externalCleanup: UserAnswers => UserAnswers = _.remove(ItemsSection)
+
     value match {
-      case Some(false) => userAnswers.remove(CountryOfDispatchPage)
+      case Some(false) => userAnswers.remove(CountryOfDispatchPage).map(externalCleanup)
+      case Some(_)     => Success(externalCleanup(userAnswers))
       case _           => super.cleanup(value, userAnswers)
     }
+  }
 }

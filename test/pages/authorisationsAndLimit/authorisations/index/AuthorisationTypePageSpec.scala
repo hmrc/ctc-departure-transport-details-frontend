@@ -17,10 +17,14 @@
 package pages.authorisationsAndLimit.authorisations.index
 
 import models.reference.authorisations.AuthorisationType
-import pages.behaviours.PageBehaviours
 import org.scalacheck.Arbitrary.arbitrary
+import pages.behaviours.PageBehaviours
+import pages.sections.authorisationsAndLimit.LimitSection
+import pages.sections.equipment.EquipmentsSection
+import play.api.libs.json.{JsArray, Json}
 
 class AuthorisationTypePageSpec extends PageBehaviours {
+  private val array = JsArray(Seq(Json.obj("foo" -> "bar")))
 
   "AuthorisationTypePage" - {
 
@@ -31,17 +35,21 @@ class AuthorisationTypePageSpec extends PageBehaviours {
     beRemovable[AuthorisationType](AuthorisationTypePage(index))
 
     "cleanup" - {
-      "must remove authorisation number and inferred value" in {
+      "must remove authorisation number, inferred value, limit section and equipments section" in {
         forAll(arbitrary[AuthorisationType]) {
           authorisationType =>
             val userAnswers = emptyUserAnswers
               .setValue(InferredAuthorisationTypePage(authorisationIndex), authorisationType)
               .setValue(AuthorisationReferenceNumberPage(authorisationIndex), arbitrary[String].sample.value)
+              .setValue(LimitSection, Json.obj("foo" -> "bar"))
+              .setValue(EquipmentsSection, array)
 
             val result = userAnswers.setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
 
             result.get(InferredAuthorisationTypePage(authorisationIndex)) must not be defined
             result.get(AuthorisationReferenceNumberPage(authorisationIndex)) must not be defined
+            result.get(LimitSection) must not be defined
+            result.get(EquipmentsSection) must not be defined
         }
       }
     }
@@ -49,6 +57,7 @@ class AuthorisationTypePageSpec extends PageBehaviours {
 }
 
 class InferredAuthorisationTypePageSpec extends PageBehaviours {
+  private val array = JsArray(Seq(Json.obj("foo" -> "bar")))
 
   "InferredAuthorisationTypePage" - {
 
@@ -59,17 +68,21 @@ class InferredAuthorisationTypePageSpec extends PageBehaviours {
     beRemovable[AuthorisationType](InferredAuthorisationTypePage(index))
 
     "cleanup" - {
-      "must remove authorisation number and non-inferred value" in {
+      "must remove authorisation number, non-inferred value, limit section and equipments section" in {
         forAll(arbitrary[AuthorisationType]) {
           authorisationType =>
             val userAnswers = emptyUserAnswers
               .setValue(AuthorisationTypePage(authorisationIndex), authorisationType)
               .setValue(AuthorisationReferenceNumberPage(authorisationIndex), arbitrary[String].sample.value)
+              .setValue(LimitSection, Json.obj("foo" -> "bar"))
+              .setValue(EquipmentsSection, array)
 
             val result = userAnswers.setValue(InferredAuthorisationTypePage(authorisationIndex), authorisationType)
 
             result.get(AuthorisationTypePage(authorisationIndex)) must not be defined
             result.get(AuthorisationReferenceNumberPage(authorisationIndex)) must not be defined
+            result.get(LimitSection) must not be defined
+            result.get(EquipmentsSection) must not be defined
         }
       }
     }

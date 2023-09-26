@@ -20,6 +20,7 @@ import models.OptionalBoolean
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.sections.equipment.EquipmentsSection
+import pages.sections.transportMeans.TransportMeansDepartureSection
 import play.api.libs.json.{JsArray, Json}
 
 class ContainerIndicatorPageSpec extends PageBehaviours {
@@ -34,7 +35,7 @@ class ContainerIndicatorPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when answer changes" - {
-        "must remove transport equipments section" in {
+        "must remove transport equipments and transport departure means section" in {
           forAll(arbitrary[OptionalBoolean]) {
             indicator =>
               forAll(arbitrary[OptionalBoolean].retryUntil(_ != indicator)) {
@@ -42,10 +43,12 @@ class ContainerIndicatorPageSpec extends PageBehaviours {
                   val userAnswers = emptyUserAnswers
                     .setValue(ContainerIndicatorPage, indicator)
                     .setValue(EquipmentsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+                    .setValue(TransportMeansDepartureSection, Json.obj("foo" -> "bar"))
 
                   val result = userAnswers.setValue(ContainerIndicatorPage, differentIndicator)
 
                   result.get(EquipmentsSection) must not be defined
+                  result.get(TransportMeansDepartureSection) must not be defined
               }
           }
         }
@@ -58,10 +61,13 @@ class ContainerIndicatorPageSpec extends PageBehaviours {
               val userAnswers = emptyUserAnswers
                 .setValue(ContainerIndicatorPage, indicator)
                 .setValue(EquipmentsSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+                .setValue(TransportMeansDepartureSection, Json.obj("foo" -> "bar"))
 
               val result = userAnswers.setValue(ContainerIndicatorPage, indicator)
 
               result.get(EquipmentsSection) must be(defined)
+              result.get(TransportMeansDepartureSection) must be(defined)
+
           }
         }
       }

@@ -15,13 +15,13 @@
  */
 
 import cats.data.ReaderT
-import config.PhaseConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import models.TaskStatus.{Completed, InProgress}
 import models.domain.UserAnswersReader
 import models.journeyDomain.OpsError.WriterError
 import models.journeyDomain.TransportDomain
 import models.requests.MandatoryDataRequest
-import models.{Index, UserAnswers}
+import models.{Index, LocalReferenceNumber, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
 import pages.equipment.index.UuidPage
@@ -170,9 +170,31 @@ package object controllers {
     def navigateTo(route: String)(implicit executionContext: ExecutionContext): Future[Result] =
       navigateTo(Call(GET, route))
 
+    def getNextPage()(implicit navigator: UserAnswersNavigator, executionContext: ExecutionContext, frontendAppConfig: FrontendAppConfig): Future[Call] =
+      write.map {
+        case (_, userAnswers) =>
+          val call = navigator.nextPage(userAnswers)
+          val url  = frontendAppConfig.absoluteURL(call.url)
+          call.copy(url = url)
+      }
+
     private def navigate(result: Write[A] => Call)(implicit executionContext: ExecutionContext): Future[Result] =
       write.map {
         w => Redirect(result(w))
       }
+  }
+
+  implicit class UpdateOps(call: Future[Call]) {
+
+    private def updateTask(frontendUrl: String, lrn: LocalReferenceNumber)(implicit ex: ExecutionContext): Future[Call] =
+      call.map {
+        x => x.copy(url = s"$frontendUrl/$lrn/update-task?continue=${x.url}")
+      }
+
+    def updateItems(lrn: LocalReferenceNumber)(implicit ex: ExecutionContext, config: FrontendAppConfig): Future[Call] =
+      updateTask(config.itemsUrl, lrn)
+
+    def navigate()(implicit executionContext: ExecutionContext): Future[Result] =
+      call.map(Redirect)
   }
 }
