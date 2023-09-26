@@ -18,7 +18,7 @@ package services
 
 import config.Constants.Unknown
 import connectors.ReferenceDataConnector
-import models.reference.InlandMode
+import models.reference.{BorderMode, InlandMode}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -26,8 +26,15 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TransportModeCodesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
+  // TODO - rename to getInlandModes
   def getTransportModeCodes()(implicit hc: HeaderCarrier): Future[Seq[InlandMode]] =
-    referenceDataConnector.getTransportModeCodes().map(_.filterNot(_.code == Unknown)).map(sort)
+    referenceDataConnector
+      .getTransportModeCodes[InlandMode]()
+      .map(_.filterNot(_.code == Unknown))
+      .map(sort)
+
+  // TODO - filter for 1, 2, 3 and 4
+  def getBorderModes(): Future[Seq[BorderMode]] = ???
 
   private def sort(transportModeCodes: Seq[InlandMode]): Seq[InlandMode] =
     transportModeCodes.sortBy(_.code.toLowerCase)

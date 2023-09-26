@@ -21,7 +21,7 @@ import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
 import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
-import models.reference.{Country, InlandMode, Nationality}
+import models.reference.{Country, ModeOfTransport, Nationality}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.Reads
@@ -48,9 +48,9 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http.GET[Seq[Country]](url, headers = version2Header)
   }
 
-  def getTransportModeCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[InlandMode]] = {
+  def getTransportModeCodes[T <: ModeOfTransport[T]]()(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: Reads[T]): Future[Seq[T]] = {
     val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
-    http.GET[Seq[InlandMode]](url, headers = version2Header)
+    http.GET[Seq[T]](url, headers = version2Header)
   }
 
   def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[departure.Identification]] = {

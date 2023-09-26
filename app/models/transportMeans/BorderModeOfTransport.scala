@@ -18,6 +18,7 @@ package models.transportMeans
 
 import models.{EnumerableType, Radioable, WithName}
 
+// TODO - delete
 sealed trait BorderModeOfTransport extends Radioable[BorderModeOfTransport] {
   val borderModeType: Int
   override val code: String = this.toString

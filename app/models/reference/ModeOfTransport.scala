@@ -18,21 +18,39 @@ package models.reference
 
 import config.Constants.{Mail, Rail}
 import models.{DynamicEnumerableType, Radioable}
-import play.api.libs.json.{Format, Json}
 import org.apache.commons.text.StringEscapeUtils
+import play.api.libs.json.{Format, Json}
 
-case class InlandMode(code: String, description: String) extends Radioable[InlandMode] {
+sealed trait ModeOfTransport[T] extends Radioable[T] {
+  val code: String
+  val description: String
+
+  def isRail: Boolean = code == Rail
+  def isMail: Boolean = code == Mail
+}
+
+case class InlandMode(code: String, description: String) extends ModeOfTransport[InlandMode] {
 
   override def toString: String = StringEscapeUtils.unescapeXml(description)
 
   override val messageKeyPrefix: String = InlandMode.messageKeyPrefix
-
-  def isRail: Boolean = code == Rail
-  def isMail: Boolean = code == Mail
 }
 
 object InlandMode extends DynamicEnumerableType[InlandMode] {
   implicit val format: Format[InlandMode] = Json.format[InlandMode]
 
   val messageKeyPrefix = "transportMeans.inlandMode"
+}
+
+case class BorderMode(code: String, description: String) extends ModeOfTransport[BorderMode] {
+
+  override def toString: String = StringEscapeUtils.unescapeXml(description)
+
+  override val messageKeyPrefix: String = BorderMode.messageKeyPrefix
+}
+
+object BorderMode extends DynamicEnumerableType[BorderMode] {
+  implicit val format: Format[BorderMode] = Json.format[BorderMode]
+
+  val messageKeyPrefix = "transportMeans.borderModeOfTransport"
 }
