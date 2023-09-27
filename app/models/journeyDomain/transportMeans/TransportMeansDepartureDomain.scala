@@ -17,6 +17,7 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
+import config.Constants.Rail
 import config.PhaseConfig
 import models.Phase
 import models.domain._
@@ -83,8 +84,8 @@ object TransitionTransportMeansDepartureDomain {
       }
 
     val nationalityReader: UserAnswersReader[Option[Nationality]] =
-      InlandModePage.optionalReader.flatMap {
-        case Some(inlandMode) if inlandMode.isRail =>
+      InlandModePage.optionalReader.map(_.map(_.code)).flatMap {
+        case Some(Rail) =>
           none[Nationality].pure[UserAnswersReader]
         case _ =>
           ContainerIndicatorPage.reader.map(_.value).flatMap {

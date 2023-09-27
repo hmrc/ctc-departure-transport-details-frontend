@@ -88,8 +88,8 @@ object TransitionTransportMeansActiveDomain {
     ).tupled.map((TransitionTransportMeansActiveDomain.apply _).tupled)
 
   def nationalityReader(index: Index): UserAnswersReader[Option[Nationality]] =
-    BorderModeOfTransportPage.optionalReader.flatMap {
-      case Some(BorderMode(Rail, _)) =>
+    BorderModeOfTransportPage.optionalReader.map(_.map(_.code)).flatMap {
+      case Some(Rail) =>
         AddNationalityYesNoPage(index).filterOptionalDependent(identity)(NationalityPage(index).reader)
       case _ =>
         NationalityPage(index).reader.map(Some(_))

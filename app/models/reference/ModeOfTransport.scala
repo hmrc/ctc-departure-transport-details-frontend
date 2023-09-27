@@ -27,7 +27,6 @@ sealed trait ModeOfTransport[T] extends Radioable[T] {
 
   def isRail: Boolean = code == Rail
   def isAir: Boolean  = code == Air
-  def isMail: Boolean = code == Mail
 }
 
 case class InlandMode(code: String, description: String) extends ModeOfTransport[InlandMode] {
