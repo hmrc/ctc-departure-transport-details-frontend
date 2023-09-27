@@ -22,7 +22,7 @@ import models.reference.equipment.PaymentMethod
 import models.reference._
 import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
-import models.transportMeans.BorderModeOfTransport
+import models.reference.BorderMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -79,7 +79,7 @@ trait UserAnswersEntryGenerators {
         case InlandModePage                         => arbitrary[InlandMode].map(Json.toJson(_))
         case AddDepartureTransportMeansYesNoPage    => arbitrary[Boolean].map(JsBoolean)
         case AddBorderModeOfTransportYesNoPage      => arbitrary[Boolean].map(JsBoolean)
-        case BorderModeOfTransportPage              => arbitrary[BorderModeOfTransport].map(Json.toJson(_))
+        case BorderModeOfTransportPage              => arbitrary[BorderMode].map(Json.toJson(_))
         case AddActiveBorderTransportMeansYesNoPage => arbitrary[Boolean].map(JsBoolean)
       }
   }

@@ -20,7 +20,7 @@ import config.Constants.UnknownIdentificationActive
 import connectors.ReferenceDataConnector
 import models.Index
 import models.reference.transportMeans.active.Identification
-import models.transportMeans.BorderModeOfTransport
+import models.reference.BorderMode
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getMeansOfTransportIdentificationTypesActive(index: Index, borderModeOfTransport: Option[BorderModeOfTransport])(implicit
+  def getMeansOfTransportIdentificationTypesActive(index: Index, borderModeOfTransport: Option[BorderMode])(implicit
     hc: HeaderCarrier
   ): Future[Seq[Identification]] =
     referenceDataConnector.getMeansOfTransportIdentificationTypesActive().map(filter(_, index, borderModeOfTransport)).map(sort)
@@ -36,13 +36,13 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
   private def filter(
     identificationTypes: Seq[Identification],
     index: Index,
-    borderModeOfTransport: Option[BorderModeOfTransport]
+    borderModeOfTransport: Option[BorderMode]
   ): Seq[Identification] = {
     val identificationTypesExcludingUnknown = identificationTypes.filterNot(_.code == UnknownIdentificationActive)
 
     borderModeOfTransport match {
       case Some(borderMode) if index.isFirst =>
-        identificationTypesExcludingUnknown.filter(_.code.startsWith(borderMode.borderModeType.toString))
+        identificationTypesExcludingUnknown.filter(_.code.startsWith(borderMode.code))
       case _ => identificationTypesExcludingUnknown
     }
   }

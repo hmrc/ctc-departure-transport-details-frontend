@@ -24,7 +24,7 @@ import generators.Generators
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
 import models.reference.Nationality
 import models.reference.transportMeans.active.Identification
-import models.transportMeans.BorderModeOfTransport
+import models.reference.BorderMode
 import models.{Mode, NormalMode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -60,7 +60,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
             val initialAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
               .setValue(OfficesOfTransitSection, officesOfTransit)
-              .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Sea)
+              .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
               .setValue(NationalityPage(index), nationality)
 
             forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index)(mockPhaseConfig), arbitrary[Mode]) {
@@ -88,7 +88,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
             val identificationType = Identification("11", "Name of a sea-going vessel")
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
+              .setValue(BorderModeOfTransportPage, BorderMode("3", "Road"))
               .setValue(IdentificationPage(index), identificationType)
               .setValue(NationalityPage(index), nationality)
 
@@ -112,7 +112,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         val identificationNumber = nonEmptyString.sample.value
         val userAnswers = emptyUserAnswers
           .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-          .setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
+          .setValue(BorderModeOfTransportPage, BorderMode("2", "Rail"))
           .setValue(InferredIdentificationPage(index), Identification("21", "Train number"))
           .setValue(IdentificationNumberPage(index), identificationNumber)
 
@@ -136,7 +136,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         val identificationNumber = nonEmptyString.sample.value
         val userAnswers = emptyUserAnswers
           .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-          .setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
+          .setValue(BorderModeOfTransportPage, BorderMode("2", "Rail"))
           .setValue(IdentificationPage(index), identificationType)
           .setValue(IdentificationNumberPage(index), identificationNumber)
 

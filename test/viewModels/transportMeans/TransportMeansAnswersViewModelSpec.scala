@@ -21,7 +21,7 @@ import config.PhaseConfig
 import generators.Generators
 import models.reference.{InlandMode, Nationality}
 import models.reference.transportMeans.departure.{Identification => DepartureIdentification}
-import models.transportMeans.BorderModeOfTransport
+import models.reference.BorderMode
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -75,7 +75,7 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
     "must render a border mode section" in {
       val userAnswers = emptyUserAnswers
         .setValue(AddBorderModeOfTransportYesNoPage, true)
-        .setValue(BorderModeOfTransportPage, arbitrary[BorderModeOfTransport].sample.value)
+        .setValue(BorderModeOfTransportPage, arbitrary[BorderMode].sample.value)
 
       val viewModelProvider = new TransportMeansAnswersViewModelProvider()
       val result            = viewModelProvider.apply(userAnswers, mode)

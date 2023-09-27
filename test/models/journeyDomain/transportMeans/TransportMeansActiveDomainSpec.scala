@@ -24,8 +24,7 @@ import models.Phase
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.transportMeans.active.Identification
 import models.reference.{CustomsOffice, Nationality}
-import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.BorderModeOfTransport.{Air, _}
+import models.reference.BorderMode
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -76,7 +75,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           "and security detail type is 0 and inland mode is Sea and add conveyance number is yes" in {
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(BorderModeOfTransportPage, Sea)
+              .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
               .setValue(IdentificationPage(index), identification)
               .setValue(IdentificationNumberPage(index), identificationNumber)
               .setValue(AddNationalityYesNoPage(index), true)
@@ -106,7 +105,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               securityType =>
                 val userAnswers = emptyUserAnswers
                   .setValue(SecurityDetailsTypePage, securityType)
-                  .setValue(BorderModeOfTransportPage, Air)
+                  .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
                   .setValue(IdentificationPage(index), identification)
                   .setValue(IdentificationNumberPage(index), identificationNumber)
                   .setValue(AddNationalityYesNoPage(index), true)
@@ -135,7 +134,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           "and security detail type is 0 and inland mode is Sea and add conveyance number is no" in {
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(BorderModeOfTransportPage, Sea)
+              .setValue(BorderModeOfTransportPage, BorderMode("1", "Sea"))
               .setValue(IdentificationPage(index), identification)
               .setValue(IdentificationNumberPage(index), identificationNumber)
               .setValue(AddNationalityYesNoPage(index), false)
@@ -162,7 +161,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
       "can not be parsed from user answers" - {
         "when border mode is answered" - {
           "must go to identification type" in {
-            forAll(arbitrary[BorderModeOfTransport]) {
+            forAll(arbitrary[BorderMode]) {
               borderModeOfTransport =>
                 val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
 
@@ -177,7 +176,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
         "when add nationality is unanswered" in {
           val userAnswers = emptyUserAnswers
-            .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
+            .setValue(BorderModeOfTransportPage, BorderMode("3", "Road"))
             .setValue(InferredIdentificationPage(index), Identification("30", "Registration number of a road vehicle"))
             .setValue(IdentificationNumberPage(index), identificationNumber)
 
@@ -190,7 +189,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
         "when nationality is unanswered" in {
           val userAnswers = emptyUserAnswers
-            .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Air)
+            .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
             .setValue(IdentificationPage(index), Identification("40", "IATA flight number"))
             .setValue(IdentificationNumberPage(index), identificationNumber)
             .setValue(AddNationalityYesNoPage(index), true)
@@ -205,7 +204,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         "when customs office ref. number is unanswered" - {
           "and add nationality is true" in {
             val userAnswers = emptyUserAnswers
-              .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
+              .setValue(BorderModeOfTransportPage, BorderMode("3", "Road"))
               .setValue(InferredIdentificationPage(index), Identification("30", "Registration number of a road vehicle"))
               .setValue(IdentificationNumberPage(index), identificationNumber)
               .setValue(AddNationalityYesNoPage(index), true)
@@ -220,7 +219,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
           "and add nationality is false" in {
             val userAnswers = emptyUserAnswers
-              .setValue(BorderModeOfTransportPage, BorderModeOfTransport.IrishLandBoundary)
+              .setValue(BorderModeOfTransportPage, BorderMode("3", "Road"))
               .setValue(InferredIdentificationPage(index), Identification("30", "Registration number of a road vehicle"))
               .setValue(IdentificationNumberPage(index), identificationNumber)
               .setValue(AddNationalityYesNoPage(index), false)
@@ -241,7 +240,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               (securityType, identification) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(SecurityDetailsTypePage, securityType)
-                  .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Air)
+                  .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
                   .setValue(IdentificationPage(index), identification)
                   .setValue(IdentificationNumberPage(index), identificationNumber)
                   .setValue(AddNationalityYesNoPage(index), false)
@@ -257,7 +256,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
           "and border mode of transport is not 4 (Air)" in {
             val securityGen       = arbitrary[String](arbitrarySomeSecurityDetailsType)
-            val borderModeGen     = Gen.oneOf(BorderModeOfTransport.values.filterNot(_ == Air))
+            val borderModeGen     = arbitrary[Option[BorderMode]](arbitraryOptionalNonAirBorderModeOfTransport).sample.value
             val identificationGen = Gen.oneOf(Identification("40", "IATA flight number"), Identification("41", "Registration number of an aircraft"))
             forAll(securityGen, borderModeGen, identificationGen) {
               (securityType, borderMode, identification) =>
@@ -279,7 +278,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         }
 
         "when security is 0 (No security)" in {
-          val borderModeGen     = arbitrary[BorderModeOfTransport]
+          val borderModeGen     = arbitrary[BorderMode]
           val identificationGen = arbitrary[Identification]
           forAll(borderModeGen, identificationGen) {
             (borderMode, identification) =>
@@ -300,7 +299,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         }
 
         "when conveyance reference number needs to be answered" in {
-          val borderModeGen     = arbitrary[BorderModeOfTransport]
+          val borderModeGen     = arbitrary[BorderMode]
           val identificationGen = arbitrary[Identification]
           forAll(borderModeGen, identificationGen) {
             (borderMode, identification) =>
@@ -346,7 +345,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         "can not be parsed from user answers" - {
           "when border mode of transport is 2 (rail)" - {
             "and add registered country for vehicle yes/no is unanswered" in {
-              val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
+              val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderMode("2", "Rail"))
 
               val result = TransitionTransportMeansActiveDomain.nationalityReader(index).run(userAnswers)
 
@@ -355,7 +354,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
             "and registered country for vehicle is unanswered" in {
               val userAnswers = emptyUserAnswers
-                .setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
+                .setValue(BorderModeOfTransportPage, BorderMode("2", "Rail"))
                 .setValue(AddNationalityYesNoPage(index), true)
 
               val result = TransitionTransportMeansActiveDomain.nationalityReader(index).run(userAnswers)
@@ -366,7 +365,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
           "when border mode of transport is not 2 (rail)" - {
             "and registered country for vehicle is unanswered" in {
-              forAll(arbitrary[Option[BorderModeOfTransport]](arbitraryOptionalNonRailBorderModeOfTransport)) {
+              forAll(arbitrary[Option[BorderMode]](arbitraryOptionalNonRailBorderModeOfTransport)) {
                 borderMode =>
                   val userAnswers = emptyUserAnswers
                     .setValue(BorderModeOfTransportPage, borderMode)
@@ -386,7 +385,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             forAll(arbitrary[Identification]) {
               identification =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
+                  .setValue(BorderModeOfTransportPage, BorderMode("2", "Rail"))
                   .setValue(InferredIdentificationPage(index), identification)
 
                 val result = TransitionTransportMeansActiveDomain.identificationReader(index).run(userAnswers)
@@ -399,7 +398,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             forAll(arbitrary[Identification]) {
               identification =>
                 val userAnswers = emptyUserAnswers
-                  .setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
+                  .setValue(BorderModeOfTransportPage, BorderMode("2", "Rail"))
                   .setValue(IdentificationPage(index), identification)
 
                 val result = TransitionTransportMeansActiveDomain.identificationReader(index).run(userAnswers)
@@ -412,7 +411,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           "when border mode of transport is 2 (rail)" - {
             "and identification type is unanswered" in {
               val userAnswers = emptyUserAnswers
-                .setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
+                .setValue(BorderModeOfTransportPage, BorderMode("2", "Rail"))
 
               val result = TransitionTransportMeansActiveDomain.identificationReader(index).run(userAnswers)
 
@@ -436,7 +435,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
           "when border mode of transport is not 2 (rail) and registered country for vehicle is undefined" - {
             "and add identification type yes/no is unanswered" in {
-              forAll(arbitrary[Option[BorderModeOfTransport]](arbitraryOptionalNonRailBorderModeOfTransport)) {
+              forAll(arbitrary[Option[BorderMode]](arbitraryOptionalNonRailBorderModeOfTransport)) {
                 borderMode =>
                   val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderMode)
 
@@ -447,7 +446,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             }
 
             "and identification type is unanswered" in {
-              forAll(arbitrary[Option[BorderModeOfTransport]](arbitraryOptionalNonRailBorderModeOfTransport)) {
+              forAll(arbitrary[Option[BorderMode]](arbitraryOptionalNonRailBorderModeOfTransport)) {
                 borderMode =>
                   val userAnswers = emptyUserAnswers
                     .setValue(BorderModeOfTransportPage, borderMode)
@@ -467,7 +466,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           "when border mode of transport is 2 (rail)" - {
             "and identification number is unanswered" in {
               val userAnswers = emptyUserAnswers
-                .setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
+                .setValue(BorderModeOfTransportPage, BorderMode("2", "Rail"))
 
               val result = TransitionTransportMeansActiveDomain.identificationNumberReader(index).run(userAnswers)
 
@@ -491,7 +490,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
           "when border mode of transport is not 2 (rail) and registered country for vehicle is undefined" - {
             "and add identification number yes/no is unanswered" in {
-              forAll(arbitrary[Option[BorderModeOfTransport]](arbitraryOptionalNonRailBorderModeOfTransport)) {
+              forAll(arbitrary[Option[BorderMode]](arbitraryOptionalNonRailBorderModeOfTransport)) {
                 borderMode =>
                   val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderMode)
 
@@ -502,7 +501,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             }
 
             "and identification number is unanswered" in {
-              forAll(arbitrary[Option[BorderModeOfTransport]](arbitraryOptionalNonRailBorderModeOfTransport)) {
+              forAll(arbitrary[Option[BorderMode]](arbitraryOptionalNonRailBorderModeOfTransport)) {
                 borderMode =>
                   val userAnswers = emptyUserAnswers
                     .setValue(BorderModeOfTransportPage, borderMode)
@@ -525,7 +524,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 securityType =>
                   val userAnswers = emptyUserAnswers
                     .setValue(SecurityDetailsTypePage, securityType)
-                    .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Air)
+                    .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
 
                   val result = TransitionTransportMeansActiveDomain.conveyanceReader(index).run(userAnswers)
 
@@ -536,7 +535,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
           "when there is no security" - {
             "and add conveyance reference number yes/no is undefined" in {
-              forAll(arbitrary[Option[BorderModeOfTransport]]) {
+              forAll(arbitrary[Option[BorderMode]]) {
                 borderMode =>
                   val userAnswers = emptyUserAnswers
                     .setValue(SecurityDetailsTypePage, NoSecurityDetails)
@@ -551,7 +550,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
           "when mode of transport is not 4 (air)" - {
             "and add conveyance reference number yes/no is undefined" in {
-              forAll(arbitrary[String](arbitrarySecurityDetailsType), arbitrary[Option[BorderModeOfTransport]](arbitraryOptionalNonAirBorderModeOfTransport)) {
+              forAll(arbitrary[String](arbitrarySecurityDetailsType), arbitrary[Option[BorderMode]](arbitraryOptionalNonAirBorderModeOfTransport)) {
                 (securityType, borderMode) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(SecurityDetailsTypePage, securityType)

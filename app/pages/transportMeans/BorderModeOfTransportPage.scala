@@ -17,7 +17,7 @@
 package pages.transportMeans
 
 import controllers.transportMeans.routes
-import models.transportMeans.BorderModeOfTransport
+import models.reference.BorderMode
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.TransportSection
@@ -27,7 +27,7 @@ import play.api.mvc.Call
 
 import scala.util.Try
 
-case object BorderModeOfTransportPage extends QuestionPage[BorderModeOfTransport] {
+case object BorderModeOfTransportPage extends QuestionPage[BorderMode] {
 
   override def path: JsPath = TransportSection.path \ toString
 
@@ -36,7 +36,7 @@ case object BorderModeOfTransportPage extends QuestionPage[BorderModeOfTransport
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.BorderModeOfTransportController.onPageLoad(userAnswers.lrn, mode))
 
-  override def cleanup(value: Option[BorderModeOfTransport], userAnswers: UserAnswers): Try[UserAnswers] =
+  override def cleanup(value: Option[BorderMode], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(_) =>
         userAnswers.remove(TransportMeansActiveSection(Index(0)))

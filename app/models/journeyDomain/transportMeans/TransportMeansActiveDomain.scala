@@ -17,16 +17,14 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
-import config.Constants.NoSecurityDetails
+import config.Constants.{NoSecurityDetails, Rail}
 import config.PhaseConfig
 import controllers.transportMeans.active.{routes => activeRoutes}
 import controllers.transportMeans.{routes => transportMeansRoutes}
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.reference.{CustomsOffice, Nationality}
-import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.BorderModeOfTransport._
 import models.reference.transportMeans.active.Identification
+import models.reference.{BorderMode, CustomsOffice, Nationality}
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.external.SecurityDetailsTypePage
 import pages.sections.external.OfficesOfTransitSection
@@ -52,12 +50,12 @@ object TransportMeansActiveDomain {
         PostTransitionTransportMeansActiveDomain.userAnswersReader(index).widen[TransportMeansActiveDomain]
     }
 
-  def conveyanceReader(index: Index)(borderModeReader: => UserAnswersReader[Option[BorderModeOfTransport]]): UserAnswersReader[Option[String]] =
+  def conveyanceReader(index: Index)(borderModeReader: => UserAnswersReader[Option[BorderMode]]): UserAnswersReader[Option[String]] =
     for {
       noSecurity    <- SecurityDetailsTypePage.reader.map(_ == NoSecurityDetails)
-      airBorderMode <- borderModeReader.map(_.contains(Air))
+      airBorderMode <- borderModeReader.map(_.map(_.isAir))
       reader <- (noSecurity, airBorderMode) match {
-        case (false, true) =>
+        case (false, Some(true)) =>
           ConveyanceReferenceNumberPage(index).reader.map(Some(_))
         case _ =>
           ConveyanceReferenceNumberYesNoPage(index).filterOptionalDependent(identity)(ConveyanceReferenceNumberPage(index).reader)
@@ -91,7 +89,7 @@ object TransitionTransportMeansActiveDomain {
 
   def nationalityReader(index: Index): UserAnswersReader[Option[Nationality]] =
     BorderModeOfTransportPage.optionalReader.flatMap {
-      case Some(ChannelTunnel) =>
+      case Some(BorderMode(Rail, _)) =>
         AddNationalityYesNoPage(index).filterOptionalDependent(identity)(NationalityPage(index).reader)
       case _ =>
         NationalityPage(index).reader.map(Some(_))
@@ -103,7 +101,7 @@ object TransitionTransportMeansActiveDomain {
       borderMode                 <- BorderModeOfTransportPage.optionalReader
       registeredCountryIsPresent <- NationalityPage(index).optionalReader.map(_.isDefined)
       reader <-
-        if (borderMode.contains(ChannelTunnel) || registeredCountryIsPresent) {
+        if (borderMode.exists(_.isRail) || registeredCountryIsPresent) {
           genericReader.map(Some(_))
         } else {
           AddIdentificationYesNoPage(index).filterOptionalDependent(identity)(genericReader)
@@ -116,7 +114,7 @@ object TransitionTransportMeansActiveDomain {
       borderMode                 <- BorderModeOfTransportPage.optionalReader
       registeredCountryIsPresent <- NationalityPage(index).optionalReader.map(_.isDefined)
       reader <-
-        if (borderMode.contains(ChannelTunnel) || registeredCountryIsPresent) {
+        if (borderMode.exists(_.isRail) || registeredCountryIsPresent) {
           IdentificationNumberPage(index).reader.map(Some(_))
         } else {
           AddVehicleIdentificationNumberYesNoPage(index).filterOptionalDependent(identity)(IdentificationNumberPage(index).reader)

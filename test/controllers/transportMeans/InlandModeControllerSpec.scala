@@ -55,7 +55,7 @@ class InlandModeControllerSpec extends SpecBase with AppWithDefaultMockFixtures 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockTransportModeCodesService)
-    when(mockTransportModeCodesService.getTransportModeCodes()(any())).thenReturn(Future.successful(inlandModes))
+    when(mockTransportModeCodesService.getInlandModes()(any())).thenReturn(Future.successful(inlandModes))
   }
 
   "InlandMode Controller" - {

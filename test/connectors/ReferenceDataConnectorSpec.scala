@@ -168,6 +168,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     }
 
     "getTransportModeCodes" - {
+
       val url: String = s"/$baseUrl/lists/TransportModeCode"
 
       "must return Seq of InlandMode when successful" in {
@@ -207,11 +208,55 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
           InlandMode("2", "Rail")
         )
 
-        connector.getTransportModeCodes().futureValue mustEqual expectedResult
+        connector.getTransportModeCodes[InlandMode]().futureValue mustEqual expectedResult
       }
 
-      "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getTransportModeCodes())
+      "must return an exception when an error response is returned for InlandMode" in {
+        checkErrorResponse(url, connector.getTransportModeCodes[InlandMode]())
+      }
+
+      "must return Seq of BorderMode when successful" in {
+        val transportModeCodesResponseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/TransportModeCode"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "TransportModeCode",
+            |  "data": [
+            |    {
+            |      "code":"1",
+            |      "description":"Maritime"
+            |    },
+            |    {
+            |      "code":"2",
+            |      "description":"Rail"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(transportModeCodesResponseJson))
+        )
+
+        val expectedResult: Seq[BorderMode] = Seq(
+          BorderMode("1", "Maritime"),
+          BorderMode("2", "Rail")
+        )
+
+        connector.getTransportModeCodes[BorderMode]().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned for BorderMode" in {
+        checkErrorResponse(url, connector.getTransportModeCodes[BorderMode]())
       }
     }
 

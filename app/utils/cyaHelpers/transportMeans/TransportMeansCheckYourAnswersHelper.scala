@@ -19,9 +19,8 @@ package utils.cyaHelpers.transportMeans
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.transportMeans.active.routes
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
-import models.reference.{InlandMode, Nationality}
 import models.reference.transportMeans.departure.Identification
-import models.transportMeans.BorderModeOfTransport
+import models.reference.{BorderMode, InlandMode, Nationality}
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transportMeans.TransportMeansActiveListSection
 import pages.transportMeans._
@@ -64,9 +63,9 @@ class TransportMeansCheckYourAnswersHelper(
     id = Some("change-add-border-mode-of-transport")
   )
 
-  def modeCrossingBorder: Option[SummaryListRow] = getAnswerAndBuildRow[BorderModeOfTransport](
+  def modeCrossingBorder: Option[SummaryListRow] = getAnswerAndBuildRow[BorderMode](
     page = BorderModeOfTransportPage,
-    formatAnswer = formatEnumAsText(BorderModeOfTransport.messageKeyPrefix),
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "transportMeans.borderModeOfTransport",
     id = Some("change-border-mode-of-transport")
   )

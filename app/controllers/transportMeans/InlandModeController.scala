@@ -52,7 +52,7 @@ class InlandModeController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getTransportModeCodes().map {
+      service.getInlandModes().map {
         inlandModeCodes =>
           val preparedForm = request.userAnswers.get(InlandModePage) match {
             case None        => form(inlandModeCodes)
@@ -65,7 +65,7 @@ class InlandModeController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getTransportModeCodes().flatMap {
+      service.getInlandModes().flatMap {
         inlandModeCodes =>
           form(inlandModeCodes)
             .bindFromRequest()

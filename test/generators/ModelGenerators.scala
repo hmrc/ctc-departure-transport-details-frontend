@@ -23,7 +23,6 @@ import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
 import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
-import models.transportMeans.BorderModeOfTransport
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -101,23 +100,28 @@ trait ModelGenerators {
       Gen.oneOf("0", "1", "2", "3")
     }
 
-  implicit lazy val arbitraryBorderModeOfTransport: Arbitrary[BorderModeOfTransport] =
+  implicit lazy val arbitraryBorderModeOfTransport: Arbitrary[BorderMode] =
     Arbitrary {
-      Gen.oneOf(BorderModeOfTransport.values)
+      for {
+        code        <- Gen.oneOf("1", "2", "3", "4")
+        description <- nonEmptyString
+      } yield BorderMode(code, description)
     }
 
-  implicit lazy val arbitraryOptionalNonAirBorderModeOfTransport: Arbitrary[Option[BorderModeOfTransport]] =
+  implicit lazy val arbitraryOptionalNonAirBorderModeOfTransport: Arbitrary[Option[BorderMode]] =
     Arbitrary {
-      Gen.option {
-        Gen.oneOf(BorderModeOfTransport.values.filterNot(_ == BorderModeOfTransport.Air))
-      }
+      for {
+        code        <- Gen.oneOf("1", "2", "3")
+        description <- nonEmptyString
+      } yield Some(BorderMode(code, description))
     }
 
-  lazy val arbitraryOptionalNonRailBorderModeOfTransport: Arbitrary[Option[BorderModeOfTransport]] =
+  lazy val arbitraryOptionalNonRailBorderModeOfTransport: Arbitrary[Option[BorderMode]] =
     Arbitrary {
-      Gen.option {
-        Gen.oneOf(BorderModeOfTransport.values.filterNot(_ == BorderModeOfTransport.ChannelTunnel))
-      }
+      for {
+        code        <- Gen.oneOf("1", "3", "4")
+        description <- nonEmptyString
+      } yield Some(BorderMode(code, description))
     }
 
   implicit lazy val arbitraryCountry: Arbitrary[Country] =

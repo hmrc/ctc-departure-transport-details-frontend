@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.reference.transportMeans.active.Identification
-import models.transportMeans.BorderModeOfTransport
+import models.reference.BorderMode
 import models.{NormalMode, UserAnswers}
 import navigation.TransportMeansActiveNavigatorProvider
 import org.mockito.ArgumentCaptor
@@ -70,7 +70,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         when(mockMeansOfTransportIdentificationTypesActiveService.getMeansOfTransportIdentificationTypesActive(any(), any())(any()))
           .thenReturn(Future.successful(Seq(identificationType1)))
 
-        val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.ChannelTunnel)
+        val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderMode("2", "Rail"))
         setExistingUserAnswers(userAnswers)
 
         val request = FakeRequest(GET, identificationRoute)
@@ -92,7 +92,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       when(mockMeansOfTransportIdentificationTypesActiveService.getMeansOfTransportIdentificationTypesActive(any(), any())(any()))
         .thenReturn(Future.successful(identificationTypes))
 
-      val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.Sea)
+      val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
 
       setExistingUserAnswers(userAnswers)
 
@@ -113,7 +113,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
-        .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Air)
+        .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
         .setValue(IdentificationPage(activeIndex), identificationType1)
       setExistingUserAnswers(userAnswers)
 
@@ -137,7 +137,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
-        .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Air)
+        .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
 
       setExistingUserAnswers(userAnswers)
 
@@ -156,7 +156,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
         .thenReturn(Future.successful(identificationTypes))
 
       val userAnswers = emptyUserAnswers
-        .setValue(BorderModeOfTransportPage, BorderModeOfTransport.Air)
+        .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
       setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, identificationRoute).withFormUrlEncodedBody(("value", "invalid value"))

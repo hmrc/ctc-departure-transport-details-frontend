@@ -16,7 +16,7 @@
 
 package models.reference
 
-import config.Constants.{Mail, Rail}
+import config.Constants._
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Format, Json}
@@ -26,6 +26,7 @@ sealed trait ModeOfTransport[T] extends Radioable[T] {
   val description: String
 
   def isRail: Boolean = code == Rail
+  def isAir: Boolean  = code == Air
   def isMail: Boolean = code == Mail
 }
 

@@ -18,7 +18,7 @@ package services
 
 import base.SpecBase
 import connectors.ReferenceDataConnector
-import models.reference.InlandMode
+import models.reference.{BorderMode, InlandMode}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
@@ -31,15 +31,6 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new TransportModeCodesService(mockRefDataConnector)
 
-  private val inlandMode1 = InlandMode("8", "Inland waterway")
-  private val inlandMode2 = InlandMode("7", "Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods")
-  private val inlandMode3 = InlandMode("5", "Mail (active mode of transport unknown)")
-  private val inlandMode4 = InlandMode("4", "Air")
-  private val inlandMode5 = InlandMode("3", "Road")
-  private val inlandMode6 = InlandMode("2", "Rail")
-  private val inlandMode7 = InlandMode("1", "Maritime")
-  private val inlandMode8 = InlandMode("9", "Mode unknown (Own propulsion)")
-
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
     super.beforeEach()
@@ -47,15 +38,47 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
   "TransportModeCodesService" - {
 
-    "getTransportModeCodes" - {
+    "getInlandModes" - {
+
+      val inlandMode1 = InlandMode("8", "Inland waterway")
+      val inlandMode2 = InlandMode("7", "Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods")
+      val inlandMode3 = InlandMode("5", "Mail (active mode of transport unknown)")
+      val inlandMode4 = InlandMode("4", "Air")
+      val inlandMode5 = InlandMode("3", "Road")
+      val inlandMode6 = InlandMode("2", "Rail")
+      val inlandMode7 = InlandMode("1", "Maritime")
+      val inlandMode8 = InlandMode("9", "Mode unknown (Own propulsion)")
+
       "must return a list of sorted inland modes excluding Unknown" in {
-        when(mockRefDataConnector.getTransportModeCodes()(any(), any()))
+        when(mockRefDataConnector.getTransportModeCodes[InlandMode]()(any(), any(), any()))
           .thenReturn(Future.successful(Seq(inlandMode1, inlandMode2, inlandMode3, inlandMode4, inlandMode5, inlandMode6, inlandMode7, inlandMode8)))
 
-        service.getTransportModeCodes().futureValue mustBe
+        service.getInlandModes().futureValue mustBe
           Seq(inlandMode7, inlandMode6, inlandMode5, inlandMode4, inlandMode3, inlandMode2, inlandMode1)
 
-        verify(mockRefDataConnector).getTransportModeCodes()(any(), any())
+        verify(mockRefDataConnector).getTransportModeCodes[InlandMode]()(any(), any(), any())
+      }
+    }
+
+    "getBorderModes" - {
+
+      val borderMode1 = BorderMode("8", "Inland waterway")
+      val borderMode2 = BorderMode("7", "Fixed transport installations - pipelines or electric power lines used for the continuous transport of goods")
+      val borderMode3 = BorderMode("5", "Mail (active mode of transport unknown)")
+      val borderMode4 = BorderMode("4", "Air")
+      val borderMode5 = BorderMode("3", "Road")
+      val borderMode6 = BorderMode("2", "Rail")
+      val borderMode7 = BorderMode("1", "Maritime")
+      val borderMode8 = BorderMode("9", "Mode unknown (Own propulsion)")
+
+      "must return the agreed list of sorted border modes" in {
+        when(mockRefDataConnector.getTransportModeCodes[BorderMode]()(any(), any(), any()))
+          .thenReturn(Future.successful(Seq(borderMode1, borderMode2, borderMode3, borderMode4, borderMode5, borderMode6, borderMode7, borderMode8)))
+
+        service.getBorderModes().futureValue mustBe
+          Seq(borderMode7, borderMode6, borderMode5, borderMode4)
+
+        verify(mockRefDataConnector).getTransportModeCodes[BorderMode]()(any(), any(), any())
       }
     }
   }
