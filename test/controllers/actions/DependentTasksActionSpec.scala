@@ -65,9 +65,9 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
     }
 
     "return None if dependent sections are in unavailable state" in {
-      val tasks = Map(dependentTasks.map(_ -> TaskStatus.Unavailable): _*)
+      val tasks       = Map(dependentTasks.map(_ -> TaskStatus.Unavailable): _*)
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
-      val result = harness(userAnswers)
+      val result      = harness(userAnswers)
       status(result) mustBe OK
       redirectLocation(result) mustBe None
     }
