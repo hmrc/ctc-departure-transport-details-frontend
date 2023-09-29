@@ -16,7 +16,7 @@
 
 @import controllers.transportMeans.routes
 @import models.LocalReferenceNumber
-@import models.transportMeans.BorderModeOfTransport
+@import models.reference.BorderMode
 @import views.html.components.{Button, ErrorSummary, InputRadio}
 @import viewModels.components.InputRadioViewModel
 @import viewModels.components.InputRadioViewModel._
@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[BorderModeOfTransport], lrn: LocalReferenceNumber, borderModesOfTransport: Seq[BorderModeOfTransport], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[BorderMode], lrn: LocalReferenceNumber, borderModesOfTransport: Seq[BorderMode], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transportMeans.borderModeOfTransport.title"),

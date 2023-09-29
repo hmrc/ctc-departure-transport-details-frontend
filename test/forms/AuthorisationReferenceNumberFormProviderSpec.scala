@@ -19,7 +19,7 @@ package forms
 import base.SpecBase
 import forms.Constants.maxAuthorisationRefNumberLength
 import forms.behaviours.StringFieldBehaviours
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

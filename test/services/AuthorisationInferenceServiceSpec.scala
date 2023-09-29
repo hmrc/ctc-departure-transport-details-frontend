@@ -20,8 +20,8 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import models.ProcedureType.{Normal, Simplified}
-import models.authorisations.AuthorisationType
-import models.transportMeans.InlandMode
+import models.reference.InlandMode
+import models.reference.authorisations.AuthorisationType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -32,6 +32,18 @@ import pages.transportMeans.InlandModePage
 class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   val declarationTypeGen: Gen[String] = arbitrary[String](arbitraryNonTIRDeclarationType)
+
+  val authTypeACR: AuthorisationType = AuthorisationType(
+    "C521",
+    "ACR - authorisation for the status of authorised consignor for Union transit"
+  )
+
+  val authTypeTRD: AuthorisationType = AuthorisationType(
+    "C524",
+    "TRD - authorisation to use transit declaration with a reduced dataset"
+  )
+
+  val authTypes: Seq[AuthorisationType] = Seq(authTypeACR, authTypeTRD)
 
   "inferAuthorisations" - {
 
@@ -47,10 +59,30 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers, authTypes)
 
             val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.TRD)
+              .setValue(InferredAuthorisationTypePage(Index(0)), authTypeTRD)
+
+            result mustBe expectedResult
+        }
+      }
+
+      "must not infer index 0 as TRD when TRD isn't present in reference data" in {
+        forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
+          (inlandMode, declarationType) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InlandModePage, inlandMode)
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, true)
+              .setValue(ProcedureTypePage, Normal)
+
+            val service = new AuthorisationInferenceService()
+
+            val result = service.inferAuthorisations(userAnswers, Seq.empty)
+
+            val expectedResult = userAnswers
+              .setValue(InferredAuthorisationTypePage(Index(0)), None)
 
             result mustBe expectedResult
         }
@@ -69,11 +101,32 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers, authTypes)
 
             val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.TRD)
-              .setValue(InferredAuthorisationTypePage(Index(1)), AuthorisationType.ACR)
+              .setValue(InferredAuthorisationTypePage(Index(0)), authTypeTRD)
+              .setValue(InferredAuthorisationTypePage(Index(1)), authTypeACR)
+
+            result mustBe expectedResult
+        }
+      }
+
+      "must not infer index 0 as TRD and index 1 as ACR when they are not present in reference data" in {
+        forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
+          (inlandMode, declarationType) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InlandModePage, inlandMode)
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, true)
+              .setValue(ProcedureTypePage, Simplified)
+
+            val service = new AuthorisationInferenceService()
+
+            val result = service.inferAuthorisations(userAnswers, Seq.empty)
+
+            val expectedResult = userAnswers
+              .setValue(InferredAuthorisationTypePage(Index(0)), None)
+              .setValue(InferredAuthorisationTypePage(Index(1)), None)
 
             result mustBe expectedResult
         }
@@ -92,7 +145,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers, authTypes)
 
             result mustBe userAnswers
         }
@@ -111,7 +164,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers, authTypes)
 
             result mustBe userAnswers
         }
@@ -130,7 +183,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers, authTypes)
 
             result mustBe userAnswers
         }
@@ -149,10 +202,30 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers, authTypes)
 
             val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.ACR)
+              .setValue(InferredAuthorisationTypePage(Index(0)), authTypeACR)
+
+            result mustBe expectedResult
+        }
+      }
+
+      "must not infer index 0 as ACR when ACR is not present in reference data" in {
+        forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
+          (inlandMode, declarationType) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InlandModePage, inlandMode)
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, false)
+              .setValue(ProcedureTypePage, Simplified)
+
+            val service = new AuthorisationInferenceService()
+
+            val result = service.inferAuthorisations(userAnswers, Seq.empty)
+
+            val expectedResult = userAnswers
+              .setValue(InferredAuthorisationTypePage(Index(0)), None)
 
             result mustBe expectedResult
         }
@@ -171,10 +244,30 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers, authTypes)
 
             val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.ACR)
+              .setValue(InferredAuthorisationTypePage(Index(0)), authTypeACR)
+
+            result mustBe expectedResult
+        }
+      }
+
+      "must not infer index 0 as ACR when ACR is not present in reference data" in {
+        forAll(arbitrary[InlandMode](arbitraryNonMaritimeRailAirInlandMode), declarationTypeGen) {
+          (inlandMode, declarationType) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InlandModePage, inlandMode)
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, true)
+              .setValue(ProcedureTypePage, Simplified)
+
+            val service = new AuthorisationInferenceService()
+
+            val result = service.inferAuthorisations(userAnswers, Seq.empty)
+
+            val expectedResult = userAnswers
+              .setValue(InferredAuthorisationTypePage(Index(0)), None)
 
             result mustBe expectedResult
         }
@@ -193,10 +286,30 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val service = new AuthorisationInferenceService()
 
-            val result = service.inferAuthorisations(userAnswers)
+            val result = service.inferAuthorisations(userAnswers, authTypes)
 
             val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), AuthorisationType.ACR)
+              .setValue(InferredAuthorisationTypePage(Index(0)), authTypeACR)
+
+            result mustBe expectedResult
+        }
+      }
+
+      "must not infer index 0 as ACR when ACR is not present in reference data" in {
+        forAll(arbitrary[InlandMode](arbitraryNonMaritimeRailAirInlandMode), declarationTypeGen) {
+          (inlandMode, declarationType) =>
+            val userAnswers = emptyUserAnswers
+              .setValue(InlandModePage, inlandMode)
+              .setValue(DeclarationTypePage, declarationType)
+              .setValue(ApprovedOperatorPage, false)
+              .setValue(ProcedureTypePage, Simplified)
+
+            val service = new AuthorisationInferenceService()
+
+            val result = service.inferAuthorisations(userAnswers, Seq.empty)
+
+            val expectedResult = userAnswers
+              .setValue(InferredAuthorisationTypePage(Index(0)), None)
 
             result mustBe expectedResult
         }

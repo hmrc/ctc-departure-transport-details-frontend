@@ -17,13 +17,12 @@
 package generators
 
 import models._
-import models.authorisations.AuthorisationType
-import models.equipment.PaymentMethod
+import models.reference.authorisations.AuthorisationType
+import models.reference.equipment.PaymentMethod
 import models.reference._
-import models.supplyChainActors.SupplyChainActorType
-import models.transportMeans.active.{Identification => ActiveIdentification}
-import models.transportMeans.departure.Identification
-import models.transportMeans.{BorderModeOfTransport, InlandMode}
+import models.reference.supplyChainActors.SupplyChainActorType
+import models.reference.transportMeans._
+import models.reference.BorderMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -45,7 +44,7 @@ trait UserAnswersEntryGenerators {
       case DeclarationTypePage           => arbitrary[String](arbitraryDeclarationType).map(Json.toJson(_))
       case OfficeOfDestinationPage       => arbitrary[CustomsOffice].map(Json.toJson(_))
       case OfficeOfDepartureInCL010Page  => arbitrary[Boolean].map(JsBoolean)
-      case ProcedureTypePage             => arbitrary[ProcedureType].map(Json.toJson(_))
+      case ProcedureTypePage             => arbitrary[ProcedureType.Value].map(Json.toJson(_))
       case SecurityDetailsTypePage       => arbitrary[String](arbitrarySecurityDetailsType).map(Json.toJson(_))
       case AdditionalDeclarationTypePage => arbitrary[String](arbitraryAdditionalDeclarationType).map(Json.toJson(_))
     }
@@ -80,7 +79,7 @@ trait UserAnswersEntryGenerators {
         case InlandModePage                         => arbitrary[InlandMode].map(Json.toJson(_))
         case AddDepartureTransportMeansYesNoPage    => arbitrary[Boolean].map(JsBoolean)
         case AddBorderModeOfTransportYesNoPage      => arbitrary[Boolean].map(JsBoolean)
-        case BorderModeOfTransportPage              => arbitrary[BorderModeOfTransport].map(Json.toJson(_))
+        case BorderModeOfTransportPage              => arbitrary[BorderMode].map(Json.toJson(_))
         case AddActiveBorderTransportMeansYesNoPage => arbitrary[Boolean].map(JsBoolean)
       }
   }
@@ -89,7 +88,7 @@ trait UserAnswersEntryGenerators {
     import pages.transportMeans.departure._
     {
       case AddIdentificationTypeYesNoPage   => arbitrary[Boolean].map(JsBoolean)
-      case IdentificationPage               => arbitrary[Identification].map(Json.toJson(_))
+      case IdentificationPage               => arbitrary[departure.Identification].map(Json.toJson(_))
       case AddIdentificationNumberYesNoPage => arbitrary[Boolean].map(JsBoolean)
       case MeansIdentificationNumberPage    => Gen.alphaNumStr.map(JsString)
       case AddVehicleCountryYesNoPage       => arbitrary[Boolean].map(JsBoolean)
@@ -100,7 +99,7 @@ trait UserAnswersEntryGenerators {
   private def generateTransportMeansActiveAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.transportMeans.active._
     {
-      case IdentificationPage(_)                 => arbitrary[ActiveIdentification].map(Json.toJson(_))
+      case IdentificationPage(_)                 => arbitrary[active.Identification].map(Json.toJson(_))
       case IdentificationNumberPage(_)           => Gen.alphaNumStr.map(JsString)
       case AddNationalityYesNoPage(_)            => arbitrary[Boolean].map(JsBoolean)
       case NationalityPage(_)                    => arbitrary[Nationality].map(Json.toJson(_))

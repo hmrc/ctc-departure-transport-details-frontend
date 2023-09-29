@@ -17,6 +17,7 @@
 package models.journeyDomain
 
 import cats.implicits._
+import config.Constants.Mail
 import config.PhaseConfig
 import models.ProcedureType.Normal
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
@@ -25,8 +26,7 @@ import models.journeyDomain.carrierDetails.CarrierDetailsDomain
 import models.journeyDomain.equipment.EquipmentsAndChargesDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
-import models.transportMeans.InlandMode
-import models.transportMeans.InlandMode.Mail
+import models.reference.InlandMode
 import models.{Mode, Phase, UserAnswers}
 import pages.authorisationsAndLimit.{AddAuthorisationsYesNoPage, AuthorisationsInferredPage}
 import pages.carrierDetails.CarrierDetailYesNoPage
@@ -54,7 +54,7 @@ object TransportDomain {
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportDomain] = {
 
     implicit lazy val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] =
-      InlandModePage.optionalReader.flatMap {
+      InlandModePage.optionalReader.map(_.map(_.code)).flatMap {
         case Some(Mail) => none[TransportMeansDomain].pure[UserAnswersReader]
         case _          => UserAnswersReader[TransportMeansDomain].map(Some(_))
       }

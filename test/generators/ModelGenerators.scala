@@ -19,8 +19,10 @@ package generators
 import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
-import models.transportMeans.InlandMode.{Mail, Rail}
-import models.transportMeans.{BorderModeOfTransport, InlandMode}
+import models.reference.authorisations.AuthorisationType
+import models.reference.equipment.PaymentMethod
+import models.reference.supplyChainActors.SupplyChainActorType
+import models.reference.transportMeans._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.mvc.Call
@@ -88,7 +90,7 @@ trait ModelGenerators {
     } yield Call(method, url)
   }
 
-  implicit lazy val arbitraryProcedureType: Arbitrary[ProcedureType] =
+  implicit lazy val arbitraryProcedureType: Arbitrary[ProcedureType.Value] =
     Arbitrary {
       Gen.oneOf(ProcedureType.values)
     }
@@ -98,23 +100,28 @@ trait ModelGenerators {
       Gen.oneOf("0", "1", "2", "3")
     }
 
-  implicit lazy val arbitraryBorderModeOfTransport: Arbitrary[BorderModeOfTransport] =
+  implicit lazy val arbitraryBorderModeOfTransport: Arbitrary[BorderMode] =
     Arbitrary {
-      Gen.oneOf(BorderModeOfTransport.values)
+      for {
+        code        <- Gen.oneOf("1", "2", "3", "4")
+        description <- nonEmptyString
+      } yield BorderMode(code, description)
     }
 
-  implicit lazy val arbitraryOptionalNonAirBorderModeOfTransport: Arbitrary[Option[BorderModeOfTransport]] =
+  implicit lazy val arbitraryOptionalNonAirBorderModeOfTransport: Arbitrary[Option[BorderMode]] =
     Arbitrary {
-      Gen.option {
-        Gen.oneOf(BorderModeOfTransport.values.filterNot(_ == BorderModeOfTransport.Air))
-      }
+      for {
+        code        <- Gen.oneOf("1", "2", "3")
+        description <- nonEmptyString
+      } yield Some(BorderMode(code, description))
     }
 
-  lazy val arbitraryOptionalNonRailBorderModeOfTransport: Arbitrary[Option[BorderModeOfTransport]] =
+  lazy val arbitraryOptionalNonRailBorderModeOfTransport: Arbitrary[Option[BorderMode]] =
     Arbitrary {
-      Gen.option {
-        Gen.oneOf(BorderModeOfTransport.values.filterNot(_ == BorderModeOfTransport.ChannelTunnel))
-      }
+      for {
+        code        <- Gen.oneOf("1", "3", "4")
+        description <- nonEmptyString
+      } yield Some(BorderMode(code, description))
     }
 
   implicit lazy val arbitraryCountry: Arbitrary[Country] =
@@ -150,57 +157,82 @@ trait ModelGenerators {
 
   implicit lazy val arbitraryInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
-      Gen.oneOf(InlandMode.values)
+      for {
+        code        <- Gen.oneOf("1", "2", "3", "4", "5", "7", "8")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
     }
 
   val arbitraryNonMailInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
-      Gen.oneOf(InlandMode.values.filterNot(_ == Mail))
+      for {
+        code        <- Gen.oneOf("1", "2", "3", "4", "7", "8")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
     }
 
   val arbitraryNonRailInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
-      Gen.oneOf(InlandMode.values.filterNot(_ == Rail))
+      for {
+        code        <- Gen.oneOf("1", "3", "4", "5", "7", "8")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
     }
 
   val arbitraryMaritimeRailAirInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
-      Gen.oneOf(InlandMode.Maritime, InlandMode.Rail, InlandMode.Air)
+      for {
+        code        <- Gen.oneOf("1", "2", "4")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
     }
 
   val arbitraryNonMaritimeRailAirInlandMode: Arbitrary[InlandMode] =
     Arbitrary {
-      Gen.oneOf(
-        InlandMode.values
-          .filterNot(_ == InlandMode.Maritime)
-          .filterNot(_ == InlandMode.Rail)
-          .filterNot(_ == InlandMode.Air)
-      )
+      for {
+        code        <- Gen.oneOf("3", "5", "7", "8")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
     }
 
-  implicit lazy val arbitraryPaymentMethod: Arbitrary[models.equipment.PaymentMethod] =
+  implicit lazy val arbitraryPaymentMethod: Arbitrary[PaymentMethod] =
     Arbitrary {
-      Gen.oneOf(models.equipment.PaymentMethod.values)
+      for {
+        code        <- Gen.oneOf("A", "B", "C", "H", "Y", "Z", "D")
+        description <- nonEmptyString
+      } yield PaymentMethod(code, description)
     }
 
-  implicit lazy val arbitraryAuthorisationType: Arbitrary[models.authorisations.AuthorisationType] =
+  implicit lazy val arbitraryAuthorisationType: Arbitrary[AuthorisationType] =
     Arbitrary {
-      Gen.oneOf(models.authorisations.AuthorisationType.values)
+      for {
+        code        <- Gen.oneOf("C521", "C523", "C524")
+        description <- nonEmptyString
+      } yield AuthorisationType(code, description)
     }
 
-  implicit lazy val arbitraryIdentificationDeparture: Arbitrary[models.transportMeans.departure.Identification] =
+  implicit lazy val arbitraryIdentificationActive: Arbitrary[active.Identification] =
     Arbitrary {
-      Gen.oneOf(models.transportMeans.departure.Identification.values)
+      for {
+        code        <- Gen.oneOf("10", "11", "21", "30", "40", "41", "80", "81")
+        description <- nonEmptyString
+      } yield active.Identification(code, description)
     }
 
-  implicit lazy val arbitraryActiveIdentificationDeparture: Arbitrary[models.transportMeans.active.Identification] =
+  implicit lazy val arbitraryIdentificationDeparture: Arbitrary[departure.Identification] =
     Arbitrary {
-      Gen.oneOf(models.transportMeans.active.Identification.values)
+      for {
+        code        <- Gen.oneOf("10", "11", "20", "21", "30", "31", "40", "41", "80", "81")
+        description <- nonEmptyString
+      } yield departure.Identification(code, description)
     }
 
-  implicit lazy val arbitrarySupplyChainActorType: Arbitrary[models.supplyChainActors.SupplyChainActorType] =
+  implicit lazy val arbitrarySupplyChainActorType: Arbitrary[SupplyChainActorType] =
     Arbitrary {
-      Gen.oneOf(models.supplyChainActors.SupplyChainActorType.values)
+      for {
+        code        <- Gen.oneOf("CS", "FW", "MF", "WH")
+        description <- nonEmptyString
+      } yield SupplyChainActorType(code, description)
     }
 
   lazy val arbitraryIncompleteTaskStatus: Arbitrary[TaskStatus] = Arbitrary {
@@ -221,5 +253,11 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(Locked, Unlocked, LockCheckFailure)
     }
+
+  implicit def arbitraryRadioableList[T <: Radioable[T]](implicit arbitrary: Arbitrary[T]): Arbitrary[Seq[T]] = Arbitrary {
+    for {
+      values <- listWithMaxLength[T]()
+    } yield values.distinctBy(_.code)
+  }
 
 }

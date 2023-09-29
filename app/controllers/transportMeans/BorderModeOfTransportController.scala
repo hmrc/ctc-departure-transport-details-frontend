@@ -20,13 +20,15 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.transportMeans.BorderModeOfTransport
+import models.reference.BorderMode
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.BorderModeOfTransportPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.TransportModeCodesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transportMeans.BorderModeOfTransportView
 
@@ -40,33 +42,40 @@ class BorderModeOfTransportController @Inject() (
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: BorderModeOfTransportView
+  view: BorderModeOfTransportView,
+  service: TransportModeCodesService
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[BorderModeOfTransport]("transportMeans.borderModeOfTransport")
+  private def form(borderModeCodes: Seq[BorderMode]): Form[BorderMode] = formProvider[BorderMode]("transportMeans.borderModeOfTransport", borderModeCodes)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(BorderModeOfTransportPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      service.getBorderModes().map {
+        borderModeCodes =>
+          val preparedForm = request.userAnswers.get(BorderModeOfTransportPage) match {
+            case None        => form(borderModeCodes)
+            case Some(value) => form(borderModeCodes).fill(value)
+          }
 
-      Ok(view(preparedForm, lrn, BorderModeOfTransport.values, mode))
+          Ok(view(preparedForm, lrn, borderModeCodes, mode))
+      }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, BorderModeOfTransport.values, mode))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            BorderModeOfTransportPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
+      service.getBorderModes().flatMap {
+        borderModeCodes =>
+          form(borderModeCodes)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, borderModeCodes, mode))),
+              value => {
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                BorderModeOfTransportPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              }
+            )
+      }
   }
 }

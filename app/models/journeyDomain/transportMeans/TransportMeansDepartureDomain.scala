@@ -17,13 +17,13 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
+import config.Constants.Rail
 import config.PhaseConfig
 import models.Phase
 import models.domain._
 import models.journeyDomain.JourneyDomainModel
 import models.reference.Nationality
-import models.transportMeans.InlandMode
-import models.transportMeans.departure.Identification
+import models.reference.transportMeans.departure.Identification
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
 import pages.transportMeans.departure._
@@ -84,8 +84,8 @@ object TransitionTransportMeansDepartureDomain {
       }
 
     val nationalityReader: UserAnswersReader[Option[Nationality]] =
-      InlandModePage.optionalReader.flatMap {
-        case Some(InlandMode.Rail) =>
+      InlandModePage.optionalReader.map(_.map(_.code)).flatMap {
+        case Some(Rail) =>
           none[Nationality].pure[UserAnswersReader]
         case _ =>
           ContainerIndicatorPage.reader.map(_.value).flatMap {

@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.authorisationsAndLimit.authorisations.{routes => authRoutes}
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}

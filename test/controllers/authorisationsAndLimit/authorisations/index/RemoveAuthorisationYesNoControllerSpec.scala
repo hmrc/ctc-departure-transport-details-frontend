@@ -18,7 +18,8 @@ package controllers.authorisationsAndLimit.authorisations.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
-import models.authorisations.AuthorisationType
+import generators.Generators
+import models.reference.authorisations.AuthorisationType
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -26,8 +27,8 @@ import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import pages.sections.authorisationsAndLimit.AuthorisationSection
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
+import pages.sections.authorisationsAndLimit.AuthorisationSection
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -35,7 +36,7 @@ import views.html.authorisationsAndLimit.authorisations.index.RemoveAuthorisatio
 
 import scala.concurrent.Future
 
-class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
   private val formProvider = new YesNoFormProvider()
 
@@ -45,7 +46,20 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
   private val mode                               = NormalMode
   private lazy val removeAuthorisationYesNoRoute = routes.RemoveAuthorisationYesNoController.onPageLoad(lrn, mode, authorisationIndex).url
 
-  private val authType      = Gen.oneOf(AuthorisationType.values).sample.value
+  val authTypeACR: AuthorisationType = AuthorisationType(
+    "C521",
+    "ACR"
+  )
+
+  val authTypeSSE: AuthorisationType =
+    AuthorisationType("C524", "SSE - authorisation for the use of seals of a special type")
+
+  val authTypeTRD: AuthorisationType = AuthorisationType(
+    "C524",
+    "TRD"
+  )
+
+  private val authType      = Gen.oneOf(authTypeACR, authTypeSSE, authTypeTRD).sample.value
   private val authRefNumber = arbitrary[String].sample.value
 
   "RemoveAuthorisationYesNo Controller" - {
@@ -175,8 +189,8 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
 
       setExistingUserAnswers(userAnswers)
 
-      val request   = FakeRequest(POST, removeAuthorisationYesNoRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form(authType).bind(Map("value" -> ""))
+      val request   = FakeRequest(POST, removeAuthorisationYesNoRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val boundForm = form(authType).bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
 

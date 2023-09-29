@@ -16,10 +16,10 @@
 
 package services
 
+import config.Constants._
 import models.ProcedureType.{Normal, Simplified}
-import models.authorisations.AuthorisationType.{ACR, TRD}
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
-import models.transportMeans.InlandMode.{Air, Maritime, Rail}
+import models.reference.authorisations.AuthorisationType
 import models.{Index, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.InferredAuthorisationTypePage
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
@@ -29,26 +29,41 @@ import javax.inject.Inject
 
 class AuthorisationInferenceService @Inject() () {
 
-  def inferAuthorisations(userAnswers: UserAnswers): UserAnswers = {
+  def inferAuthorisations(userAnswers: UserAnswers, authorisationTypes: Seq[AuthorisationType]): UserAnswers = {
+
+    val authTypeACR = authorisationTypes.find(_.isACR)
+    val authTypeTRD = authorisationTypes.find(_.isTRD)
 
     val reader: UserAnswersReader[Option[UserAnswers]] = for {
       procedureType           <- ProcedureTypePage.reader
       reducedDataSetIndicator <- ApprovedOperatorPage.inferredReader
       inlandMode              <- InlandModePage.reader
-    } yield (reducedDataSetIndicator, inlandMode, procedureType) match {
+    } yield (reducedDataSetIndicator, inlandMode.code, procedureType) match {
       case (true, Maritime | Rail | Air, Simplified) =>
-        userAnswers
-          .set(InferredAuthorisationTypePage(Index(0)), TRD)
-          .flatMap(_.set(InferredAuthorisationTypePage(Index(1)), ACR))
-          .toOption
+        (authTypeACR, authTypeTRD) match {
+          case (Some(acr), Some(trd)) =>
+            userAnswers
+              .set(InferredAuthorisationTypePage(Index(0)), trd)
+              .flatMap(_.set(InferredAuthorisationTypePage(Index(1)), acr))
+              .toOption
+          case _ => None
+        }
       case (true, Maritime | Rail | Air, Normal) =>
-        userAnswers
-          .set(InferredAuthorisationTypePage(Index(0)), TRD)
-          .toOption
+        authTypeTRD match {
+          case Some(trd) =>
+            userAnswers
+              .set(InferredAuthorisationTypePage(Index(0)), trd)
+              .toOption
+          case _ => None
+        }
       case (_, _, Simplified) =>
-        userAnswers
-          .set(InferredAuthorisationTypePage(Index(0)), ACR)
-          .toOption
+        authTypeACR match {
+          case Some(acr) =>
+            userAnswers
+              .set(InferredAuthorisationTypePage(Index(0)), acr)
+              .toOption
+          case _ => None
+        }
       case _ =>
         Some(userAnswers)
     }

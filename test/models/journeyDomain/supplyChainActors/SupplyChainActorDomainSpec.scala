@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import models.domain.{EitherType, UserAnswersReader}
-import models.supplyChainActors.SupplyChainActorType
+import models.reference.supplyChainActors.SupplyChainActorType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}

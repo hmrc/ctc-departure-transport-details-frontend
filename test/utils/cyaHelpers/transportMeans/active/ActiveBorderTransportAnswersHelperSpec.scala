@@ -22,7 +22,7 @@ import controllers.transportMeans.active.routes
 import generators.Generators
 import models.{Mode, Phase}
 import models.reference.{CustomsOffice, Nationality}
-import models.transportMeans.active.Identification
+import models.reference.transportMeans.active.Identification
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -113,7 +113,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Identification type".toText),
-                  value = Value(messages(s"${"transportMeans.active.identification"}.$activeIdentification").toText),
+                  value = Value(activeIdentification.asString.toText),
                   actions = Some(
                     Actions(
                       items = List(

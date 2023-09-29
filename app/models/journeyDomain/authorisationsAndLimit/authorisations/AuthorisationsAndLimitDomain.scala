@@ -21,7 +21,6 @@ import config.Constants.{`PRE-LODGE`, STANDARD}
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
-import models.authorisations.AuthorisationType
 import pages.authorisationsAndLimit.limit.AddLimitDateYesNoPage
 import pages.external.AdditionalDeclarationTypePage
 
@@ -30,7 +29,7 @@ case class AuthorisationsAndLimitDomain(authorisationsDomain: AuthorisationsDoma
 object AuthorisationsAndLimitDomain {
 
   def limitReader(authDomain: AuthorisationsDomain): UserAnswersReader[Option[LimitDomain]] = {
-    lazy val anyAuthTypeIsC521 = authDomain.authorisations.exists(_.authorisationType == AuthorisationType.ACR)
+    lazy val anyAuthTypeIsC521 = authDomain.authorisations.exists(_.authorisationType.isACR)
     AdditionalDeclarationTypePage.reader.flatMap {
       case `PRE-LODGE` if anyAuthTypeIsC521 => AddLimitDateYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[LimitDomain])
       case STANDARD if anyAuthTypeIsC521    => UserAnswersReader[LimitDomain].map(Some(_))

@@ -17,7 +17,7 @@
 package pages.transportMeans
 
 import models.Index
-import models.transportMeans.BorderModeOfTransport
+import models.reference.BorderMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.sections.transportMeans.TransportMeansActiveSection
@@ -27,23 +27,23 @@ class BorderModeOfTransportPageSpec extends PageBehaviours {
 
   "BorderModeOfTransportPage" - {
 
-    beRetrievable[BorderModeOfTransport](BorderModeOfTransportPage)
+    beRetrievable[BorderMode](BorderModeOfTransportPage)
 
-    beSettable[BorderModeOfTransport](BorderModeOfTransportPage)
+    beSettable[BorderMode](BorderModeOfTransportPage)
 
-    beRemovable[BorderModeOfTransport](BorderModeOfTransportPage)
+    beRemovable[BorderMode](BorderModeOfTransportPage)
   }
 
   "cleanup" - {
     "when answer changes" - {
       "must remove identification" in {
-        forAll(arbitrary[BorderModeOfTransport]) {
+        forAll(arbitrary[BorderMode]) {
           borderMode =>
             val userAnswers = emptyUserAnswers
               .setValue(BorderModeOfTransportPage, borderMode)
               .setValue(TransportMeansActiveSection(Index(0)), Json.obj("foo" -> "bar"))
 
-            forAll(arbitrary[BorderModeOfTransport].retryUntil(_ != borderMode)) {
+            forAll(arbitrary[BorderMode].retryUntil(_ != borderMode)) {
               differentBorderMode =>
                 val result = userAnswers.setValue(BorderModeOfTransportPage, differentBorderMode)
 

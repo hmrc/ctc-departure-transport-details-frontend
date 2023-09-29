@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.authorisationsAndLimit.authorisations.index.routes
 import generators.Generators
 import models.{Index, Mode}
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import models.domain.UserAnswersReader
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import org.scalacheck.Arbitrary.arbitrary

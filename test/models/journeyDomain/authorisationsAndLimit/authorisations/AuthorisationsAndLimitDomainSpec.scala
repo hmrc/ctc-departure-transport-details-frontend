@@ -18,9 +18,9 @@ package models.journeyDomain.authorisationsAndLimit.authorisations
 
 import base.SpecBase
 import generators.Generators
-import models.authorisations.AuthorisationType
 import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
+import models.reference.authorisations.AuthorisationType
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
@@ -30,6 +30,9 @@ import pages.external.AdditionalDeclarationTypePage
 class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val authRefNumber = Gen.alphaNumStr.sample.value
+  private val authTypeACR   = AuthorisationType("C521", "ACR - authorisation for the status of authorised consignor for Union transit")
+  private val authTypeSSE   = AuthorisationType("C523", "SSE - authorisation for the use of seals of a special type")
+  private val authTypeTRD   = AuthorisationType("C524", "TRD - authorisation to use transit declaration with a reduced dataset")
 
   "AuthorisationsAndLimitDomain" - {
 
@@ -39,7 +42,7 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
         "when authorisation type is not ACR" in {
 
           val additionalDeclarationType = Gen.oneOf("A", "D").sample.value
-          val authType                  = Gen.oneOf(AuthorisationType.TRD, AuthorisationType.SSE).sample.value
+          val authType                  = Gen.oneOf(authTypeTRD, authTypeSSE).sample.value
 
           val userAnswers = emptyUserAnswers
             .setValue(AdditionalDeclarationTypePage, additionalDeclarationType)
@@ -59,11 +62,9 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
       "cannot be parsed from user answers" - {
         "when any AuthorisationType is ACR" - {
           "and additional declaration type is A" in {
-            val authType = AuthorisationType.ACR
-
             val userAnswers = emptyUserAnswers
               .setValue(AdditionalDeclarationTypePage, "A")
-              .setValue(AuthorisationTypePage(authorisationIndex), authType)
+              .setValue(AuthorisationTypePage(authorisationIndex), authTypeACR)
               .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authRefNumber)
 
             val authorisationsDomain = AuthorisationsDomain.userAnswersReader.run(userAnswers).value
@@ -76,11 +77,9 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
           }
 
           "and additional declaration type is D" in {
-            val authType = AuthorisationType.ACR
-
             val userAnswers = emptyUserAnswers
               .setValue(AdditionalDeclarationTypePage, "D")
-              .setValue(AuthorisationTypePage(authorisationIndex), authType)
+              .setValue(AuthorisationTypePage(authorisationIndex), authTypeACR)
               .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authRefNumber)
 
             val authorisationsDomain = AuthorisationsDomain.userAnswersReader.run(userAnswers).value

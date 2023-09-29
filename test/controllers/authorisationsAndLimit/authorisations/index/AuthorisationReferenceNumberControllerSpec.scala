@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AuthorisationReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

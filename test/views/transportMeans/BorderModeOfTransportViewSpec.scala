@@ -18,26 +18,29 @@ package views.transportMeans
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.transportMeans.BorderModeOfTransport
+import models.reference.BorderMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.transportMeans.BorderModeOfTransportView
 
-class BorderModeOfTransportViewSpec extends RadioViewBehaviours[BorderModeOfTransport] {
+class BorderModeOfTransportViewSpec extends EnumerableViewBehaviours[BorderMode] {
 
-  override def form: Form[BorderModeOfTransport] = new EnumerableFormProvider()(prefix)
+  override def form: Form[BorderMode] = new EnumerableFormProvider()(prefix, values)
 
-  override def applyView(form: Form[BorderModeOfTransport]): HtmlFormat.Appendable =
+  override def applyView(form: Form[BorderMode]): HtmlFormat.Appendable =
     injector.instanceOf[BorderModeOfTransportView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.borderModeOfTransport"
 
-  override def radioItems(fieldId: String, checkedValue: Option[BorderModeOfTransport] = None): Seq[RadioItem] =
+  override def radioItems(fieldId: String, checkedValue: Option[BorderMode] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[BorderModeOfTransport] = BorderModeOfTransport.values
+  override def values: Seq[BorderMode] = Seq(
+    BorderMode("1", "Maritime"),
+    BorderMode("2", "Rail")
+  )
 
   behave like pageWithTitle()
 

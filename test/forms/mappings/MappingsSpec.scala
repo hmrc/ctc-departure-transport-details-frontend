@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import models.{Enumerable, OptionalBoolean, Selectable, SelectableList}
+import models.{Enumerable, OptionalBoolean, Radioable, Selectable, SelectableList}
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
@@ -239,9 +239,15 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
 
   "enumerable" - {
 
-    sealed trait Foo
-    case object Bar extends Foo
-    case object Baz extends Foo
+    sealed trait Foo extends Radioable[Foo]
+    case object Bar extends Foo {
+      override val code: String             = "bar"
+      override val messageKeyPrefix: String = "mk.bar"
+    }
+    case object Baz extends Foo {
+      override val code: String             = "baz"
+      override val messageKeyPrefix: String = "mk.baz"
+    }
 
     implicit val fooEnumerable: Enumerable[Foo] =
       Enumerable(
@@ -267,6 +273,11 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     "must not bind an empty map" in {
       val result = testForm.bind(Map.empty[String, String])
       result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "must unbind a valid value" in {
+      val result = testForm.fill(Bar)
+      result.apply("value").value.value mustEqual "bar"
     }
   }
 

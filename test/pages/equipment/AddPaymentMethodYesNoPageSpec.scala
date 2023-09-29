@@ -16,7 +16,7 @@
 
 package pages.equipment
 
-import models.equipment.PaymentMethod
+import models.reference.equipment.PaymentMethod
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 

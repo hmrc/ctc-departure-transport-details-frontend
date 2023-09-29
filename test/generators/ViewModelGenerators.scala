@@ -16,7 +16,6 @@
 
 package generators
 
-import models.transportMeans.departure
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.FormError
@@ -212,7 +211,7 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitraryMeansIdentificationNumberViewModel: Arbitrary[MeansIdentificationNumberViewModel] = Arbitrary {
     for {
-      identification <- Gen.option(arbitrary[departure.Identification])
+      identification <- Gen.option(arbitrary[models.reference.transportMeans.departure.Identification])
     } yield MeansIdentificationNumberViewModel(identification)
   }
 }

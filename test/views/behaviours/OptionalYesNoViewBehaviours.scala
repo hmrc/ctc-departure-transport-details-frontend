@@ -24,6 +24,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 trait OptionalYesNoViewBehaviours extends RadioViewBehaviours[OptionalBoolean] {
 
+  override val getValue: OptionalBoolean => String = _.toString
+
   override def form: Form[OptionalBoolean] = new OptionalYesNoFormProvider()(prefix)
 
   override def radioItems(fieldId: String, checkedValue: Option[OptionalBoolean]): Seq[RadioItem] =

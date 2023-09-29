@@ -18,16 +18,16 @@ package views.equipment
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.equipment.PaymentMethod
+import models.reference.equipment.PaymentMethod
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.equipment.PaymentMethodView
 
-class PaymentMethodViewSpec extends RadioViewBehaviours[PaymentMethod] {
+class PaymentMethodViewSpec extends EnumerableViewBehaviours[PaymentMethod] {
 
-  override def form: Form[PaymentMethod] = new EnumerableFormProvider()(prefix)
+  override def form: Form[PaymentMethod] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[PaymentMethod]): HtmlFormat.Appendable =
     injector.instanceOf[PaymentMethodView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
@@ -37,7 +37,10 @@ class PaymentMethodViewSpec extends RadioViewBehaviours[PaymentMethod] {
   override def radioItems(fieldId: String, checkedValue: Option[PaymentMethod] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[PaymentMethod] = PaymentMethod.values
+  override def values: Seq[PaymentMethod] = Seq(
+    PaymentMethod("A", "Cash"),
+    PaymentMethod("B", "Credit card")
+  )
 
   behave like pageWithTitle()
 

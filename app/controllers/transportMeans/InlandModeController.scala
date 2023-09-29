@@ -20,13 +20,15 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.transportMeans.InlandMode
+import models.reference.InlandMode
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.InlandModePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.TransportModeCodesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.transportMeans.InlandModeView
 
@@ -40,33 +42,40 @@ class InlandModeController @Inject() (
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: InlandModeView
+  view: InlandModeView,
+  service: TransportModeCodesService
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[InlandMode]("transportMeans.inlandMode")
+  private def form(inlandModeCodes: Seq[InlandMode]): Form[InlandMode] = formProvider[InlandMode]("transportMeans.inlandMode", inlandModeCodes)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(InlandModePage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      service.getInlandModes().map {
+        inlandModeCodes =>
+          val preparedForm = request.userAnswers.get(InlandModePage) match {
+            case None        => form(inlandModeCodes)
+            case Some(value) => form(inlandModeCodes).fill(value)
+          }
 
-      Ok(view(preparedForm, lrn, InlandMode.values, mode))
+          Ok(view(preparedForm, lrn, inlandModeCodes, mode))
+      }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, InlandMode.values, mode))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            InlandModePage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
+      service.getInlandModes().flatMap {
+        inlandModeCodes =>
+          form(inlandModeCodes)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, inlandModeCodes, mode))),
+              value => {
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                InlandModePage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              }
+            )
+      }
   }
 }

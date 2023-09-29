@@ -17,7 +17,7 @@
 package pages.transportMeans.active
 
 import controllers.transportMeans.active.routes
-import models.transportMeans.active.Identification
+import models.reference.transportMeans.active.Identification
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transportMeans.TransportMeansActiveSection

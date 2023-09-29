@@ -21,8 +21,8 @@ import config.PhaseConfig
 import generators.Generators
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.Nationality
-import models.transportMeans.InlandMode
-import models.transportMeans.departure.Identification
+import models.reference.InlandMode
+import models.reference.transportMeans.departure.Identification
 import models.{OptionalBoolean, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary

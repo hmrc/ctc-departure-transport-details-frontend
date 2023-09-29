@@ -20,9 +20,8 @@ import base.SpecBase
 import config.Constants._
 import generators.Generators
 import models.Mode
-import models.reference.{CustomsOffice, Nationality}
-import models.transportMeans.BorderModeOfTransport.{Air, Sea}
-import models.transportMeans.active.Identification
+import models.reference.transportMeans.active.Identification
+import models.reference.{BorderMode, CustomsOffice, Nationality}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -52,7 +51,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
           (securityType, identification, office, nationality) =>
             val answers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, securityType)
-              .setValue(BorderModeOfTransportPage, Air)
+              .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
               .setValue(IdentificationPage(activeIndex), identification)
               .setValue(IdentificationNumberPage(activeIndex), identificationNumber)
               .setValue(AddNationalityYesNoPage(activeIndex), true)
@@ -80,7 +79,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
           (identification, office, nationality) =>
             val answers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(BorderModeOfTransportPage, Sea)
+              .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
               .setValue(IdentificationPage(activeIndex), identification)
               .setValue(IdentificationNumberPage(activeIndex), identificationNumber)
               .setValue(AddNationalityYesNoPage(activeIndex), true)
@@ -112,7 +111,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
           (identification, office) =>
             val answers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(BorderModeOfTransportPage, Sea)
+              .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
               .setValue(IdentificationPage(activeIndex), identification)
               .setValue(IdentificationNumberPage(activeIndex), identificationNumber)
               .setValue(AddNationalityYesNoPage(activeIndex), false)
@@ -141,7 +140,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
           (identification, office) =>
             val answers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(BorderModeOfTransportPage, Sea)
+              .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
               .setValue(IdentificationPage(activeIndex), identification)
               .setValue(IdentificationNumberPage(activeIndex), identificationNumber)
               .setValue(AddNationalityYesNoPage(activeIndex), false)

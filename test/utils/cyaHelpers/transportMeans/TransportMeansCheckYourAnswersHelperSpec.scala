@@ -22,9 +22,9 @@ import controllers.transportMeans.active.routes
 import generators.Generators
 import models.domain.UserAnswersReader
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
-import models.reference.Nationality
-import models.transportMeans.departure.{Identification => DepartureIdentification}
-import models.transportMeans.{BorderModeOfTransport, InlandMode}
+import models.reference.{InlandMode, Nationality}
+import models.reference.transportMeans.departure.{Identification => DepartureIdentification}
+import models.reference.BorderMode
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -216,7 +216,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Mode".toText),
-                  value = Value(messages(s"${"transportMeans.inlandMode"}.$inlandMode").toText),
+                  value = Value(inlandMode.asString.toText),
                   actions = Some(
                     Actions(
                       items = List(
@@ -439,7 +439,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Identification type".toText),
-                  value = Value(messages(s"${"transportMeans.departure.identification"}.$departureIdentification").toText),
+                  value = Value(departureIdentification.asString.toText),
                   actions = Some(
                     Actions(
                       items = List(
@@ -604,7 +604,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
 
       "must return Some(Row)" - {
         "when ModeCrossingBorderPage defined" in {
-          forAll(arbitrary[Mode], arbitrary[BorderModeOfTransport]) {
+          forAll(arbitrary[Mode], arbitrary[BorderMode]) {
             (mode, borderModeOfTransport) =>
               val answers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModeOfTransport)
               val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
@@ -613,7 +613,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Border mode of transport".toText),
-                  value = Value(messages(s"${"transportMeans.borderModeOfTransport"}.$borderModeOfTransport").toText),
+                  value = Value(borderModeOfTransport.asString.toText),
                   actions = Some(
                     Actions(
                       items = List(

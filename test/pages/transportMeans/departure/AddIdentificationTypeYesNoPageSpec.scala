@@ -16,7 +16,7 @@
 
 package pages.transportMeans.departure
 
-import models.transportMeans.departure.Identification
+import models.reference.transportMeans.departure.Identification
 import pages.behaviours.PageBehaviours
 import org.scalacheck.Arbitrary.arbitrary
 

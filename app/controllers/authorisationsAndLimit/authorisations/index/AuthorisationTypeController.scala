@@ -20,15 +20,17 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{AuthorisationNavigatorProvider, UserAnswersNavigator}
 import pages.QuestionPage
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
+import services.AuthorisationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.authorisationsAndLimit.authorisations.index.AuthorisationTypeView
 
@@ -42,25 +44,24 @@ class AuthorisationTypeController @Inject() (
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AuthorisationTypeView
+  view: AuthorisationTypeView,
+  service: AuthorisationTypesService
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[AuthorisationType]("authorisations.authorisationType")
-
-  private def authorisationTypes(index: Index)(implicit request: DataRequest[_]) =
-    AuthorisationType.values(request.userAnswers, index)
+  private def form(authorisationTypes: Seq[AuthorisationType]): Form[AuthorisationType] =
+    formProvider[AuthorisationType]("authorisations.authorisationType", authorisationTypes)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      authorisationTypes(authorisationIndex) match {
+      service.getAuthorisationTypes(request.userAnswers, authorisationIndex).flatMap {
         case authorisationType :: Nil =>
           redirect(mode, authorisationIndex, InferredAuthorisationTypePage, authorisationType)
         case authorisationTypes =>
           val preparedForm = request.userAnswers.get(AuthorisationTypePage(authorisationIndex)) match {
-            case None        => form
-            case Some(value) => form.fill(value)
+            case None        => form(authorisationTypes)
+            case Some(value) => form(authorisationTypes).fill(value)
           }
 
           Future.successful(Ok(view(preparedForm, lrn, authorisationTypes, mode, authorisationIndex)))
@@ -69,12 +70,15 @@ class AuthorisationTypeController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, authorisationTypes(authorisationIndex), mode, authorisationIndex))),
-          value => redirect(mode, authorisationIndex, AuthorisationTypePage, value)
-        )
+      service.getAuthorisationTypes(request.userAnswers, authorisationIndex).flatMap {
+        authorisationTypesList =>
+          form(authorisationTypesList)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, authorisationTypesList, mode, authorisationIndex))),
+              value => redirect(mode, authorisationIndex, AuthorisationTypePage, value)
+            )
+      }
   }
 
   private def redirect(

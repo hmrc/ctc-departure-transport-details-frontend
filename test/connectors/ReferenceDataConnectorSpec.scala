@@ -19,6 +19,10 @@ package connectors
 import base._
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import models.reference._
+import models.reference.authorisations.AuthorisationType
+import models.reference.equipment.PaymentMethod
+import models.reference.supplyChainActors.SupplyChainActorType
+import models.reference.transportMeans._
 import org.scalacheck.Gen
 import org.scalatest.Assertion
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -72,9 +76,11 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
          |""".stripMargin
 
     "getCountries" - {
+      def url: String = s"/$baseUrl/lists/CountryCodesFullList"
+
       "must return Seq of Country when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/CountryCodesFullList"))
+          get(urlEqualTo(url))
             .willReturn(okJson(countriesResponseJson("CountryCodesFullList")))
         )
 
@@ -87,11 +93,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/CountryCodesFullList", connector.getCountries())
+        checkErrorResponse(url, connector.getCountries())
       }
     }
 
     "getNationalities" - {
+      val url: String = s"/$baseUrl/lists/Nationality"
+
       "must return Seq of Country when successful" in {
         val nationalitiesResponseJson: String =
           """
@@ -120,7 +128,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             |""".stripMargin
 
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/Nationality"))
+          get(urlEqualTo(url))
             .willReturn(okJson(nationalitiesResponseJson))
         )
 
@@ -133,14 +141,16 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/Nationality", connector.getNationalities())
+        checkErrorResponse(url, connector.getNationalities())
       }
     }
 
     "getCountryCodesCTC" - {
+      val url: String = s"/$baseUrl/lists/CountryCodesCommonTransit"
+
       "must return Seq of Country when successful" in {
         server.stubFor(
-          get(urlEqualTo(s"/$baseUrl/lists/CountryCodesCommonTransit"))
+          get(urlEqualTo(url))
             .willReturn(okJson(countriesResponseJson("CountryCodesCommonTransit")))
         )
 
@@ -153,7 +163,339 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(s"/$baseUrl/lists/CountryCodesCommonTransit", connector.getCountryCodesCommonTransit())
+        checkErrorResponse(url, connector.getCountryCodesCommonTransit())
+      }
+    }
+
+    "getTransportModeCodes" - {
+
+      val url: String = s"/$baseUrl/lists/TransportModeCode"
+
+      "must return Seq of InlandMode when successful" in {
+        val transportModeCodesResponseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/TransportModeCode"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "TransportModeCode",
+            |  "data": [
+            |    {
+            |      "code":"1",
+            |      "description":"Maritime"
+            |    },
+            |    {
+            |      "code":"2",
+            |      "description":"Rail"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(transportModeCodesResponseJson))
+        )
+
+        val expectedResult: Seq[InlandMode] = Seq(
+          InlandMode("1", "Maritime"),
+          InlandMode("2", "Rail")
+        )
+
+        connector.getTransportModeCodes[InlandMode]().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned for InlandMode" in {
+        checkErrorResponse(url, connector.getTransportModeCodes[InlandMode]())
+      }
+
+      "must return Seq of BorderMode when successful" in {
+        val transportModeCodesResponseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/TransportModeCode"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "TransportModeCode",
+            |  "data": [
+            |    {
+            |      "code":"1",
+            |      "description":"Maritime"
+            |    },
+            |    {
+            |      "code":"2",
+            |      "description":"Rail"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(transportModeCodesResponseJson))
+        )
+
+        val expectedResult: Seq[BorderMode] = Seq(
+          BorderMode("1", "Maritime"),
+          BorderMode("2", "Rail")
+        )
+
+        connector.getTransportModeCodes[BorderMode]().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned for BorderMode" in {
+        checkErrorResponse(url, connector.getTransportModeCodes[BorderMode]())
+      }
+    }
+
+    "getMeansOfTransportIdentificationTypes" - {
+      val url: String = s"/$baseUrl/lists/TypeOfIdentificationOfMeansOfTransport"
+
+      "must return Seq of Identification when successful" in {
+        val identificationCodesDepartureResponseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/TypeOfIdentificationOfMeansOfTransport"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "TypeOfIdentificationOfMeansOfTransport",
+            |  "data": [
+            |    {
+            |      "type":"10",
+            |      "description":"IMO ship identification number"
+            |    },
+            |    {
+            |      "type":"11",
+            |      "description":"Name of a sea-going vessel"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(identificationCodesDepartureResponseJson))
+        )
+
+        val expectedResult: Seq[departure.Identification] = Seq(
+          departure.Identification("10", "IMO ship identification number"),
+          departure.Identification("11", "Name of a sea-going vessel")
+        )
+
+        connector.getMeansOfTransportIdentificationTypes().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getMeansOfTransportIdentificationTypes())
+      }
+    }
+
+    "getMeansOfTransportIdentificationTypesActive" - {
+      val url: String = s"/$baseUrl/lists/TypeOfIdentificationofMeansOfTransportActive"
+
+      "must return Seq of Identification when successful" in {
+        val identificationCodesActiveResponseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/TypeOfIdentificationofMeansOfTransportActive"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "TypeOfIdentificationofMeansOfTransportActive",
+            |  "data": [
+            |    {
+            |      "code":"10",
+            |      "description":"IMO ship identification number"
+            |    },
+            |    {
+            |      "code":"11",
+            |      "description":"Name of a sea-going vessel"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(identificationCodesActiveResponseJson))
+        )
+
+        val expectedResult: Seq[active.Identification] = Seq(
+          active.Identification("10", "IMO ship identification number"),
+          active.Identification("11", "Name of a sea-going vessel")
+        )
+
+        connector.getMeansOfTransportIdentificationTypesActive().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getMeansOfTransportIdentificationTypesActive())
+      }
+    }
+
+    "getSupplyChainActorTypes" - {
+      val url: String = s"/$baseUrl/lists/AdditionalSupplyChainActorRoleCode"
+
+      "must return Seq of SupplyChainActorType when successful" in {
+        val supplyChainActorTypesResponseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/AdditionalSupplyChainActorRoleCode"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "AdditionalSupplyChainActorRoleCode",
+            |  "data": [
+            |    {
+            |      "role":"CS",
+            |      "description":"Consolidator"
+            |    },
+            |    {
+            |      "role":"MF",
+            |      "description":"Manufacturer"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(supplyChainActorTypesResponseJson))
+        )
+
+        val expectedResult: Seq[SupplyChainActorType] = Seq(
+          SupplyChainActorType("CS", "Consolidator"),
+          SupplyChainActorType("MF", "Manufacturer")
+        )
+
+        connector.getSupplyChainActorTypes().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getSupplyChainActorTypes())
+      }
+    }
+
+    "getAuthorisationTypes" - {
+      val url: String = s"/$baseUrl/lists/AuthorisationTypeDeparture"
+
+      "must return Seq of AuthorisationType when successful" in {
+        val authorisationTypesResponseJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/AuthorisationTypeDeparture"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "AuthorisationTypeDeparture",
+            |  "data": [
+            |    {
+            |      "code":"C521",
+            |      "description":"ACR - authorisation for the status of authorised consignor for Union transit"
+            |    },
+            |    {
+            |      "code":"C523",
+            |      "description":"SSE - authorisation for the use of seals of a special type"
+            |    }
+            |  ]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(authorisationTypesResponseJson))
+        )
+
+        val expectedResult: Seq[AuthorisationType] = Seq(
+          AuthorisationType(
+            "C521",
+            "ACR - authorisation for the status of authorised consignor for Union transit"
+          ),
+          AuthorisationType("C523", "SSE - authorisation for the use of seals of a special type")
+        )
+
+        connector.getAuthorisationTypes().futureValue mustEqual expectedResult
+      }
+    }
+
+    "getPaymentMethods" - {
+      val url: String = s"/$baseUrl/lists/TransportChargesMethodOfPayment"
+
+      "must return Seq of PaymentMethod when successful" in {
+        val paymentMethodsResponseJson: String =
+          """
+             |{
+             |  "_links": {
+             |    "self": {
+             |      "href": "/customs-reference-data/lists/TransportChargesMethodOfPayment"
+             |    }
+             |  },
+             |  "meta": {
+             |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+             |    "snapshotDate": "2023-01-01"
+             |  },
+             |  "id": "TransportChargesMethodOfPayment",
+             |  "data": [
+             |    {
+             |      "method":"A",
+             |      "description":"Cash"
+             |    },
+             |    {
+             |      "method":"B",
+             |      "description":"Credit card"
+             |    }
+             |  ]
+             |}
+             |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(paymentMethodsResponseJson))
+        )
+
+        val expectedResult: Seq[PaymentMethod] = Seq(
+          PaymentMethod("A", "Cash"),
+          PaymentMethod("B", "Credit card")
+        )
+
+        connector.getPaymentMethods().futureValue mustEqual expectedResult
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getPaymentMethods())
       }
     }
   }

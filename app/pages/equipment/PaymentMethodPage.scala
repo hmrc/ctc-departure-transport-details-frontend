@@ -17,7 +17,7 @@
 package pages.equipment
 
 import controllers.equipment.routes
-import models.equipment.PaymentMethod
+import models.reference.equipment.PaymentMethod
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.equipment.EquipmentsAndChargesSection
