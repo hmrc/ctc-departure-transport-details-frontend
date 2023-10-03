@@ -16,7 +16,7 @@
 
 package pages.supplyChainActors.index
 
-import models.supplyChainActors.SupplyChainActorType
+import models.reference.supplyChainActors.SupplyChainActorType
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours

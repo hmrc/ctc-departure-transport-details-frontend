@@ -17,13 +17,12 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
-import config.Constants.NoSecurityDetails
+import config.Constants.{NoSecurityDetails, Rail}
 import config.PhaseConfig
 import controllers.transportMeans.routes
 import models.domain._
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.BorderModeOfTransport.ChannelTunnel
+import models.reference.BorderMode
 import models.{Mode, Phase, UserAnswers}
 import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
 import pages.preRequisites.ContainerIndicatorPage
@@ -51,7 +50,7 @@ object TransportMeansDomain {
 
 case class TransitionTransportMeansDomain(
   transportMeansDeparture: Option[TransportMeansDepartureDomain],
-  borderModeOfTransport: Option[BorderModeOfTransport],
+  borderModeOfTransport: Option[BorderMode],
   transportMeansActiveList: Option[TransportMeansActiveListDomain]
 ) extends TransportMeansDomain
 
@@ -69,8 +68,8 @@ object TransitionTransportMeansDomain {
           TransportMeansDepartureDomain.userAnswersReader.map(Some(_))
       }
 
-    lazy val borderModeOfTransportReader: UserAnswersReader[Option[BorderModeOfTransport]] = {
-      lazy val optionalReader: UserAnswersReader[Option[BorderModeOfTransport]] = AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity) {
+    lazy val borderModeOfTransportReader: UserAnswersReader[Option[BorderMode]] = {
+      lazy val optionalReader: UserAnswersReader[Option[BorderMode]] = AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity) {
         BorderModeOfTransportPage.reader
       }
 
@@ -87,7 +86,7 @@ object TransitionTransportMeansDomain {
 
     lazy val transportMeansActiveReader: UserAnswersReader[Option[TransportMeansActiveListDomain]] =
       BorderModeOfTransportPage.optionalReader.flatMap {
-        case Some(borderModeOfTransport) if borderModeOfTransport != ChannelTunnel =>
+        case Some(borderModeOfTransport) if borderModeOfTransport.code != Rail =>
           UserAnswersReader[TransportMeansActiveListDomain].map(Some(_))
         case _ =>
           AddActiveBorderTransportMeansYesNoPage.filterOptionalDependent(identity) {
@@ -105,7 +104,7 @@ object TransitionTransportMeansDomain {
 
 case class PostTransitionTransportMeansDomain(
   transportMeansDeparture: TransportMeansDepartureDomain,
-  borderModeOfTransport: Option[BorderModeOfTransport],
+  borderModeOfTransport: Option[BorderMode],
   transportMeansActiveList: Option[TransportMeansActiveListDomain]
 ) extends TransportMeansDomain
 
@@ -113,7 +112,7 @@ object PostTransitionTransportMeansDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[PostTransitionTransportMeansDomain] = {
 
-    lazy val borderModeOfTransportReader: UserAnswersReader[Option[BorderModeOfTransport]] =
+    lazy val borderModeOfTransportReader: UserAnswersReader[Option[BorderMode]] =
       SecurityDetailsTypePage.reader flatMap {
         case NoSecurityDetails => AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity)(BorderModeOfTransportPage.reader)
         case _                 => BorderModeOfTransportPage.reader.map(Some(_))

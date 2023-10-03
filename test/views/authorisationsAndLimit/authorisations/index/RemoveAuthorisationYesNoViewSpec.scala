@@ -16,17 +16,18 @@
 
 package views.authorisationsAndLimit.authorisations.index
 
+import generators.Generators
 import models.NormalMode
-import models.authorisations.AuthorisationType
-import org.scalacheck.Gen
+import models.reference.authorisations.AuthorisationType
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.authorisationsAndLimit.authorisations.index.RemoveAuthorisationYesNoView
 
-class RemoveAuthorisationYesNoViewSpec extends YesNoViewBehaviours {
+class RemoveAuthorisationYesNoViewSpec extends YesNoViewBehaviours with Generators {
 
-  private val authorisationType = Gen.oneOf(AuthorisationType.values).sample.value.forDisplay
+  private val authorisationType = arbitrary[AuthorisationType].sample.value.forDisplay
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector

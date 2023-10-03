@@ -17,7 +17,7 @@
 package pages.transportMeans.departure
 
 import controllers.transportMeans.departure.routes
-import models.transportMeans.departure.Identification
+import models.reference.transportMeans.departure.Identification
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transportMeans.TransportMeansDepartureSection

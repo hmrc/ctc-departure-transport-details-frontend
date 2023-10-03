@@ -18,31 +18,45 @@ package controllers.transportMeans
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
+import generators.Generators
 import models.NormalMode
-import models.transportMeans.BorderModeOfTransport
+import models.reference.BorderMode
 import navigation.TransportMeansNavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.transportMeans.BorderModeOfTransportPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.TransportModeCodesService
 import views.html.transportMeans.BorderModeOfTransportView
 
 import scala.concurrent.Future
 
-class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+
+  private val borderModes = arbitrary[Seq[BorderMode]].sample.value
 
   private val formProvider                    = new EnumerableFormProvider()
-  private val form                            = formProvider[BorderModeOfTransport]("transportMeans.borderModeOfTransport")
+  private val form                            = formProvider[BorderMode]("transportMeans.borderModeOfTransport", borderModes)
   private val mode                            = NormalMode
   private lazy val borderModeOfTransportRoute = routes.BorderModeOfTransportController.onPageLoad(lrn, mode).url
+
+  private val mockTransportModeCodesService: TransportModeCodesService = mock[TransportModeCodesService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[TransportMeansNavigatorProvider]).toInstance(fakeTransportMeansNavigatorProvider))
+      .overrides(bind(classOf[TransportModeCodesService]).toInstance(mockTransportModeCodesService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockTransportModeCodesService)
+    when(mockTransportModeCodesService.getBorderModes()(any())).thenReturn(Future.successful(borderModes))
+  }
 
   "BorderModeOfTransport Controller" - {
 
@@ -59,26 +73,26 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, BorderModeOfTransport.values, mode)(request, messages).toString
+        view(form, lrn, borderModes, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, BorderModeOfTransport.values.head)
+      val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderModes.head)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, borderModeOfTransportRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> BorderModeOfTransport.values.head.toString))
+      val filledForm = form.bind(Map("value" -> borderModes.head.code))
 
       val view = injector.instanceOf[BorderModeOfTransportView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, BorderModeOfTransport.values, mode)(request, messages).toString
+        view(filledForm, lrn, borderModes, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -88,7 +102,7 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, borderModeOfTransportRoute)
-        .withFormUrlEncodedBody(("value", BorderModeOfTransport.values.head.toString))
+        .withFormUrlEncodedBody(("value", borderModes.head.code))
 
       val result = route(app, request).value
 
@@ -111,7 +125,7 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, BorderModeOfTransport.values, mode)(request, messages).toString
+        view(boundForm, lrn, borderModes, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -131,7 +145,7 @@ class BorderModeOfTransportControllerSpec extends SpecBase with AppWithDefaultMo
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, borderModeOfTransportRoute)
-        .withFormUrlEncodedBody(("value", BorderModeOfTransport.values.head.toString))
+        .withFormUrlEncodedBody(("value", borderModes.head.code))
 
       val result = route(app, request).value
 

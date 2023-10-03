@@ -30,11 +30,11 @@ import controllers.supplyChainActors.index.{routes => supplyChainActorRoutes}
 import controllers.supplyChainActors.{routes => supplyChainActorsRoutes}
 import generators.Generators
 import models.domain.UserAnswersReader
-import models.equipment.PaymentMethod
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
+import models.reference.equipment.PaymentMethod
 import models.{Index, Mode, OptionalBoolean}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -960,9 +960,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val result  = helper.paymentMethod.get
 
               result.key.value mustBe "Payment method"
-              val key = s"equipment.paymentMethod.$paymentMethod"
-              messages.isDefinedAt(key) mustBe true
-              result.value.value mustBe messages(key)
+              result.value.value mustBe paymentMethod.asString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head

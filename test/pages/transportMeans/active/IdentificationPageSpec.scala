@@ -16,7 +16,7 @@
 
 package pages.transportMeans.active
 
-import models.transportMeans.active.Identification
+import models.reference.transportMeans.active.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import pages.behaviours.PageBehaviours

@@ -18,16 +18,16 @@ package views.transportMeans.departure
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.transportMeans.departure.Identification
+import models.reference.transportMeans.departure.Identification
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.transportMeans.departure.IdentificationView
 
-class IdentificationViewSpec extends RadioViewBehaviours[Identification] {
+class IdentificationViewSpec extends EnumerableViewBehaviours[Identification] {
 
-  override def form: Form[Identification] = new EnumerableFormProvider()(prefix)
+  override def form: Form[Identification] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
     injector.instanceOf[IdentificationView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
@@ -37,7 +37,10 @@ class IdentificationViewSpec extends RadioViewBehaviours[Identification] {
   override def radioItems(fieldId: String, checkedValue: Option[Identification] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[Identification] = Identification.values
+  override def values: Seq[Identification] = Seq(
+    Identification("11", "Name of a sea-going vessel"),
+    Identification("20", "Wagon number")
+  )
 
   behave like pageWithTitle()
 

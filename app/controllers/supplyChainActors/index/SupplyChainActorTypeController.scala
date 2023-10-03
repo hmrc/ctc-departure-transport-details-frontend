@@ -20,13 +20,15 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.supplyChainActors.SupplyChainActorType
+import models.reference.supplyChainActors.SupplyChainActorType
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{SupplyChainActorNavigatorProvider, UserAnswersNavigator}
 import pages.supplyChainActors.index.SupplyChainActorTypePage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.SupplyChainActorTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.supplyChainActors.index.SupplyChainActorTypeView
 
@@ -40,33 +42,41 @@ class SupplyChainActorTypeController @Inject() (
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: SupplyChainActorTypeView
+  view: SupplyChainActorTypeView,
+  service: SupplyChainActorTypesService
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[SupplyChainActorType]("supplyChainActors.index.supplyChainActorType")
+  private def form(supplyChainActorTypes: Seq[SupplyChainActorType]): Form[SupplyChainActorType] =
+    formProvider[SupplyChainActorType]("supplyChainActors.index.supplyChainActorType", supplyChainActorTypes)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, actorIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, actorIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(SupplyChainActorTypePage(actorIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      service.getSupplyChainActorTypes().map {
+        supplyChainActorTypes =>
+          val preparedForm = request.userAnswers.get(SupplyChainActorTypePage(actorIndex)) match {
+            case None        => form(supplyChainActorTypes)
+            case Some(value) => form(supplyChainActorTypes).fill(value)
+          }
 
-      Ok(view(preparedForm, lrn, SupplyChainActorType.values, mode, actorIndex))
+          Ok(view(preparedForm, lrn, supplyChainActorTypes, mode, actorIndex))
+      }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, actorIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, SupplyChainActorType.values, mode, actorIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, actorIndex)
-            SupplyChainActorTypePage(actorIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
+      service.getSupplyChainActorTypes().flatMap {
+        supplyChainActorTypes =>
+          form(supplyChainActorTypes)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, supplyChainActorTypes, mode, actorIndex))),
+              value => {
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, actorIndex)
+                SupplyChainActorTypePage(actorIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              }
+            )
+      }
   }
 }

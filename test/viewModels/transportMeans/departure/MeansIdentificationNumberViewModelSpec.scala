@@ -18,7 +18,7 @@ package viewModels.transportMeans.departure
 
 import base.SpecBase
 import generators.Generators
-import models.transportMeans.departure.Identification
+import models.reference.transportMeans.departure.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.departure.IdentificationPage

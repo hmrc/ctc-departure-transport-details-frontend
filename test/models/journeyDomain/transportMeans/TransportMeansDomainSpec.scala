@@ -22,8 +22,7 @@ import config.PhaseConfig
 import generators.Generators
 import models.{OptionalBoolean, Phase}
 import models.domain.{EitherType, UserAnswersReader}
-import models.transportMeans.BorderModeOfTransport
-import models.transportMeans.BorderModeOfTransport._
+import models.reference.BorderMode
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -202,7 +201,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
         "borderModeOfTransport present" - {
           "and not type ChannelTunnel" in {
             val securityGen   = arbitrary[String](arbitrarySomeSecurityDetailsType)
-            val borderModeGen = arbitrary[BorderModeOfTransport].retryUntil(_ != ChannelTunnel)
+            val borderModeGen = arbitrary[Option[BorderMode]](arbitraryOptionalNonRailBorderModeOfTransport)
             forAll(securityGen, borderModeGen) {
               (securityType, borderMode) =>
                 val userAnswers = emptyUserAnswers
@@ -229,7 +228,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
                   .setValue(OfficeOfDepartureInCL010Page, false)
                   .setValue(SecurityDetailsTypePage, securityType)
                   .setValue(AddDepartureTransportMeansYesNoPage, true)
-                  .setValue(BorderModeOfTransportPage, ChannelTunnel)
+                  .setValue(BorderModeOfTransportPage, BorderMode("2", "Rail"))
 
                 forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
                   userAnswers =>
@@ -288,7 +287,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
               val userAnswers = emptyUserAnswers
                 .setValue(AddDepartureTransportMeansYesNoPage, true)
                 .setValue(SecurityDetailsTypePage, securityType)
-                .setValue(BorderModeOfTransportPage, arbitrary[BorderModeOfTransport].sample.value)
+                .setValue(BorderModeOfTransportPage, arbitrary[BorderMode].sample.value)
 
               forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockPostTransitionPhaseConfig)) {
                 userAnswers =>

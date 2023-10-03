@@ -18,16 +18,16 @@ package views.authorisationsAndLimit.authorisations.index
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.authorisations.AuthorisationType
+import models.reference.authorisations.AuthorisationType
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.authorisationsAndLimit.authorisations.index.AuthorisationTypeView
 
-class AuthorisationTypeViewSpec extends RadioViewBehaviours[AuthorisationType] {
+class AuthorisationTypeViewSpec extends EnumerableViewBehaviours[AuthorisationType] {
 
-  override def form: Form[AuthorisationType] = new EnumerableFormProvider()(prefix)
+  override def form: Form[AuthorisationType] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[AuthorisationType]): HtmlFormat.Appendable =
     injector.instanceOf[AuthorisationTypeView].apply(form, lrn, values, NormalMode, authorisationIndex)(fakeRequest, messages)
@@ -37,7 +37,10 @@ class AuthorisationTypeViewSpec extends RadioViewBehaviours[AuthorisationType] {
   override def radioItems(fieldId: String, checkedValue: Option[AuthorisationType] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[AuthorisationType] = AuthorisationType.values
+  override def values: Seq[AuthorisationType] = Seq(
+    AuthorisationType("C523", "SSE - authorisation for the use of seals of a special type"),
+    AuthorisationType("C524", "TRD - authorisation to use transit declaration with a reduced dataset")
+  )
 
   behave like pageWithTitle()
 

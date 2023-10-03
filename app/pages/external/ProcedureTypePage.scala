@@ -20,7 +20,7 @@ import models.ProcedureType
 import pages.ReadOnlyPage
 import play.api.libs.json.JsPath
 
-case object ProcedureTypePage extends ReadOnlyPage[ProcedureType] {
+case object ProcedureTypePage extends ReadOnlyPage[ProcedureType.Value] {
 
   override def path: JsPath = preTaskListPath \ toString
 

@@ -16,7 +16,7 @@
 
 package pages.transportMeans
 
-import models.transportMeans.BorderModeOfTransport
+import models.reference.BorderMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
@@ -33,7 +33,7 @@ class AddBorderModeOfTransportYesNoPageSpec extends PageBehaviours {
     "cleanup" - {
       "when no selected" - {
         "must remove border mode of transport" in {
-          forAll(arbitrary[BorderModeOfTransport]) {
+          forAll(arbitrary[BorderMode]) {
             borderModeOfTransport =>
               val userAnswers = emptyUserAnswers
                 .setValue(AddBorderModeOfTransportYesNoPage, true)
@@ -48,7 +48,7 @@ class AddBorderModeOfTransportYesNoPageSpec extends PageBehaviours {
 
       "when yes selected" - {
         "must not remove border mode of transport" in {
-          forAll(arbitrary[BorderModeOfTransport]) {
+          forAll(arbitrary[BorderMode]) {
             borderModeOfTransport =>
               val userAnswers = emptyUserAnswers
                 .setValue(AddBorderModeOfTransportYesNoPage, true)

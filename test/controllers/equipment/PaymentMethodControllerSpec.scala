@@ -18,31 +18,45 @@ package controllers.equipment
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.EnumerableFormProvider
+import generators.Generators
 import models.NormalMode
-import models.equipment.PaymentMethod
+import models.reference.equipment.PaymentMethod
 import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
+import org.scalacheck.Arbitrary.arbitrary
 import pages.equipment.PaymentMethodPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.PaymentMethodsService
 import views.html.equipment.PaymentMethodView
 
 import scala.concurrent.Future
 
-class PaymentMethodControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
+class PaymentMethodControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+
+  private val paymentMethods = arbitrary[Seq[PaymentMethod]].sample.value
 
   private val formProvider            = new EnumerableFormProvider()
-  private val form                    = formProvider[PaymentMethod]("equipment.paymentMethod")
+  private val form                    = formProvider[PaymentMethod]("equipment.paymentMethod", paymentMethods)
   private val mode                    = NormalMode
   private lazy val paymentMethodRoute = routes.PaymentMethodController.onPageLoad(lrn, mode).url
+
+  private val mockPaymentMethodsService: PaymentMethodsService = mock[PaymentMethodsService]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
+      .overrides(bind(classOf[PaymentMethodsService]).toInstance(mockPaymentMethodsService))
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockPaymentMethodsService)
+    when(mockPaymentMethodsService.getPaymentMethods()(any())).thenReturn(Future.successful(paymentMethods))
+  }
 
   "PaymentMethod Controller" - {
 
@@ -59,26 +73,26 @@ class PaymentMethodControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, PaymentMethod.values, mode)(request, messages).toString
+        view(form, lrn, paymentMethods, mode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(PaymentMethodPage, PaymentMethod.values.head)
+      val userAnswers = emptyUserAnswers.setValue(PaymentMethodPage, paymentMethods.head)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, paymentMethodRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> PaymentMethod.values.head.toString))
+      val filledForm = form.bind(Map("value" -> paymentMethods.head.code))
 
       val view = injector.instanceOf[PaymentMethodView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, PaymentMethod.values, mode)(request, messages).toString
+        view(filledForm, lrn, paymentMethods, mode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -88,7 +102,7 @@ class PaymentMethodControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, paymentMethodRoute)
-        .withFormUrlEncodedBody(("value", PaymentMethod.values.head.toString))
+        .withFormUrlEncodedBody(("value", paymentMethods.head.code))
 
       val result = route(app, request).value
 
@@ -111,7 +125,7 @@ class PaymentMethodControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, PaymentMethod.values, mode)(request, messages).toString
+        view(boundForm, lrn, paymentMethods, mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -131,7 +145,7 @@ class PaymentMethodControllerSpec extends SpecBase with AppWithDefaultMockFixtur
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, paymentMethodRoute)
-        .withFormUrlEncodedBody(("value", PaymentMethod.values.head.toString))
+        .withFormUrlEncodedBody(("value", paymentMethods.head.code))
 
       val result = route(app, request).value
 

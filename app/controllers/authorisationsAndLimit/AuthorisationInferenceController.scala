@@ -25,7 +25,7 @@ import pages.authorisationsAndLimit.AuthorisationsInferredPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
-import services.AuthorisationInferenceService
+import services.{AuthorisationInferenceService, AuthorisationTypesService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -37,15 +37,19 @@ class AuthorisationInferenceController @Inject() (
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  authorisationInferenceService: AuthorisationInferenceService
+  authorisationInferenceService: AuthorisationInferenceService,
+  authorisationTypesService: AuthorisationTypesService
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
   def infer(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val userAnswers                              = authorisationInferenceService.inferAuthorisations(request.userAnswers)
-      implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-      AuthorisationsInferredPage.writeToUserAnswers(true).updateTask().writeToSession(userAnswers).navigate()
+      authorisationTypesService.getAll().flatMap {
+        authorisationTypes =>
+          val userAnswers                              = authorisationInferenceService.inferAuthorisations(request.userAnswers, authorisationTypes)
+          implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+          AuthorisationsInferredPage.writeToUserAnswers(true).updateTask().writeToSession(userAnswers).navigate()
+      }
   }
 }

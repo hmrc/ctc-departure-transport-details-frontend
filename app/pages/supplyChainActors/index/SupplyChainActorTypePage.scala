@@ -17,7 +17,7 @@
 package pages.supplyChainActors.index
 
 import controllers.supplyChainActors.index.routes
-import models.supplyChainActors.SupplyChainActorType
+import models.reference.supplyChainActors.SupplyChainActorType
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.supplyChainActors.SupplyChainActorSection

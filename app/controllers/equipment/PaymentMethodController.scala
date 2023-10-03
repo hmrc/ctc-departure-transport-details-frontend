@@ -20,13 +20,15 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
-import models.equipment.PaymentMethod
+import models.reference.equipment.PaymentMethod
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.equipment.PaymentMethodPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.PaymentMethodsService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.equipment.PaymentMethodView
 
@@ -40,33 +42,40 @@ class PaymentMethodController @Inject() (
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: PaymentMethodView
+  view: PaymentMethodView,
+  service: PaymentMethodsService
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider[PaymentMethod]("equipment.paymentMethod")
+  private def form(paymentMethods: Seq[PaymentMethod]): Form[PaymentMethod] = formProvider[PaymentMethod]("equipment.paymentMethod", paymentMethods)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(PaymentMethodPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+      service.getPaymentMethods().map {
+        paymentMethods =>
+          val preparedForm = request.userAnswers.get(PaymentMethodPage) match {
+            case None        => form(paymentMethods)
+            case Some(value) => form(paymentMethods).fill(value)
+          }
 
-      Ok(view(preparedForm, lrn, PaymentMethod.values, mode))
+          Ok(view(preparedForm, lrn, paymentMethods, mode))
+      }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, PaymentMethod.values, mode))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            PaymentMethodPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
+      service.getPaymentMethods().flatMap {
+        paymentMethods =>
+          form(paymentMethods)
+            .bindFromRequest()
+            .fold(
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, paymentMethods, mode))),
+              value => {
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                PaymentMethodPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              }
+            )
+      }
   }
 }

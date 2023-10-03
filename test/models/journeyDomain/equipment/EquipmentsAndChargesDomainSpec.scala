@@ -19,9 +19,9 @@ package models.journeyDomain.equipment
 import base.SpecBase
 import config.Constants.NoSecurityDetails
 import generators.{Generators, UserAnswersGenerator}
-import models.{Index, OptionalBoolean}
 import models.domain.{EitherType, UserAnswersReader}
-import models.equipment.PaymentMethod
+import models.reference.equipment.PaymentMethod
+import models.{Index, OptionalBoolean}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.equipment._

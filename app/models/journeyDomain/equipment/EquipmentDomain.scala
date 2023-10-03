@@ -18,7 +18,6 @@ package models.journeyDomain.equipment
 
 import cats.implicits._
 import controllers.equipment.index.routes
-import models.authorisations.AuthorisationType
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JsArrayGettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.equipment.seal.SealsDomain
 import models.journeyDomain.{JourneyDomainModel, Stage}
@@ -74,7 +73,7 @@ object EquipmentDomain {
   def sealsReads(equipmentIndex: Index): UserAnswersReader[Option[SealsDomain]] = for {
     procedureType      <- ProcedureTypePage.reader
     authorisationTypes <- AuthorisationsSection.fieldReader(AuthorisationTypePage)
-    hasSSEAuthorisation = authorisationTypes.contains(AuthorisationType.SSE)
+    hasSSEAuthorisation = authorisationTypes.exists(_.isSSE)
     reader <- (procedureType, hasSSEAuthorisation) match {
       case (ProcedureType.Simplified, true) =>
         UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(equipmentIndex)).map(Option(_))

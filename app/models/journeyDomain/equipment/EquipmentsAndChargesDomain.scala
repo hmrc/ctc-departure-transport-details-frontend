@@ -19,7 +19,7 @@ package models.journeyDomain.equipment
 import cats.implicits._
 import config.Constants._
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
-import models.equipment.PaymentMethod
+import models.reference.equipment.PaymentMethod
 import models.journeyDomain.JourneyDomainModel
 import pages.equipment._
 import pages.external.SecurityDetailsTypePage

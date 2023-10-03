@@ -18,7 +18,7 @@ package utils.cyaHelpers.transportMeans.active
 
 import config.{FrontendAppConfig, PhaseConfig}
 import models.reference.{CustomsOffice, Nationality}
-import models.transportMeans.active.Identification
+import models.reference.transportMeans.active.Identification
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.transportMeans.active._
 import play.api.i18n.Messages
@@ -48,7 +48,7 @@ class ActiveBorderTransportAnswersHelper(
 
   def activeBorderIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
     page = IdentificationPage(index),
-    formatAnswer = formatEnumAsText(Identification.messageKeyPrefix),
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "transportMeans.active.identification",
     id = Some("change-transport-means-active-identification")
   )

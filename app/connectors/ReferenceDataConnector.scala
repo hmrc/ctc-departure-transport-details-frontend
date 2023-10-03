@@ -17,7 +17,11 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.reference.{Country, Nationality}
+import models.reference.authorisations.AuthorisationType
+import models.reference.equipment.PaymentMethod
+import models.reference.supplyChainActors.SupplyChainActorType
+import models.reference.transportMeans._
+import models.reference.{Country, ModeOfTransport, Nationality}
 import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, NO_CONTENT, OK}
 import play.api.libs.json.Reads
@@ -30,18 +34,48 @@ import scala.concurrent.{ExecutionContext, Future}
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
-    http.GET[Seq[Country]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
+    http.GET[Seq[Country]](url, headers = version2Header)
   }
 
   def getNationalities()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Nationality]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/Nationality"
-    http.GET[Seq[Nationality]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/Nationality"
+    http.GET[Seq[Nationality]](url, headers = version2Header)
   }
 
   def getCountryCodesCommonTransit()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
-    val serviceUrl = s"${config.referenceDataUrl}/lists/CountryCodesCommonTransit"
-    http.GET[Seq[Country]](serviceUrl, headers = version2Header)
+    val url = s"${config.referenceDataUrl}/lists/CountryCodesCommonTransit"
+    http.GET[Seq[Country]](url, headers = version2Header)
+  }
+
+  def getTransportModeCodes[T <: ModeOfTransport[T]]()(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: Reads[T]): Future[Seq[T]] = {
+    val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
+    http.GET[Seq[T]](url, headers = version2Header)
+  }
+
+  def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[departure.Identification]] = {
+    val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
+    http.GET[Seq[departure.Identification]](url, headers = version2Header)
+  }
+
+  def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[active.Identification]] = {
+    val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
+    http.GET[Seq[active.Identification]](url, headers = version2Header)
+  }
+
+  def getSupplyChainActorTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[SupplyChainActorType]] = {
+    val url = s"${config.referenceDataUrl}/lists/AdditionalSupplyChainActorRoleCode"
+    http.GET[Seq[SupplyChainActorType]](url, headers = version2Header)
+  }
+
+  def getAuthorisationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AuthorisationType]] = {
+    val url = s"${config.referenceDataUrl}/lists/AuthorisationTypeDeparture"
+    http.GET[Seq[AuthorisationType]](url, headers = version2Header)
+  }
+
+  def getPaymentMethods()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PaymentMethod]] = {
+    val url = s"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
+    http.GET[Seq[PaymentMethod]](url, headers = version2Header)
   }
 
   private def version2Header: Seq[(String, String)] = Seq(
@@ -52,11 +86,9 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     (_: String, _: String, response: HttpResponse) => {
       response.status match {
         case OK =>
-          val referenceData = (response.json \ "data").getOrElse(
+          (response.json \ "data").validate[Seq[A]].getOrElse {
             throw new IllegalStateException("[ReferenceDataConnector][responseHandlerGeneric] Reference data could not be parsed")
-          )
-
-          referenceData.as[Seq[A]]
+          }
         case NO_CONTENT =>
           Nil
         case NOT_FOUND =>

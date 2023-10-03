@@ -18,16 +18,16 @@ package views.transportMeans
 
 import forms.EnumerableFormProvider
 import models.NormalMode
-import models.transportMeans.InlandMode
+import models.reference.InlandMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import views.behaviours.RadioViewBehaviours
+import views.behaviours.EnumerableViewBehaviours
 import views.html.transportMeans.InlandModeView
 
-class InlandModeViewSpec extends RadioViewBehaviours[InlandMode] {
+class InlandModeViewSpec extends EnumerableViewBehaviours[InlandMode] {
 
-  override def form: Form[InlandMode] = new EnumerableFormProvider()(prefix)
+  override def form: Form[InlandMode] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[InlandMode]): HtmlFormat.Appendable =
     injector.instanceOf[InlandModeView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
@@ -37,7 +37,10 @@ class InlandModeViewSpec extends RadioViewBehaviours[InlandMode] {
   override def radioItems(fieldId: String, checkedValue: Option[InlandMode] = None): Seq[RadioItem] =
     values.toRadioItems(fieldId, checkedValue)
 
-  override def values: Seq[InlandMode] = InlandMode.values
+  override def values: Seq[InlandMode] = Seq(
+    InlandMode("3", "Road"),
+    InlandMode("4", "Air")
+  )
 
   behave like pageWithTitle()
 

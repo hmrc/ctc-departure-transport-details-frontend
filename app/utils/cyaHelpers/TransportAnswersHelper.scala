@@ -20,7 +20,7 @@ import config.{FrontendAppConfig, PhaseConfig}
 import controllers.authorisationsAndLimit.authorisations.{routes => authorisationsRoutes}
 import controllers.equipment.{routes => equipmentsRoutes}
 import controllers.supplyChainActors.{routes => supplyChainActorsRoutes}
-import models.equipment.PaymentMethod
+import models.reference.equipment.PaymentMethod
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
@@ -231,7 +231,7 @@ class TransportAnswersHelper(
 
   def paymentMethod: Option[SummaryListRow] = getAnswerAndBuildRow[PaymentMethod](
     page = PaymentMethodPage,
-    formatAnswer = formatEnumAsText(PaymentMethod.messageKeyPrefix),
+    formatAnswer = formatDynamicEnumAsText(_),
     prefix = "equipment.paymentMethod",
     id = Some("change-payment-method")
   )

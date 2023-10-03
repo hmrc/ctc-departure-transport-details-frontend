@@ -23,10 +23,10 @@ import controllers.authorisationsAndLimit.authorisations.{routes => authorisatio
 import forms.Constants.maxAuthorisationRefNumberLength
 import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
-import models.authorisations.AuthorisationType
 import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.Stage
-import models.transportMeans.InlandMode
+import models.reference.InlandMode
+import models.reference.authorisations.AuthorisationType
 import models.{Index, Mode, Phase, ProcedureType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -42,13 +42,22 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
     "userAnswersReader" - {
 
-      val referenceNumber              = Gen.alphaNumStr.sample.value.take(maxAuthorisationRefNumberLength)
-      val authorisationTypeInlandModes = List(InlandMode.Maritime, InlandMode.Rail, InlandMode.Air)
+      val authTypeACR = AuthorisationType("C521", "ACR - authorisation for the status of authorised consignor for Union transit")
+      val authTypeTRD = AuthorisationType("C524", "TRD - authorisation to use transit declaration with a reduced dataset")
+
+      val referenceNumber    = Gen.alphaNumStr.sample.value.take(maxAuthorisationRefNumberLength)
+      val maritimeInlandMode = InlandMode("1", "Maritime")
+      val railInlandMode     = InlandMode("2", "Rail")
+      val airInlandMode      = InlandMode("4", "Air")
+      val diffInlandMode     = arbitraryNonMaritimeRailAirInlandMode.arbitrary.sample.value
+
+      val inlandModes                  = Seq(maritimeInlandMode, railInlandMode, airInlandMode, diffInlandMode)
+      val authorisationTypeInlandModes = List(maritimeInlandMode, railInlandMode, airInlandMode)
 
       "can be parsed from UserAnswers" - {
 
         "when DeclarationType is TIR (reduced data set is 0)" in {
-          val inlandModeGen = Gen.oneOf(InlandMode.values.diff(authorisationTypeInlandModes))
+          val inlandModeGen = Gen.oneOf(inlandModes.diff(authorisationTypeInlandModes))
 
           forAll(inlandModeGen, arbitrary[AuthorisationType]) {
             (inlandMode, authorisationType) =>
@@ -78,18 +87,18 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
           "and inland mode is 1,2 or 4" in {
             val inlandModeGen = Gen.oneOf(authorisationTypeInlandModes)
 
-            forAll(inlandModeGen, arbitrary[ProcedureType], declarationTypeGen) {
+            forAll(inlandModeGen, arbitrary[ProcedureType.Value], declarationTypeGen) {
               (inlandMode, procedureType, declarationType) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(ProcedureTypePage, procedureType)
                   .setValue(DeclarationTypePage, declarationType)
                   .setValue(ApprovedOperatorPage, true)
                   .setValue(InlandModePage, inlandMode)
-                  .setValue(InferredAuthorisationTypePage(authorisationIndex), AuthorisationType.TRD)
+                  .setValue(InferredAuthorisationTypePage(authorisationIndex), authTypeTRD)
                   .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
 
                 val expectedResult = AuthorisationDomain(
-                  authorisationType = AuthorisationType.TRD,
+                  authorisationType = authTypeTRD,
                   referenceNumber = referenceNumber
                 )(authorisationIndex)
 
@@ -101,7 +110,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
           }
 
           "and inland mode is not 1,2 or 4" - {
-            val inlandModeGen = Gen.oneOf(InlandMode.values.diff(authorisationTypeInlandModes))
+            val inlandModeGen = Gen.oneOf(inlandModes.diff(authorisationTypeInlandModes))
             "and procedure type is simplified" in {
 
               forAll(inlandModeGen, declarationTypeGen) {
@@ -111,11 +120,11 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                     .setValue(DeclarationTypePage, declarationType)
                     .setValue(ApprovedOperatorPage, true)
                     .setValue(InlandModePage, inlandMode)
-                    .setValue(InferredAuthorisationTypePage(authorisationIndex), AuthorisationType.ACR)
+                    .setValue(InferredAuthorisationTypePage(authorisationIndex), authTypeACR)
                     .setValue(AuthorisationReferenceNumberPage(authorisationIndex), referenceNumber)
 
                   val expectedResult = AuthorisationDomain(
-                    authorisationType = AuthorisationType.ACR,
+                    authorisationType = authTypeACR,
                     referenceNumber = referenceNumber
                   )(authorisationIndex)
 
@@ -155,7 +164,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
         "when reduced data set indicator is 0" in {
 
-          forAll(arbitrary[ProcedureType], arbitrary[InlandMode], arbitrary[AuthorisationType], arbitrary[String](arbitraryNonTIRDeclarationType)) {
+          forAll(arbitrary[ProcedureType.Value], arbitrary[InlandMode], arbitrary[AuthorisationType], arbitrary[String](arbitraryNonTIRDeclarationType)) {
             (procedureType, inlandMode, authorisationType, declarationType) =>
               val userAnswers = emptyUserAnswers
                 .setValue(ProcedureTypePage, procedureType)
@@ -185,7 +194,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
         "and reduced data set is 0" - {
           "must go to authorisation type page" in {
-            forAll(arbitrary[ProcedureType], arbitrary[InlandMode], arbitrary[String](arbitraryNonTIRDeclarationType)) {
+            forAll(arbitrary[ProcedureType.Value], arbitrary[InlandMode], arbitrary[String](arbitraryNonTIRDeclarationType)) {
               (procedureType, inlandMode, declarationType) =>
                 val userAnswers = emptyUserAnswers
                   .setValue(ProcedureTypePage, procedureType)
@@ -235,7 +244,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                     .setValue(DeclarationTypePage, declarationType)
                     .setValue(ApprovedOperatorPage, true)
                     .setValue(InlandModePage, inlandMode)
-                    .setValue(InferredAuthorisationTypePage(authorisationIndex), AuthorisationType.TRD)
+                    .setValue(InferredAuthorisationTypePage(authorisationIndex), authTypeTRD)
 
                   val result: EitherType[AuthorisationDomain] = UserAnswersReader[AuthorisationDomain](
                     AuthorisationDomain.userAnswersReader(index)
@@ -249,7 +258,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
           "and inland mode is not 1,2 or 4" - {
             "and procedure type is simplified" - {
               "must bypass authorisation type and go to authorisation reference number" in {
-                val inlandModeGen = Gen.oneOf(InlandMode.values.diff(authorisationTypeInlandModes))
+                val inlandModeGen = Gen.oneOf(inlandModes.diff(authorisationTypeInlandModes))
                 forAll(inlandModeGen, declarationTypeGen) {
                   (inlandMode, declarationType) =>
                     val userAnswers = emptyUserAnswers
@@ -257,7 +266,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                       .setValue(DeclarationTypePage, declarationType)
                       .setValue(ApprovedOperatorPage, true)
                       .setValue(InlandModePage, inlandMode)
-                      .setValue(InferredAuthorisationTypePage(authorisationIndex), AuthorisationType.ACR)
+                      .setValue(InferredAuthorisationTypePage(authorisationIndex), authTypeACR)
 
                     val result: EitherType[AuthorisationDomain] = UserAnswersReader[AuthorisationDomain](
                       AuthorisationDomain.userAnswersReader(index)

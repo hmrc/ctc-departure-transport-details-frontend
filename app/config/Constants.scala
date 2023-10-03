@@ -27,4 +27,19 @@ object Constants {
   val T1                = "T1"
   val TIR               = "TIR"
   val NoSecurityDetails = "0"
+
+  val Maritime = "1"
+  val Rail     = "2"
+  val Road     = "3"
+  val Air      = "4"
+  val Mail     = "5"
+  val Fixed    = "7"
+  val Unknown  = "9"
+
+  val UnknownIdentification       = "99"
+  val UnknownIdentificationActive = "99"
+
+  val ACR = "C521"
+  val SSE = "C523"
+  val TRD = "C524"
 }

@@ -17,7 +17,7 @@
 package viewModels.transportMeans.departure
 
 import models.UserAnswers
-import models.transportMeans.departure.Identification
+import models.reference.transportMeans.departure.Identification
 import pages.transportMeans.departure.IdentificationPage
 import play.api.i18n.Messages
 

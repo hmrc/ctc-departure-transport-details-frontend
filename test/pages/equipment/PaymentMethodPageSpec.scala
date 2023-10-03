@@ -16,7 +16,7 @@
 
 package pages.equipment
 
-import models.equipment.PaymentMethod
+import models.reference.equipment.PaymentMethod
 import pages.behaviours.PageBehaviours
 
 class PaymentMethodPageSpec extends PageBehaviours {
