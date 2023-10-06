@@ -42,8 +42,19 @@ object EquipmentsAndChargesDomain {
     ContainerIndicatorPage.reader.map(_.value).flatMap {
       case Some(true) =>
         UserAnswersReader[EquipmentsDomain].map(Option(_))
-      case _ =>
+      case Some(false) =>
         AddTransportEquipmentYesNoPage.filterOptionalDependent(identity) {
+          UserAnswersReader[EquipmentsDomain]
+        }
+      case _ =>
+        handleContainerNotSure
+    }
+
+  private def handleContainerNotSure =
+    SecurityDetailsTypePage.reader.flatMap {
+      case NoSecurityDetails => UserAnswersReader[EquipmentsDomain].map(Option(_))
+      case _ =>
+        AddPaymentMethodYesNoPage.filterOptionalDependent(identity) {
           UserAnswersReader[EquipmentsDomain]
         }
     }

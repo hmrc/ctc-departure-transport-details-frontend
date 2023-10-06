@@ -17,7 +17,7 @@
 package models.journeyDomain.equipment
 
 import base.SpecBase
-import config.Constants.NoSecurityDetails
+import config.Constants.{NoSecurityDetails, TIR}
 import generators.{Generators, UserAnswersGenerator}
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.equipment.PaymentMethod
@@ -49,6 +49,39 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
           result.value mustBe expectedResult
         }
       }
+
+      "when container indicator is maybe (not sure) and NoSecurityDetails" - {
+        "redirect to next page" in {
+          val initialAnswers = emptyUserAnswers
+            .setValue(ContainerIndicatorPage, OptionalBoolean.maybe)
+            .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+
+          forAll(arbitraryEquipmentAnswers(initialAnswers, Index(0))) {
+            userAnswers =>
+              val result: EitherType[Option[EquipmentsDomain]] = UserAnswersReader[Option[EquipmentsDomain]](
+                EquipmentsAndChargesDomain.equipmentsReads
+              ).run(userAnswers)
+              result.value must be(defined)
+          }
+        }
+      }
+
+      "when container indicator is maybe (not sure) with Security" - {
+        "redirect to AddPaymentMethodYesNoPage" in {
+          val initialAnswers = emptyUserAnswers
+            .setValue(ContainerIndicatorPage, OptionalBoolean.maybe)
+            .setValue(SecurityDetailsTypePage, TIR)
+
+          forAll(arbitraryEquipmentAnswers(initialAnswers, Index(0))) {
+            userAnswers =>
+              val result: EitherType[Option[EquipmentsDomain]] = UserAnswersReader[Option[EquipmentsDomain]](
+                EquipmentsAndChargesDomain.equipmentsReads
+              ).run(userAnswers)
+              result.left.value.page mustBe AddPaymentMethodYesNoPage
+          }
+        }
+      }
+
     }
 
     "equipmentsReads" - {
