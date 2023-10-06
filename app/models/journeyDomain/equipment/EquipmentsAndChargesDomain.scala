@@ -52,7 +52,7 @@ object EquipmentsAndChargesDomain {
 
   private def handleContainerNotSure =
     SecurityDetailsTypePage.reader.flatMap {
-      case NoSecurityDetails => UserAnswersReader[EquipmentsDomain].map(Option(_))
+      case NoSecurityDetails => none[EquipmentsDomain].pure[UserAnswersReader]
       case _ =>
         AddPaymentMethodYesNoPage.filterOptionalDependent(identity) {
           UserAnswersReader[EquipmentsDomain]

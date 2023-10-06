@@ -61,7 +61,7 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
               val result: EitherType[Option[EquipmentsDomain]] = UserAnswersReader[Option[EquipmentsDomain]](
                 EquipmentsAndChargesDomain.equipmentsReads
               ).run(userAnswers)
-              result.value must be(defined)
+              result.value must not be defined
           }
         }
       }
