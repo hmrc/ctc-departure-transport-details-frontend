@@ -17,7 +17,7 @@
 package viewModels.transportMeans.active
 
 import base.SpecBase
-import config.Constants._
+import config.Constants.SecurityType._
 import generators.Generators
 import models.Mode
 import models.reference.transportMeans.active.Identification

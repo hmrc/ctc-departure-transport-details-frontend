@@ -17,7 +17,7 @@
 package controllers.authorisationsAndLimit.authorisations.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import config.Constants._
+import config.Constants.DeclarationType._
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.reference.authorisations.AuthorisationType

@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import cats.implicits._
-import config.Constants.Mail
+import config.Constants.ModeOfTransport.Mail
 import config.PhaseConfig
 import models.ProcedureType.Normal
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}

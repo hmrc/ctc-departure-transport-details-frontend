@@ -16,7 +16,8 @@
 
 package services
 
-import config.Constants._
+import config.Constants.MeansOfTransportIdentification._
+import config.Constants.ModeOfTransport._
 import connectors.ReferenceDataConnector
 import models.reference.InlandMode
 import models.reference.transportMeans.departure.Identification

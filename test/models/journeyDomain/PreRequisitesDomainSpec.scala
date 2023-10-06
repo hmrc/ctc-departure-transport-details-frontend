@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import base.SpecBase
-import config.Constants._
+import config.Constants.DeclarationType._
 import generators.Generators
 import models.OptionalBoolean
 import models.domain.{EitherType, UserAnswersReader}

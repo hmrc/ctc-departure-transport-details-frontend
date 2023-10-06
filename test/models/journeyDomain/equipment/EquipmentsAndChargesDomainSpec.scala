@@ -17,7 +17,7 @@
 package models.journeyDomain.equipment
 
 import base.SpecBase
-import config.Constants.NoSecurityDetails
+import config.Constants.SecurityType.NoSecurityDetails
 import generators.{Generators, UserAnswersGenerator}
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.equipment.PaymentMethod

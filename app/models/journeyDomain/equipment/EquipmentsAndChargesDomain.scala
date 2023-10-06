@@ -17,7 +17,7 @@
 package models.journeyDomain.equipment
 
 import cats.implicits._
-import config.Constants._
+import config.Constants.SecurityType._
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
 import models.journeyDomain.JourneyDomainModel
 import models.reference.equipment.PaymentMethod

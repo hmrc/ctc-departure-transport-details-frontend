@@ -17,12 +17,12 @@
 package models.journeyDomain.transportMeans
 
 import base.SpecBase
-import config.Constants.NoSecurityDetails
+import config.Constants.SecurityType.NoSecurityDetails
 import config.PhaseConfig
 import generators.Generators
-import models.{OptionalBoolean, Phase}
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.BorderMode
+import models.{OptionalBoolean, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks

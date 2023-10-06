@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import base.SpecBase
-import config.Constants.TIR
+import config.Constants.DeclarationType.TIR
 import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
 import models.domain.{EitherType, UserAnswersReader}

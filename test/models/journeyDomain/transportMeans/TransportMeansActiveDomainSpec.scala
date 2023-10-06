@@ -17,14 +17,13 @@
 package models.journeyDomain.transportMeans
 
 import base.SpecBase
-import config.Constants._
+import config.Constants.SecurityType._
 import config.PhaseConfig
 import generators.Generators
 import models.Phase
 import models.domain.{EitherType, UserAnswersReader}
 import models.reference.transportMeans.active.Identification
-import models.reference.{CustomsOffice, Nationality}
-import models.reference.BorderMode
+import models.reference.{BorderMode, CustomsOffice, Nationality}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen

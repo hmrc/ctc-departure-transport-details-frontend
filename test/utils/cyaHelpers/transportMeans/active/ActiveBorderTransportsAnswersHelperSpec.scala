@@ -17,14 +17,13 @@
 package utils.cyaHelpers.transportMeans.active
 
 import base.SpecBase
-import config.Constants._
+import config.Constants.SecurityType._
 import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import generators.Generators
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
-import models.reference.Nationality
+import models.reference.{BorderMode, Nationality}
 import models.reference.transportMeans.active.Identification
-import models.reference.BorderMode
 import models.{Mode, NormalMode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary

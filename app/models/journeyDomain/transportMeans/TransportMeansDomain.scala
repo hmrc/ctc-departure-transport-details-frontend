@@ -17,7 +17,8 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
-import config.Constants.{NoSecurityDetails, Rail}
+import config.Constants.ModeOfTransport.Rail
+import config.Constants.SecurityType.NoSecurityDetails
 import config.PhaseConfig
 import controllers.transportMeans.routes
 import models.domain._

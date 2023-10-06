@@ -16,7 +16,7 @@
 
 package pages.external
 
-import config.Constants._
+import config.Constants.DeclarationType._
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import pages.ReadOnlyPage
 import play.api.libs.json.JsPath

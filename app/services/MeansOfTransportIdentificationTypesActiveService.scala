@@ -16,11 +16,11 @@
 
 package services
 
-import config.Constants.UnknownIdentificationActive
+import config.Constants.MeansOfTransportIdentification.UnknownIdentification
 import connectors.ReferenceDataConnector
 import models.Index
-import models.reference.transportMeans.active.Identification
 import models.reference.BorderMode
+import models.reference.transportMeans.active.Identification
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -38,7 +38,7 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
     index: Index,
     borderModeOfTransport: Option[BorderMode]
   ): Seq[Identification] = {
-    val identificationTypesExcludingUnknown = identificationTypes.filterNot(_.code == UnknownIdentificationActive)
+    val identificationTypesExcludingUnknown = identificationTypes.filterNot(_.code == UnknownIdentification)
 
     borderModeOfTransport match {
       case Some(borderMode) if index.isFirst =>
