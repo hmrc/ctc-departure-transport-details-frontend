@@ -19,8 +19,8 @@ package models.journeyDomain.equipment
 import cats.implicits._
 import config.Constants._
 import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
-import models.reference.equipment.PaymentMethod
 import models.journeyDomain.JourneyDomainModel
+import models.reference.equipment.PaymentMethod
 import pages.equipment._
 import pages.external.SecurityDetailsTypePage
 import pages.preRequisites.ContainerIndicatorPage
@@ -32,23 +32,24 @@ case class EquipmentsAndChargesDomain(
 
 object EquipmentsAndChargesDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[EquipmentsAndChargesDomain] =
-    for {
-      equipments    <- equipmentsReads
-      paymentMethod <- if (equipments.isDefined) chargesReads else none[PaymentMethod].pure[UserAnswersReader]
-    } yield EquipmentsAndChargesDomain(equipments, paymentMethod)
+  implicit val userAnswersReader: UserAnswersReader[EquipmentsAndChargesDomain] = (
+    equipmentsReader,
+    chargesReader
+  ).tupled.map((EquipmentsAndChargesDomain.apply _).tupled)
 
-  implicit lazy val equipmentsReads: UserAnswersReader[Option[EquipmentsDomain]] =
+  implicit lazy val equipmentsReader: UserAnswersReader[Option[EquipmentsDomain]] =
     ContainerIndicatorPage.reader.map(_.value).flatMap {
       case Some(true) =>
         UserAnswersReader[EquipmentsDomain].map(Option(_))
-      case _ =>
+      case Some(false) =>
         AddTransportEquipmentYesNoPage.filterOptionalDependent(identity) {
           UserAnswersReader[EquipmentsDomain]
         }
+      case None =>
+        none[EquipmentsDomain].pure[UserAnswersReader]
     }
 
-  implicit lazy val chargesReads: UserAnswersReader[Option[PaymentMethod]] = SecurityDetailsTypePage.reader.flatMap {
+  implicit lazy val chargesReader: UserAnswersReader[Option[PaymentMethod]] = SecurityDetailsTypePage.reader.flatMap {
     case NoSecurityDetails => none[PaymentMethod].pure[UserAnswersReader]
     case _                 => AddPaymentMethodYesNoPage.filterOptionalDependent(identity)(PaymentMethodPage.reader)
   }
