@@ -17,29 +17,43 @@
 package config
 
 object Constants {
-  val GB = "GB"
-  val XI = "XI"
-  val AD = "AD"
 
-  val STANDARD    = "A"
-  val `PRE-LODGE` = "D"
+  object CountryCode {
+    val GB = "GB"
+    val AD = "AD"
+  }
 
-  val T1                = "T1"
-  val TIR               = "TIR"
-  val NoSecurityDetails = "0"
+  object AdditionalDeclarationType {
+    val Standard = "A"
+    val PreLodge = "D"
+  }
 
-  val Maritime = "1"
-  val Rail     = "2"
-  val Road     = "3"
-  val Air      = "4"
-  val Mail     = "5"
-  val Fixed    = "7"
-  val Unknown  = "9"
+  object DeclarationType {
+    val T1  = "T1"
+    val TIR = "TIR"
+  }
 
-  val UnknownIdentification       = "99"
-  val UnknownIdentificationActive = "99"
+  object SecurityType {
+    val NoSecurityDetails = "0"
+  }
 
-  val ACR = "C521"
-  val SSE = "C523"
-  val TRD = "C524"
+  object ModeOfTransport {
+    val Maritime = "1"
+    val Rail     = "2"
+    val Road     = "3"
+    val Air      = "4"
+    val Mail     = "5"
+    val Fixed    = "7"
+    val Unknown  = "9"
+  }
+
+  object MeansOfTransportIdentification {
+    val UnknownIdentification = "99"
+  }
+
+  object AuthorisationType {
+    val ACR = "C521"
+    val SSE = "C523"
+    val TRD = "C524"
+  }
 }

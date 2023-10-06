@@ -16,7 +16,7 @@
 
 package models.reference.authorisations
 
-import config.Constants._
+import config.Constants.AuthorisationType._
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.i18n.Messages

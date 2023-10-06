@@ -16,7 +16,7 @@
 
 package services
 
-import config.Constants._
+import config.Constants.ModeOfTransport._
 import models.ProcedureType.{Normal, Simplified}
 import models.domain.{GettableAsReaderOps, UserAnswersReader}
 import models.reference.authorisations.AuthorisationType

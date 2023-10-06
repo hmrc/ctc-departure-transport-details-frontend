@@ -17,7 +17,7 @@
 package models.journeyDomain.transportMeans
 
 import cats.implicits._
-import config.Constants.Rail
+import config.Constants.ModeOfTransport.Rail
 import config.PhaseConfig
 import models.Phase
 import models.domain._
@@ -25,8 +25,8 @@ import models.journeyDomain.JourneyDomainModel
 import models.reference.Nationality
 import models.reference.transportMeans.departure.Identification
 import pages.preRequisites.ContainerIndicatorPage
-import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
 import pages.transportMeans.departure._
+import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
 
 sealed trait TransportMeansDepartureDomain extends JourneyDomainModel
 

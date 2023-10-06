@@ -17,7 +17,7 @@
 package models.journeyDomain.authorisationsAndLimit.authorisations
 
 import base.SpecBase
-import config.Constants._
+import config.Constants.DeclarationType._
 import controllers.authorisationsAndLimit.authorisations.index.{routes => authorisationRoutes}
 import controllers.authorisationsAndLimit.authorisations.{routes => authorisationsRoutes}
 import forms.Constants.maxAuthorisationRefNumberLength

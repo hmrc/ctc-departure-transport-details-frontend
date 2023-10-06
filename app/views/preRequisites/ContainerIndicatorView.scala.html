@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import config.Constants._
+@import config.Constants.AdditionalDeclarationType._
 @import controllers.preRequisites.routes
 @import models.{LocalReferenceNumber, OptionalBoolean}
 @import viewModels.components.InputYesNoViewModel._
@@ -46,7 +46,7 @@
                 heading = messages("preRequisites.containerIndicator.heading"),
                 caption = Some(messages("caption"))
             ),
-            showJustYesAndNo = additionalDeclarationType == STANDARD
+            showJustYesAndNo = additionalDeclarationType == Standard
         )
 
         @button(attributes = Map("id" -> "submit"))

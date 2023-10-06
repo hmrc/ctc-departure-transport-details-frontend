@@ -16,7 +16,7 @@
 
 package pages.transportMeans
 
-import config.Constants.Mail
+import config.Constants.ModeOfTransport.Mail
 import controllers.transportMeans.routes
 import models.reference.InlandMode
 import models.{Mode, UserAnswers}
