@@ -330,7 +330,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                 result mustBe Some(
                   SummaryListRow(
                     key = Key("Registered country".toText),
-                    value = Value(s"$nationality".toText),
+                    value = Value(nationality.toString.toText),
                     actions = Some(
                       Actions(
                         items = List(
