@@ -21,7 +21,7 @@ import play.api.libs.json.{Format, Json}
 
 case class Nationality(code: String, description: String) extends Selectable {
 
-  override def toString: String = s"$description ($code)"
+  override def toString: String = s"$description - $code"
 
   override val value: String = code
 }

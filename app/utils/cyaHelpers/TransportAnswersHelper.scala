@@ -72,7 +72,7 @@ class TransportAnswersHelper(
 
   def countryOfDispatch: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = CountryOfDispatchPage,
-    formatAnswer = formatAsText,
+    formatAnswer = formatAsCountry,
     prefix = "preRequisites.countryOfDispatch",
     id = Some("change-country-of-dispatch")
   )
@@ -86,7 +86,7 @@ class TransportAnswersHelper(
 
   def countryOfDestination: Option[SummaryListRow] = getAnswerAndBuildRow[Country](
     page = ItemsDestinationCountryPage,
-    formatAnswer = formatAsText,
+    formatAnswer = formatAsCountry,
     prefix = "preRequisites.itemsDestinationCountry",
     id = Some("change-country-of-destination")
   )

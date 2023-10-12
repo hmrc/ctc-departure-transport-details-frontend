@@ -16,6 +16,7 @@
 
 package utils.cyaHelpers
 
+import models.reference.Country
 import models.{OptionalBoolean, Radioable}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -51,6 +52,8 @@ private[utils] class SummaryListRowHelper(implicit messages: Messages) {
 
   protected def formatEnumAsString[T](messageKeyPrefix: String)(answer: T): String =
     messages(s"$messageKeyPrefix.$answer")
+
+  protected def formatAsCountry(country: Country): Content = country.toString.toText
 
   protected def buildRow(
     prefix: String,

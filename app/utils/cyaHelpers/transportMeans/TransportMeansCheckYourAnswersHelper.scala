@@ -110,7 +110,7 @@ class TransportMeansCheckYourAnswersHelper(
 
   def departureNationality: Option[SummaryListRow] = getAnswerAndBuildRow[Nationality](
     page = VehicleCountryPage,
-    formatAnswer = formatAsText,
+    formatAnswer = _.toString.toText,
     prefix = "transportMeans.departure.vehicleCountry",
     id = Some("change-transport-means-departure-vehicle-nationality")
   )

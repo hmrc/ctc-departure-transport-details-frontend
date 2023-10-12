@@ -22,6 +22,7 @@ import models.reference.transportMeans.active.Identification
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.transportMeans.active._
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
 
@@ -69,7 +70,7 @@ class ActiveBorderTransportAnswersHelper(
 
   def activeBorderNationality: Option[SummaryListRow] = getAnswerAndBuildRow[Nationality](
     page = NationalityPage(index),
-    formatAnswer = formatAsText,
+    formatAnswer = _.toString.toText,
     prefix = "transportMeans.active.nationality",
     id = Some("change-transport-means-active-vehicle-nationality")
   )

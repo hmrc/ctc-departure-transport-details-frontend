@@ -17,13 +17,14 @@
 package models.reference
 
 import base.SpecBase
+import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
-class NationalitySpec extends SpecBase with ScalaCheckPropertyChecks {
+class NationalitySpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "Nationality" - {
 
@@ -56,18 +57,16 @@ class NationalitySpec extends SpecBase with ScalaCheckPropertyChecks {
     }
 
     "must convert to select item" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr, arbitrary[Boolean]) {
-        (code, description, selected) =>
-          val nationality = Nationality(code, description)
-          nationality.toSelectItem(selected) mustBe SelectItem(Some(code), s"$description ($code)", selected)
+      forAll(arbitrary[Nationality], arbitrary[Boolean]) {
+        (nationality, selected) =>
+          nationality.toSelectItem(selected) mustBe SelectItem(Some(nationality.code), s"${nationality.description} - ${nationality.code}", selected)
       }
     }
 
     "must format as string" in {
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (code, description) =>
-          val nationality = Nationality(code, description)
-          nationality.toString mustBe s"$description ($code)"
+      forAll(arbitrary[Nationality]) {
+        nationality =>
+          nationality.toString mustBe s"${nationality.description} - ${nationality.code}"
       }
     }
   }
