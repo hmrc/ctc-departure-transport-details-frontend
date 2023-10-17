@@ -29,7 +29,7 @@ class RenderConfig @Inject() (configuration: Configuration) {
   private val contactHost: String                  = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier: String = "CTCTraders"
   private val host: String                         = configuration.get[String]("host")
-  private val encodeURL: String => String = URLEncoder.encode(_: String, "UTF-8")
+  private val encodeURL: String => String          = URLEncoder.encode(_: String, "UTF-8")
 
   def feedbackUrl(implicit request: RequestHeader): String =
     s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${encodeURL(host + request.uri)}"
