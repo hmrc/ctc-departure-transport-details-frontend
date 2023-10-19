@@ -29,6 +29,7 @@ import models.journeyDomain.{PreRequisitesDomain, TransportDomain}
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import models.SubmissionState
 
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
@@ -36,9 +37,10 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   implicit def arbitraryUserAnswers(implicit phaseConfig: PhaseConfig): Arbitrary[UserAnswers] =
     Arbitrary {
       for {
-        lrn        <- arbitrary[LocalReferenceNumber]
-        eoriNumber <- arbitrary[EoriNumber]
-        answers    <- buildUserAnswers[TransportDomain](UserAnswers(lrn, eoriNumber))
+        lrn             <- arbitrary[LocalReferenceNumber]
+        eoriNumber      <- arbitrary[EoriNumber]
+        submissionState <- arbitrary[SubmissionState]
+        answers         <- buildUserAnswers[TransportDomain](UserAnswers(lrn, eoriNumber, submissionState))
       } yield answers
     }
 
