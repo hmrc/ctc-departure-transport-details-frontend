@@ -28,12 +28,10 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val limitDateDaysBefore: Int = configuration.get[Int]("dates.limitDate.daysBefore")
   lazy val limitDateDaysAfter: Int  = configuration.get[Int]("dates.limitDate.daysAfter")
 
-  val enrolmentProxyUrl: String            = servicesConfig.fullServiceUrl("enrolment-store-proxy")
-  val eccEnrolmentSplashPage: String       = configuration.get[String]("urls.eccEnrolmentSplashPage")
-  val legacyEnrolmentKey: String           = configuration.get[String]("keys.legacy.enrolmentKey")
-  val legacyEnrolmentIdentifierKey: String = configuration.get[String]("keys.legacy.enrolmentIdentifierKey")
-  val newEnrolmentKey: String              = configuration.get[String]("keys.enrolmentKey")
-  val newEnrolmentIdentifierKey: String    = configuration.get[String]("keys.enrolmentIdentifierKey")
+  val enrolmentProxyUrl: String      = servicesConfig.fullServiceUrl("enrolment-store-proxy")
+  val eccEnrolmentSplashPage: String = configuration.get[String]("urls.eccEnrolmentSplashPage")
+  val enrolmentKey: String           = configuration.get[String]("enrolment.key")
+  val enrolmentIdentifierKey: String = configuration.get[String]("enrolment.identifierKey")
 
   lazy val referenceDataUrl: String = servicesConfig.fullServiceUrl("customs-reference-data")
 
