@@ -44,8 +44,8 @@ class MeansIdentificationNumberViewModelSpec extends SpecBase with ScalaCheckPro
           val result            = viewModelProvider.apply(userAnswers)
 
           result.prefix mustBe "transportMeans.departure.meansIdentificationNumber.withIDType"
-          result.title mustBe "What is the identification number for this?"
-          result.heading mustBe "What is the identification number for this?"
+          result.title mustBe "What is the identification number for this vehicle?"
+          result.heading mustBe "What is the identification number for this vehicle?"
       }
     }
   }
