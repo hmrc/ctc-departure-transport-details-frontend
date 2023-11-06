@@ -191,35 +191,35 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       val url: String = s"/$baseUrl/lists/TransportModeCode"
 
+      val transportModeCodesResponseJson: String =
+        """
+          |{
+          |  "_links": {
+          |    "self": {
+          |      "href": "/customs-reference-data/lists/TransportModeCode"
+          |    }
+          |  },
+          |  "meta": {
+          |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+          |    "snapshotDate": "2023-01-01"
+          |  },
+          |  "id": "TransportModeCode",
+          |  "data": [
+          |    {
+          |      "code":"1",
+          |      "description":"Maritime"
+          |    },
+          |    {
+          |      "code":"2",
+          |      "description":"Rail"
+          |    }
+          |  ]
+          |}
+          |""".stripMargin
+
       "when Inland Mode" - {
 
         "must return Seq of InlandMode when successful" in {
-          val transportModeCodesResponseJson: String =
-            """
-              |{
-              |  "_links": {
-              |    "self": {
-              |      "href": "/customs-reference-data/lists/TransportModeCode"
-              |    }
-              |  },
-              |  "meta": {
-              |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-              |    "snapshotDate": "2023-01-01"
-              |  },
-              |  "id": "TransportModeCode",
-              |  "data": [
-              |    {
-              |      "code":"1",
-              |      "description":"Maritime"
-              |    },
-              |    {
-              |      "code":"2",
-              |      "description":"Rail"
-              |    }
-              |  ]
-              |}
-              |""".stripMargin
-
           server.stubFor(
             get(urlEqualTo(url))
               .willReturn(okJson(transportModeCodesResponseJson))
@@ -245,32 +245,6 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
       "when Border Mode" - {
 
         "must return Seq of BorderMode when successful" in {
-          val transportModeCodesResponseJson: String =
-            """
-              |{
-              |  "_links": {
-              |    "self": {
-              |      "href": "/customs-reference-data/lists/TransportModeCode"
-              |    }
-              |  },
-              |  "meta": {
-              |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-              |    "snapshotDate": "2023-01-01"
-              |  },
-              |  "id": "TransportModeCode",
-              |  "data": [
-              |    {
-              |      "code":"1",
-              |      "description":"Maritime"
-              |    },
-              |    {
-              |      "code":"2",
-              |      "description":"Rail"
-              |    }
-              |  ]
-              |}
-              |""".stripMargin
-
           server.stubFor(
             get(urlEqualTo(url))
               .willReturn(okJson(transportModeCodesResponseJson))
