@@ -18,6 +18,7 @@ package connectors
 
 import base._
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference._
 import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
@@ -42,6 +43,13 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
     )
 
   private lazy val connector: ReferenceDataConnector = app.injector.instanceOf[ReferenceDataConnector]
+
+  private val emptyResponseJson: String =
+    """
+      |{
+      |  "data": []
+      |}
+      |""".stripMargin
 
   "Reference Data" - {
 
@@ -92,6 +100,10 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getCountries().futureValue mustEqual expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCountries())
+      }
+
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getCountries())
       }
@@ -140,12 +152,16 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getNationalities().futureValue mustEqual expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getNationalities())
+      }
+
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getNationalities())
       }
     }
 
-    "getCountryCodesCTC" - {
+    "getCountryCodesCommonTransit" - {
       val url: String = s"/$baseUrl/lists/CountryCodesCommonTransit"
 
       "must return Seq of Country when successful" in {
@@ -162,6 +178,10 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getCountryCodesCommonTransit().futureValue mustEqual expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getCountryCodesCommonTransit())
+      }
+
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getCountryCodesCommonTransit())
       }
@@ -171,92 +191,106 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
       val url: String = s"/$baseUrl/lists/TransportModeCode"
 
-      "must return Seq of InlandMode when successful" in {
-        val transportModeCodesResponseJson: String =
-          """
-            |{
-            |  "_links": {
-            |    "self": {
-            |      "href": "/customs-reference-data/lists/TransportModeCode"
-            |    }
-            |  },
-            |  "meta": {
-            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-            |    "snapshotDate": "2023-01-01"
-            |  },
-            |  "id": "TransportModeCode",
-            |  "data": [
-            |    {
-            |      "code":"1",
-            |      "description":"Maritime"
-            |    },
-            |    {
-            |      "code":"2",
-            |      "description":"Rail"
-            |    }
-            |  ]
-            |}
-            |""".stripMargin
+      "when Inland Mode" - {
 
-        server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(okJson(transportModeCodesResponseJson))
-        )
+        "must return Seq of InlandMode when successful" in {
+          val transportModeCodesResponseJson: String =
+            """
+              |{
+              |  "_links": {
+              |    "self": {
+              |      "href": "/customs-reference-data/lists/TransportModeCode"
+              |    }
+              |  },
+              |  "meta": {
+              |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+              |    "snapshotDate": "2023-01-01"
+              |  },
+              |  "id": "TransportModeCode",
+              |  "data": [
+              |    {
+              |      "code":"1",
+              |      "description":"Maritime"
+              |    },
+              |    {
+              |      "code":"2",
+              |      "description":"Rail"
+              |    }
+              |  ]
+              |}
+              |""".stripMargin
 
-        val expectedResult: Seq[InlandMode] = Seq(
-          InlandMode("1", "Maritime"),
-          InlandMode("2", "Rail")
-        )
+          server.stubFor(
+            get(urlEqualTo(url))
+              .willReturn(okJson(transportModeCodesResponseJson))
+          )
 
-        connector.getTransportModeCodes[InlandMode]().futureValue mustEqual expectedResult
+          val expectedResult: Seq[InlandMode] = Seq(
+            InlandMode("1", "Maritime"),
+            InlandMode("2", "Rail")
+          )
+
+          connector.getTransportModeCodes[InlandMode]().futureValue mustEqual expectedResult
+        }
+
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[InlandMode]())
+        }
+
+        "must return an exception when an error response is returned" in {
+          checkErrorResponse(url, connector.getTransportModeCodes[InlandMode]())
+        }
       }
 
-      "must return an exception when an error response is returned for InlandMode" in {
-        checkErrorResponse(url, connector.getTransportModeCodes[InlandMode]())
-      }
+      "when Border Mode" - {
 
-      "must return Seq of BorderMode when successful" in {
-        val transportModeCodesResponseJson: String =
-          """
-            |{
-            |  "_links": {
-            |    "self": {
-            |      "href": "/customs-reference-data/lists/TransportModeCode"
-            |    }
-            |  },
-            |  "meta": {
-            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-            |    "snapshotDate": "2023-01-01"
-            |  },
-            |  "id": "TransportModeCode",
-            |  "data": [
-            |    {
-            |      "code":"1",
-            |      "description":"Maritime"
-            |    },
-            |    {
-            |      "code":"2",
-            |      "description":"Rail"
-            |    }
-            |  ]
-            |}
-            |""".stripMargin
+        "must return Seq of BorderMode when successful" in {
+          val transportModeCodesResponseJson: String =
+            """
+              |{
+              |  "_links": {
+              |    "self": {
+              |      "href": "/customs-reference-data/lists/TransportModeCode"
+              |    }
+              |  },
+              |  "meta": {
+              |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+              |    "snapshotDate": "2023-01-01"
+              |  },
+              |  "id": "TransportModeCode",
+              |  "data": [
+              |    {
+              |      "code":"1",
+              |      "description":"Maritime"
+              |    },
+              |    {
+              |      "code":"2",
+              |      "description":"Rail"
+              |    }
+              |  ]
+              |}
+              |""".stripMargin
 
-        server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(okJson(transportModeCodesResponseJson))
-        )
+          server.stubFor(
+            get(urlEqualTo(url))
+              .willReturn(okJson(transportModeCodesResponseJson))
+          )
 
-        val expectedResult: Seq[BorderMode] = Seq(
-          BorderMode("1", "Maritime"),
-          BorderMode("2", "Rail")
-        )
+          val expectedResult: Seq[BorderMode] = Seq(
+            BorderMode("1", "Maritime"),
+            BorderMode("2", "Rail")
+          )
 
-        connector.getTransportModeCodes[BorderMode]().futureValue mustEqual expectedResult
-      }
+          connector.getTransportModeCodes[BorderMode]().futureValue mustEqual expectedResult
+        }
 
-      "must return an exception when an error response is returned for BorderMode" in {
-        checkErrorResponse(url, connector.getTransportModeCodes[BorderMode]())
+        "must throw a NoReferenceDataFoundException for an empty response" in {
+          checkNoReferenceDataFoundResponse(url, connector.getTransportModeCodes[BorderMode]())
+        }
+
+        "must return an exception when an error response is returned" in {
+          checkErrorResponse(url, connector.getTransportModeCodes[BorderMode]())
+        }
       }
     }
 
@@ -301,6 +335,10 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         connector.getMeansOfTransportIdentificationTypes().futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getMeansOfTransportIdentificationTypes())
       }
 
       "must return an exception when an error response is returned" in {
@@ -351,6 +389,10 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getMeansOfTransportIdentificationTypesActive().futureValue mustEqual expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getMeansOfTransportIdentificationTypesActive())
+      }
+
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getMeansOfTransportIdentificationTypesActive())
       }
@@ -397,6 +439,10 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         )
 
         connector.getSupplyChainActorTypes().futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getSupplyChainActorTypes())
       }
 
       "must return an exception when an error response is returned" in {
@@ -449,6 +495,14 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
 
         connector.getAuthorisationTypes().futureValue mustEqual expectedResult
       }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getAuthorisationTypes())
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getAuthorisationTypes())
+      }
     }
 
     "getPaymentMethods" - {
@@ -494,16 +548,29 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
         connector.getPaymentMethods().futureValue mustEqual expectedResult
       }
 
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getPaymentMethods())
+      }
+
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getPaymentMethods())
       }
     }
   }
 
+  private def checkNoReferenceDataFoundResponse(url: String, result: => Future[_]): Assertion = {
+    server.stubFor(
+      get(urlEqualTo(url))
+        .willReturn(okJson(emptyResponseJson))
+    )
+
+    whenReady[Throwable, Assertion](result.failed) {
+      _ mustBe a[NoReferenceDataFoundException]
+    }
+  }
+
   private def checkErrorResponse(url: String, result: => Future[_]): Assertion = {
-    val errorResponses: Gen[Int] = Gen
-      .chooseNum(400: Int, 599: Int)
-      .suchThat(_ != 404)
+    val errorResponses: Gen[Int] = Gen.chooseNum(400: Int, 599: Int)
 
     forAll(errorResponses) {
       errorResponse =>
@@ -515,7 +582,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             )
         )
 
-        whenReady(result.failed) {
+        whenReady[Throwable, Assertion](result.failed) {
           _ mustBe an[Exception]
         }
     }
