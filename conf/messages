@@ -468,6 +468,8 @@ carrierDetails.contact.telephoneNumber.error.minLength = {0}’s phone number mu
 # Transport details - Transport equipment
 
 equipment.caption = Transport details - Transport equipment
+equipment.prefix = Transport equipment {0}
+equipment.containerPrefix = container
 equipment.value.withContainer = Container {0}
 equipment.value.withoutContainer = No container identification number
 charges.caption = Transport details - Transport charges
