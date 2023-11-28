@@ -17,15 +17,12 @@ object AppDependencies {
   )
 
   val test: Seq[ModuleID] = Seq(
-    "org.scalatest"           %% "scalatest"               % "3.2.17",
     "uk.gov.hmrc"             %% "bootstrap-test-play-30"  % bootstrapVersion,
     "org.playframework"       %% "play-test"               % PlayVersion.current,
     "org.scalatestplus"       %% "mockito-4-11"            % "3.2.17.0",
     "org.scalacheck"          %% "scalacheck"              % "1.17.0",
     "org.scalatestplus"       %% "scalacheck-1-17"         % "3.2.17.0",
-    "org.pegdown"             %  "pegdown"                 % "1.6.0",
     "org.jsoup"               %  "jsoup"                   % "1.15.4",
-    "com.vladsch.flexmark"    %  "flexmark-all"            % "0.62.2",
     "io.github.wolfendale"    %% "scalacheck-gen-regexp"   % "1.1.0"
   ).map(_ % "test")
 
