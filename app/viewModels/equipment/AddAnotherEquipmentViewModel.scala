@@ -16,16 +16,14 @@
 
 package viewModels.equipment
 
-import config.FrontendAppConfig
-import controllers.equipment.index.routes
-import models.{Index, Mode, UserAnswers}
-import pages.equipment.AddTransportEquipmentYesNoPage
-import pages.equipment.index.ContainerIdentificationNumberPage
-import pages.sections.equipment.EquipmentsSection
+import config.{FrontendAppConfig, PhaseConfig}
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
-import play.api.libs.json.JsArray
 import play.api.mvc.Call
+import utils.cyaHelpers.equipment.EquipmentsAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
+
+import javax.inject.Inject
 
 case class AddAnotherEquipmentViewModel(
   override val listItems: Seq[ListItem],
@@ -38,11 +36,17 @@ case class AddAnotherEquipmentViewModel(
 
 object AddAnotherEquipmentViewModel {
 
-  class AddAnotherEquipmentViewModelProvider {
+  class AddAnotherEquipmentViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherEquipmentViewModel = {
+      val helper = new EquipmentsAnswersHelper(userAnswers, mode)
 
-      val listItems = userAnswers
+      val listItems = helper.listItems.collect {
+        case Left(value)  => value
+        case Right(value) => value
+      }
+
+      /*val listItems = userAnswers
         .get(EquipmentsSection)
         .getOrElse(JsArray())
         .value
@@ -70,7 +74,7 @@ object AddAnotherEquipmentViewModel {
 
             name.map(ListItem(_, changeRoute, removeRoute))
         }
-        .toSeq
+        .toSeq*/
 
       new AddAnotherEquipmentViewModel(
         listItems,

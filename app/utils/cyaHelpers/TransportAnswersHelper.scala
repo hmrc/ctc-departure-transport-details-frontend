@@ -20,11 +20,11 @@ import config.{FrontendAppConfig, PhaseConfig}
 import controllers.authorisationsAndLimit.authorisations.{routes => authorisationsRoutes}
 import controllers.equipment.{routes => equipmentsRoutes}
 import controllers.supplyChainActors.{routes => supplyChainActorsRoutes}
-import models.reference.equipment.PaymentMethod
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
+import models.reference.equipment.PaymentMethod
 import models.{Index, Mode, OptionalBoolean, UserAnswers}
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
 import pages.authorisationsAndLimit.limit.{AddLimitDateYesNoPage, LimitDatePage}
@@ -208,7 +208,7 @@ class TransportAnswersHelper(
     getAnswersAndBuildSectionRows(EquipmentsSection)(equipment)
 
   def equipment(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[EquipmentDomain](
-    formatAnswer = _.asString.toText,
+    formatAnswer = _.asCyaString.toText,
     prefix = "checkYourAnswers.equipment",
     id = Some(s"change-transport-equipment-${index.display}"),
     args = index.display

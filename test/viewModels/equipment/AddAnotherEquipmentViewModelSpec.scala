@@ -17,14 +17,11 @@
 package viewModels.equipment
 
 import base.SpecBase
-import controllers.equipment.index.routes
 import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.equipment.AddTransportEquipmentYesNoPage
-import pages.equipment.index.{AddContainerIdentificationNumberYesNoPage, AddSealYesNoPage, ContainerIdentificationNumberPage}
-import viewModels.ListItem
 import viewModels.equipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
 
 class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
@@ -44,112 +41,37 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
         }
       }
 
-      "when user answers populated with one equipment and container id" - {
-        "and at index 0 and add equipment yes/no page is true" - {
-          "must return one list item with remove link" in {
-            forAll(arbitrary[Mode], nonEmptyString) {
-              (mode, containerId) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(AddTransportEquipmentYesNoPage, true)
-                  .setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
-                val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, mode)
+      "when there is one equipment" in {
+        forAll(arbitrary[Mode]) {
+          mode =>
+            val userAnswers = arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex).sample.value
 
-                result.listItems.length mustBe 1
-                result.title mustBe "You have added 1 transport equipment"
-                result.heading mustBe "You have added 1 transport equipment"
-                result.legend mustBe "Do you want to add any other transport equipment?"
-                result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+            val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, mode)
 
-                result.listItems mustBe Seq(
-                  ListItem(
-                    name = s"Transport equipment 1 - container $containerId",
-                    changeUrl = routes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, equipmentIndex).url,
-                    removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(userAnswers.lrn, mode, equipmentIndex).url)
-                  )
-                )
-            }
-          }
-
-          "must return one list item with no remove link" in {
-            forAll(arbitrary[Mode], nonEmptyString) {
-              (mode, containerId) =>
-                val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(Index(0)), containerId)
-                val result      = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, mode)
-
-                result.listItems.length mustBe 1
-                result.title mustBe "You have added 1 transport equipment"
-                result.heading mustBe "You have added 1 transport equipment"
-                result.legend mustBe "Do you want to add any other transport equipment?"
-                result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
-
-                result.listItems mustBe Seq(
-                  ListItem(
-                    name = s"Transport equipment 1 - container $containerId",
-                    changeUrl = routes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, equipmentIndex).url,
-                    removeUrl = None
-                  )
-                )
-            }
-          }
+            result.listItems.length mustBe 1
+            result.title mustBe "You have added 1 transport equipment"
+            result.heading mustBe "You have added 1 transport equipment"
+            result.legend mustBe "Do you want to add any other transport equipment?"
+            result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
         }
       }
 
-      "when user answers populated with one equipment and without container id" - {
-        "must return one list item" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val userAnswers = emptyUserAnswers
-                .setValue(AddTransportEquipmentYesNoPage, true)
-                .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
-                .setValue(AddSealYesNoPage(Index(0)), false)
-              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, mode)
+      "when there are multiple equipments" in {
+        val formatter = java.text.NumberFormat.getIntegerInstance
 
-              result.listItems.length mustBe 1
-              result.title mustBe "You have added 1 transport equipment"
-              result.heading mustBe "You have added 1 transport equipment"
-              result.legend mustBe "Do you want to add any other transport equipment?"
-              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+        forAll(arbitrary[Mode], Gen.choose(2, frontendAppConfig.maxEquipmentNumbers)) {
+          (mode, equipments) =>
+            val userAnswers = (0 until equipments).foldLeft(emptyUserAnswers) {
+              (acc, i) =>
+                arbitraryEquipmentAnswers(acc, Index(i)).sample.value
+            }
 
-              result.listItems mustBe Seq(
-                ListItem(
-                  name = s"Transport equipment 1 - no container identification number",
-                  changeUrl = routes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
-                  removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(userAnswers.lrn, mode, Index(0)).url)
-                )
-              )
-          }
-        }
-      }
-
-      "when user answers is populated with more than one equipment" - {
-        "must return multiple list items" in {
-          forAll(arbitrary[Mode], nonEmptyString) {
-            (mode, containerId) =>
-              val userAnswers = emptyUserAnswers
-                .setValue(AddContainerIdentificationNumberYesNoPage(Index(0)), false)
-                .setValue(AddSealYesNoPage(Index(0)), false)
-                .setValue(ContainerIdentificationNumberPage(Index(1)), containerId)
-              val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, mode)
-
-              result.listItems.length mustBe 2
-              result.title mustBe s"You have added 2 transport equipment"
-              result.heading mustBe s"You have added 2 transport equipment"
-              result.legend mustBe "Do you want to add any other transport equipment?"
-              result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
-
-              result.listItems mustBe Seq(
-                ListItem(
-                  name = "Transport equipment 1 - no container identification number",
-                  changeUrl = routes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
-                  removeUrl = None
-                ),
-                ListItem(
-                  name = s"Transport equipment 2 - container $containerId",
-                  changeUrl = routes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
-                  removeUrl = Some(routes.RemoveTransportEquipmentController.onPageLoad(userAnswers.lrn, mode, Index(1)).url)
-                )
-              )
-          }
+            val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, mode)
+            result.listItems.length mustBe equipments
+            result.title mustBe s"You have added ${formatter.format(equipments)} transport equipment"
+            result.heading mustBe s"You have added ${formatter.format(equipments)} transport equipment"
+            result.legend mustBe "Do you want to add any other transport equipment?"
+            result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
         }
       }
     }

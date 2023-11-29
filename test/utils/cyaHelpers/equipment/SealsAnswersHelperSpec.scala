@@ -45,8 +45,8 @@ class SealsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
         }
       }
 
-      "when user answers populated with complete seals" - {
-        "and add seal yes/no page is defined" - {
+      "when multiple seals" - {
+        "and add seal yes/no page is defined (i.e. section is optional)" - {
           "must return list items with remove links" in {
             forAll(arbitrary[Mode], Gen.alphaNumStr) {
               (mode, sealId) =>
@@ -76,8 +76,8 @@ class SealsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
           }
         }
 
-        "and add seal yes/no page is undefined" - {
-          "must return list items with no remove link a index 0" in {
+        "and add seal yes/no page is undefined (i.e. section is mandatory)" - {
+          "must return list items with remove links" in {
             forAll(arbitrary[Mode], Gen.alphaNumStr) {
               (mode, sealId) =>
                 val userAnswers = emptyUserAnswers
@@ -90,7 +90,7 @@ class SealsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
                     ListItem(
                       name = sealId,
                       changeUrl = routes.IdentificationNumberController.onPageLoad(userAnswers.lrn, mode, equipmentIndex, Index(0)).url,
-                      removeUrl = None
+                      removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(userAnswers.lrn, mode, equipmentIndex, Index(0)).url)
                     )
                   ),
                   Right(
@@ -98,6 +98,51 @@ class SealsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
                       name = sealId,
                       changeUrl = routes.IdentificationNumberController.onPageLoad(userAnswers.lrn, mode, equipmentIndex, Index(1)).url,
                       removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(userAnswers.lrn, mode, equipmentIndex, Index(1)).url)
+                    )
+                  )
+                )
+            }
+          }
+        }
+      }
+
+      "when one seal" - {
+        "and add seal yes/no page is defined (i.e. section is optional)" - {
+          "must return list item with remove link" in {
+            forAll(arbitrary[Mode], Gen.alphaNumStr) {
+              (mode, sealId) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(AddSealYesNoPage(equipmentIndex), true)
+                  .setValue(IdentificationNumberPage(equipmentIndex, Index(0)), sealId)
+
+                val helper = new SealsAnswersHelper(userAnswers, mode, equipmentIndex)
+                helper.listItems mustBe Seq(
+                  Right(
+                    ListItem(
+                      name = sealId,
+                      changeUrl = routes.IdentificationNumberController.onPageLoad(userAnswers.lrn, mode, equipmentIndex, Index(0)).url,
+                      removeUrl = Some(routes.RemoveSealYesNoController.onPageLoad(userAnswers.lrn, mode, equipmentIndex, Index(0)).url)
+                    )
+                  )
+                )
+            }
+          }
+        }
+
+        "and add seal yes/no page is undefined (i.e. section is mandatory)" - {
+          "must return list item without remove link" in {
+            forAll(arbitrary[Mode], Gen.alphaNumStr) {
+              (mode, sealId) =>
+                val userAnswers = emptyUserAnswers
+                  .setValue(IdentificationNumberPage(equipmentIndex, Index(0)), sealId)
+
+                val helper = new SealsAnswersHelper(userAnswers, mode, equipmentIndex)
+                helper.listItems mustBe Seq(
+                  Right(
+                    ListItem(
+                      name = sealId,
+                      changeUrl = routes.IdentificationNumberController.onPageLoad(userAnswers.lrn, mode, equipmentIndex, Index(0)).url,
+                      removeUrl = None
                     )
                   )
                 )
