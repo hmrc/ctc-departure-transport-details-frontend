@@ -46,36 +46,6 @@ object AddAnotherEquipmentViewModel {
         case Right(value) => value
       }
 
-      /*val listItems = userAnswers
-        .get(EquipmentsSection)
-        .getOrElse(JsArray())
-        .value
-        .zipWithIndex
-        .flatMap {
-          case (_, i) =>
-            val equipmentIndex = Index(i)
-
-            def equipmentPrefix(increment: Int)(implicit messages: Messages) = messages("equipment.prefix", increment)
-            val containerPrefix                                              = messages("equipment.containerPrefix")
-            val noContainer                                                  = messages("equipment.value.withoutContainer")
-
-            val name = userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)) match {
-              case Some(identificationNumber) => Some(s"${equipmentPrefix(equipmentIndex.display)} - $containerPrefix $identificationNumber")
-              case _                          => Some(s"${equipmentPrefix(equipmentIndex.display)} - ${noContainer.toLowerCase}")
-            }
-
-            val changeRoute = routes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, equipmentIndex).url
-
-            val removeRoute: Option[String] = if (equipmentIndex.isFirst && userAnswers.get(AddTransportEquipmentYesNoPage).isEmpty) {
-              None
-            } else {
-              Some(routes.RemoveTransportEquipmentController.onPageLoad(userAnswers.lrn, mode, equipmentIndex).url)
-            }
-
-            name.map(ListItem(_, changeRoute, removeRoute))
-        }
-        .toSeq*/
-
       new AddAnotherEquipmentViewModel(
         listItems,
         onSubmitCall = controllers.equipment.routes.AddAnotherEquipmentController.onSubmit(userAnswers.lrn, mode)
