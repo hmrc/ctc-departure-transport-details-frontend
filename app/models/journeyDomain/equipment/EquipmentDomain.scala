@@ -37,7 +37,14 @@ case class EquipmentDomain(
     extends JourneyDomainModel {
 
   def asString(implicit messages: Messages): String =
-    EquipmentDomain.asString(containerId)
+    EquipmentDomain.asString(containerId, index: Index)
+
+  def asCyaString(implicit messages: Messages): String =
+    containerId.fold(
+      messages("equipment.value.withoutIndex.withoutContainer")
+    )(
+      messages("equipment.value.withoutIndex.withContainer", _)
+    )
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     Some(routes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, index))
@@ -45,11 +52,11 @@ case class EquipmentDomain(
 
 object EquipmentDomain {
 
-  def asString(containerId: Option[String])(implicit messages: Messages): String =
+  def asString(containerId: Option[String], index: Index)(implicit messages: Messages): String =
     containerId.fold(
-      messages("equipment.value.withoutContainer")
+      messages("equipment.value.withIndex.withoutContainer", index.display)
     )(
-      messages("equipment.value.withContainer", _)
+      messages("equipment.value.withIndex.withContainer", index.display, _)
     )
 
   implicit def userAnswersReader(equipmentIndex: Index): UserAnswersReader[EquipmentDomain] =

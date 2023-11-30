@@ -20,12 +20,11 @@ import config.{FrontendAppConfig, PhaseConfig}
 import controllers.equipment.index.routes
 import models.journeyDomain.equipment.EquipmentDomain
 import models.{Mode, UserAnswers}
-import pages.sections.equipment.EquipmentsSection
 import pages.equipment.AddTransportEquipmentYesNoPage
 import pages.equipment.index.ContainerIdentificationNumberPage
+import pages.sections.equipment.EquipmentsSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
-import utils.cyaHelpers.AnswersHelper
+import utils.cyaHelpers.{AnswersHelper, RichListItems}
 import viewModels.ListItem
 
 class EquipmentsAnswersHelper(
@@ -37,16 +36,10 @@ class EquipmentsAnswersHelper(
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(EquipmentsSection) {
       equipmentIndex =>
-        val removeRoute: Option[Call] = if (equipmentIndex.isFirst && userAnswers.get(AddTransportEquipmentYesNoPage).isEmpty) {
-          None
-        } else {
-          Some(routes.RemoveTransportEquipmentController.onPageLoad(lrn, mode, equipmentIndex))
-        }
-
         buildListItem[EquipmentDomain](
           nameWhenComplete = _.asString,
-          nameWhenInProgress = Some(EquipmentDomain.asString(userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)))),
-          removeRoute = removeRoute
+          nameWhenInProgress = Some(EquipmentDomain.asString(userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)), equipmentIndex)),
+          removeRoute = Some(routes.RemoveTransportEquipmentController.onPageLoad(lrn, mode, equipmentIndex))
         )(EquipmentDomain.userAnswersReader(equipmentIndex))
-    }
+    }.checkRemoveLinks(userAnswers.get(AddTransportEquipmentYesNoPage).isEmpty)
 }

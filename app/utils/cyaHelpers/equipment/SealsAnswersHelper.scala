@@ -20,12 +20,11 @@ import config.{FrontendAppConfig, PhaseConfig}
 import controllers.equipment.index.seals.routes
 import models.journeyDomain.equipment.seal.SealDomain
 import models.{Index, Mode, UserAnswers}
-import pages.sections.equipment.SealsSection
 import pages.equipment.index.AddSealYesNoPage
 import pages.equipment.index.seals.IdentificationNumberPage
+import pages.sections.equipment.SealsSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
-import utils.cyaHelpers.AnswersHelper
+import utils.cyaHelpers.{AnswersHelper, RichListItems}
 import viewModels.ListItem
 
 class SealsAnswersHelper(
@@ -38,16 +37,11 @@ class SealsAnswersHelper(
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(SealsSection(equipmentIndex)) {
       sealIndex =>
-        val removeRoute: Option[Call] = if (userAnswers.get(AddSealYesNoPage(equipmentIndex)).isEmpty && sealIndex.isFirst) {
-          None
-        } else {
-          Some(routes.RemoveSealYesNoController.onPageLoad(lrn, mode, equipmentIndex, sealIndex))
-        }
         buildListItem[SealDomain](
           nameWhenComplete = _.identificationNumber,
           nameWhenInProgress = userAnswers.get(IdentificationNumberPage(equipmentIndex, sealIndex)),
-          removeRoute = removeRoute
+          removeRoute = Some(routes.RemoveSealYesNoController.onPageLoad(lrn, mode, equipmentIndex, sealIndex))
         )(SealDomain.userAnswersReader(equipmentIndex, sealIndex))
-    }
+    }.checkRemoveLinks(userAnswers.get(AddSealYesNoPage(equipmentIndex)).isEmpty)
 
 }

@@ -16,16 +16,14 @@
 
 package viewModels.equipment
 
-import config.FrontendAppConfig
-import controllers.equipment.index.routes
-import models.{Index, Mode, UserAnswers}
-import pages.equipment.AddTransportEquipmentYesNoPage
-import pages.equipment.index.ContainerIdentificationNumberPage
-import pages.sections.equipment.EquipmentsSection
+import config.{FrontendAppConfig, PhaseConfig}
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
-import play.api.libs.json.JsArray
 import play.api.mvc.Call
+import utils.cyaHelpers.equipment.EquipmentsAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
+
+import javax.inject.Inject
 
 case class AddAnotherEquipmentViewModel(
   override val listItems: Seq[ListItem],
@@ -38,39 +36,15 @@ case class AddAnotherEquipmentViewModel(
 
 object AddAnotherEquipmentViewModel {
 
-  class AddAnotherEquipmentViewModelProvider {
+  class AddAnotherEquipmentViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherEquipmentViewModel = {
+      val helper = new EquipmentsAnswersHelper(userAnswers, mode)
 
-      val listItems = userAnswers
-        .get(EquipmentsSection)
-        .getOrElse(JsArray())
-        .value
-        .zipWithIndex
-        .flatMap {
-          case (_, i) =>
-            val equipmentIndex = Index(i)
-
-            def equipmentPrefix(increment: Int)(implicit messages: Messages) = messages("equipment.prefix", increment)
-            val containerPrefix                                              = messages("equipment.containerPrefix")
-            val noContainer                                                  = messages("equipment.value.withoutContainer")
-
-            val name = userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)) match {
-              case Some(identificationNumber) => Some(s"${equipmentPrefix(equipmentIndex.display)} - $containerPrefix $identificationNumber")
-              case _                          => Some(s"${equipmentPrefix(equipmentIndex.display)} - ${noContainer.toLowerCase}")
-            }
-
-            val changeRoute = routes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, equipmentIndex).url
-
-            val removeRoute: Option[String] = if (equipmentIndex.isFirst && userAnswers.get(AddTransportEquipmentYesNoPage).isEmpty) {
-              None
-            } else {
-              Some(routes.RemoveTransportEquipmentController.onPageLoad(userAnswers.lrn, mode, equipmentIndex).url)
-            }
-
-            name.map(ListItem(_, changeRoute, removeRoute))
-        }
-        .toSeq
+      val listItems = helper.listItems.collect {
+        case Left(value)  => value
+        case Right(value) => value
+      }
 
       new AddAnotherEquipmentViewModel(
         listItems,
