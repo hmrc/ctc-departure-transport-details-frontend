@@ -415,6 +415,7 @@ authorisationsAndLimit.limit.limitDate.error.required = The arrival date must in
 authorisationsAndLimit.limit.limitDate.error.invalid = Enter a real arrival date at the office of destination
 authorisationsAndLimit.limit.limitDate.error.min.date = The arrival date must be today or in the future
 authorisationsAndLimit.limit.limitDate.error.max.date = The arrival date must be before {0}
+authorisationsAndLimit.limit.limitDate.error.numeric = The arrival date must only include numbers 0 to 9
 
 # Transport details - Carrier details
 

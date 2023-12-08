@@ -47,5 +47,6 @@ class DateFormProviderSpec extends DateBehaviours {
 
     behave like dateFieldWithMax(form, fieldName, max = maxDate, FormError("value", s"$prefix.error.max.date", Seq(mustBeBefore)))
 
+    behave like dateFieldNumeric(form, fieldName, FormError("value", s"$prefix.error.numeric"))
   }
 }

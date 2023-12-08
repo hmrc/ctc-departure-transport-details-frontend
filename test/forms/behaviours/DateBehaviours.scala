@@ -86,4 +86,18 @@ class DateBehaviours extends FieldBehaviours {
 
       result.errors must contain only FormError(key, requiredAllKey, errorArgs)
     }
+
+  def dateFieldNumeric(form: Form[_], key: String, formError: FormError): Unit =
+    s"must fail to bind a date with non integer values" in {
+
+      val data = Map(
+        s"${key}Day"   -> "day",
+        s"${key}Month" -> "month",
+        s"${key}Year"  -> "year"
+      )
+
+      val result = form.bind(data)
+
+      result.errors must contain only formError
+    }
 }
