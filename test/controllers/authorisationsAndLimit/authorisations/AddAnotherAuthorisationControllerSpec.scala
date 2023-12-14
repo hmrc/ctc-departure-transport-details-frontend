@@ -21,6 +21,7 @@ import controllers.authorisationsAndLimit.authorisations.index.{routes => indexR
 import forms.AddAnotherFormProvider
 import generators.Generators
 import models.NormalMode
+import models.reference.authorisations.AuthorisationType
 import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -31,11 +32,13 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.AuthorisationTypesService
 import uk.gov.hmrc.http.HttpVerbs.GET
-import viewModels.ListItem
 import viewModels.authorisations.AddAnotherAuthorisationViewModel
 import viewModels.authorisations.AddAnotherAuthorisationViewModel.AddAnotherAuthorisationViewModelProvider
 import views.html.authorisationsAndLimit.authorisations.AddAnotherAuthorisationView
+
+import scala.concurrent.Future
 
 class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
@@ -48,26 +51,33 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
   private val mockViewModelProvider = mock[AddAnotherAuthorisationViewModelProvider]
 
+  private val mockAuthorisationTypesService = mock[AuthorisationTypesService]
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[AddAnotherAuthorisationViewModelProvider]).toInstance(mockViewModelProvider))
       .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
+      .overrides(bind(classOf[AuthorisationTypesService]).toInstance(mockAuthorisationTypesService))
+
+  private val authorisationTypes: Seq[AuthorisationType] = listWithMaxLength[AuthorisationType]().sample.value
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModelProvider)
+    reset(mockAuthorisationTypesService)
+
+    when(mockAuthorisationTypesService.getAuthorisationTypes(any(), any())(any()))
+      .thenReturn(Future.successful(authorisationTypes))
   }
 
-  private val listItem          = arbitrary[ListItem].sample.value
-  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxAuthorisations - 1).sample.value)(listItem)
-  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxAuthorisations)(listItem)
+  private val numberOfAvailableAuthorisationsYetToAdd = Gen.choose(1, frontendAppConfig.maxAuthorisations - 1).sample.value
 
   private val viewModel = arbitrary[AddAnotherAuthorisationViewModel].sample.value
 
   private val viewModelWithNoItems = viewModel.copy(listItems = Nil)
-  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
-  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+  private val notMaxedOutViewModel = viewModel.copy(numberOfAvailableAuthorisationsYetToAdd = numberOfAvailableAuthorisationsYetToAdd)
+  private val maxedOutViewModel    = viewModel.copy(numberOfAvailableAuthorisationsYetToAdd = 0)
 
   "AddAnotherSupplyChainActor Controller" - {
 
@@ -75,7 +85,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
       "when no authorisations" - {
         "must redirect to AddAuthorisationYesNoController" in {
-          when(mockViewModelProvider.apply(any(), any())(any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any()))
             .thenReturn(viewModelWithNoItems)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -94,7 +104,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
       "when max number of authorisations" - {
         "must return OK and the correct view" in {
 
-          when(mockViewModelProvider.apply(any(), any())(any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any()))
             .thenReturn(maxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -115,7 +125,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
       "when less than max number of authorisations" - {
         "must return OK and the correct view" in {
 
-          when(mockViewModelProvider.apply(any(), any())(any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -155,7 +165,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
       "when max number of authorisations" - {
         "must redirect to carrier details" in {
 
-          when(mockViewModelProvider.apply(any(), any())(any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any()))
             .thenReturn(maxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -176,7 +186,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         "and user selects Yes" - {
           "must redirect to authorisation type with next index" in {
 
-            when(mockViewModelProvider.apply(any(), any())(any()))
+            when(mockViewModelProvider.apply(any(), any(), any())(any()))
               .thenReturn(notMaxedOutViewModel)
 
             setExistingUserAnswers(emptyUserAnswers)
@@ -196,7 +206,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
         "and user selects No" - {
           "must redirect to carrier details section" in {
 
-            when(mockViewModelProvider.apply(any(), any())(any()))
+            when(mockViewModelProvider.apply(any(), any(), any())(any()))
               .thenReturn(notMaxedOutViewModel)
 
             setExistingUserAnswers(emptyUserAnswers)
@@ -218,7 +228,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
         "must return bad request when invalid data is submitted" in {
 
-          when(mockViewModelProvider.apply(any(), any())(any()))
+          when(mockViewModelProvider.apply(any(), any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)

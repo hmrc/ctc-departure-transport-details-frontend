@@ -24,7 +24,7 @@ import models.reference.authorisations.AuthorisationType
 import models.{Index, NormalMode, UserAnswers}
 import navigation.AuthorisationNavigatorProvider
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
@@ -92,6 +92,8 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
         userAnswersCaptor.getValue.getValue(InferredAuthorisationTypePage(index)) mustBe authorisationType3
         userAnswersCaptor.getValue.get(AuthorisationTypePage(index)) must not be defined
+
+        verify(mockAuthorisationTypesService).getAuthorisationTypes(eqTo(userAnswers), eqTo(Some(index)))(any())
       }
     }
 
@@ -112,6 +114,8 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       contentAsString(result) mustEqual
         view(form, lrn, authorisationTypes, mode, index)(request, messages).toString
+
+      verify(mockAuthorisationTypesService).getAuthorisationTypes(eqTo(userAnswers), eqTo(Some(index)))(any())
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -133,15 +137,19 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       contentAsString(result) mustEqual
         view(filledForm, lrn, authorisationTypes, mode, index)(request, messages).toString
+
+      verify(mockAuthorisationTypesService).getAuthorisationTypes(eqTo(userAnswers), eqTo(Some(index)))(any())
     }
 
     "must redirect to the next page when valid data is submitted" in {
       when(mockAuthorisationTypesService.getAuthorisationTypes(any(), any())(any()))
         .thenReturn(Future.successful(authorisationTypes))
 
+      val userAnswers = emptyUserAnswers
+
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, authorisationTypeRoute)
         .withFormUrlEncodedBody(("value", authorisationTypes.head.code))
@@ -151,6 +159,8 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual onwardRoute.url
+
+      verify(mockAuthorisationTypesService).getAuthorisationTypes(eqTo(userAnswers), eqTo(Some(index)))(any())
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
@@ -171,6 +181,8 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       contentAsString(result) mustEqual
         view(boundForm, lrn, authorisationTypes, mode, index)(request, messages).toString
+
+      verify(mockAuthorisationTypesService).getAuthorisationTypes(eqTo(userAnswers), eqTo(Some(index)))(any())
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

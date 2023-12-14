@@ -33,7 +33,7 @@ case class AddAnotherBorderTransportViewModel(
 ) extends AddAnotherViewModel {
   override val prefix: String = "transportMeans.active.addAnotherBorderTransport"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxActiveBorderTransports
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxActiveBorderTransports
 
   def hint(implicit messages: Messages): Content = messages(s"$prefix.hint").toText
 }

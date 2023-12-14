@@ -18,6 +18,7 @@ package viewModels.authorisations
 
 import base.SpecBase
 import generators.Generators
+import models.reference.authorisations.AuthorisationType
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -33,13 +34,14 @@ class AddAnotherAuthorisationViewModelSpec extends SpecBase with Generators with
         mode =>
           val userAnswers = arbitraryAuthorisationAnswers(emptyUserAnswers, authorisationIndex).sample.value
 
-          val result = new AddAnotherAuthorisationViewModelProvider().apply(userAnswers, mode)
+          val result = new AddAnotherAuthorisationViewModelProvider().apply(userAnswers, mode, Seq(AuthorisationType("foo", "bar")))
 
           result.listItems.length mustBe 1
           result.title mustBe "You have added 1 authorisation"
           result.heading mustBe "You have added 1 authorisation"
           result.legend mustBe "Do you want to add another authorisation?"
           result.maxLimitLabel mustBe "You cannot add any more authorisations. To add another, you need to remove one first."
+          result.allowMore mustBe true
       }
     }
 
@@ -53,12 +55,13 @@ class AddAnotherAuthorisationViewModelSpec extends SpecBase with Generators with
               arbitraryAuthorisationAnswers(acc, Index(i)).sample.value
           }
 
-          val result = new AddAnotherAuthorisationViewModelProvider().apply(userAnswers, mode)
+          val result = new AddAnotherAuthorisationViewModelProvider().apply(userAnswers, mode, Nil)
           result.listItems.length mustBe authorisations
           result.title mustBe s"You have added ${formatter.format(authorisations)} authorisations"
           result.heading mustBe s"You have added ${formatter.format(authorisations)} authorisations"
           result.legend mustBe "Do you want to add another authorisation?"
           result.maxLimitLabel mustBe "You cannot add any more authorisations. To add another, you need to remove one first."
+          result.allowMore mustBe false
       }
     }
   }

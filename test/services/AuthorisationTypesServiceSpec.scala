@@ -33,15 +33,17 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new AuthorisationTypesService(mockRefDataConnector)
 
-  private val authorisationType1 = AuthorisationType(
+  private val c524 = AuthorisationType(
     "C524",
     "TRD - authorisation to use transit declaration with a reduced dataset"
   )
 
-  private val authorisationType2 =
-    AuthorisationType("C523", "SSE - authorisation for the use of seals of a special type")
+  private val c523 = AuthorisationType(
+    "C523",
+    "SSE - authorisation for the use of seals of a special type"
+  )
 
-  private val authorisationType3 = AuthorisationType(
+  private val c521 = AuthorisationType(
     "C521",
     "ACR - authorisation for the status of authorised consignor for Union transit"
   )
@@ -59,11 +61,11 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         "must return the full sorted list of authorisation types" in {
           when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
-            .thenReturn(Future.successful(Seq(authorisationType1, authorisationType2, authorisationType3)))
+            .thenReturn(Future.successful(Seq(c524, c523, c521)))
 
           val userAnswers = emptyUserAnswers
 
-          service.getAuthorisationTypes(userAnswers, Index(0)).futureValue mustBe Seq(authorisationType3, authorisationType2, authorisationType1)
+          service.getAuthorisationTypes(userAnswers, Some(Index(0))).futureValue mustBe Seq(c523, c524)
 
           verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
         }
@@ -73,24 +75,24 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
         "must filter out that type" - {
           "when it has been inferred" in {
             when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
-              .thenReturn(Future.successful(Seq(authorisationType1, authorisationType2)))
+              .thenReturn(Future.successful(Seq(c524, c523)))
 
             val userAnswers = emptyUserAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), authorisationType3)
+              .setValue(InferredAuthorisationTypePage(Index(0)), c521)
 
-            service.getAuthorisationTypes(userAnswers, Index(1)).futureValue mustBe Seq(authorisationType2, authorisationType1)
+            service.getAuthorisationTypes(userAnswers, Some(Index(1))).futureValue mustBe Seq(c523, c524)
 
             verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
           }
 
           "when it has not been inferred" in {
             when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
-              .thenReturn(Future.successful(Seq(authorisationType1, authorisationType2)))
+              .thenReturn(Future.successful(Seq(c524, c523)))
 
             val userAnswers = emptyUserAnswers
-              .setValue(AuthorisationTypePage(Index(0)), authorisationType3)
+              .setValue(AuthorisationTypePage(Index(0)), c521)
 
-            service.getAuthorisationTypes(userAnswers, Index(1)).futureValue mustBe Seq(authorisationType2, authorisationType1)
+            service.getAuthorisationTypes(userAnswers, Some(Index(1))).futureValue mustBe Seq(c523, c524)
 
             verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
           }
@@ -103,11 +105,11 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
             .thenReturn(Future.successful(Seq.empty))
 
           val userAnswers = emptyUserAnswers
-            .setValue(InferredAuthorisationTypePage(Index(0)), authorisationType3)
-            .setValue(AuthorisationTypePage(Index(1)), authorisationType2)
-            .setValue(InferredAuthorisationTypePage(Index(2)), authorisationType1)
+            .setValue(InferredAuthorisationTypePage(Index(0)), c521)
+            .setValue(AuthorisationTypePage(Index(1)), c523)
+            .setValue(InferredAuthorisationTypePage(Index(2)), c524)
 
-          service.getAuthorisationTypes(userAnswers, Index(1)).futureValue mustBe Seq.empty
+          service.getAuthorisationTypes(userAnswers, Some(Index(1))).futureValue mustBe Seq.empty
 
           verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
         }
@@ -116,12 +118,12 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "when one auth type has been added and we are that index" - {
         "must return all 3 auth types" in {
           when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
-            .thenReturn(Future.successful(Seq(authorisationType1, authorisationType2, authorisationType3)))
+            .thenReturn(Future.successful(Seq(c524, c523, c521)))
 
           val userAnswers = emptyUserAnswers
-            .setValue(InferredAuthorisationTypePage(Index(0)), authorisationType3)
+            .setValue(InferredAuthorisationTypePage(Index(0)), c524)
 
-          service.getAuthorisationTypes(userAnswers, Index(0)).futureValue mustBe Seq(authorisationType3, authorisationType2, authorisationType1)
+          service.getAuthorisationTypes(userAnswers, Some(Index(0))).futureValue mustBe Seq(c523, c524)
 
           verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
         }
@@ -131,9 +133,9 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
     "getAll" - {
       "must return all authorisation types" in {
         when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
-          .thenReturn(Future.successful(Seq(authorisationType1, authorisationType2, authorisationType3)))
+          .thenReturn(Future.successful(Seq(c524, c523, c521)))
 
-        service.getAll().futureValue mustBe Seq(authorisationType3, authorisationType2, authorisationType1)
+        service.getAll().futureValue mustBe Seq(c521, c523, c524)
 
         verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
       }

@@ -33,7 +33,7 @@ class AddAnotherAuthorisationViewSpec extends ListWithActionsViewBehaviours {
 
   private val viewModel            = arbitrary[AddAnotherAuthorisationViewModel].sample.value
   private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
-  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
+  private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems, numberOfAvailableAuthorisationsYetToAdd = 0)
 
   override def form: Form[Boolean] = formProvider(notMaxedOutViewModel)
 

@@ -31,7 +31,7 @@ case class AddAnotherSealViewModel(
 ) extends AddAnotherViewModel {
   override val prefix: String = "equipment.index.addAnotherSeal"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxSeals
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxSeals
 }
 
 object AddAnotherSealViewModel {
