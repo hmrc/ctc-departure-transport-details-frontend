@@ -16,16 +16,17 @@
 
 package views.utils
 
-import play.api.data.{Field, Form, FormError}
+import forms.mappings.LocalDateFormatter
+import play.api.data.{Field, FormError}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.errorsummary.ErrorLink
 import uk.gov.hmrc.govukfrontend.views.viewmodels.input.Input
-import uk.gov.hmrc.hmrcfrontend.views.implicits.{RichDateInputSupport, RichErrorSummarySupport}
-
-import java.time.LocalDate
+import uk.gov.hmrc.hmrcfrontend.views.implicits.RichDateInputSupport
 
 object ViewUtils {
 
@@ -33,15 +34,8 @@ object ViewUtils {
     (if (mainContent.body.contains("govuk-error-summary")) s"${messages("error.title.prefix")} " else "") +
       s"$title - ${messages("site.service_name")} - GOV.UK"
 
-  def errorClass(error: Option[FormError], dateArg: String): String =
-    error.fold("") {
-      e =>
-        if (e.args.contains(dateArg) || e.args.isEmpty) {
-          "govuk-input--error"
-        } else {
-          ""
-        }
-    }
+  def errorClass(errors: Seq[FormError], dateArg: String): String =
+    if (errors.flatMap(_.args).contains(dateArg)) "govuk-input--error" else ""
 
   implicit class InputImplicits(input: Input)(implicit messages: Messages) extends RichInputSupport {
 
@@ -86,17 +80,16 @@ object ViewUtils {
       }
   }
 
-  implicit class ErrorSummaryImplicits(errorSummary: ErrorSummary)(implicit messages: Messages) extends RichErrorSummarySupport {
+  implicit class DateTimeRichFormErrors(formErrors: Seq[FormError])(implicit messages: Messages) {
 
-    private def withErrorMapping[T](form: Form[T], fieldName: String, args: Seq[String]): ErrorSummary = {
-      val arg = form.errors.flatMap(_.args).find(args.contains).getOrElse(args.head).toString
-      errorSummary.withFormErrorsAsText(form, mapping = Map(fieldName -> s"$fieldName${arg.capitalize}"))
-    }
-
-    def withDateErrorMapping(form: Form[LocalDate], fieldName: String): ErrorSummary = {
-      val args = Seq("day", "month", "year")
-      withErrorMapping(form, fieldName, args)
-    }
+    def toErrorLinks: Seq[ErrorLink] =
+      formErrors.map {
+        formError =>
+          val args = LocalDateFormatter.fieldKeys
+          val arg  = formError.args.find(args.contains).getOrElse(args.head).toString
+          val key  = s"#${formError.key}${arg.capitalize}"
+          ErrorLink(href = Some(key), content = messages(formError.message, formError.args: _*).toText)
+      }
   }
 
   implicit class FieldsetImplicits(fieldset: Fieldset)(implicit val messages: Messages) extends ImplicitsSupport[Fieldset] {

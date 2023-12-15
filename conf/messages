@@ -410,9 +410,11 @@ authorisationsAndLimit.limit.limitDate.checkYourAnswersLabel = Estimated arrival
 authorisationsAndLimit.limit.limitDate.paragraph = This has to be before {0}.
 authorisationsAndLimit.limit.limitDate.change.hidden = estimated arrival date at the office of destination
 authorisationsAndLimit.limit.limitDate.error.required.all = Enter the estimated arrival date at the office of destination
-authorisationsAndLimit.limit.limitDate.error.required.two = The arrival date must include a {0} and {1}
+authorisationsAndLimit.limit.limitDate.error.required.multiple = The arrival date must include a {0} and {1}
 authorisationsAndLimit.limit.limitDate.error.required = The arrival date must include a {0}
-authorisationsAndLimit.limit.limitDate.error.invalid = Enter a real arrival date at the office of destination
+authorisationsAndLimit.limit.limitDate.error.invalid.all = The arrival date must only include numbers 0 to 9
+authorisationsAndLimit.limit.limitDate.error.invalid.multiple = The arrival date {0} and {1} must only include numbers 0 to 9
+authorisationsAndLimit.limit.limitDate.error.invalid = The arrival date {0} must only include numbers 0 to 9
 authorisationsAndLimit.limit.limitDate.error.min.date = The arrival date must be today or in the future
 authorisationsAndLimit.limit.limitDate.error.max.date = The arrival date must be before {0}
 
