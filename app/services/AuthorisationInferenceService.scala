@@ -31,39 +31,18 @@ class AuthorisationInferenceService @Inject() () {
 
   def inferAuthorisations(userAnswers: UserAnswers, authorisationTypes: Seq[AuthorisationType]): UserAnswers = {
 
-    val authTypeACR = authorisationTypes.find(_.isACR)
-    val authTypeTRD = authorisationTypes.find(_.isTRD)
+    lazy val authTypeACR = authorisationTypes.find(_.isACR)
+    lazy val authTypeTRD = authorisationTypes.find(_.isTRD)
 
     val reader: UserAnswersReader[Option[UserAnswers]] = for {
       procedureType           <- ProcedureTypePage.reader
       reducedDataSetIndicator <- ApprovedOperatorPage.inferredReader
       inlandMode              <- InlandModePage.reader
-    } yield (reducedDataSetIndicator, inlandMode.code, procedureType) match {
-      case (true, Maritime | Rail | Air, Simplified) =>
-        (authTypeACR, authTypeTRD) match {
-          case (Some(acr), Some(trd)) =>
-            userAnswers
-              .set(InferredAuthorisationTypePage(Index(0)), trd)
-              .flatMap(_.set(InferredAuthorisationTypePage(Index(1)), acr))
-              .toOption
-          case _ => None
-        }
-      case (true, Maritime | Rail | Air, Normal) =>
-        authTypeTRD match {
-          case Some(trd) =>
-            userAnswers
-              .set(InferredAuthorisationTypePage(Index(0)), trd)
-              .toOption
-          case _ => None
-        }
-      case (_, _, Simplified) =>
-        authTypeACR match {
-          case Some(acr) =>
-            userAnswers
-              .set(InferredAuthorisationTypePage(Index(0)), acr)
-              .toOption
-          case _ => None
-        }
+    } yield (procedureType, reducedDataSetIndicator, inlandMode.code) match {
+      case (Simplified, _, _) =>
+        authTypeACR.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
+      case (Normal, true, Maritime | Rail | Air) =>
+        authTypeTRD.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
       case _ =>
         Some(userAnswers)
     }

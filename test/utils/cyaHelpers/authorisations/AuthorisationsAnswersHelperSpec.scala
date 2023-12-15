@@ -19,10 +19,8 @@ package utils.cyaHelpers.authorisations
 import base.SpecBase
 import controllers.authorisationsAndLimit.authorisations.index.routes
 import generators.Generators
-import models.{Index, Mode}
 import models.reference.authorisations.AuthorisationType
-import models.domain.UserAnswersReader
-import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
+import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
@@ -48,126 +46,222 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
       }
 
       "when user answers populated with a complete authorisation" - {
-        "and at index 0 and add authorisation yes/no page is defined and true" - {
-          "must return one list item with remove link" in {
-            val initialAnswers = emptyUserAnswers.setValue(AddAuthorisationsYesNoPage, true)
-            forAll(arbitrary[Mode], arbitraryAuthorisationAnswers(initialAnswers, authorisationIndex)) {
-              (mode, userAnswers) =>
-                val authorisation = UserAnswersReader[AuthorisationDomain](AuthorisationDomain.userAnswersReader(authorisationIndex)).run(userAnswers).value
-                val helper        = new AuthorisationsAnswersHelper(userAnswers, mode)
+        "and section is mandatory" - {
+          "and we have one authorisation" - {
+            "and it is inferred" in {
+              forAll(arbitrary[Mode], arbitrary[AuthorisationType], nonEmptyString) {
+                (mode, authType, reference) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(InferredAuthorisationTypePage(Index(0)), authType)
+                    .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
 
-                helper.listItems mustBe Seq(
-                  Right(
-                    ListItem(
-                      name = authorisation.asString,
-                      changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, authorisationIndex).url,
-                      removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, authorisationIndex).url)
+                  val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
+
+                  helper.listItems mustBe Seq(
+                    Right(
+                      ListItem(
+                        name = s"${authType.forDisplay} - $reference",
+                        changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
+                        removeUrl = None
+                      )
                     )
                   )
-                )
+              }
+            }
+
+            "and it is not inferred" in {
+              forAll(arbitrary[Mode], arbitrary[AuthorisationType], nonEmptyString) {
+                (mode, authType, reference) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AuthorisationTypePage(Index(0)), authType)
+                    .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
+
+                  val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
+
+                  helper.listItems mustBe Seq(
+                    Right(
+                      ListItem(
+                        name = s"${authType.forDisplay} - $reference",
+                        changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
+                        removeUrl = None
+                      )
+                    )
+                  )
+              }
+            }
+          }
+
+          "and we have multiple authorisations" - {
+            "and all are inferred" in {
+              forAll(arbitrary[Mode], arbitrary[AuthorisationType], nonEmptyString) {
+                (mode, authType, reference) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(InferredAuthorisationTypePage(Index(0)), authType)
+                    .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
+                    .setValue(InferredAuthorisationTypePage(Index(1)), authType)
+                    .setValue(AuthorisationReferenceNumberPage(Index(1)), reference)
+
+                  val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
+
+                  helper.listItems mustBe Seq(
+                    Right(
+                      ListItem(
+                        name = s"${authType.forDisplay} - $reference",
+                        changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
+                        removeUrl = None
+                      )
+                    ),
+                    Right(
+                      ListItem(
+                        name = s"${authType.forDisplay} - $reference",
+                        changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
+                        removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(1)).url)
+                      )
+                    )
+                  )
+              }
+            }
+
+            "and none are inferred" in {
+              forAll(arbitrary[Mode], arbitrary[AuthorisationType], nonEmptyString) {
+                (mode, authType, reference) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AuthorisationTypePage(Index(0)), authType)
+                    .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
+                    .setValue(AuthorisationTypePage(Index(1)), authType)
+                    .setValue(AuthorisationReferenceNumberPage(Index(1)), reference)
+
+                  val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
+
+                  helper.listItems mustBe Seq(
+                    Right(
+                      ListItem(
+                        name = s"${authType.forDisplay} - $reference",
+                        changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
+                        removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(0)).url)
+                      )
+                    ),
+                    Right(
+                      ListItem(
+                        name = s"${authType.forDisplay} - $reference",
+                        changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
+                        removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(1)).url)
+                      )
+                    )
+                  )
+              }
             }
           }
         }
 
-        "and at index 1 and add authorisations yes/no page is undefined and one auth type inferred" - {
-          "must return one list item with no remove link" in {
-            forAll(arbitrary[Mode], arbitrary[AuthorisationType], nonEmptyString) {
-              (mode, authType, reference) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(InferredAuthorisationTypePage(Index(0)), authType)
-                  .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
-                  .setValue(AuthorisationTypePage(Index(1)), authType)
-                  .setValue(AuthorisationReferenceNumberPage(Index(1)), reference)
+        "and section is optional" - {
+          "and we have one authorisation" - {
+            "and it is inferred" in {
+              forAll(arbitrary[Mode], arbitrary[AuthorisationType], nonEmptyString) {
+                (mode, authType, reference) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AddAuthorisationsYesNoPage, true)
+                    .setValue(InferredAuthorisationTypePage(Index(0)), authType)
+                    .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
 
-                val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
+                  val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
 
-                helper.listItems mustBe Seq(
-                  Right(
-                    ListItem(
-                      name = s"${authType.forDisplay} - $reference",
-                      changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, authorisationIndex).url,
-                      removeUrl = None
-                    )
-                  ),
-                  Right(
-                    ListItem(
-                      name = s"${authType.forDisplay} - $reference",
-                      changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
-                      removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(1)).url)
+                  helper.listItems mustBe Seq(
+                    Right(
+                      ListItem(
+                        name = s"${authType.forDisplay} - $reference",
+                        changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
+                        removeUrl = None
+                      )
                     )
                   )
-                )
+              }
+            }
+
+            "and it is not inferred" in {
+              forAll(arbitrary[Mode], arbitrary[AuthorisationType], nonEmptyString) {
+                (mode, authType, reference) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AddAuthorisationsYesNoPage, true)
+                    .setValue(AuthorisationTypePage(Index(0)), authType)
+                    .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
+
+                  val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
+
+                  helper.listItems mustBe Seq(
+                    Right(
+                      ListItem(
+                        name = s"${authType.forDisplay} - $reference",
+                        changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
+                        removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(0)).url)
+                      )
+                    )
+                  )
+              }
             }
           }
-        }
 
-        "and auth type for index 0 and 1 have been inferred" - {
-          "must return two list item with no remove link" in {
-            forAll(arbitrary[Mode], arbitrary[AuthorisationType], nonEmptyString) {
-              (mode, authType, reference) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(InferredAuthorisationTypePage(Index(0)), authType)
-                  .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
-                  .setValue(InferredAuthorisationTypePage(Index(1)), authType)
-                  .setValue(AuthorisationReferenceNumberPage(Index(1)), reference)
-                val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
+          "and we have multiple authorisations" - {
+            "and all are inferred" in {
+              forAll(arbitrary[Mode], arbitrary[AuthorisationType], nonEmptyString) {
+                (mode, authType, reference) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AddAuthorisationsYesNoPage, true)
+                    .setValue(InferredAuthorisationTypePage(Index(0)), authType)
+                    .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
+                    .setValue(InferredAuthorisationTypePage(Index(1)), authType)
+                    .setValue(AuthorisationReferenceNumberPage(Index(1)), reference)
 
-                helper.listItems mustBe Seq(
-                  Right(
-                    ListItem(
-                      name = s"${authType.forDisplay} - $reference",
-                      changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
-                      removeUrl = None
-                    )
-                  ),
-                  Right(
-                    ListItem(
-                      name = s"${authType.forDisplay} - $reference",
-                      changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
-                      removeUrl = None
+                  val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
+
+                  helper.listItems mustBe Seq(
+                    Right(
+                      ListItem(
+                        name = s"${authType.forDisplay} - $reference",
+                        changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
+                        removeUrl = None
+                      )
+                    ),
+                    Right(
+                      ListItem(
+                        name = s"${authType.forDisplay} - $reference",
+                        changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
+                        removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(1)).url)
+                      )
                     )
                   )
-                )
+              }
             }
-          }
-        }
 
-        "and auth type for index 0, 1 and 2 have been inferred" - {
-          "must return 3 list items with a remove link for the last entry" in {
-            forAll(arbitrary[Mode], arbitrary[AuthorisationType], nonEmptyString) {
-              (mode, authType, reference) =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(InferredAuthorisationTypePage(Index(0)), authType)
-                  .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
-                  .setValue(InferredAuthorisationTypePage(Index(1)), authType)
-                  .setValue(AuthorisationReferenceNumberPage(Index(1)), reference)
-                  .setValue(InferredAuthorisationTypePage(Index(2)), authType)
-                  .setValue(AuthorisationReferenceNumberPage(Index(2)), reference)
-                val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
+            "and none are inferred" in {
+              forAll(arbitrary[Mode], arbitrary[AuthorisationType], nonEmptyString) {
+                (mode, authType, reference) =>
+                  val userAnswers = emptyUserAnswers
+                    .setValue(AddAuthorisationsYesNoPage, true)
+                    .setValue(AuthorisationTypePage(Index(0)), authType)
+                    .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
+                    .setValue(AuthorisationTypePage(Index(1)), authType)
+                    .setValue(AuthorisationReferenceNumberPage(Index(1)), reference)
 
-                helper.listItems mustBe Seq(
-                  Right(
-                    ListItem(
-                      name = s"${authType.forDisplay} - $reference",
-                      changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
-                      removeUrl = None
-                    )
-                  ),
-                  Right(
-                    ListItem(
-                      name = s"${authType.forDisplay} - $reference",
-                      changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
-                      removeUrl = None
-                    )
-                  ),
-                  Right(
-                    ListItem(
-                      name = s"${authType.forDisplay} - $reference",
-                      changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(2)).url,
-                      removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(2)).url)
+                  val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
+
+                  helper.listItems mustBe Seq(
+                    Right(
+                      ListItem(
+                        name = s"${authType.forDisplay} - $reference",
+                        changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
+                        removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(0)).url)
+                      )
+                    ),
+                    Right(
+                      ListItem(
+                        name = s"${authType.forDisplay} - $reference",
+                        changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
+                        removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(1)).url)
+                      )
                     )
                   )
-                )
+              }
             }
           }
         }
@@ -197,7 +291,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
                   ListItem(
                     name = s"${authType.forDisplay} - $reference",
                     changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
-                    removeUrl = None
+                    removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(1)).url)
                   )
                 ),
                 Left(

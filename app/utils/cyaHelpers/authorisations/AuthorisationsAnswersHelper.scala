@@ -19,13 +19,13 @@ package utils.cyaHelpers.authorisations
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.authorisationsAndLimit.authorisations.index.routes
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
-import models.{Index, Mode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
-import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
+import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import utils.cyaHelpers.AnswersHelper
+import utils.cyaHelpers.{AnswersHelper, RichListItems}
 import viewModels.ListItem
 
 class AuthorisationsAnswersHelper(
@@ -37,10 +37,9 @@ class AuthorisationsAnswersHelper(
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(AuthorisationsSection) {
       index =>
+        // a non-removable inference can only be made at index 0
         val removeRoute: Option[Call] = index match {
-          case Index(0) if userAnswers.get(AddAuthorisationsYesNoPage).isEmpty =>
-            None
-          case Index(1) if userAnswers.get(InferredAuthorisationTypePage(index)).isDefined =>
+          case index if index.isFirst && userAnswers.get(InferredAuthorisationTypePage(index)).isDefined =>
             None
           case _ =>
             Some(routes.RemoveAuthorisationYesNoController.onPageLoad(lrn, mode, index))
@@ -51,5 +50,5 @@ class AuthorisationsAnswersHelper(
           nameWhenInProgress = (userAnswers.get(AuthorisationTypePage(index)) orElse userAnswers.get(InferredAuthorisationTypePage(index))).map(_.forDisplay),
           removeRoute = removeRoute
         )(AuthorisationDomain.userAnswersReader(index))
-    }
+    }.checkRemoveLinks(userAnswers.get(AddAuthorisationsYesNoPage).isEmpty)
 }
