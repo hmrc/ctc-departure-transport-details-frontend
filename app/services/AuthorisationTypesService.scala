@@ -28,22 +28,26 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisationTypesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
-  def getAuthorisationTypes(userAnswers: UserAnswers, index: Index)(implicit
+  def getAuthorisationTypes(userAnswers: UserAnswers, index: Option[Index])(implicit
     hc: HeaderCarrier
   ): Future[Seq[AuthorisationType]] =
-    referenceDataConnector.getAuthorisationTypes().map(filter(_, userAnswers, index)).map(sort)
+    referenceDataConnector
+      .getAuthorisationTypes()
+      .map(filter(_, userAnswers, index))
+      .map(_.filterNot(_.isACR))
+      .map(sort)
 
   private def filter(
     authorisationTypes: Seq[AuthorisationType],
     userAnswers: UserAnswers,
-    index: Index
+    index: Option[Index]
   ): Seq[AuthorisationType] = {
     val numberOfAuthorisations = userAnswers.getArraySize(AuthorisationsSection)
     val authorisationTypesEntered = (0 until numberOfAuthorisations).map(Index(_)).foldLeft[Seq[AuthorisationType]](Nil) {
       (acc, authorisationIndex) =>
         userAnswers.get(AuthorisationTypePage(authorisationIndex)) orElse userAnswers.get(InferredAuthorisationTypePage(authorisationIndex)) match {
-          case Some(value) if authorisationIndex != index => acc :+ value
-          case _                                          => acc
+          case Some(value) if !index.contains(authorisationIndex) => acc :+ value
+          case _                                                  => acc
         }
     }
     authorisationTypes.diff(authorisationTypesEntered)

@@ -48,7 +48,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
   "inferAuthorisations" - {
 
     "when reduced dataset indicator is 1 and inland mode is Maritime/Rail/Air and ProcedureType is Normal" - {
-      "must infer index 0 as TRD AuthorisationType" in {
+      "must infer index 0 as TRD Authorisation Type" in {
         forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
           (inlandMode, declarationType) =>
             val userAnswers = emptyUserAnswers
@@ -81,17 +81,14 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val result = service.inferAuthorisations(userAnswers, Seq.empty)
 
-            val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), None)
-
-            result mustBe expectedResult
+            result.get(InferredAuthorisationTypePage(Index(0))) must not be defined
         }
       }
     }
 
-    "when reduced dataset indicator is 1 and inland mode is Maritime/Rail/Air and ProcedureType is Simplified" - {
-      "must infer index 0 as TRD and index 1 as ACR AuthorisationTypes" in {
-        forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
+    "when ProcedureType is Simplified" - {
+      "must infer index 0 as ACR Authorisation Type" in {
+        forAll(arbitrary[InlandMode], declarationTypeGen) {
           (inlandMode, declarationType) =>
             val userAnswers = emptyUserAnswers
               .setValue(InlandModePage, inlandMode)
@@ -104,15 +101,14 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
             val result = service.inferAuthorisations(userAnswers, authTypes)
 
             val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), authTypeTRD)
-              .setValue(InferredAuthorisationTypePage(Index(1)), authTypeACR)
+              .setValue(InferredAuthorisationTypePage(Index(0)), authTypeACR)
 
             result mustBe expectedResult
         }
       }
 
-      "must not infer index 0 as TRD and index 1 as ACR when they are not present in reference data" in {
-        forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
+      "must not infer index 0 as ACR when they are not present in reference data" in {
+        forAll(arbitrary[InlandMode], declarationTypeGen) {
           (inlandMode, declarationType) =>
             val userAnswers = emptyUserAnswers
               .setValue(InlandModePage, inlandMode)
@@ -124,11 +120,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
             val result = service.inferAuthorisations(userAnswers, Seq.empty)
 
-            val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), None)
-              .setValue(InferredAuthorisationTypePage(Index(1)), None)
-
-            result mustBe expectedResult
+            result.get(InferredAuthorisationTypePage(Index(0))) must not be defined
         }
       }
     }
@@ -186,132 +178,6 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
             val result = service.inferAuthorisations(userAnswers, authTypes)
 
             result mustBe userAnswers
-        }
-      }
-    }
-
-    "when reduced dataset indicator is 0 and inland mode is Maritime/Rail/Air and ProcedureType is Simplified" - {
-      "must infer index 0 as ACR AuthorisationType" in {
-        forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
-          (inlandMode, declarationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, false)
-              .setValue(ProcedureTypePage, Simplified)
-
-            val service = new AuthorisationInferenceService()
-
-            val result = service.inferAuthorisations(userAnswers, authTypes)
-
-            val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), authTypeACR)
-
-            result mustBe expectedResult
-        }
-      }
-
-      "must not infer index 0 as ACR when ACR is not present in reference data" in {
-        forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
-          (inlandMode, declarationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, false)
-              .setValue(ProcedureTypePage, Simplified)
-
-            val service = new AuthorisationInferenceService()
-
-            val result = service.inferAuthorisations(userAnswers, Seq.empty)
-
-            val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), None)
-
-            result mustBe expectedResult
-        }
-      }
-    }
-
-    "when reduced dataset indicator is 1 and inland mode is not Maritime/Rail/Air and ProcedureType is Simplified" - {
-      "must infer index 0 as ACR AuthorisationType" in {
-        forAll(arbitrary[InlandMode](arbitraryNonMaritimeRailAirInlandMode), declarationTypeGen) {
-          (inlandMode, declarationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, true)
-              .setValue(ProcedureTypePage, Simplified)
-
-            val service = new AuthorisationInferenceService()
-
-            val result = service.inferAuthorisations(userAnswers, authTypes)
-
-            val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), authTypeACR)
-
-            result mustBe expectedResult
-        }
-      }
-
-      "must not infer index 0 as ACR when ACR is not present in reference data" in {
-        forAll(arbitrary[InlandMode](arbitraryNonMaritimeRailAirInlandMode), declarationTypeGen) {
-          (inlandMode, declarationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, true)
-              .setValue(ProcedureTypePage, Simplified)
-
-            val service = new AuthorisationInferenceService()
-
-            val result = service.inferAuthorisations(userAnswers, Seq.empty)
-
-            val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), None)
-
-            result mustBe expectedResult
-        }
-      }
-    }
-
-    "when reduced dataset indicator is 0 and inland mode is not Maritime/Rail/Air and ProcedureType is Simplified" - {
-      "must infer index 0 as ACR AuthorisationType" in {
-        forAll(arbitrary[InlandMode](arbitraryNonMaritimeRailAirInlandMode), declarationTypeGen) {
-          (inlandMode, declarationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, false)
-              .setValue(ProcedureTypePage, Simplified)
-
-            val service = new AuthorisationInferenceService()
-
-            val result = service.inferAuthorisations(userAnswers, authTypes)
-
-            val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), authTypeACR)
-
-            result mustBe expectedResult
-        }
-      }
-
-      "must not infer index 0 as ACR when ACR is not present in reference data" in {
-        forAll(arbitrary[InlandMode](arbitraryNonMaritimeRailAirInlandMode), declarationTypeGen) {
-          (inlandMode, declarationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, false)
-              .setValue(ProcedureTypePage, Simplified)
-
-            val service = new AuthorisationInferenceService()
-
-            val result = service.inferAuthorisations(userAnswers, Seq.empty)
-
-            val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), None)
-
-            result mustBe expectedResult
         }
       }
     }

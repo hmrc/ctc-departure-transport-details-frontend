@@ -31,7 +31,7 @@ case class AddAnotherSupplyChainActorViewModel(
 ) extends AddAnotherViewModel {
   override val prefix: String = "supplyChainActors.addAnotherSupplyChainActor"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxSupplyChainActors
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxSupplyChainActors
 }
 
 object AddAnotherSupplyChainActorViewModel {

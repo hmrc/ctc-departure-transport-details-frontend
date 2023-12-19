@@ -31,7 +31,7 @@ case class AddAnotherEquipmentViewModel(
 ) extends AddAnotherViewModel {
   override val prefix: String = "equipment.addAnotherEquipment"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxEquipmentNumbers
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxEquipmentNumbers
 }
 
 object AddAnotherEquipmentViewModel {

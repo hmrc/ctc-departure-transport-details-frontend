@@ -18,6 +18,7 @@ package viewModels.authorisations
 
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.authorisationsAndLimit.authorisations.routes
+import models.reference.authorisations.AuthorisationType
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -28,19 +29,24 @@ import javax.inject.Inject
 
 case class AddAnotherAuthorisationViewModel(
   override val listItems: Seq[ListItem],
-  onSubmitCall: Call
+  onSubmitCall: Call,
+  numberOfAvailableAuthorisationsYetToAdd: Int
 ) extends AddAnotherViewModel {
 
   override val prefix: String = "authorisations.addAnotherAuthorisation"
 
-  override def maxCount(implicit config: FrontendAppConfig): Int = config.maxAuthorisations
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = numberOfAvailableAuthorisationsYetToAdd > 0
 }
 
 object AddAnotherAuthorisationViewModel {
 
   class AddAnotherAuthorisationViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
 
-    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherAuthorisationViewModel = {
+    def apply(
+      userAnswers: UserAnswers,
+      mode: Mode,
+      availableAuthorisationsYetToAdd: Seq[AuthorisationType]
+    )(implicit messages: Messages): AddAnotherAuthorisationViewModel = {
       val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
 
       val listItems = helper.listItems.collect {
@@ -50,7 +56,8 @@ object AddAnotherAuthorisationViewModel {
 
       new AddAnotherAuthorisationViewModel(
         listItems,
-        onSubmitCall = routes.AddAnotherAuthorisationController.onSubmit(userAnswers.lrn, mode)
+        onSubmitCall = routes.AddAnotherAuthorisationController.onSubmit(userAnswers.lrn, mode),
+        numberOfAvailableAuthorisationsYetToAdd = availableAuthorisationsYetToAdd.length
       )
     }
   }

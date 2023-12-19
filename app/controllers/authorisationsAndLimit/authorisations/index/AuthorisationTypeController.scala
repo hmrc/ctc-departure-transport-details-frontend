@@ -55,7 +55,7 @@ class AuthorisationTypeController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getAuthorisationTypes(request.userAnswers, authorisationIndex).flatMap {
+      service.getAuthorisationTypes(request.userAnswers, Some(authorisationIndex)).flatMap {
         case authorisationType :: Nil =>
           redirect(mode, authorisationIndex, InferredAuthorisationTypePage, authorisationType)
         case authorisationTypes =>
@@ -70,7 +70,7 @@ class AuthorisationTypeController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getAuthorisationTypes(request.userAnswers, authorisationIndex).flatMap {
+      service.getAuthorisationTypes(request.userAnswers, Some(authorisationIndex)).flatMap {
         authorisationTypesList =>
           form(authorisationTypesList)
             .bindFromRequest()

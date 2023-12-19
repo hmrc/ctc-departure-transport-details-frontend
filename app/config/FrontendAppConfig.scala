@@ -57,7 +57,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   def signOutUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/delete-lock"
 
   lazy val maxSeals: Int                  = configuration.get[Int]("limits.maxSeals")
-  lazy val maxGoodsItemNumbers: Int       = configuration.get[Int]("limits.maxGoodsItemNumbers")
   lazy val maxAuthorisations: Int         = configuration.get[Int]("limits.maxAuthorisations")
   lazy val maxActiveBorderTransports: Int = configuration.get[Int]("limits.maxActiveBorderTransports")
   lazy val maxSupplyChainActors: Int      = configuration.get[Int]("limits.maxSupplyChainActors")
