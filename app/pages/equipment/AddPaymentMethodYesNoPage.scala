@@ -17,13 +17,15 @@
 package pages.equipment
 
 import controllers.equipment.routes
-import models.{Mode, UserAnswers}
+import models.{Mode, RichJsArray, UserAnswers}
 import pages.QuestionPage
+import pages.external._
 import pages.sections.equipment.EquipmentsAndChargesSection
-import play.api.libs.json.JsPath
+import pages.sections.external.ItemsSection
+import play.api.libs.json.{JsArray, JsPath}
 import play.api.mvc.Call
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 case object AddPaymentMethodYesNoPage extends QuestionPage[Boolean] {
 
@@ -37,6 +39,17 @@ case object AddPaymentMethodYesNoPage extends QuestionPage[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(false) => userAnswers.remove(PaymentMethodPage)
+      case Some(true)  => removeItemLevelTransportCharges(userAnswers)
       case _           => super.cleanup(value, userAnswers)
     }
+
+  private def removeItemLevelTransportCharges(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers
+      .get(ItemsSection)
+      .getOrElse(JsArray())
+      .zipWithIndex
+      .foldLeft[Try[UserAnswers]](Success(userAnswers)) {
+        case (acc, (_, index)) =>
+          acc.map(_.remove(ItemAddTransportChargesYesNoPage(index)).remove(ItemTransportChargesPage(index)))
+      }
 }
