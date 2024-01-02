@@ -37,11 +37,11 @@ class AuthorisationInferenceService @Inject() () {
     val reader: UserAnswersReader[Option[UserAnswers]] = for {
       procedureType           <- ProcedureTypePage.reader
       reducedDataSetIndicator <- ApprovedOperatorPage.inferredReader
-      inlandMode              <- InlandModePage.reader
-    } yield (procedureType, reducedDataSetIndicator, inlandMode.code) match {
+      inlandMode              <- InlandModePage.optionalReader
+    } yield (procedureType, reducedDataSetIndicator, inlandMode.map(_.code)) match {
       case (Simplified, _, _) =>
         authTypeACR.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
-      case (Normal, true, Maritime | Rail | Air) =>
+      case (Normal, true, Some(Maritime | Rail | Air)) =>
         authTypeTRD.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
       case _ =>
         Some(userAnswers)

@@ -88,7 +88,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
     "when ProcedureType is Simplified" - {
       "must infer index 0 as ACR Authorisation Type" in {
-        forAll(arbitrary[InlandMode], declarationTypeGen) {
+        forAll(arbitrary[Option[InlandMode]], declarationTypeGen) {
           (inlandMode, declarationType) =>
             val userAnswers = emptyUserAnswers
               .setValue(InlandModePage, inlandMode)
@@ -146,7 +146,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
     "when reduced dataset indicator is 1 and inland mode is not Maritime/Rail/Air and ProcedureType is Normal" - {
       "must not make any inferences" in {
-        forAll(arbitrary[InlandMode](arbitraryNonMaritimeRailAirInlandMode), declarationTypeGen) {
+        forAll(arbitrary[Option[InlandMode]](arbitraryOptionalNonMaritimeRailAirInlandMode), declarationTypeGen) {
           (inlandMode, declarationType) =>
             val userAnswers = emptyUserAnswers
               .setValue(InlandModePage, inlandMode)
@@ -165,7 +165,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
     "when reduced dataset indicator is 0 and inland mode is not Maritime/Rail/Air and ProcedureType is Normal" - {
       "must not make any inferences" in {
-        forAll(arbitrary[InlandMode](arbitraryNonMaritimeRailAirInlandMode), declarationTypeGen) {
+        forAll(arbitrary[Option[InlandMode]](arbitraryOptionalNonMaritimeRailAirInlandMode), declarationTypeGen) {
           (inlandMode, declarationType) =>
             val userAnswers = emptyUserAnswers
               .setValue(InlandModePage, inlandMode)
