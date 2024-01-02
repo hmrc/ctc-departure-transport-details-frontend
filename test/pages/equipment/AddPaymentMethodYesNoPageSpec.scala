@@ -16,9 +16,12 @@
 
 package pages.equipment
 
+import models.Index
 import models.reference.equipment.PaymentMethod
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
+import pages.external._
+import play.api.libs.json.{JsObject, Json}
 
 class AddPaymentMethodYesNoPageSpec extends PageBehaviours {
 
@@ -42,6 +45,27 @@ class AddPaymentMethodYesNoPageSpec extends PageBehaviours {
               val result = userAnswers.setValue(AddPaymentMethodYesNoPage, false)
 
               result.get(PaymentMethodPage) must not be defined
+          }
+        }
+      }
+
+      "when yes selected" - {
+        "must remove transport charges for each item" in {
+          forAll(arbitrary[PaymentMethod]) {
+            paymentMethod =>
+              val userAnswers = emptyUserAnswers
+                .setValue(ItemAddTransportChargesYesNoPage(Index(0)), true)
+                .setValue(ItemTransportChargesPage(Index(0)), Json.toJson(paymentMethod).as[JsObject])
+                .setValue(ItemAddTransportChargesYesNoPage(Index(1)), true)
+                .setValue(ItemTransportChargesPage(Index(1)), Json.toJson(paymentMethod).as[JsObject])
+
+              val result = userAnswers.setValue(AddPaymentMethodYesNoPage, true)
+
+              result.get(ItemAddTransportChargesYesNoPage(Index(0))) must not be defined
+              result.get(ItemTransportChargesPage(Index(0))) must not be defined
+
+              result.get(ItemAddTransportChargesYesNoPage(Index(1))) must not be defined
+              result.get(ItemTransportChargesPage(Index(1))) must not be defined
           }
         }
       }

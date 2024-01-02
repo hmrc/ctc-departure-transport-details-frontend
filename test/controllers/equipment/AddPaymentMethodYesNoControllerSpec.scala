@@ -93,7 +93,9 @@ class AddPaymentMethodYesNoControllerSpec extends SpecBase with AppWithDefaultMo
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute.url
+      redirectLocation(result).value mustEqual
+        s"http://localhost:10127/manage-transit-movements/departures/items/$lrn/update-task?" +
+        s"continue=http://localhost:10131${onwardRoute.url}"
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
