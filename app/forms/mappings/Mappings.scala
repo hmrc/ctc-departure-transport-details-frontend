@@ -26,13 +26,13 @@ import java.time.LocalDate
 trait Mappings extends Formatters with Constraints {
 
   protected def text(errorKey: String = "error.required", args: Seq[Any] = Seq.empty): FieldMapping[String] =
-    of(stringFormatter(errorKey, args))
+    adaptedText(errorKey, args)(identity)
+
+  protected def adaptedText(errorKey: String = "error.required", args: Seq[Any] = Seq.empty)(f: String => String): FieldMapping[String] =
+    of(stringFormatter(errorKey, args)(f))
 
   protected def eoriFormat(errorKey: String = "error.required"): FieldMapping[String] =
     of(eoriFormatter(errorKey))
-
-  protected def textWithSpacesRemoved(errorKey: String = "error.required"): FieldMapping[String] =
-    of(spacelessStringFormatter(errorKey))
 
   protected def mandatoryIfBoolean(errorKey: String = "error.required", condition: Boolean, defaultValue: Boolean): FieldMapping[Boolean] =
     if (condition) boolean(errorKey) else of(ignoredFormat(defaultValue))
