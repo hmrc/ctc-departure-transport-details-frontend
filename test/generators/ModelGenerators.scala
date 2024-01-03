@@ -212,6 +212,15 @@ trait ModelGenerators {
       } yield InlandMode(code, description)
     }
 
+  val arbitraryOptionalNonMaritimeRailAirInlandMode: Arbitrary[Option[InlandMode]] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("3", "5", "7", "8")
+        description <- nonEmptyString
+        gen         <- Gen.oneOf(Some(InlandMode(code, description)), None)
+      } yield gen
+    }
+
   implicit lazy val arbitraryPaymentMethod: Arbitrary[PaymentMethod] =
     Arbitrary {
       for {
