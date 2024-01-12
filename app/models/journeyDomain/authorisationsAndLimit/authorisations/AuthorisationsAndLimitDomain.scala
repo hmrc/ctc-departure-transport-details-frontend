@@ -31,7 +31,6 @@ object AuthorisationsAndLimitDomain {
   def limitReader(authDomain: AuthorisationsDomain): UserAnswersReader[Option[LimitDomain]] = {
     lazy val anyAuthTypeIsC521 = authDomain.authorisations.exists(_.authorisationType.isACR)
     AdditionalDeclarationTypePage.reader.flatMap {
-      case PreLodge if anyAuthTypeIsC521 => AddLimitDateYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[LimitDomain])
       case Standard if anyAuthTypeIsC521 => UserAnswersReader[LimitDomain].map(Some(_))
       case _                             => none[LimitDomain].pure[UserAnswersReader]
     }

@@ -57,6 +57,23 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
 
           result.value mustBe None
         }
+
+        "when additional declaration type is D" in {
+          val authType = Gen.oneOf(authTypeACR, authTypeTRD, authTypeSSE).sample.value
+
+          val userAnswers = emptyUserAnswers
+            .setValue(AdditionalDeclarationTypePage, "D")
+            .setValue(AuthorisationTypePage(authorisationIndex), authType)
+            .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authRefNumber)
+
+          val authorisationsDomain = AuthorisationsDomain.userAnswersReader.run(userAnswers).value
+
+          val result: EitherType[Option[LimitDomain]] = UserAnswersReader[Option[LimitDomain]](
+            AuthorisationsAndLimitDomain.limitReader(authorisationsDomain)
+          ).run(userAnswers)
+
+          result.value mustBe None
+        }
       }
 
       "cannot be parsed from user answers" - {
@@ -74,21 +91,6 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
             ).run(userAnswers)
 
             result.left.value.page mustBe LimitDatePage
-          }
-
-          "and additional declaration type is D" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(AdditionalDeclarationTypePage, "D")
-              .setValue(AuthorisationTypePage(authorisationIndex), authTypeACR)
-              .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authRefNumber)
-
-            val authorisationsDomain = AuthorisationsDomain.userAnswersReader.run(userAnswers).value
-
-            val result: EitherType[Option[LimitDomain]] = UserAnswersReader[Option[LimitDomain]](
-              AuthorisationsAndLimitDomain.limitReader(authorisationsDomain)
-            ).run(userAnswers)
-
-            result.left.value.page mustBe AddLimitDateYesNoPage
           }
         }
       }
