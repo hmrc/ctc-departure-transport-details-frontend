@@ -16,13 +16,16 @@
 
 package pages.sections.transportMeans
 
+import controllers.transportMeans.active.routes
+import models.{Index, Mode, UserAnswers}
 import pages.sections.Section
-import pages.sections.TransportSection
-import play.api.libs.json.{JsArray, JsPath}
+import play.api.libs.json.{JsObject, JsPath}
+import play.api.mvc.Call
 
-case object TransportMeansActiveListSection extends Section[JsArray] {
+case class ActiveSection(index: Index) extends Section[JsObject] {
 
-  override def path: JsPath = TransportSection.path \ toString
+  override def path: JsPath = ActivesSection.path \ index.position
 
-  override def toString: String = "transportMeansActiveList"
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, index))
 }

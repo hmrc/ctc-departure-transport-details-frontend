@@ -18,54 +18,55 @@ package navigation
 
 import config.{FrontendAppConfig, PhaseConfig}
 import models.{Index, Mode, UserAnswers}
+import pages.Page
 import play.api.mvc.Call
 
 class FakeNavigator(desiredRoute: Call) extends Navigator {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeTransportNavigator(desiredRoute: Call, mode: Mode)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) extends TransportNavigator(mode) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeTransportMeansNavigator(desiredRoute: Call, mode: Mode)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends TransportMeansNavigator(mode) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeTransportMeansActiveNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends TransportMeansActiveNavigator(mode, index) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeTransportMeansActiveListNavigator(desiredRoute: Call, mode: Mode)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends TransportMeansActiveListNavigator(mode) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeSupplyChainActorNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends SupplyChainActorNavigator(mode, index) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeAuthorisationNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends AuthorisationNavigator(mode, index) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeEquipmentsNavigator(desiredRoute: Call, mode: Mode)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends EquipmentsNavigator(mode) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeEquipmentNavigator(desiredRoute: Call, index: Index, mode: Mode)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends EquipmentNavigator(mode, index) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
 class FakeSealNavigator(desiredRoute: Call, equipmentIndex: Index, sealIndex: Index, mode: Mode)(implicit
   appConfig: FrontendAppConfig,
   phaseConfig: PhaseConfig
 ) extends SealNavigator(mode, equipmentIndex, sealIndex) {
-  override def nextPage(userAnswers: UserAnswers): Call = desiredRoute
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }

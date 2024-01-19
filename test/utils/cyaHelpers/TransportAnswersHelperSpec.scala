@@ -29,7 +29,6 @@ import controllers.preRequisites.{routes => preRequisitesRoutes}
 import controllers.supplyChainActors.index.{routes => supplyChainActorRoutes}
 import controllers.supplyChainActors.{routes => supplyChainActorsRoutes}
 import generators.Generators
-import models.domain.UserAnswersReader
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
@@ -382,7 +381,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
         "when supply chain actor is defined" in {
           forAll(arbitrarySupplyChainActorAnswers(emptyUserAnswers, index), arbitrary[Mode]) {
             (userAnswers, mode) =>
-              val supplyChainActor = UserAnswersReader[SupplyChainActorDomain](SupplyChainActorDomain.userAnswersReader(index)).run(userAnswers).value
+              val supplyChainActor = SupplyChainActorDomain.userAnswersReader(index).apply(Nil).run(userAnswers).value.value
               val helper           = new TransportAnswersHelper(userAnswers, mode)
               val result           = helper.supplyChainActor(index).get
 
@@ -478,7 +477,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
         "when authorisation is defined" in {
           forAll(arbitraryAuthorisationAnswers(emptyUserAnswers, index), arbitrary[Mode]) {
             (userAnswers, mode) =>
-              val authorisation = UserAnswersReader[AuthorisationDomain](AuthorisationDomain.userAnswersReader(index)).run(userAnswers).value
+              val authorisation = AuthorisationDomain.userAnswersReader(index).apply(Nil).run(userAnswers).value.value
               val helper        = new TransportAnswersHelper(userAnswers, mode)
               val result        = helper.authorisation(index).get
 
@@ -858,7 +857,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
 
           forAll(arbitraryEquipmentAnswers(initialUserAnswers, index), arbitrary[Mode]) {
             (userAnswers, mode) =>
-              val equipment = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(index)).run(userAnswers).value
+              val equipment = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers).value.value
 
               val helper = new TransportAnswersHelper(userAnswers, mode)
               val result = helper.equipment(index).get

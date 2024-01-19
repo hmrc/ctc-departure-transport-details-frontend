@@ -18,7 +18,8 @@ package services
 
 import config.Constants.ModeOfTransport._
 import models.ProcedureType.{Normal, Simplified}
-import models.domain.{GettableAsReaderOps, UserAnswersReader}
+import models.domain._
+import models.journeyDomain.ReaderSuccess
 import models.reference.authorisations.AuthorisationType
 import models.{Index, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.InferredAuthorisationTypePage
@@ -34,22 +35,27 @@ class AuthorisationInferenceService @Inject() () {
     lazy val authTypeACR = authorisationTypes.find(_.isACR)
     lazy val authTypeTRD = authorisationTypes.find(_.isTRD)
 
-    val reader: UserAnswersReader[Option[UserAnswers]] = for {
-      procedureType           <- ProcedureTypePage.reader
-      reducedDataSetIndicator <- ApprovedOperatorPage.inferredReader
-      inlandMode              <- InlandModePage.optionalReader
-    } yield (procedureType, reducedDataSetIndicator, inlandMode.map(_.code)) match {
-      case (Simplified, _, _) =>
-        authTypeACR.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
-      case (Normal, true, Some(Maritime | Rail | Air)) =>
-        authTypeTRD.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
-      case _ =>
-        Some(userAnswers)
-    }
+    val reader: UserAnswersReader[Option[UserAnswers]] =
+      (
+        ProcedureTypePage.reader,
+        ApprovedOperatorPage.inferredReader,
+        InlandModePage.optionalReader.apply(_: Pages).map(_.to(_.map(_.code)))
+      ).apply {
+        case (procedureType, reducedDataset, inlandMode) =>
+          val foo = (procedureType, reducedDataset, inlandMode) match {
+            case (Simplified, _, _) =>
+              authTypeACR.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
+            case (Normal, true, Some(Maritime | Rail | Air)) =>
+              authTypeTRD.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
+            case _ =>
+              Some(userAnswers)
+          }
+          UserAnswersReader.success(foo)
+      }.apply(Nil)
 
     reader.apply(userAnswers) match {
-      case Right(Some(value)) => value
-      case _                  => userAnswers
+      case Right(ReaderSuccess(Some(value), _)) => value
+      case _                                    => userAnswers
     }
   }
 }

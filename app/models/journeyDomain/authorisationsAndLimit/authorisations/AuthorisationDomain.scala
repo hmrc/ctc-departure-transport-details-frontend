@@ -16,13 +16,12 @@
 
 package models.journeyDomain.authorisationsAndLimit.authorisations
 
-import cats.implicits._
 import controllers.authorisationsAndLimit.authorisations.index.{routes => authorisationRoutes}
 import controllers.authorisationsAndLimit.authorisations.{routes => authorisationsRoutes}
-import models.reference.authorisations.AuthorisationType
-import models.domain.{GettableAsReaderOps, UserAnswersReader}
+import models.domain._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, Stage}
+import models.reference.authorisations.AuthorisationType
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
 import play.api.i18n.Messages
@@ -53,10 +52,10 @@ object AuthorisationDomain {
     s"${authorisationType.forDisplay} - $referenceNumber"
 
   // scalastyle:off cyclomatic.complexity
-  def userAnswersReader(index: Index): UserAnswersReader[AuthorisationDomain] =
+  def userAnswersReader(index: Index): Read[AuthorisationDomain] =
     (
-      InferredAuthorisationTypePage(index).reader orElse AuthorisationTypePage(index).reader,
+      UserAnswersReader.readInferred(AuthorisationTypePage(index), InferredAuthorisationTypePage(index)),
       AuthorisationReferenceNumberPage(index).reader
-    ).tupled.map((AuthorisationDomain.apply _).tupled).map(_(index))
+    ).map(AuthorisationDomain.apply(_, _)(index))
 
 }

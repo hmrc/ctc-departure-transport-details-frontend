@@ -23,7 +23,7 @@ import models.{Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.TransportSection
 import pages.sections.authorisationsAndLimit.AuthorisationsAndLimitSection
-import pages.sections.transportMeans.{TransportMeansActiveListSection, TransportMeansDepartureSection}
+import pages.sections.transportMeans.{ActivesSection, DepartureSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -42,12 +42,12 @@ case object InlandModePage extends QuestionPage[InlandMode] {
     value match {
       case Some(InlandMode(Mail, _)) =>
         userAnswers
-          .remove(TransportMeansDepartureSection)
-          .flatMap(_.remove(TransportMeansActiveListSection))
+          .remove(DepartureSection)
+          .flatMap(_.remove(ActivesSection))
           .flatMap(_.remove(AuthorisationsAndLimitSection))
       case Some(_) =>
         userAnswers
-          .remove(TransportMeansDepartureSection)
+          .remove(DepartureSection)
           .flatMap(_.remove(AuthorisationsAndLimitSection))
       case None =>
         super.cleanup(value, userAnswers)

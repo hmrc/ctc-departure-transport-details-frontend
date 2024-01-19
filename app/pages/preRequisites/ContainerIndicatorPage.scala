@@ -21,7 +21,7 @@ import models.{Mode, OptionalBoolean, UserAnswers}
 import pages.QuestionPage
 import pages.sections.PreRequisitesSection
 import pages.sections.equipment.EquipmentsSection
-import pages.sections.transportMeans.TransportMeansDepartureSection
+import pages.sections.transportMeans.DepartureSection
 import play.api.libs.json._
 import play.api.mvc.Call
 
@@ -41,7 +41,7 @@ case object ContainerIndicatorPage extends QuestionPage[OptionalBoolean] {
       case Some(_) =>
         userAnswers
           .remove(EquipmentsSection)
-          .flatMap(_.remove(TransportMeansDepartureSection))
+          .flatMap(_.remove(DepartureSection))
       case None => super.cleanup(value, userAnswers)
     }
 }

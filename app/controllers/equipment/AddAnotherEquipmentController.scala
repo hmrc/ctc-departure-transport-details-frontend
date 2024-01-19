@@ -23,6 +23,7 @@ import models.domain.UserAnswersReader
 import models.journeyDomain.equipment.EquipmentDomain
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
+import pages.sections.equipment.EquipmentsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -59,17 +60,18 @@ class AddAnotherEquipmentController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val viewModel = viewModelProvider(request.userAnswers, mode)
+      lazy val currentPage = EquipmentsSection
+      val viewModel        = viewModelProvider(request.userAnswers, mode)
       form(viewModel)
         .bindFromRequest()
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
           {
             case true =>
-              implicit val reader: UserAnswersReader[EquipmentDomain] = EquipmentDomain.userAnswersReader(viewModel.nextIndex)
-              Redirect(UserAnswersNavigator.nextPage[EquipmentDomain](request.userAnswers, mode))
+              implicit val reader: UserAnswersReader[EquipmentDomain] = EquipmentDomain.userAnswersReader(viewModel.nextIndex).apply(Nil)
+              Redirect(UserAnswersNavigator.nextPage[EquipmentDomain](request.userAnswers, Some(currentPage), mode))
             case false =>
-              Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
+              Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(currentPage)))
           }
         )
   }

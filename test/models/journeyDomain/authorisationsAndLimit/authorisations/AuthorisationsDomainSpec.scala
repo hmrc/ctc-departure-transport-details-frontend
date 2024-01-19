@@ -19,7 +19,6 @@ package models.journeyDomain.authorisationsAndLimit.authorisations
 import base.SpecBase
 import generators.Generators
 import models.Index
-import models.domain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 
 class AuthorisationsDomainSpec extends SpecBase with Generators {
@@ -35,10 +34,9 @@ class AuthorisationsDomainSpec extends SpecBase with Generators {
           arbitraryAuthorisationAnswers(updatedUserAnswers, Index(index)).sample.value
       })
 
-      val result: EitherType[AuthorisationsDomain] = UserAnswersReader[AuthorisationsDomain].run(userAnswers)
+      val result = AuthorisationsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.authorisations.length mustBe numberOfAuthorisations
-
+      result.value.value.authorisations.length mustBe numberOfAuthorisations
     }
   }
 }

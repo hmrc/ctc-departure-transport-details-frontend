@@ -20,8 +20,6 @@ import base.SpecBase
 import config.Constants.DeclarationType.TIR
 import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
-import models.domain.{EitherType, UserAnswersReader}
-import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
 import models.reference.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -46,8 +44,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
             .setValue(InlandModePage, mailInlandMode)
           forAll(arbitraryTransportAnswers(initialUserAnswers)) {
             userAnswers =>
-              val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-              result.value.transportMeans must not be defined
+              val result = TransportDomain.userAnswersReader.run(userAnswers)
+              result.value.value.transportMeans must not be defined
           }
         }
 
@@ -59,8 +57,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 .setValue(InlandModePage, inlandMode)
               forAll(arbitraryTransportAnswers(initialUserAnswers)) {
                 userAnswers =>
-                  val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-                  result.value.transportMeans must be(defined)
+                  val result = TransportDomain.userAnswersReader.run(userAnswers)
+                  result.value.value.transportMeans must be(defined)
               }
           }
         }
@@ -71,8 +69,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
         val initialUserAnswers = emptyUserAnswers.setValue(AddInlandModeYesNoPage, false)
         forAll(arbitraryTransportAnswers(initialUserAnswers)) {
           userAnswers =>
-            val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-            result.value.transportMeans must be(defined)
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
+            result.value.value.transportMeans must be(defined)
         }
       }
 
@@ -85,8 +83,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
             forAll(arbitraryTransportAnswers(initialUserAnswers)) {
               userAnswers =>
-                val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-                result.value.authorisationsAndLimit must be(defined)
+                val result = TransportDomain.userAnswersReader.run(userAnswers)
+                result.value.value.authorisationsAndLimit must be(defined)
             }
         }
       }
@@ -100,8 +98,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
           forAll(arbitraryTransportAnswers(initialUserAnswers)) {
             userAnswers =>
-              val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-              result.value.authorisationsAndLimit must not be defined
+              val result = TransportDomain.userAnswersReader.run(userAnswers)
+              result.value.value.authorisationsAndLimit must not be defined
           }
         }
 
@@ -112,8 +110,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
           forAll(arbitraryTransportAnswers(initialUserAnswers)) {
             userAnswers =>
-              val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-              result.value.authorisationsAndLimit must be(defined)
+              val result = TransportDomain.userAnswersReader.run(userAnswers)
+              result.value.value.authorisationsAndLimit must be(defined)
           }
         }
       }
@@ -130,8 +128,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
               forAll(arbitraryTransportAnswers(initialUserAnswers)) {
                 userAnswers =>
-                  val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-                  result.value.authorisationsAndLimit must not be defined
+                  val result = TransportDomain.userAnswersReader.run(userAnswers)
+                  result.value.value.authorisationsAndLimit must not be defined
               }
           }
         }
@@ -147,8 +145,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
               forAll(arbitraryTransportAnswers(initialUserAnswers)) {
                 userAnswers =>
-                  val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-                  result.value.authorisationsAndLimit must be(defined)
+                  val result = TransportDomain.userAnswersReader.run(userAnswers)
+                  result.value.value.authorisationsAndLimit must be(defined)
               }
           }
         }
@@ -164,8 +162,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
             forAll(arbitraryTransportAnswers(initialUserAnswers)) {
               userAnswers =>
-                val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-                result.value.authorisationsAndLimit must be(defined)
+                val result = TransportDomain.userAnswersReader.run(userAnswers)
+                result.value.value.authorisationsAndLimit must be(defined)
             }
         }
       }
@@ -180,8 +178,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
             forAll(arbitraryTransportAnswers(initialUserAnswers)) {
               userAnswers =>
-                val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-                result.value.authorisationsAndLimit must be(defined)
+                val result = TransportDomain.userAnswersReader.run(userAnswers)
+                result.value.value.authorisationsAndLimit must be(defined)
             }
         }
       }
@@ -190,8 +188,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
         val initialUserAnswers = emptyUserAnswers.setValue(SupplyChainActorYesNoPage, true)
         forAll(arbitraryTransportAnswers(initialUserAnswers)) {
           userAnswers =>
-            val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-            result.value.supplyChainActors must be(defined)
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
+            result.value.value.supplyChainActors must be(defined)
         }
       }
 
@@ -199,8 +197,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
         val initialUserAnswers = emptyUserAnswers.setValue(SupplyChainActorYesNoPage, false)
         forAll(arbitraryTransportAnswers(initialUserAnswers)) {
           userAnswers =>
-            val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-            result.value.supplyChainActors must not be defined
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
+            result.value.value.supplyChainActors must not be defined
         }
       }
 
@@ -208,8 +206,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
         val initialUserAnswers = emptyUserAnswers.setValue(CarrierDetailYesNoPage, true)
         forAll(arbitraryTransportAnswers(initialUserAnswers)) {
           userAnswers =>
-            val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-            result.value.carrierDetails must be(defined)
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
+            result.value.value.carrierDetails must be(defined)
         }
       }
 
@@ -217,8 +215,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
         val initialUserAnswers = emptyUserAnswers.setValue(CarrierDetailYesNoPage, false)
         forAll(arbitraryTransportAnswers(initialUserAnswers)) {
           userAnswers =>
-            val result: EitherType[TransportDomain] = UserAnswersReader[TransportDomain].run(userAnswers)
-            result.value.carrierDetails must not be defined
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
+            result.value.value.carrierDetails must not be defined
         }
       }
 
@@ -232,7 +230,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
                   .setValue(ApprovedOperatorPage, true)
                   .setValue(ProcedureTypePage, Normal)
 
-                val result: EitherType[Option[AuthorisationsAndLimitDomain]] = TransportDomain.authorisationsAndLimitReads.run(userAnswers)
+                val result = TransportDomain.authorisationsAndLimitReads.apply(Nil).run(userAnswers)
                 result.left.value.page mustBe AuthorisationsInferredPage
             }
           }

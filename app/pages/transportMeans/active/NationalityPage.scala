@@ -20,13 +20,13 @@ import controllers.transportMeans.active.routes
 import models.reference.Nationality
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transportMeans.TransportMeansActiveSection
+import pages.sections.transportMeans.ActiveSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class NationalityPage(index: Index) extends QuestionPage[Nationality] {
 
-  override def path: JsPath = TransportMeansActiveSection(index).path \ toString
+  override def path: JsPath = ActiveSection(index).path \ toString
 
   override def toString: String = "nationality"
 

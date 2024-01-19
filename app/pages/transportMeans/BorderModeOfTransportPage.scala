@@ -21,7 +21,7 @@ import models.reference.BorderMode
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.TransportSection
-import pages.sections.transportMeans.TransportMeansActiveSection
+import pages.sections.transportMeans.ActiveSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -39,7 +39,7 @@ case object BorderModeOfTransportPage extends QuestionPage[BorderMode] {
   override def cleanup(value: Option[BorderMode], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(_) =>
-        userAnswers.remove(TransportMeansActiveSection(Index(0)))
+        userAnswers.remove(ActiveSection(Index(0)))
       case None =>
         super.cleanup(value, userAnswers)
     }

@@ -19,13 +19,13 @@ package pages.transportMeans.active
 import controllers.transportMeans.active.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transportMeans.TransportMeansActiveSection
+import pages.sections.transportMeans.ActiveSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
 case class IdentificationNumberPage(index: Index) extends QuestionPage[String] {
 
-  override def path: JsPath = TransportMeansActiveSection(index).path \ toString
+  override def path: JsPath = ActiveSection(index).path \ toString
 
   override def toString: String = "identificationNumber"
 

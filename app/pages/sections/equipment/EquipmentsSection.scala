@@ -16,12 +16,18 @@
 
 package pages.sections.equipment
 
+import controllers.equipment.routes
+import models.{Mode, UserAnswers}
 import pages.sections.Section
 import play.api.libs.json.{JsArray, JsPath}
+import play.api.mvc.Call
 
 case object EquipmentsSection extends Section[JsArray] {
 
   override def path: JsPath = EquipmentsAndChargesSection.path \ toString
 
   override def toString: String = "equipments"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherEquipmentController.onPageLoad(userAnswers.lrn, mode))
 }

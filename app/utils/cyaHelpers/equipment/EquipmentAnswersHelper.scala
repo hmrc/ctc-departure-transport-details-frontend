@@ -63,7 +63,7 @@ class EquipmentAnswersHelper(
     prefix = "equipment.index.checkYourAnswers.seal",
     id = Some(s"change-seal-${index.display}"),
     args = index.display
-  )(SealDomain.userAnswersReader(equipmentIndex, index))
+  )(SealDomain.userAnswersReader(equipmentIndex, index).apply(Nil))
 
   def addOrRemoveSeals: Option[Link] = buildLink(SealsSection(equipmentIndex)) {
     Link(

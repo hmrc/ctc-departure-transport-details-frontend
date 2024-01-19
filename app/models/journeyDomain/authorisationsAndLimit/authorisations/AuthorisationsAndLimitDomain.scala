@@ -16,30 +16,33 @@
 
 package models.journeyDomain.authorisationsAndLimit.authorisations
 
-import cats.implicits.{catsSyntaxApplicativeId, none}
 import config.Constants.AdditionalDeclarationType._
-import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
-import models.journeyDomain.JourneyDomainModel
+import models.domain._
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
-import pages.authorisationsAndLimit.limit.AddLimitDateYesNoPage
+import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
 import pages.external.AdditionalDeclarationTypePage
 
-case class AuthorisationsAndLimitDomain(authorisationsDomain: AuthorisationsDomain, limitDomain: Option[LimitDomain]) extends JourneyDomainModel
+case class AuthorisationsAndLimitDomain(
+  authorisationsDomain: AuthorisationsDomain,
+  limitDomain: Option[LimitDomain]
+) extends JourneyDomainModel
 
 object AuthorisationsAndLimitDomain {
 
-  def limitReader(authDomain: AuthorisationsDomain): UserAnswersReader[Option[LimitDomain]] = {
+  def limitReader(authDomain: AuthorisationsDomain): Read[Option[LimitDomain]] = {
     lazy val anyAuthTypeIsC521 = authDomain.authorisations.exists(_.authorisationType.isACR)
-    AdditionalDeclarationTypePage.reader.flatMap {
-      case Standard if anyAuthTypeIsC521 => UserAnswersReader[LimitDomain].map(Some(_))
-      case _                             => none[LimitDomain].pure[UserAnswersReader]
+    AdditionalDeclarationTypePage.reader.apply(_).flatMap {
+      case ReaderSuccess(Standard, pages) if anyAuthTypeIsC521 => LimitDomain.userAnswersReader.toOption.apply(pages)
+      case ReaderSuccess(_, pages)                             => UserAnswersReader.none.apply(pages)
     }
   }
 
-  implicit val userAnswersReader: UserAnswersReader[AuthorisationsAndLimitDomain] = {
-    for {
-      authorisations <- UserAnswersReader[AuthorisationsDomain]
-      limit          <- limitReader(authorisations)
-    } yield AuthorisationsAndLimitDomain(authorisations, limit)
-  }
+  implicit val userAnswersReader: Read[AuthorisationsAndLimitDomain] =
+    AuthorisationsDomain.userAnswersReader.apply(_).flatMap {
+      case ReaderSuccess(authorisations, pages) =>
+        (
+          Read(authorisations),
+          limitReader(authorisations)
+        ).map(AuthorisationsAndLimitDomain.apply).apply(pages)
+    }
 }

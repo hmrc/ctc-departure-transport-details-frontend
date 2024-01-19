@@ -16,20 +16,20 @@
 
 package models.journeyDomain.carrierDetails
 
-import cats.implicits._
 import models.domain._
+import models.journeyDomain.JourneyDomainModel
 import pages.carrierDetails.contact._
 
 case class ContactPersonDomain(
   name: String,
   telephoneNumber: String
-)
+) extends JourneyDomainModel
 
 object ContactPersonDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[ContactPersonDomain] =
+  implicit val userAnswersReader: Read[ContactPersonDomain] =
     (
       NamePage.reader,
       TelephoneNumberPage.reader
-    ).tupled.map((ContactPersonDomain.apply _).tupled)
+    ).map(ContactPersonDomain.apply)
 }

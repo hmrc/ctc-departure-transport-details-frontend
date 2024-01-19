@@ -19,7 +19,6 @@ package models.journeyDomain.supplyChainActors
 import base.SpecBase
 import generators.Generators
 import models.Index
-import models.domain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 
 class SupplyChainActorsDomainSpec extends SpecBase with Generators {
@@ -35,9 +34,9 @@ class SupplyChainActorsDomainSpec extends SpecBase with Generators {
           arbitrarySupplyChainActorAnswers(updatedUserAnswers, Index(index)).sample.value
       })
 
-      val result: EitherType[SupplyChainActorsDomain] = UserAnswersReader[SupplyChainActorsDomain].run(userAnswers)
+      val result = SupplyChainActorsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.SupplyChainActorsDomain.length mustBe numberOfSupplyChainActors
+      result.value.value.SupplyChainActorsDomain.length mustBe numberOfSupplyChainActors
 
     }
   }

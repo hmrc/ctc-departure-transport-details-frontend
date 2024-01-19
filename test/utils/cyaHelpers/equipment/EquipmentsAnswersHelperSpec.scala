@@ -19,9 +19,8 @@ package utils.cyaHelpers.equipment
 import base.SpecBase
 import controllers.equipment.index.routes
 import generators.Generators
-import models.{Index, Mode}
-import models.domain.UserAnswersReader
 import models.journeyDomain.equipment.EquipmentDomain
+import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -54,7 +53,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
               val initialAnswers = emptyUserAnswers.setValue(AddTransportEquipmentYesNoPage, true)
               forAll(arbitrary[Mode], arbitraryEquipmentAnswers(initialAnswers, equipmentIndex)) {
                 (mode, userAnswers) =>
-                  val equipment = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(equipmentIndex)).run(userAnswers).value
+                  val equipment = EquipmentDomain.userAnswersReader(equipmentIndex).apply(Nil).run(userAnswers).value.value
                   val helper    = new EquipmentsAnswersHelper(userAnswers, mode)
 
                   helper.listItems mustBe Seq(
@@ -76,7 +75,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
             "must return one list item with no remove link" in {
               forAll(arbitrary[Mode], arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex)) {
                 (mode, userAnswers) =>
-                  val equipment = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(equipmentIndex)).run(userAnswers).value
+                  val equipment = EquipmentDomain.userAnswersReader(equipmentIndex).apply(Nil).run(userAnswers).value.value
                   val helper    = new EquipmentsAnswersHelper(userAnswers, mode)
 
                   helper.listItems mustBe Seq(
@@ -101,8 +100,8 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
 
               forAll(arbitrary[Mode], userAnswersGen) {
                 (mode, userAnswers) =>
-                  val equipment1 = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(Index(0))).run(userAnswers).value
-                  val equipment2 = UserAnswersReader[EquipmentDomain](EquipmentDomain.userAnswersReader(Index(1))).run(userAnswers).value
+                  val equipment1 = EquipmentDomain.userAnswersReader(Index(0)).apply(Nil).run(userAnswers).value.value
+                  val equipment2 = EquipmentDomain.userAnswersReader(Index(1)).apply(Nil).run(userAnswers).value.value
 
                   val helper = new EquipmentsAnswersHelper(userAnswers, mode)
 

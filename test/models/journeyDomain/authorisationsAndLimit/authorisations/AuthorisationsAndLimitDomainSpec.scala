@@ -18,13 +18,11 @@ package models.journeyDomain.authorisationsAndLimit.authorisations
 
 import base.SpecBase
 import generators.Generators
-import models.domain.{EitherType, UserAnswersReader}
-import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
 import models.reference.authorisations.AuthorisationType
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage}
-import pages.authorisationsAndLimit.limit.{AddLimitDateYesNoPage, LimitDatePage}
+import pages.authorisationsAndLimit.limit.LimitDatePage
 import pages.external.AdditionalDeclarationTypePage
 
 class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -49,13 +47,11 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
             .setValue(AuthorisationTypePage(authorisationIndex), authType)
             .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authRefNumber)
 
-          val authorisationsDomain = AuthorisationsDomain.userAnswersReader.run(userAnswers).value
+          val authorisationsDomain = AuthorisationsDomain.userAnswersReader.apply(Nil).run(userAnswers).value.value
 
-          val result: EitherType[Option[LimitDomain]] = UserAnswersReader[Option[LimitDomain]](
-            AuthorisationsAndLimitDomain.limitReader(authorisationsDomain)
-          ).run(userAnswers)
+          val result = AuthorisationsAndLimitDomain.limitReader(authorisationsDomain).apply(Nil).run(userAnswers)
 
-          result.value mustBe None
+          result.value.value mustBe None
         }
 
         "when additional declaration type is D" in {
@@ -66,13 +62,11 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
             .setValue(AuthorisationTypePage(authorisationIndex), authType)
             .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authRefNumber)
 
-          val authorisationsDomain = AuthorisationsDomain.userAnswersReader.run(userAnswers).value
+          val authorisationsDomain = AuthorisationsDomain.userAnswersReader.apply(Nil).run(userAnswers).value.value
 
-          val result: EitherType[Option[LimitDomain]] = UserAnswersReader[Option[LimitDomain]](
-            AuthorisationsAndLimitDomain.limitReader(authorisationsDomain)
-          ).run(userAnswers)
+          val result = AuthorisationsAndLimitDomain.limitReader(authorisationsDomain).apply(Nil).run(userAnswers)
 
-          result.value mustBe None
+          result.value.value mustBe None
         }
       }
 
@@ -84,11 +78,9 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
               .setValue(AuthorisationTypePage(authorisationIndex), authTypeACR)
               .setValue(AuthorisationReferenceNumberPage(authorisationIndex), authRefNumber)
 
-            val authorisationsDomain = AuthorisationsDomain.userAnswersReader.run(userAnswers).value
+            val authorisationsDomain = AuthorisationsDomain.userAnswersReader.apply(Nil).run(userAnswers).value.value
 
-            val result: EitherType[Option[LimitDomain]] = UserAnswersReader[Option[LimitDomain]](
-              AuthorisationsAndLimitDomain.limitReader(authorisationsDomain)
-            ).run(userAnswers)
+            val result = AuthorisationsAndLimitDomain.limitReader(authorisationsDomain).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe LimitDatePage
           }

@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import pages.sections.transportMeans.TransportMeansActiveSection
+import pages.sections.transportMeans.ActiveSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
@@ -50,13 +50,13 @@ class ConfirmRemoveBorderTransportController @Inject() (
     formProvider("transportMeans.active.confirmRemoveBorderTransport", activeIndex.display)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
-    .requireIndex(lrn, TransportMeansActiveSection(activeIndex), addAnother(lrn, mode)) {
+    .requireIndex(lrn, ActiveSection(activeIndex), addAnother(lrn, mode)) {
       implicit request =>
         Ok(view(form(activeIndex), lrn, mode, activeIndex))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index): Action[AnyContent] = actions
-    .requireIndex(lrn, TransportMeansActiveSection(activeIndex), addAnother(lrn, mode))
+    .requireIndex(lrn, ActiveSection(activeIndex), addAnother(lrn, mode))
     .async {
       implicit request =>
         form(activeIndex)
@@ -65,7 +65,7 @@ class ConfirmRemoveBorderTransportController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex))),
             {
               case true =>
-                TransportMeansActiveSection(activeIndex)
+                ActiveSection(activeIndex)
                   .removeFromUserAnswers()
                   .updateTask()
                   .writeToSession()

@@ -23,7 +23,6 @@ import controllers.authorisationsAndLimit.authorisations.{routes => authorisatio
 import forms.Constants.maxAuthorisationRefNumberLength
 import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
-import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.Stage
 import models.reference.InlandMode
 import models.reference.authorisations.AuthorisationType
@@ -73,11 +72,9 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                 referenceNumber = referenceNumber
               )(authorisationIndex)
 
-              val result: EitherType[AuthorisationDomain] =
-                UserAnswersReader[AuthorisationDomain](AuthorisationDomain.userAnswersReader(authorisationIndex))
-                  .run(userAnswers)
+              val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
         }
 
@@ -102,10 +99,9 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                   referenceNumber = referenceNumber
                 )(authorisationIndex)
 
-                val result: EitherType[AuthorisationDomain] = UserAnswersReader[AuthorisationDomain](AuthorisationDomain.userAnswersReader(authorisationIndex))
-                  .run(userAnswers)
+                val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
             }
           }
 
@@ -128,11 +124,9 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                     referenceNumber = referenceNumber
                   )(authorisationIndex)
 
-                  val result: EitherType[AuthorisationDomain] =
-                    UserAnswersReader[AuthorisationDomain](AuthorisationDomain.userAnswersReader(authorisationIndex))
-                      .run(userAnswers)
+                  val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                  result.value.value mustBe expectedResult
               }
             }
 
@@ -152,11 +146,9 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                     referenceNumber = referenceNumber
                   )(authorisationIndex)
 
-                  val result: EitherType[AuthorisationDomain] =
-                    UserAnswersReader[AuthorisationDomain](AuthorisationDomain.userAnswersReader(authorisationIndex))
-                      .run(userAnswers)
+                  val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-                  result.value mustBe expectedResult
+                  result.value.value mustBe expectedResult
               }
             }
           }
@@ -180,11 +172,9 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                 referenceNumber = referenceNumber
               )(authorisationIndex)
 
-              val result: EitherType[AuthorisationDomain] =
-                UserAnswersReader[AuthorisationDomain](AuthorisationDomain.userAnswersReader(authorisationIndex))
-                  .run(userAnswers)
+              val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
           }
 
         }
@@ -203,9 +193,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                   .setValue(InlandModePage, inlandMode)
                   .setValue(AddAuthorisationsYesNoPage, true)
 
-                val result: EitherType[AuthorisationDomain] = UserAnswersReader[AuthorisationDomain](
-                  AuthorisationDomain.userAnswersReader(index)
-                ).run(userAnswers)
+                val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe AuthorisationTypePage(index)
             }
@@ -222,9 +210,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                   .setValue(DeclarationTypePage, TIR)
                   .setValue(InlandModePage, inlandMode)
 
-                val result: EitherType[AuthorisationDomain] = UserAnswersReader[AuthorisationDomain](
-                  AuthorisationDomain.userAnswersReader(index)
-                ).run(userAnswers)
+                val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe AuthorisationTypePage(index)
             }
@@ -246,9 +232,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                     .setValue(InlandModePage, inlandMode)
                     .setValue(InferredAuthorisationTypePage(authorisationIndex), authTypeTRD)
 
-                  val result: EitherType[AuthorisationDomain] = UserAnswersReader[AuthorisationDomain](
-                    AuthorisationDomain.userAnswersReader(index)
-                  ).run(userAnswers)
+                  val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe AuthorisationReferenceNumberPage(index)
               }
@@ -268,9 +252,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                       .setValue(InlandModePage, inlandMode)
                       .setValue(InferredAuthorisationTypePage(authorisationIndex), authTypeACR)
 
-                    val result: EitherType[AuthorisationDomain] = UserAnswersReader[AuthorisationDomain](
-                      AuthorisationDomain.userAnswersReader(index)
-                    ).run(userAnswers)
+                    val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
                     result.left.value.page mustBe AuthorisationReferenceNumberPage(index)
                 }

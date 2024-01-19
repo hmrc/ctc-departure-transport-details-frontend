@@ -20,6 +20,7 @@ import config.PhaseConfig
 import controllers.actions._
 import models.{LocalReferenceNumber, Mode}
 import navigation.TransportNavigatorProvider
+import pages.sections.transportMeans.TransportMeansSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -47,6 +48,6 @@ class TransportMeansCheckYourAnswersController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
+      Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(TransportMeansSection)))
   }
 }

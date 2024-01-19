@@ -16,19 +16,18 @@
 
 package models.journeyDomain.equipment
 
-import cats.implicits._
-import controllers.equipment.index.routes
-import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JsArrayGettableAsReaderOps, UserAnswersReader}
+import models.domain._
 import models.journeyDomain.equipment.seal.SealsDomain
-import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, Phase, ProcedureType, UserAnswers}
+import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
+import models.{Index, ProcedureType}
 import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
 import pages.equipment.index._
 import pages.external.ProcedureTypePage
 import pages.preRequisites.ContainerIndicatorPage
+import pages.sections.Section
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
+import pages.sections.equipment.EquipmentSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 
 case class EquipmentDomain(
   containerId: Option[String],
@@ -46,8 +45,7 @@ case class EquipmentDomain(
       messages("equipment.value.withoutIndex.withContainer", _)
     )
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
-    Some(routes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, index))
+  override def page: Option[Section[_]] = Some(EquipmentSection(index))
 }
 
 object EquipmentDomain {
@@ -59,36 +57,37 @@ object EquipmentDomain {
       messages("equipment.value.withIndex.withContainer", index.display, _)
     )
 
-  implicit def userAnswersReader(equipmentIndex: Index): UserAnswersReader[EquipmentDomain] =
+  implicit def userAnswersReader(equipmentIndex: Index): Read[EquipmentDomain] =
     (
       containerIdReads(equipmentIndex),
       sealsReads(equipmentIndex)
-    ).tupled.map((EquipmentDomain.apply _).tupled).map(_(equipmentIndex))
+    ).map(EquipmentDomain.apply(_, _)(equipmentIndex))
 
-  def containerIdReads(equipmentIndex: Index): UserAnswersReader[Option[String]] =
-    ContainerIndicatorPage.reader.map(_.value).flatMap {
-      case Some(true) if equipmentIndex.isFirst =>
-        ContainerIdentificationNumberPage(equipmentIndex).reader.map(Option(_))
-      case Some(true) =>
-        AddContainerIdentificationNumberYesNoPage(equipmentIndex).filterOptionalDependent(identity) {
-          ContainerIdentificationNumberPage(equipmentIndex).reader
-        }
-      case _ =>
-        none[String].pure[UserAnswersReader]
+  def containerIdReads(equipmentIndex: Index): Read[Option[String]] =
+    ContainerIndicatorPage.reader.apply(_).map(_.to(_.value)).flatMap {
+      case ReaderSuccess(Some(true), pages) if equipmentIndex.isFirst =>
+        ContainerIdentificationNumberPage(equipmentIndex).reader.toOption.apply(pages)
+      case ReaderSuccess(Some(true), pages) =>
+        AddContainerIdentificationNumberYesNoPage(equipmentIndex)
+          .filterOptionalDependent(identity) {
+            ContainerIdentificationNumberPage(equipmentIndex).reader
+          }
+          .apply(pages)
+      case ReaderSuccess(_, pages) =>
+        UserAnswersReader.none.apply(pages)
     }
 
-  def sealsReads(equipmentIndex: Index): UserAnswersReader[Option[SealsDomain]] = for {
-    procedureType      <- ProcedureTypePage.reader
-    authorisationTypes <- AuthorisationsSection.fieldReader(AuthorisationTypePage)
-    hasSSEAuthorisation = authorisationTypes.exists(_.isSSE)
-    reader <- (procedureType, hasSSEAuthorisation) match {
-      case (ProcedureType.Simplified, true) =>
-        UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(equipmentIndex)).map(Option(_))
+  def sealsReads(equipmentIndex: Index): Read[Option[SealsDomain]] =
+    (
+      ProcedureTypePage.reader,
+      AuthorisationsSection.fieldReader(AuthorisationTypePage)
+    ).apply {
+      case (ProcedureType.Simplified, authorisationTypes) if authorisationTypes.exists(_.isSSE) =>
+        SealsDomain.userAnswersReader(equipmentIndex).toOption
       case _ =>
         AddSealYesNoPage(equipmentIndex).filterOptionalDependent(identity) {
-          UserAnswersReader[SealsDomain](SealsDomain.userAnswersReader(equipmentIndex))
+          SealsDomain.userAnswersReader(equipmentIndex)
         }
     }
-  } yield reader
 
 }

@@ -45,5 +45,5 @@ class SealNavigator(override val mode: Mode, equipmentIndex: Index, sealIndex: I
   override type T = SealDomain
 
   implicit override val reader: UserAnswersReader[SealDomain] =
-    SealDomain.userAnswersReader(equipmentIndex, sealIndex)
+    SealDomain.userAnswersReader(equipmentIndex, sealIndex).apply(Nil)
 }

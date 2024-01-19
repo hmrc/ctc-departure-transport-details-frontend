@@ -18,8 +18,8 @@ package models.journeyDomain.equipment
 
 import cats.implicits._
 import config.Constants.SecurityType._
-import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
-import models.journeyDomain.JourneyDomainModel
+import models.domain._
+import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
 import models.reference.equipment.PaymentMethod
 import pages.equipment._
 import pages.external.SecurityDetailsTypePage
@@ -32,25 +32,30 @@ case class EquipmentsAndChargesDomain(
 
 object EquipmentsAndChargesDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[EquipmentsAndChargesDomain] = (
+  implicit val userAnswersReader: Read[EquipmentsAndChargesDomain] = (
     equipmentsReader,
     chargesReader
-  ).tupled.map((EquipmentsAndChargesDomain.apply _).tupled)
+  ).map(EquipmentsAndChargesDomain.apply)
 
-  implicit lazy val equipmentsReader: UserAnswersReader[Option[EquipmentsDomain]] =
-    ContainerIndicatorPage.reader.map(_.value).flatMap {
-      case Some(true) =>
-        UserAnswersReader[EquipmentsDomain].map(Option(_))
-      case Some(false) =>
-        AddTransportEquipmentYesNoPage.filterOptionalDependent(identity) {
-          UserAnswersReader[EquipmentsDomain]
-        }
-      case None =>
-        none[EquipmentsDomain].pure[UserAnswersReader]
+  lazy val equipmentsReader: Read[Option[EquipmentsDomain]] =
+    ContainerIndicatorPage.reader.apply(_).map(_.to(_.value)).flatMap {
+      case ReaderSuccess(Some(true), pages) =>
+        EquipmentsDomain.userAnswersReader.toOption.apply(pages)
+      case ReaderSuccess(Some(false), pages) =>
+        AddTransportEquipmentYesNoPage
+          .filterOptionalDependent(identity) {
+            EquipmentsDomain.userAnswersReader
+          }
+          .apply(pages)
+      case ReaderSuccess(None, pages) =>
+        UserAnswersReader.none.apply(pages)
     }
 
-  implicit lazy val chargesReader: UserAnswersReader[Option[PaymentMethod]] = SecurityDetailsTypePage.reader.flatMap {
-    case NoSecurityDetails => none[PaymentMethod].pure[UserAnswersReader]
-    case _                 => AddPaymentMethodYesNoPage.filterOptionalDependent(identity)(PaymentMethodPage.reader)
-  }
+  lazy val chargesReader: Read[Option[PaymentMethod]] =
+    SecurityDetailsTypePage.reader.apply(_).flatMap {
+      case ReaderSuccess(NoSecurityDetails, pages) =>
+        UserAnswersReader.none.apply(pages)
+      case ReaderSuccess(_, pages) =>
+        AddPaymentMethodYesNoPage.filterOptionalDependent(identity)(PaymentMethodPage.reader).apply(pages)
+    }
 }

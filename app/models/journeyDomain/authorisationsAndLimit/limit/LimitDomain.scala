@@ -16,7 +16,7 @@
 
 package models.journeyDomain.authorisationsAndLimit.limit
 
-import models.domain.{GettableAsReaderOps, UserAnswersReader}
+import models.domain._
 import models.journeyDomain.JourneyDomainModel
 import pages.authorisationsAndLimit.limit.LimitDatePage
 
@@ -26,6 +26,6 @@ case class LimitDomain(limitDate: LocalDate) extends JourneyDomainModel
 
 object LimitDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[LimitDomain] =
+  implicit val userAnswersReader: Read[LimitDomain] =
     LimitDatePage.reader.map(LimitDomain.apply)
 }

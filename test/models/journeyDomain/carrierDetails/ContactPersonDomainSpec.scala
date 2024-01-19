@@ -19,7 +19,6 @@ package models.journeyDomain.carrierDetails
 import base.SpecBase
 import commonTestUtils.UserAnswersSpecHelper
 import generators.Generators
-import models.domain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import pages.carrierDetails.contact._
 
@@ -42,9 +41,9 @@ class ContactPersonDomainSpec extends SpecBase with UserAnswersSpecHelper with G
           telephoneNumber = telephoneNumber
         )
 
-        val result: EitherType[ContactPersonDomain] = UserAnswersReader[ContactPersonDomain].run(userAnswers)
+        val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
       }
     }
 
@@ -56,7 +55,7 @@ class ContactPersonDomainSpec extends SpecBase with UserAnswersSpecHelper with G
         val userAnswers = emptyUserAnswers
           .setValue(TelephoneNumberPage, telephoneNumber)
 
-        val result: EitherType[ContactPersonDomain] = UserAnswersReader[ContactPersonDomain].run(userAnswers)
+        val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe NamePage
       }
@@ -67,7 +66,7 @@ class ContactPersonDomainSpec extends SpecBase with UserAnswersSpecHelper with G
         val userAnswers = emptyUserAnswers
           .setValue(NamePage, name)
 
-        val result: EitherType[ContactPersonDomain] = UserAnswersReader[ContactPersonDomain].run(userAnswers)
+        val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe TelephoneNumberPage
       }

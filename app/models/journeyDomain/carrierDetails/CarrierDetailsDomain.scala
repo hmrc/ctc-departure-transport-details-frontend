@@ -16,21 +16,21 @@
 
 package models.journeyDomain.carrierDetails
 
-import cats.implicits._
-import models.domain.{UserAnswersReader, _}
+import models.domain._
+import models.journeyDomain.JourneyDomainModel
 import pages.carrierDetails._
 
 case class CarrierDetailsDomain(
   identificationNumber: String,
   contactPerson: Option[ContactPersonDomain]
-)
+) extends JourneyDomainModel
 
 object CarrierDetailsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[CarrierDetailsDomain] =
+  implicit val userAnswersReader: Read[CarrierDetailsDomain] =
     (
       IdentificationNumberPage.reader,
-      AddContactYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[ContactPersonDomain])
-    ).tupled.map((CarrierDetailsDomain.apply _).tupled)
+      AddContactYesNoPage.filterOptionalDependent(identity)(ContactPersonDomain.userAnswersReader)
+    ).map(CarrierDetailsDomain.apply)
 
 }

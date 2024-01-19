@@ -16,13 +16,18 @@
 
 package pages.sections.transportMeans
 
-import pages.sections.Section
-import pages.sections.TransportSection
+import controllers.transportMeans.routes
+import models.{Mode, UserAnswers}
+import pages.sections.{Section, TransportSection}
 import play.api.libs.json.{JsObject, JsPath}
+import play.api.mvc.Call
 
-case object TransportMeansDepartureSection extends Section[JsObject] {
+case object TransportMeansSection extends Section[JsObject] {
 
   override def path: JsPath = TransportSection.path \ toString
 
-  override def toString: String = "transportMeansDeparture"
+  override def toString: String = "transportMeans"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.TransportMeansCheckYourAnswersController.onPageLoad(userAnswers.lrn, mode))
 }

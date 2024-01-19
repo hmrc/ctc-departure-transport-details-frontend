@@ -19,8 +19,8 @@ package controllers.equipment.index
 import com.google.inject.Inject
 import controllers.actions.Actions
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.EquipmentsNavigatorProvider
+import navigation.{EquipmentsNavigatorProvider, UserAnswersNavigator}
+import pages.sections.equipment.EquipmentSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -46,7 +46,7 @@ class EquipmentAnswersController @Inject() (
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
       implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-      Redirect(navigator.nextPage(request.userAnswers))
+      Redirect(navigator.nextPage(request.userAnswers, Some(EquipmentSection(equipmentIndex))))
   }
 
 }

@@ -19,7 +19,6 @@ package models.journeyDomain.equipment
 import base.SpecBase
 import generators.{Generators, UserAnswersGenerator}
 import models.Index
-import models.domain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
@@ -36,15 +35,15 @@ class EquipmentsDomainSpec extends SpecBase with ScalaCheckPropertyChecks with G
             arbitraryEquipmentAnswers(acc, Index(i)).sample.value
         }
 
-        val result: EitherType[EquipmentsDomain] = UserAnswersReader[EquipmentsDomain].run(userAnswers)
+        val result = EquipmentsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value.size mustBe numberOfEquipments
+        result.value.value.value.size mustBe numberOfEquipments
       }
     }
 
     "can not be read from user answers" - {
       "when there aren't any equipments" in {
-        val result: EitherType[EquipmentsDomain] = UserAnswersReader[EquipmentsDomain].run(emptyUserAnswers)
+        val result = EquipmentsDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
         result.isLeft mustBe true
       }

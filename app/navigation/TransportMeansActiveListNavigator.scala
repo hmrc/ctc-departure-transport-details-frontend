@@ -44,5 +44,5 @@ class TransportMeansActiveListNavigator(override val mode: Mode)(implicit overri
   override type T = TransportMeansActiveListDomain
 
   implicit override val reader: UserAnswersReader[TransportMeansActiveListDomain] =
-    TransportMeansActiveListDomain.userAnswersReader
+    TransportMeansActiveListDomain.userAnswersReader.apply(Nil)
 }

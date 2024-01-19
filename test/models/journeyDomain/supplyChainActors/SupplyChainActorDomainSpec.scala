@@ -19,7 +19,6 @@ package models.journeyDomain.supplyChainActors
 import base.SpecBase
 import generators.Generators
 import models.Index
-import models.domain.{EitherType, UserAnswersReader}
 import models.reference.supplyChainActors.SupplyChainActorType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -44,19 +43,15 @@ class SupplyChainActorDomainSpec extends SpecBase with Generators {
           identification = identificationNumber
         )(index)
 
-        val result: EitherType[SupplyChainActorDomain] = UserAnswersReader[SupplyChainActorDomain](SupplyChainActorDomain.userAnswersReader(index))
-          .run(userAnswers)
+        val result = SupplyChainActorDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
       }
     }
 
     "cannot be parsed from user answers" - {
       "when no supply chain actors" in {
-        val userAnswers = emptyUserAnswers
-
-        val result: EitherType[SupplyChainActorDomain] = UserAnswersReader[SupplyChainActorDomain](SupplyChainActorDomain.userAnswersReader(index))
-          .run(userAnswers)
+        val result = SupplyChainActorDomain.userAnswersReader(index).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe SupplyChainActorTypePage(Index(0))
       }

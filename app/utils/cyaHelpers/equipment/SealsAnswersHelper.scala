@@ -41,7 +41,7 @@ class SealsAnswersHelper(
           nameWhenComplete = _.identificationNumber,
           nameWhenInProgress = userAnswers.get(IdentificationNumberPage(equipmentIndex, sealIndex)),
           removeRoute = Some(routes.RemoveSealYesNoController.onPageLoad(lrn, mode, equipmentIndex, sealIndex))
-        )(SealDomain.userAnswersReader(equipmentIndex, sealIndex))
+        )(SealDomain.userAnswersReader(equipmentIndex, sealIndex).apply(Nil))
     }.checkRemoveLinks(userAnswers.get(AddSealYesNoPage(equipmentIndex)).isEmpty)
 
 }

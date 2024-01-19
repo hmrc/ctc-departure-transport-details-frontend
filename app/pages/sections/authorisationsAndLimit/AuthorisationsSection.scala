@@ -16,12 +16,18 @@
 
 package pages.sections.authorisationsAndLimit
 
+import controllers.authorisationsAndLimit.authorisations.routes
+import models.{Mode, UserAnswers}
 import pages.sections.Section
 import play.api.libs.json.{JsArray, JsPath}
+import play.api.mvc.Call
 
 case object AuthorisationsSection extends Section[JsArray] {
 
   override def path: JsPath = AuthorisationsAndLimitSection.path \ toString
 
   override def toString: String = "authorisations"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.lrn, mode))
 }

@@ -17,7 +17,6 @@
 package models.journeyDomain.equipment.seals
 
 import base.SpecBase
-import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.equipment.seal.SealDomain
 import org.scalacheck.Gen
 import pages.equipment.index.seals.IdentificationNumberPage
@@ -35,17 +34,15 @@ class SealDomainSpec extends SpecBase {
 
         val expectedResult = SealDomain(idNumber)(equipmentIndex, sealIndex)
 
-        val result: EitherType[SealDomain] =
-          UserAnswersReader[SealDomain](SealDomain.userAnswersReader(equipmentIndex, sealIndex)).run(userAnswers)
+        val result = SealDomain.userAnswersReader(equipmentIndex, sealIndex).apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
       }
     }
 
     "can not be read from user answers" - {
       "when seal identification page is unanswered" in {
-        val result: EitherType[SealDomain] =
-          UserAnswersReader[SealDomain](SealDomain.userAnswersReader(equipmentIndex, sealIndex)).run(emptyUserAnswers)
+        val result = SealDomain.userAnswersReader(equipmentIndex, sealIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe IdentificationNumberPage(equipmentIndex, sealIndex)
       }

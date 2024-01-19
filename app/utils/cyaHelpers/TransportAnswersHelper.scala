@@ -113,7 +113,7 @@ class TransportAnswersHelper(
     prefix = "checkYourAnswers.authorisation",
     id = Some(s"change-authorisation-${index.display}"),
     args = index.display
-  )(AuthorisationDomain.userAnswersReader(index))
+  )(AuthorisationDomain.userAnswersReader(index).apply(Nil))
 
   def addOrRemoveAuthorisations: Option[Link] = buildLink(AuthorisationsSection) {
     Link(
@@ -138,7 +138,7 @@ class TransportAnswersHelper(
     prefix = "checkYourAnswers.supplyChainActor",
     id = Some(s"change-supply-chain-actor-${index.display}"),
     args = index.display
-  )(SupplyChainActorDomain.userAnswersReader(index))
+  )(SupplyChainActorDomain.userAnswersReader(index).apply(Nil))
 
   def addOrRemoveSupplyChainActors: Option[Link] = buildLink(SupplyChainActorsSection) {
     Link(
@@ -212,7 +212,7 @@ class TransportAnswersHelper(
     prefix = "checkYourAnswers.equipment",
     id = Some(s"change-transport-equipment-${index.display}"),
     args = index.display
-  )(EquipmentDomain.userAnswersReader(index))
+  )(EquipmentDomain.userAnswersReader(index).apply(Nil))
 
   def addOrRemoveEquipments: Option[Link] = buildLink(EquipmentsSection) {
     Link(

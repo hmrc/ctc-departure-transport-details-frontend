@@ -43,5 +43,5 @@ class AuthorisationNavigator(override val mode: Mode, index: Index)(implicit ove
   override type T = AuthorisationDomain
 
   implicit override val reader: UserAnswersReader[AuthorisationDomain] =
-    AuthorisationDomain.userAnswersReader(index)
+    AuthorisationDomain.userAnswersReader(index).apply(Nil)
 }

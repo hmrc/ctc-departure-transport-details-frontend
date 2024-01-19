@@ -19,7 +19,6 @@ package models.journeyDomain.transportMeans
 import base.SpecBase
 import generators.Generators
 import models.Index
-import models.domain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 
 class TransportMeansActiveListDomainSpec extends SpecBase with Generators {
@@ -35,9 +34,9 @@ class TransportMeansActiveListDomainSpec extends SpecBase with Generators {
           arbitraryTransportMeansActiveAnswers(updatedUserAnswers, Index(index)).sample.value
       })
 
-      val result: EitherType[TransportMeansActiveListDomain] = UserAnswersReader[TransportMeansActiveListDomain].run(userAnswers)
+      val result = TransportMeansActiveListDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.transportMeansActiveListDomain.length mustBe numberOfActiveBorderMeans
+      result.value.value.transportMeansActiveListDomain.length mustBe numberOfActiveBorderMeans
 
     }
   }

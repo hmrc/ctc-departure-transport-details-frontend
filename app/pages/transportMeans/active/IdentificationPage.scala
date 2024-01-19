@@ -20,7 +20,7 @@ import controllers.transportMeans.active.routes
 import models.reference.transportMeans.active.Identification
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transportMeans.TransportMeansActiveSection
+import pages.sections.transportMeans.ActiveSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,7 +28,7 @@ import scala.util.Try
 
 abstract class BaseIdentificationPage(index: Index) extends QuestionPage[Identification] {
 
-  override def path: JsPath = TransportMeansActiveSection(index).path \ toString
+  override def path: JsPath = ActiveSection(index).path \ toString
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.IdentificationController.onPageLoad(userAnswers.lrn, mode, index))

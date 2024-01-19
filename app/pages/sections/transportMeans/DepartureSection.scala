@@ -16,12 +16,10 @@
 
 package pages.sections.transportMeans
 
-import models.Index
 import pages.sections.Section
 import play.api.libs.json.{JsObject, JsPath}
 
-case class TransportMeansActiveSection(index: Index) extends Section[JsObject] {
+case object DepartureSection extends Section[JsObject] {
 
-  override def path: JsPath = TransportMeansActiveListSection.path \ index.position
-
+  override def path: JsPath = DeparturesSection.path \ 0
 }
