@@ -17,8 +17,8 @@
 package pages.transportMeans
 
 import pages.behaviours.PageBehaviours
-import pages.sections.transportMeans.DepartureSection
-import play.api.libs.json.Json
+import pages.sections.transportMeans.DeparturesSection
+import play.api.libs.json.{JsArray, Json}
 
 class AddDepartureTransportMeansYesNoPageSpec extends PageBehaviours {
 
@@ -32,13 +32,13 @@ class AddDepartureTransportMeansYesNoPageSpec extends PageBehaviours {
 
     "cleanup" - {
       "when no selected" - {
-        "must remove active border means of transport" in {
+        "must remove departure means of transport" in {
           val userAnswers = emptyUserAnswers
-            .setValue(DepartureSection, Json.obj("foo" -> "bar"))
+            .setValue(DeparturesSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
 
           val result = userAnswers.setValue(AddDepartureTransportMeansYesNoPage, false)
 
-          result.get(DepartureSection) must not be defined
+          result.get(DeparturesSection) must not be defined
         }
       }
     }

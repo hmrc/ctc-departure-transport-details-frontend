@@ -19,7 +19,7 @@ package pages.transportMeans
 import controllers.transportMeans.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transportMeans.{DepartureSection, TransportMeansSection}
+import pages.sections.transportMeans.{DeparturesSection, TransportMeansSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -35,7 +35,7 @@ case object AddDepartureTransportMeansYesNoPage extends QuestionPage[Boolean] {
     Some(routes.AddDepartureTransportMeansYesNoController.onPageLoad(userAnswers.lrn, mode))
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
-    case Some(false) => userAnswers.remove(DepartureSection)
+    case Some(false) => userAnswers.remove(DeparturesSection)
     case _           => super.cleanup(value, userAnswers)
   }
 }
