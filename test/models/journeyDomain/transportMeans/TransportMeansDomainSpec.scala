@@ -51,6 +51,9 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe AddDepartureTransportMeansYesNoPage
+            result.left.value.pages mustBe Seq(
+              AddDepartureTransportMeansYesNoPage
+            )
           }
 
           "and add departures transport means yes/no is yes" - {
@@ -61,7 +64,11 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
               val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe pages.transportMeans.departure.AddIdentificationTypeYesNoPage
+              result.left.value.page mustBe departure.AddIdentificationTypeYesNoPage
+              result.left.value.pages mustBe Seq(
+                AddDepartureTransportMeansYesNoPage,
+                departure.AddIdentificationTypeYesNoPage
+              )
             }
           }
         }
@@ -70,11 +77,13 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
           "and type of identification is unanswered" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.no)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe pages.transportMeans.departure.IdentificationPage
+            result.left.value.page mustBe departure.IdentificationPage
+            result.left.value.pages mustBe Seq(
+              departure.IdentificationPage
+            )
           }
         }
       }

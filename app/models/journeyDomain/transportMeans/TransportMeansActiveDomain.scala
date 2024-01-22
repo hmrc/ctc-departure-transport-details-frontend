@@ -22,7 +22,7 @@ import config.PhaseConfig
 import models.domain._
 import models.journeyDomain.{JourneyDomainModel, ReaderSuccess, Stage}
 import models.reference.transportMeans.active.Identification
-import models.reference.{BorderMode, CustomsOffice, Nationality}
+import models.reference.{CustomsOffice, Nationality}
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.external.SecurityDetailsTypePage
 import pages.sections.Section
@@ -57,12 +57,12 @@ object TransportMeansActiveDomain {
         PostTransitionTransportMeansActiveDomain.userAnswersReader(index)
     }
 
-  def conveyanceReader(index: Index)(borderModeReader: => Read[Option[BorderMode]]): Read[Option[String]] =
+  def conveyanceReader(index: Index): Read[Option[String]] =
     (
       SecurityDetailsTypePage.reader.apply(_: Pages).map(_.to(_ == NoSecurityDetails)),
-      borderModeReader.apply(_: Pages).map(_.to(_.map(_.isAir)))
+      BorderModeOfTransportPage.optionalReader.apply(_: Pages).map(_.to(_.exists(_.isAir)))
     ).apply {
-      case (false, Some(true)) =>
+      case (false, true) =>
         ConveyanceReferenceNumberPage(index).reader.toOption
       case _ =>
         ConveyanceReferenceNumberYesNoPage(index).filterOptionalDependent(identity)(ConveyanceReferenceNumberPage(index).reader)
@@ -92,7 +92,7 @@ object TransitionTransportMeansActiveDomain {
       identificationReader(index),
       identificationNumberReader(index),
       CustomsOfficeActiveBorderPage(index).reader,
-      conveyanceReader(index)
+      TransportMeansActiveDomain.conveyanceReader(index)
     ).map(TransitionTransportMeansActiveDomain.apply(_, _, _, _, _)(index))
 
   def nationalityReader(index: Index): Read[Option[Nationality]] =
@@ -130,9 +130,6 @@ object TransitionTransportMeansActiveDomain {
           AddVehicleIdentificationNumberYesNoPage(index).filterOptionalDependent(identity)(IdentificationNumberPage(index).reader)
         }
     }
-
-  def conveyanceReader(index: Index): Read[Option[String]] =
-    TransportMeansActiveDomain.conveyanceReader(index)(BorderModeOfTransportPage.optionalReader)
 }
 
 case class PostTransitionTransportMeansActiveDomain(
@@ -168,6 +165,6 @@ object PostTransitionTransportMeansActiveDomain {
       IdentificationNumberPage(index).reader,
       AddNationalityYesNoPage(index).filterOptionalDependent(identity)(NationalityPage(index).reader),
       CustomsOfficeActiveBorderPage(index).reader,
-      TransportMeansActiveDomain.conveyanceReader(index)(BorderModeOfTransportPage.reader.toOption)
+      TransportMeansActiveDomain.conveyanceReader(index)
     ).map(PostTransitionTransportMeansActiveDomain.apply(_, _, _, _, _)(index))
 }

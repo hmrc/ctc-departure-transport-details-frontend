@@ -52,6 +52,7 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
           val result = AuthorisationsAndLimitDomain.limitReader(authorisationsDomain).apply(Nil).run(userAnswers)
 
           result.value.value mustBe None
+          result.value.pages mustBe Nil
         }
 
         "when additional declaration type is D" in {
@@ -67,6 +68,7 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
           val result = AuthorisationsAndLimitDomain.limitReader(authorisationsDomain).apply(Nil).run(userAnswers)
 
           result.value.value mustBe None
+          result.value.pages mustBe Nil
         }
       }
 
@@ -83,6 +85,9 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
             val result = AuthorisationsAndLimitDomain.limitReader(authorisationsDomain).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe LimitDatePage
+            result.left.value.pages mustBe Seq(
+              LimitDatePage
+            )
           }
         }
       }

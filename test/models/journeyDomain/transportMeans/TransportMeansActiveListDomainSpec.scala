@@ -20,6 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
+import pages.sections.transportMeans.ActiveSection
 
 class TransportMeansActiveListDomainSpec extends SpecBase with Generators {
 
@@ -37,7 +38,7 @@ class TransportMeansActiveListDomainSpec extends SpecBase with Generators {
       val result = TransportMeansActiveListDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
       result.value.value.transportMeansActiveListDomain.length mustBe numberOfActiveBorderMeans
-
+      result.value.pages.last mustBe ActiveSection(Index(numberOfActiveBorderMeans - 1))
     }
   }
 }

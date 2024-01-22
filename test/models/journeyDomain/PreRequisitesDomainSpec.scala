@@ -55,6 +55,13 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
         val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          SameUcrYesNoPage,
+          UniqueConsignmentReferencePage,
+          TransportedToSameCountryYesNoPage,
+          ItemsDestinationCountryPage,
+          ContainerIndicatorPage
+        )
       }
 
       "when TIR declaration type" - {
@@ -78,6 +85,14 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
           result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            SameUcrYesNoPage,
+            SameCountryOfDispatchYesNoPage,
+            CountryOfDispatchPage,
+            TransportedToSameCountryYesNoPage,
+            ItemsDestinationCountryPage,
+            ContainerIndicatorPage
+          )
         }
 
         "when not using the same country of dispatch" in {
@@ -99,8 +114,14 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
           result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            SameUcrYesNoPage,
+            SameCountryOfDispatchYesNoPage,
+            TransportedToSameCountryYesNoPage,
+            ItemsDestinationCountryPage,
+            ContainerIndicatorPage
+          )
         }
-
       }
     }
 
@@ -109,6 +130,9 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
         val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe SameUcrYesNoPage
+        result.left.value.pages mustBe Seq(
+          SameUcrYesNoPage
+        )
       }
 
       "when mandatory page is missing" - {

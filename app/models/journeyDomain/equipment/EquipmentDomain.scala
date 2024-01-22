@@ -64,7 +64,7 @@ object EquipmentDomain {
     ).map(EquipmentDomain.apply(_, _)(equipmentIndex))
 
   def containerIdReads(equipmentIndex: Index): Read[Option[String]] =
-    ContainerIndicatorPage.reader.apply(_).map(_.to(_.value)).flatMap {
+    ContainerIndicatorPage.optionalReader.apply(_).map(_.to(_.flatMap(_.value))).flatMap {
       case ReaderSuccess(Some(true), pages) if equipmentIndex.isFirst =>
         ContainerIdentificationNumberPage(equipmentIndex).reader.toOption.apply(pages)
       case ReaderSuccess(Some(true), pages) =>

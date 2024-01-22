@@ -29,6 +29,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
 import pages.sections.external.OfficesOfTransitSection
+import pages.sections.transportMeans.ActiveSection
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.active._
 import play.api.libs.json.{JsArray, Json}
@@ -93,6 +94,16 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
             result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              IdentificationPage(index),
+              IdentificationNumberPage(index),
+              AddNationalityYesNoPage(index),
+              NationalityPage(index),
+              CustomsOfficeActiveBorderPage(index),
+              ConveyanceReferenceNumberYesNoPage(index),
+              ConveyanceReferenceNumberPage(index),
+              ActiveSection(index)
+            )
           }
 
           "and security detail type is 1 and inland mode is Air" in {
@@ -120,6 +131,15 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.value.value mustBe expectedResult
+                result.value.pages mustBe Seq(
+                  IdentificationPage(index),
+                  IdentificationNumberPage(index),
+                  AddNationalityYesNoPage(index),
+                  NationalityPage(index),
+                  CustomsOfficeActiveBorderPage(index),
+                  ConveyanceReferenceNumberPage(index),
+                  ActiveSection(index)
+                )
             }
           }
         }
@@ -146,6 +166,14 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
             result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              IdentificationPage(index),
+              IdentificationNumberPage(index),
+              AddNationalityYesNoPage(index),
+              CustomsOfficeActiveBorderPage(index),
+              ConveyanceReferenceNumberYesNoPage(index),
+              ActiveSection(index)
+            )
           }
         }
       }
@@ -160,6 +188,9 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe IdentificationPage(index)
+                result.left.value.pages mustBe Seq(
+                  IdentificationPage(index)
+                )
             }
           }
         }
@@ -173,6 +204,10 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe AddNationalityYesNoPage(index)
+          result.left.value.pages mustBe Seq(
+            IdentificationNumberPage(index),
+            AddNationalityYesNoPage(index)
+          )
         }
 
         "when nationality is unanswered" in {
@@ -185,6 +220,12 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe NationalityPage(index)
+          result.left.value.pages mustBe Seq(
+            IdentificationPage(index),
+            IdentificationNumberPage(index),
+            AddNationalityYesNoPage(index),
+            NationalityPage(index)
+          )
         }
 
         "when customs office ref. number is unanswered" - {
@@ -199,6 +240,12 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe CustomsOfficeActiveBorderPage(index)
+            result.left.value.pages mustBe Seq(
+              IdentificationNumberPage(index),
+              AddNationalityYesNoPage(index),
+              NationalityPage(index),
+              CustomsOfficeActiveBorderPage(index)
+            )
           }
 
           "and add nationality is false" in {
@@ -211,6 +258,11 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe CustomsOfficeActiveBorderPage(index)
+            result.left.value.pages mustBe Seq(
+              IdentificationNumberPage(index),
+              AddNationalityYesNoPage(index),
+              CustomsOfficeActiveBorderPage(index)
+            )
           }
         }
 
@@ -231,6 +283,13 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe ConveyanceReferenceNumberPage(index)
+                result.left.value.pages mustBe Seq(
+                  IdentificationPage(index),
+                  IdentificationNumberPage(index),
+                  AddNationalityYesNoPage(index),
+                  CustomsOfficeActiveBorderPage(index),
+                  ConveyanceReferenceNumberPage(index)
+                )
             }
           }
 
@@ -251,6 +310,13 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe ConveyanceReferenceNumberYesNoPage(index)
+                result.left.value.pages mustBe Seq(
+                  IdentificationPage(index),
+                  IdentificationNumberPage(index),
+                  AddNationalityYesNoPage(index),
+                  CustomsOfficeActiveBorderPage(index),
+                  ConveyanceReferenceNumberYesNoPage(index)
+                )
             }
           }
         }
@@ -271,6 +337,13 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe ConveyanceReferenceNumberYesNoPage(index)
+              result.left.value.pages mustBe Seq(
+                IdentificationPage(index),
+                IdentificationNumberPage(index),
+                AddNationalityYesNoPage(index),
+                CustomsOfficeActiveBorderPage(index),
+                ConveyanceReferenceNumberYesNoPage(index)
+              )
           }
         }
 
@@ -291,6 +364,14 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe ConveyanceReferenceNumberPage(index)
+              result.left.value.pages mustBe Seq(
+                IdentificationPage(index),
+                IdentificationNumberPage(index),
+                AddNationalityYesNoPage(index),
+                CustomsOfficeActiveBorderPage(index),
+                ConveyanceReferenceNumberYesNoPage(index),
+                ConveyanceReferenceNumberPage(index)
+              )
           }
         }
       }
@@ -324,6 +405,9 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               val result = TransitionTransportMeansActiveDomain.nationalityReader(index).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe AddNationalityYesNoPage(index)
+              result.left.value.pages mustBe Seq(
+                AddNationalityYesNoPage(index)
+              )
             }
 
             "and registered country for vehicle is unanswered" in {
@@ -334,6 +418,10 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               val result = TransitionTransportMeansActiveDomain.nationalityReader(index).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe NationalityPage(index)
+              result.left.value.pages mustBe Seq(
+                AddNationalityYesNoPage(index),
+                NationalityPage(index)
+              )
             }
           }
 
@@ -347,6 +435,9 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                   val result = TransitionTransportMeansActiveDomain.nationalityReader(index).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe NationalityPage(index)
+                  result.left.value.pages mustBe Seq(
+                    NationalityPage(index)
+                  )
               }
             }
           }
@@ -365,6 +456,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 val result = TransitionTransportMeansActiveDomain.identificationReader(index).apply(Nil).run(userAnswers)
 
                 result.value.value.value mustBe identification
+                result.value.pages mustBe Nil
             }
           }
 
@@ -378,6 +470,9 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 val result = TransitionTransportMeansActiveDomain.identificationReader(index).apply(Nil).run(userAnswers)
 
                 result.value.value.value mustBe identification
+                result.value.pages mustBe Seq(
+                  IdentificationPage(index)
+                )
             }
           }
         }
@@ -390,6 +485,9 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               val result = TransitionTransportMeansActiveDomain.identificationReader(index).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe IdentificationPage(index)
+              result.left.value.pages mustBe Seq(
+                IdentificationPage(index)
+              )
             }
           }
 
@@ -403,6 +501,9 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                   val result = TransitionTransportMeansActiveDomain.identificationReader(index).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe IdentificationPage(index)
+                  result.left.value.pages mustBe Seq(
+                    IdentificationPage(index)
+                  )
               }
             }
           }
@@ -416,6 +517,9 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                   val result = TransitionTransportMeansActiveDomain.identificationReader(index).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe AddIdentificationYesNoPage(index)
+                  result.left.value.pages mustBe Seq(
+                    AddIdentificationYesNoPage(index)
+                  )
               }
             }
 
@@ -429,6 +533,10 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                   val result = TransitionTransportMeansActiveDomain.identificationReader(index).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe IdentificationPage(index)
+                  result.left.value.pages mustBe Seq(
+                    AddIdentificationYesNoPage(index),
+                    IdentificationPage(index)
+                  )
               }
             }
           }
@@ -445,6 +553,9 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               val result = TransitionTransportMeansActiveDomain.identificationNumberReader(index).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe IdentificationNumberPage(index)
+              result.left.value.pages mustBe Seq(
+                IdentificationNumberPage(index)
+              )
             }
           }
 
@@ -458,6 +569,9 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                   val result = TransitionTransportMeansActiveDomain.identificationNumberReader(index).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe IdentificationNumberPage(index)
+                  result.left.value.pages mustBe Seq(
+                    IdentificationNumberPage(index)
+                  )
               }
             }
           }
@@ -471,6 +585,9 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                   val result = TransitionTransportMeansActiveDomain.identificationNumberReader(index).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe AddVehicleIdentificationNumberYesNoPage(index)
+                  result.left.value.pages mustBe Seq(
+                    AddVehicleIdentificationNumberYesNoPage(index)
+                  )
               }
             }
 
@@ -484,6 +601,10 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                   val result = TransitionTransportMeansActiveDomain.identificationNumberReader(index).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe IdentificationNumberPage(index)
+                  result.left.value.pages mustBe Seq(
+                    AddVehicleIdentificationNumberYesNoPage(index),
+                    IdentificationNumberPage(index)
+                  )
               }
             }
           }
@@ -500,9 +621,12 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                     .setValue(SecurityDetailsTypePage, securityType)
                     .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
 
-                  val result = TransitionTransportMeansActiveDomain.conveyanceReader(index).apply(Nil).run(userAnswers)
+                  val result = TransportMeansActiveDomain.conveyanceReader(index).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe ConveyanceReferenceNumberPage(index)
+                  result.left.value.pages mustBe Seq(
+                    ConveyanceReferenceNumberPage(index)
+                  )
               }
             }
           }
@@ -515,9 +639,12 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                     .setValue(SecurityDetailsTypePage, NoSecurityDetails)
                     .setValue(BorderModeOfTransportPage, borderMode)
 
-                  val result = TransitionTransportMeansActiveDomain.conveyanceReader(index).apply(Nil).run(userAnswers)
+                  val result = TransportMeansActiveDomain.conveyanceReader(index).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe ConveyanceReferenceNumberYesNoPage(index)
+                  result.left.value.pages mustBe Seq(
+                    ConveyanceReferenceNumberYesNoPage(index)
+                  )
               }
             }
           }
@@ -530,9 +657,12 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                     .setValue(SecurityDetailsTypePage, securityType)
                     .setValue(BorderModeOfTransportPage, borderMode)
 
-                  val result = TransitionTransportMeansActiveDomain.conveyanceReader(index).apply(Nil).run(userAnswers)
+                  val result = TransportMeansActiveDomain.conveyanceReader(index).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe ConveyanceReferenceNumberYesNoPage(index)
+                  result.left.value.pages mustBe Seq(
+                    ConveyanceReferenceNumberYesNoPage(index)
+                  )
               }
             }
           }

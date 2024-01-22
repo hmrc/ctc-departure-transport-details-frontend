@@ -69,7 +69,7 @@ object TransitionTransportMeansDepartureDomain {
     lazy val identificationReader: Read[Option[Identification]] =
       AddDepartureTransportMeansYesNoPage.optionalReader.apply(_).flatMap {
         case ReaderSuccess(Some(_), pages) =>
-          ContainerIndicatorPage.reader.apply(pages).map(_.to(_.value)).flatMap {
+          ContainerIndicatorPage.optionalReader.apply(pages).map(_.to(_.flatMap(_.value))).flatMap {
             case ReaderSuccess(Some(false), pages) =>
               IdentificationPage.reader.toOption.apply(pages)
             case ReaderSuccess(_, pages) =>
@@ -80,7 +80,7 @@ object TransitionTransportMeansDepartureDomain {
       }
 
     lazy val identificationNumberReader: Read[Option[String]] =
-      ContainerIndicatorPage.reader.apply(_).map(_.to(_.value)).flatMap {
+      ContainerIndicatorPage.optionalReader.apply(_).map(_.to(_.flatMap(_.value))).flatMap {
         case ReaderSuccess(Some(false), pages) =>
           MeansIdentificationNumberPage.reader.toOption.apply(pages)
         case ReaderSuccess(_, pages) =>
@@ -92,7 +92,7 @@ object TransitionTransportMeansDepartureDomain {
         case ReaderSuccess(Some(Rail), pages) =>
           UserAnswersReader.none.apply(pages)
         case ReaderSuccess(_, pages) =>
-          ContainerIndicatorPage.reader.apply(pages).map(_.to(_.value)).flatMap {
+          ContainerIndicatorPage.optionalReader.apply(pages).map(_.to(_.flatMap(_.value))).flatMap {
             case ReaderSuccess(Some(true), pages) =>
               AddVehicleCountryYesNoPage.filterOptionalDependent(identity)(VehicleCountryPage.reader).apply(pages)
             case ReaderSuccess(_, pages) =>

@@ -21,6 +21,7 @@ import generators.{Generators, UserAnswersGenerator}
 import models.Index
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.sections.equipment.EquipmentsSection
 
 class EquipmentsDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with UserAnswersGenerator {
 
@@ -38,6 +39,7 @@ class EquipmentsDomainSpec extends SpecBase with ScalaCheckPropertyChecks with G
         val result = EquipmentsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.value.value.value.size mustBe numberOfEquipments
+        result.value.pages.last mustBe EquipmentsSection
       }
     }
 
@@ -49,5 +51,4 @@ class EquipmentsDomainSpec extends SpecBase with ScalaCheckPropertyChecks with G
       }
     }
   }
-
 }

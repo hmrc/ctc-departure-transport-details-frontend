@@ -75,6 +75,10 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
               val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
               result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                AuthorisationTypePage(authorisationIndex),
+                AuthorisationReferenceNumberPage(authorisationIndex)
+              )
           }
         }
 
@@ -102,6 +106,9 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                 val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
                 result.value.value mustBe expectedResult
+                result.value.pages mustBe Seq(
+                  AuthorisationReferenceNumberPage(authorisationIndex)
+                )
             }
           }
 
@@ -127,6 +134,9 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                   val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
                   result.value.value mustBe expectedResult
+                  result.value.pages mustBe Seq(
+                    AuthorisationReferenceNumberPage(authorisationIndex)
+                  )
               }
             }
 
@@ -149,6 +159,10 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                   val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
                   result.value.value mustBe expectedResult
+                  result.value.pages mustBe Seq(
+                    AuthorisationTypePage(authorisationIndex),
+                    AuthorisationReferenceNumberPage(authorisationIndex)
+                  )
               }
             }
           }
@@ -175,8 +189,11 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
               val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
               result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                AuthorisationTypePage(authorisationIndex),
+                AuthorisationReferenceNumberPage(authorisationIndex)
+              )
           }
-
         }
       }
 
@@ -196,6 +213,9 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                 val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe AuthorisationTypePage(index)
+                result.left.value.pages mustBe Seq(
+                  AuthorisationTypePage(authorisationIndex)
+                )
             }
           }
         }
@@ -213,6 +233,9 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                 val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe AuthorisationTypePage(index)
+                result.left.value.pages mustBe Seq(
+                  AuthorisationTypePage(authorisationIndex)
+                )
             }
           }
         }
@@ -235,6 +258,9 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                   val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe AuthorisationReferenceNumberPage(index)
+                  result.left.value.pages mustBe Seq(
+                    AuthorisationReferenceNumberPage(authorisationIndex)
+                  )
               }
             }
           }
@@ -255,6 +281,9 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                     val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
                     result.left.value.page mustBe AuthorisationReferenceNumberPage(index)
+                    result.left.value.pages mustBe Seq(
+                      AuthorisationReferenceNumberPage(authorisationIndex)
+                    )
                 }
               }
             }

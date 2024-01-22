@@ -136,8 +136,8 @@ package object domain {
             case (ReaderSuccess(ts, pages), i) =>
               val gettable = page(Index(i))
               ua.get(gettable) match {
-                case Some(t) => ReaderSuccess(ts :+ t, pages.append(gettable))
-                case None    => ReaderSuccess(ts, pages.append(gettable))
+                case Some(t) => ReaderSuccess(ts :+ t, pages)
+                case None    => ReaderSuccess(ts, pages)
               }
           }
         }

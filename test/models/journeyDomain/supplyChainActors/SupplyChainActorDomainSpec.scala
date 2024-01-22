@@ -18,7 +18,6 @@ package models.journeyDomain.supplyChainActors
 
 import base.SpecBase
 import generators.Generators
-import models.Index
 import models.reference.supplyChainActors.SupplyChainActorType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -33,7 +32,7 @@ class SupplyChainActorDomainSpec extends SpecBase with Generators {
 
     "can be parsed from UserAnswers" - {
 
-      "when at least one supply chain actor" in {
+      "when answers provided" in {
         val userAnswers = emptyUserAnswers
           .setValue(SupplyChainActorTypePage(actorIndex), role)
           .setValue(IdentificationNumberPage(actorIndex), identificationNumber)
@@ -46,14 +45,34 @@ class SupplyChainActorDomainSpec extends SpecBase with Generators {
         val result = SupplyChainActorDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          SupplyChainActorTypePage(actorIndex),
+          IdentificationNumberPage(actorIndex)
+        )
       }
     }
 
     "cannot be parsed from user answers" - {
-      "when no supply chain actors" in {
+      "when type missing" in {
         val result = SupplyChainActorDomain.userAnswersReader(index).apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe SupplyChainActorTypePage(Index(0))
+        result.left.value.page mustBe SupplyChainActorTypePage(index)
+        result.left.value.pages mustBe Seq(
+          SupplyChainActorTypePage(actorIndex)
+        )
+      }
+
+      "when id number missing" in {
+        val userAnswers = emptyUserAnswers
+          .setValue(SupplyChainActorTypePage(actorIndex), role)
+
+        val result = SupplyChainActorDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
+
+        result.left.value.page mustBe IdentificationNumberPage(index)
+        result.left.value.pages mustBe Seq(
+          SupplyChainActorTypePage(actorIndex),
+          IdentificationNumberPage(actorIndex)
+        )
       }
     }
   }

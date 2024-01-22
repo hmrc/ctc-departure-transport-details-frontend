@@ -19,13 +19,15 @@ package utils.cyaHelpers.equipment
 import base.SpecBase
 import controllers.equipment.index.routes
 import generators.Generators
+import models.ProcedureType.Simplified
 import models.journeyDomain.equipment.EquipmentDomain
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.equipment.AddTransportEquipmentYesNoPage
-import pages.equipment.index.{AddContainerIdentificationNumberYesNoPage, ContainerIdentificationNumberPage}
+import pages.equipment.index.{AddSealYesNoPage, ContainerIdentificationNumberPage}
+import pages.external.ProcedureTypePage
 import viewModels.ListItem
 
 class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -132,9 +134,12 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
           "must return an in progress list item" in {
             forAll(arbitrary[Mode], nonEmptyString) {
               (mode, containerId) =>
-                val userAnswers = emptyUserAnswers.setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
-                val helper      = new EquipmentsAnswersHelper(userAnswers, mode)
-                val result      = helper.listItems
+                val userAnswers = emptyUserAnswers
+                  .setValue(ProcedureTypePage, Simplified)
+                  .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
+                val helper = new EquipmentsAnswersHelper(userAnswers, mode)
+                val result = helper.listItems
+                println(result)
                 result.head.left.value.name mustBe s"Transport equipment 1 - container $containerId"
             }
           }
@@ -144,9 +149,11 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
           "must return an in progress list item" in {
             forAll(arbitrary[Mode]) {
               mode =>
-                val userAnswers = emptyUserAnswers.setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
-                val helper      = new EquipmentsAnswersHelper(userAnswers, mode)
-                val result      = helper.listItems
+                val userAnswers = emptyUserAnswers
+                  .setValue(ProcedureTypePage, Simplified)
+                  .setValue(AddSealYesNoPage(equipmentIndex), true)
+                val helper = new EquipmentsAnswersHelper(userAnswers, mode)
+                val result = helper.listItems
                 result.head.left.value.name mustBe "Transport equipment 1 - no container identification number"
             }
           }

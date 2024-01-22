@@ -53,6 +53,12 @@ class CarrierDetailsDomainSpec extends SpecBase with UserAnswersSpecHelper with 
         val result = CarrierDetailsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          IdentificationNumberPage,
+          AddContactYesNoPage,
+          NamePage,
+          TelephoneNumberPage
+        )
       }
 
       "when contact person has not been provided" in {
@@ -68,6 +74,10 @@ class CarrierDetailsDomainSpec extends SpecBase with UserAnswersSpecHelper with 
         val result = CarrierDetailsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          IdentificationNumberPage,
+          AddContactYesNoPage
+        )
       }
     }
 
@@ -79,6 +89,9 @@ class CarrierDetailsDomainSpec extends SpecBase with UserAnswersSpecHelper with 
         val result = CarrierDetailsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe IdentificationNumberPage
+        result.left.value.pages mustBe Seq(
+          IdentificationNumberPage
+        )
       }
 
       "when add contact person yes/no has not been answered" in {
@@ -88,6 +101,10 @@ class CarrierDetailsDomainSpec extends SpecBase with UserAnswersSpecHelper with 
         val result = CarrierDetailsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe AddContactYesNoPage
+        result.left.value.pages mustBe Seq(
+          IdentificationNumberPage,
+          AddContactYesNoPage
+        )
       }
     }
   }

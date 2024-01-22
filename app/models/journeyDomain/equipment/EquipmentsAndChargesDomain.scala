@@ -38,7 +38,7 @@ object EquipmentsAndChargesDomain {
   ).map(EquipmentsAndChargesDomain.apply)
 
   lazy val equipmentsReader: Read[Option[EquipmentsDomain]] =
-    ContainerIndicatorPage.reader.apply(_).map(_.to(_.value)).flatMap {
+    ContainerIndicatorPage.optionalReader.apply(_).map(_.to(_.flatMap(_.value))).flatMap {
       case ReaderSuccess(Some(true), pages) =>
         EquipmentsDomain.userAnswersReader.toOption.apply(pages)
       case ReaderSuccess(Some(false), pages) =>
