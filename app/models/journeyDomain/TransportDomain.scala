@@ -51,9 +51,9 @@ object TransportDomain {
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportDomain] = {
 
     implicit lazy val transportMeansReads: Read[Option[TransportMeansDomain]] =
-      InlandModePage.optionalReader.apply(_).map(_.to(_.map(_.code))).flatMap {
-        case ReaderSuccess(Some(Mail), pages) => UserAnswersReader.none.apply(pages)
-        case ReaderSuccess(_, pages)          => TransportMeansDomain.userAnswersReader.toOption.apply(pages)
+      InlandModePage.optionalReader.to {
+        case Some(InlandMode(Mail, _)) => UserAnswersReader.none
+        case _                         => TransportMeansDomain.userAnswersReader.toOption
       }
 
     (
@@ -71,12 +71,12 @@ object TransportDomain {
     (
       ApprovedOperatorPage.inferredReader,
       ProcedureTypePage.reader
-    ).apply {
+    ).to {
       case (false, Normal) =>
         AddAuthorisationsYesNoPage.filterOptionalDependent(identity)(AuthorisationsAndLimitDomain.userAnswersReader)
       case _ =>
-        AuthorisationsInferredPage.reader.apply(_).flatMap {
-          case ReaderSuccess(_, pages) => AuthorisationsAndLimitDomain.userAnswersReader.toOption.apply(pages)
+        AuthorisationsInferredPage.reader.to {
+          _ => AuthorisationsAndLimitDomain.userAnswersReader.toOption
         }
     }
 }

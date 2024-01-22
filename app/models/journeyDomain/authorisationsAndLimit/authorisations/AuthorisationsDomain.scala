@@ -17,7 +17,7 @@
 package models.journeyDomain.authorisationsAndLimit.authorisations
 
 import models.domain._
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
+import models.journeyDomain.JourneyDomainModel
 import models.{Index, RichJsArray}
 import pages.sections.Section
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
@@ -32,11 +32,11 @@ object AuthorisationsDomain {
   implicit val userAnswersReader: Read[AuthorisationsDomain] = {
 
     val authorisationsReader: Read[Seq[AuthorisationDomain]] =
-      AuthorisationsSection.arrayReader.apply(_).flatMap {
-        case ReaderSuccess(x, pages) if x.isEmpty =>
-          AuthorisationDomain.userAnswersReader(Index(0)).toSeq.apply(pages)
-        case ReaderSuccess(x, pages) =>
-          x.traverse[AuthorisationDomain](AuthorisationDomain.userAnswersReader(_).apply(_)).apply(pages)
+      AuthorisationsSection.arrayReader.to {
+        case x if x.isEmpty =>
+          AuthorisationDomain.userAnswersReader(Index(0)).toSeq
+        case x =>
+          x.traverse[AuthorisationDomain](AuthorisationDomain.userAnswersReader(_).apply(_))
       }
 
     authorisationsReader.map(AuthorisationsDomain.apply)

@@ -18,8 +18,8 @@ package models.journeyDomain.authorisationsAndLimit.authorisations
 
 import config.Constants.AdditionalDeclarationType._
 import models.domain._
+import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
 import pages.external.AdditionalDeclarationTypePage
 
 case class AuthorisationsAndLimitDomain(
@@ -31,18 +31,18 @@ object AuthorisationsAndLimitDomain {
 
   def limitReader(authDomain: AuthorisationsDomain): Read[Option[LimitDomain]] = {
     lazy val anyAuthTypeIsC521 = authDomain.authorisations.exists(_.authorisationType.isACR)
-    AdditionalDeclarationTypePage.reader.apply(_).flatMap {
-      case ReaderSuccess(Standard, pages) if anyAuthTypeIsC521 => LimitDomain.userAnswersReader.toOption.apply(pages)
-      case ReaderSuccess(_, pages)                             => UserAnswersReader.none.apply(pages)
+    AdditionalDeclarationTypePage.reader.to {
+      case Standard if anyAuthTypeIsC521 => LimitDomain.userAnswersReader.toOption
+      case _                             => UserAnswersReader.none
     }
   }
 
   implicit val userAnswersReader: Read[AuthorisationsAndLimitDomain] =
-    AuthorisationsDomain.userAnswersReader.apply(_).flatMap {
-      case ReaderSuccess(authorisations, pages) =>
+    AuthorisationsDomain.userAnswersReader.to {
+      authorisations =>
         (
           Read(authorisations),
           limitReader(authorisations)
-        ).map(AuthorisationsAndLimitDomain.apply).apply(pages)
+        ).map(AuthorisationsAndLimitDomain.apply)
     }
 }

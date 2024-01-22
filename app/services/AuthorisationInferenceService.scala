@@ -40,7 +40,7 @@ class AuthorisationInferenceService @Inject() () {
         ProcedureTypePage.reader,
         ApprovedOperatorPage.inferredReader,
         InlandModePage.optionalReader.apply(_: Pages).map(_.to(_.map(_.code)))
-      ).apply {
+      ).to {
         case (procedureType, reducedDataset, inlandMode) =>
           val foo = (procedureType, reducedDataset, inlandMode) match {
             case (Simplified, _, _) =>

@@ -16,11 +16,10 @@
 
 package models.journeyDomain.transportMeans
 
-import cats.implicits._
 import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import models.domain._
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess, Stage}
+import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.{Index, Mode, Phase, RichJsArray, UserAnswers}
 import pages.sections.transportMeans.ActivesSection
 import play.api.mvc.Call
@@ -38,11 +37,11 @@ object TransportMeansActiveListDomain {
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansActiveListDomain] = {
 
     val activesReader: Read[Seq[TransportMeansActiveDomain]] =
-      ActivesSection.arrayReader.apply(_).flatMap {
-        case ReaderSuccess(x, pages) if x.isEmpty =>
-          TransportMeansActiveDomain.userAnswersReader(Index(0)).toSeq.apply(pages)
-        case ReaderSuccess(x, pages) =>
-          x.traverse[TransportMeansActiveDomain](TransportMeansActiveDomain.userAnswersReader(_).apply(_)).apply(pages)
+      ActivesSection.arrayReader.to {
+        case x if x.isEmpty =>
+          TransportMeansActiveDomain.userAnswersReader(Index(0)).toSeq
+        case x =>
+          x.traverse[TransportMeansActiveDomain](TransportMeansActiveDomain.userAnswersReader(_).apply(_))
       }
 
     activesReader.map(TransportMeansActiveListDomain.apply)

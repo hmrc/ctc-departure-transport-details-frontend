@@ -174,13 +174,13 @@ package object domain {
   implicit class RichRead[A](value: Read[A]) {
 
     def map[T <: JourneyDomainModel](fun: A => T): Read[T] =
-      apply {
+      to {
         a =>
           val t = fun(a)
           pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
       }
 
-    def apply[T](fun: A => Read[T]): Read[T] = pages =>
+    def to[T](fun: A => Read[T]): Read[T] = pages =>
       for {
         a      <- value(pages)
         reader <- fun(a.value)(a.pages)
@@ -193,13 +193,13 @@ package object domain {
   implicit class RichTuple2[A, B](value: (Read[A], Read[B])) {
 
     def map[T <: JourneyDomainModel](fun: (A, B) => T): Read[T] =
-      apply {
+      to {
         case (a, b) =>
           val t = fun(a, b)
           pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
       }
 
-    def apply[T](fun: (A, B) => Read[T]): Read[T] = pages =>
+    def to[T](fun: (A, B) => Read[T]): Read[T] = pages =>
       for {
         a      <- value._1(pages)
         b      <- value._2(a.pages)
@@ -210,13 +210,13 @@ package object domain {
   implicit class RichTuple3[A, B, C](value: (Read[A], Read[B], Read[C])) {
 
     def map[T <: JourneyDomainModel](fun: (A, B, C) => T): Read[T] =
-      apply {
+      to {
         case (a, b, c) =>
           val t = fun(a, b, c)
           pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
       }
 
-    def apply[T](fun: (A, B, C) => Read[T]): Read[T] = pages =>
+    def to[T](fun: (A, B, C) => Read[T]): Read[T] = pages =>
       for {
         a      <- value._1(pages)
         b      <- value._2(a.pages)
@@ -228,13 +228,13 @@ package object domain {
   implicit class RichTuple4[A, B, C, D](value: (Read[A], Read[B], Read[C], Read[D])) {
 
     def map[T <: JourneyDomainModel](fun: (A, B, C, D) => T): Read[T] =
-      apply {
+      to {
         case (a, b, c, d) =>
           val t = fun(a, b, c, d)
           pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
       }
 
-    def apply[T](fun: (A, B, C, D) => Read[T]): Read[T] = pages =>
+    def to[T](fun: (A, B, C, D) => Read[T]): Read[T] = pages =>
       for {
         a      <- value._1(pages)
         b      <- value._2(a.pages)
@@ -247,13 +247,13 @@ package object domain {
   implicit class RichTuple5[A, B, C, D, E](value: (Read[A], Read[B], Read[C], Read[D], Read[E])) {
 
     def map[T <: JourneyDomainModel](fun: (A, B, C, D, E) => T): Read[T] =
-      apply {
+      to {
         case (a, b, c, d, e) =>
           val t = fun(a, b, c, d, e)
           pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
       }
 
-    def apply[T](fun: (A, B, C, D, E) => Read[T]): Read[T] = pages =>
+    def to[T](fun: (A, B, C, D, E) => Read[T]): Read[T] = pages =>
       for {
         a      <- value._1(pages)
         b      <- value._2(a.pages)
@@ -267,13 +267,13 @@ package object domain {
   implicit class RichTuple6[A, B, C, D, E, F](value: (Read[A], Read[B], Read[C], Read[D], Read[E], Read[F])) {
 
     def map[T <: JourneyDomainModel](fun: (A, B, C, D, E, F) => T): Read[T] =
-      apply {
+      to {
         case (a, b, c, d, e, f) =>
           val t = fun(a, b, c, d, e, f)
           pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
       }
 
-    def apply[T](fun: (A, B, C, D, E, F) => Read[T]): Read[T] = pages =>
+    def to[T](fun: (A, B, C, D, E, F) => Read[T]): Read[T] = pages =>
       for {
         a      <- value._1(pages)
         b      <- value._2(a.pages)
@@ -288,13 +288,13 @@ package object domain {
   implicit class RichTuple7[A, B, C, D, E, F, G](value: (Read[A], Read[B], Read[C], Read[D], Read[E], Read[F], Read[G])) {
 
     def map[T <: JourneyDomainModel](fun: (A, B, C, D, E, F, G) => T): Read[T] =
-      apply {
+      to {
         case (a, b, c, d, e, f, g) =>
           val t = fun(a, b, c, d, e, f, g)
           pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
       }
 
-    def apply[T](fun: (A, B, C, D, E, F, G) => Read[T]): Read[T] = pages =>
+    def to[T](fun: (A, B, C, D, E, F, G) => Read[T]): Read[T] = pages =>
       for {
         a      <- value._1(pages)
         b      <- value._2(a.pages)

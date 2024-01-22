@@ -16,9 +16,8 @@
 
 package models.journeyDomain.supplyChainActors
 
-import cats.implicits._
 import models.domain._
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
+import models.journeyDomain.JourneyDomainModel
 import models.{Index, RichJsArray}
 import pages.sections.Section
 import pages.sections.supplyChainActors.SupplyChainActorsSection
@@ -35,11 +34,11 @@ object SupplyChainActorsDomain {
   implicit val userAnswersReader: Read[SupplyChainActorsDomain] = {
 
     val supplyChainActorsReader: Read[Seq[SupplyChainActorDomain]] =
-      SupplyChainActorsSection.arrayReader.apply(_).flatMap {
-        case ReaderSuccess(x, pages) if x.isEmpty =>
-          SupplyChainActorDomain.userAnswersReader(Index(0)).toSeq.apply(pages)
-        case ReaderSuccess(x, pages) =>
-          x.traverse[SupplyChainActorDomain](SupplyChainActorDomain.userAnswersReader(_).apply(_)).apply(pages)
+      SupplyChainActorsSection.arrayReader.to {
+        case x if x.isEmpty =>
+          SupplyChainActorDomain.userAnswersReader(Index(0)).toSeq
+        case x =>
+          x.traverse[SupplyChainActorDomain](SupplyChainActorDomain.userAnswersReader(_).apply(_))
       }
 
     supplyChainActorsReader.map(SupplyChainActorsDomain.apply)

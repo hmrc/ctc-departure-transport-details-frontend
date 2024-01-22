@@ -25,9 +25,9 @@ case class OptionalBoolean(value: Option[Boolean]) {
 
 object OptionalBoolean {
 
-  def yes: OptionalBoolean   = OptionalBoolean(Some(true))
-  def no: OptionalBoolean    = OptionalBoolean(Some(false))
-  def maybe: OptionalBoolean = OptionalBoolean(None)
+  lazy val yes: OptionalBoolean   = OptionalBoolean(Some(true))
+  lazy val no: OptionalBoolean    = OptionalBoolean(Some(false))
+  lazy val maybe: OptionalBoolean = OptionalBoolean(None)
 
   implicit val reads: Reads[OptionalBoolean] = Reads {
     case boolean: JsBoolean => JsSuccess(OptionalBoolean(Some(boolean.value)))

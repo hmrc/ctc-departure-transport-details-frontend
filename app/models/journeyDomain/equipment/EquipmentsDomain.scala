@@ -17,7 +17,7 @@
 package models.journeyDomain.equipment
 
 import models.domain._
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
+import models.journeyDomain.JourneyDomainModel
 import models.{Index, RichJsArray}
 import pages.sections.Section
 import pages.sections.equipment.EquipmentsSection
@@ -32,11 +32,11 @@ object EquipmentsDomain {
   implicit val userAnswersReader: Read[EquipmentsDomain] = {
 
     val equipmentsReader: Read[Seq[EquipmentDomain]] =
-      EquipmentsSection.arrayReader.apply(_).flatMap {
-        case ReaderSuccess(x, pages) if x.isEmpty =>
-          EquipmentDomain.userAnswersReader(Index(0)).toSeq.apply(pages)
-        case ReaderSuccess(x, pages) =>
-          x.traverse[EquipmentDomain](EquipmentDomain.userAnswersReader(_).apply(_)).apply(pages)
+      EquipmentsSection.arrayReader.to {
+        case x if x.isEmpty =>
+          EquipmentDomain.userAnswersReader(Index(0)).toSeq
+        case x =>
+          x.traverse[EquipmentDomain](EquipmentDomain.userAnswersReader(_).apply(_))
       }
 
     equipmentsReader.map(EquipmentsDomain.apply)

@@ -17,7 +17,7 @@
 package models.journeyDomain.equipment.seal
 
 import models.domain._
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
+import models.journeyDomain.JourneyDomainModel
 import models.{Index, RichJsArray}
 import pages.sections.Section
 import pages.sections.equipment.SealsSection
@@ -32,11 +32,11 @@ object SealsDomain {
   implicit def userAnswersReader(equipmentIndex: Index): Read[SealsDomain] = {
 
     val sealsReader: Read[Seq[SealDomain]] =
-      SealsSection(equipmentIndex).arrayReader.apply(_).flatMap {
-        case ReaderSuccess(x, pages) if x.isEmpty =>
-          SealDomain.userAnswersReader(equipmentIndex, Index(0)).toSeq.apply(pages)
-        case ReaderSuccess(x, pages) =>
-          x.traverse[SealDomain](SealDomain.userAnswersReader(equipmentIndex, _).apply(_)).apply(pages)
+      SealsSection(equipmentIndex).arrayReader.to {
+        case x if x.isEmpty =>
+          SealDomain.userAnswersReader(equipmentIndex, Index(0)).toSeq
+        case x =>
+          x.traverse[SealDomain](SealDomain.userAnswersReader(equipmentIndex, _).apply(_))
       }
 
     sealsReader.map(SealsDomain.apply(_)(equipmentIndex))

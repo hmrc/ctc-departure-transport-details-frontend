@@ -17,9 +17,9 @@
 package models.journeyDomain.equipment
 
 import models.domain._
+import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.equipment.seal.SealsDomain
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
-import models.{Index, ProcedureType}
+import models.{Index, OptionalBoolean, ProcedureType}
 import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
 import pages.equipment.index._
 import pages.external.ProcedureTypePage
@@ -64,24 +64,23 @@ object EquipmentDomain {
     ).map(EquipmentDomain.apply(_, _)(equipmentIndex))
 
   def containerIdReads(equipmentIndex: Index): Read[Option[String]] =
-    ContainerIndicatorPage.optionalReader.apply(_).map(_.to(_.flatMap(_.value))).flatMap {
-      case ReaderSuccess(Some(true), pages) if equipmentIndex.isFirst =>
-        ContainerIdentificationNumberPage(equipmentIndex).reader.toOption.apply(pages)
-      case ReaderSuccess(Some(true), pages) =>
+    ContainerIndicatorPage.optionalReader.to {
+      case Some(OptionalBoolean.yes) if equipmentIndex.isFirst =>
+        ContainerIdentificationNumberPage(equipmentIndex).reader.toOption
+      case Some(OptionalBoolean.yes) =>
         AddContainerIdentificationNumberYesNoPage(equipmentIndex)
           .filterOptionalDependent(identity) {
             ContainerIdentificationNumberPage(equipmentIndex).reader
           }
-          .apply(pages)
-      case ReaderSuccess(_, pages) =>
-        UserAnswersReader.none.apply(pages)
+      case _ =>
+        UserAnswersReader.none
     }
 
   def sealsReads(equipmentIndex: Index): Read[Option[SealsDomain]] =
     (
       ProcedureTypePage.reader,
       AuthorisationsSection.fieldReader(AuthorisationTypePage)
-    ).apply {
+    ).to {
       case (ProcedureType.Simplified, authorisationTypes) if authorisationTypes.exists(_.isSSE) =>
         SealsDomain.userAnswersReader(equipmentIndex).toOption
       case _ =>

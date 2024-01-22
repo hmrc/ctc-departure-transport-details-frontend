@@ -16,14 +16,13 @@
 
 package models.journeyDomain.transportMeans
 
-import cats.implicits._
 import config.Constants.ModeOfTransport.Rail
 import config.PhaseConfig
-import models.Phase
 import models.domain._
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
-import models.reference.Nationality
+import models.journeyDomain.JourneyDomainModel
 import models.reference.transportMeans.departure.Identification
+import models.reference.{InlandMode, Nationality}
+import models.{OptionalBoolean, Phase}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.departure._
 import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
@@ -67,36 +66,36 @@ object TransitionTransportMeansDepartureDomain {
 
   implicit val userAnswersReader: Read[TransportMeansDepartureDomain] = {
     lazy val identificationReader: Read[Option[Identification]] =
-      AddDepartureTransportMeansYesNoPage.optionalReader.apply(_).flatMap {
-        case ReaderSuccess(Some(_), pages) =>
-          ContainerIndicatorPage.optionalReader.apply(pages).map(_.to(_.flatMap(_.value))).flatMap {
-            case ReaderSuccess(Some(false), pages) =>
-              IdentificationPage.reader.toOption.apply(pages)
-            case ReaderSuccess(_, pages) =>
-              AddIdentificationTypeYesNoPage.filterOptionalDependent(identity)(IdentificationPage.reader).apply(pages)
+      AddDepartureTransportMeansYesNoPage.optionalReader.to {
+        case Some(_) =>
+          ContainerIndicatorPage.optionalReader.to {
+            case Some(OptionalBoolean.no) =>
+              IdentificationPage.reader.toOption
+            case _ =>
+              AddIdentificationTypeYesNoPage.filterOptionalDependent(identity)(IdentificationPage.reader)
           }
-        case ReaderSuccess(None, pages) =>
-          IdentificationPage.reader.toOption.apply(pages)
+        case None =>
+          IdentificationPage.reader.toOption
       }
 
     lazy val identificationNumberReader: Read[Option[String]] =
-      ContainerIndicatorPage.optionalReader.apply(_).map(_.to(_.flatMap(_.value))).flatMap {
-        case ReaderSuccess(Some(false), pages) =>
-          MeansIdentificationNumberPage.reader.toOption.apply(pages)
-        case ReaderSuccess(_, pages) =>
-          AddIdentificationNumberYesNoPage.filterOptionalDependent(identity)(MeansIdentificationNumberPage.reader).apply(pages)
+      ContainerIndicatorPage.optionalReader.to {
+        case Some(OptionalBoolean.no) =>
+          MeansIdentificationNumberPage.reader.toOption
+        case _ =>
+          AddIdentificationNumberYesNoPage.filterOptionalDependent(identity)(MeansIdentificationNumberPage.reader)
       }
 
     lazy val nationalityReader: Read[Option[Nationality]] =
-      InlandModePage.optionalReader.apply(_).map(_.to(_.map(_.code))).flatMap {
-        case ReaderSuccess(Some(Rail), pages) =>
-          UserAnswersReader.none.apply(pages)
-        case ReaderSuccess(_, pages) =>
-          ContainerIndicatorPage.optionalReader.apply(pages).map(_.to(_.flatMap(_.value))).flatMap {
-            case ReaderSuccess(Some(true), pages) =>
-              AddVehicleCountryYesNoPage.filterOptionalDependent(identity)(VehicleCountryPage.reader).apply(pages)
-            case ReaderSuccess(_, pages) =>
-              VehicleCountryPage.reader.toOption.apply(pages)
+      InlandModePage.optionalReader.to {
+        case Some(InlandMode(Rail, _)) =>
+          UserAnswersReader.none
+        case _ =>
+          ContainerIndicatorPage.optionalReader.to {
+            case Some(OptionalBoolean.yes) =>
+              AddVehicleCountryYesNoPage.filterOptionalDependent(identity)(VehicleCountryPage.reader)
+            case _ =>
+              VehicleCountryPage.reader.toOption
           }
       }
 

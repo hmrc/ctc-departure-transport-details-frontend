@@ -16,14 +16,13 @@
 
 package models.journeyDomain.transportMeans
 
-import cats.implicits._
 import config.Constants.ModeOfTransport.Rail
 import config.Constants.SecurityType.NoSecurityDetails
 import config.PhaseConfig
-import models.Phase
 import models.domain._
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
+import models.journeyDomain.JourneyDomainModel
 import models.reference.BorderMode
+import models.{OptionalBoolean, Phase}
 import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.sections.Section
@@ -58,15 +57,14 @@ object TransitionTransportMeansDomain {
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansDomain] = {
 
     lazy val transportMeansDepartureReader: Read[Option[TransportMeansDepartureDomain]] =
-      ContainerIndicatorPage.optionalReader.apply(_).map(_.to(_.flatMap(_.value))).flatMap {
-        case ReaderSuccess(Some(true), pages) =>
+      ContainerIndicatorPage.optionalReader.to {
+        case Some(OptionalBoolean.yes) =>
           AddDepartureTransportMeansYesNoPage
             .filterOptionalDependent(identity) {
               TransportMeansDepartureDomain.userAnswersReader
             }
-            .apply(pages)
-        case ReaderSuccess(_, pages) =>
-          TransportMeansDepartureDomain.userAnswersReader.toOption.apply(pages)
+        case _ =>
+          TransportMeansDepartureDomain.userAnswersReader.toOption
       }
 
     lazy val borderModeOfTransportReader: Read[Option[BorderMode]] = {
@@ -74,27 +72,26 @@ object TransitionTransportMeansDomain {
         BorderModeOfTransportPage.reader
       }
 
-      OfficeOfDepartureInCL010Page.reader.apply(_).flatMap {
-        case ReaderSuccess(true, pages) =>
-          optionalReader.apply(pages)
-        case ReaderSuccess(false, pages) =>
-          SecurityDetailsTypePage.reader.apply(pages).flatMap {
-            case ReaderSuccess(NoSecurityDetails, pages) => optionalReader.apply(pages)
-            case ReaderSuccess(_, pages)                 => BorderModeOfTransportPage.reader.toOption.apply(pages)
+      OfficeOfDepartureInCL010Page.reader.to {
+        case true =>
+          optionalReader
+        case false =>
+          SecurityDetailsTypePage.reader.to {
+            case NoSecurityDetails => optionalReader
+            case _                 => BorderModeOfTransportPage.reader.toOption
           }
       }
     }
 
     lazy val transportMeansActiveReader: Read[Option[TransportMeansActiveListDomain]] =
-      BorderModeOfTransportPage.optionalReader.apply(_).flatMap {
-        case ReaderSuccess(Some(borderModeOfTransport), pages) if borderModeOfTransport.code != Rail =>
-          TransportMeansActiveListDomain.userAnswersReader.toOption.apply(pages)
-        case ReaderSuccess(_, pages) =>
+      BorderModeOfTransportPage.optionalReader.to {
+        case Some(borderModeOfTransport) if borderModeOfTransport.code != Rail =>
+          TransportMeansActiveListDomain.userAnswersReader.toOption
+        case _ =>
           AddActiveBorderTransportMeansYesNoPage
             .filterOptionalDependent(identity) {
               TransportMeansActiveListDomain.userAnswersReader
             }
-            .apply(pages)
       }
 
     (
@@ -116,23 +113,22 @@ object PostTransitionTransportMeansDomain {
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansDomain] = {
 
     lazy val borderModeOfTransportReader: Read[Option[BorderMode]] =
-      SecurityDetailsTypePage.reader.apply(_).flatMap {
-        case ReaderSuccess(NoSecurityDetails, pages) =>
-          AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity)(BorderModeOfTransportPage.reader).apply(pages)
-        case ReaderSuccess(_, pages) =>
-          BorderModeOfTransportPage.reader.toOption.apply(pages)
+      SecurityDetailsTypePage.reader.to {
+        case NoSecurityDetails =>
+          AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity)(BorderModeOfTransportPage.reader)
+        case _ =>
+          BorderModeOfTransportPage.reader.toOption
       }
 
     lazy val transportMeansActiveReader: Read[Option[TransportMeansActiveListDomain]] =
-      SecurityDetailsTypePage.reader.apply(_).flatMap {
-        case ReaderSuccess(NoSecurityDetails, pages) =>
+      SecurityDetailsTypePage.reader.to {
+        case NoSecurityDetails =>
           AddActiveBorderTransportMeansYesNoPage
             .filterOptionalDependent(identity) {
               TransportMeansActiveListDomain.userAnswersReader
             }
-            .apply(pages)
-        case ReaderSuccess(_, pages) =>
-          TransportMeansActiveListDomain.userAnswersReader.toOption.apply(pages)
+        case _ =>
+          TransportMeansActiveListDomain.userAnswersReader.toOption
       }
 
     (

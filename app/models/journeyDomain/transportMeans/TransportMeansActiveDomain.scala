@@ -20,9 +20,9 @@ import config.Constants.ModeOfTransport.Rail
 import config.Constants.SecurityType.NoSecurityDetails
 import config.PhaseConfig
 import models.domain._
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess, Stage}
+import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.reference.transportMeans.active.Identification
-import models.reference.{CustomsOffice, Nationality}
+import models.reference.{BorderMode, CustomsOffice, Nationality}
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.external.SecurityDetailsTypePage
 import pages.sections.Section
@@ -61,7 +61,7 @@ object TransportMeansActiveDomain {
     (
       SecurityDetailsTypePage.reader.apply(_: Pages).map(_.to(_ == NoSecurityDetails)),
       BorderModeOfTransportPage.optionalReader.apply(_: Pages).map(_.to(_.exists(_.isAir)))
-    ).apply {
+    ).to {
       case (false, true) =>
         ConveyanceReferenceNumberPage(index).reader.toOption
       case _ =>
@@ -96,11 +96,11 @@ object TransitionTransportMeansActiveDomain {
     ).map(TransitionTransportMeansActiveDomain.apply(_, _, _, _, _)(index))
 
   def nationalityReader(index: Index): Read[Option[Nationality]] =
-    BorderModeOfTransportPage.optionalReader.apply(_).map(_.to(_.map(_.code))).flatMap {
-      case ReaderSuccess(Some(Rail), pages) =>
-        AddNationalityYesNoPage(index).filterOptionalDependent(identity)(NationalityPage(index).reader).apply(pages)
-      case ReaderSuccess(_, pages) =>
-        NationalityPage(index).reader.toOption.apply(pages)
+    BorderModeOfTransportPage.optionalReader.to {
+      case Some(BorderMode(Rail, _)) =>
+        AddNationalityYesNoPage(index).filterOptionalDependent(identity)(NationalityPage(index).reader)
+      case _ =>
+        NationalityPage(index).reader.toOption
     }
 
   def identificationReader(index: Index): Read[Option[Identification]] = {
@@ -108,7 +108,7 @@ object TransitionTransportMeansActiveDomain {
     (
       BorderModeOfTransportPage.optionalReader,
       NationalityPage(index).optionalReader.apply(_: Pages).map(_.to(_.isDefined))
-    ).apply {
+    ).to {
       case (borderMode, registeredCountryIsPresent) =>
         if (borderMode.exists(_.isRail) || registeredCountryIsPresent) {
           genericReader.toOption
@@ -122,7 +122,7 @@ object TransitionTransportMeansActiveDomain {
     (
       BorderModeOfTransportPage.optionalReader,
       NationalityPage(index).optionalReader.apply(_: Pages).map(_.to(_.isDefined))
-    ).apply {
+    ).to {
       case (borderMode, registeredCountryIsPresent) =>
         if (borderMode.exists(_.isRail) || registeredCountryIsPresent) {
           IdentificationNumberPage(index).reader.toOption
