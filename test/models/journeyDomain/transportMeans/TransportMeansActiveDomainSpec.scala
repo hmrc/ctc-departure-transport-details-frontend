@@ -29,7 +29,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
 import pages.sections.external.OfficesOfTransitSection
-import pages.sections.transportMeans.ActiveSection
+import pages.sections.transportMeans.{ActiveSection, TransportMeansSection}
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.active._
 import play.api.libs.json.{JsArray, Json}
@@ -74,6 +74,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           "and security detail type is 0 and inland mode is Sea and add conveyance number is yes" in {
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+              .setValue(OfficesOfTransitSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
               .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
               .setValue(IdentificationPage(index), identification)
               .setValue(IdentificationNumberPage(index), identificationNumber)
@@ -138,7 +139,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                   NationalityPage(index),
                   CustomsOfficeActiveBorderPage(index),
                   ConveyanceReferenceNumberPage(index),
-                  ActiveSection(index)
+                  TransportMeansSection
                 )
             }
           }
@@ -172,7 +173,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               AddNationalityYesNoPage(index),
               CustomsOfficeActiveBorderPage(index),
               ConveyanceReferenceNumberYesNoPage(index),
-              ActiveSection(index)
+              TransportMeansSection
             )
           }
         }

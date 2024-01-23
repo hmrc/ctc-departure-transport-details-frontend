@@ -19,7 +19,7 @@ package models.journeyDomain.equipment
 import models.domain._
 import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.equipment.seal.SealsDomain
-import models.{Index, OptionalBoolean, ProcedureType}
+import models.{Index, OptionalBoolean, ProcedureType, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
 import pages.equipment.index._
 import pages.external.ProcedureTypePage
@@ -45,7 +45,7 @@ case class EquipmentDomain(
       messages("equipment.value.withoutIndex.withContainer", _)
     )
 
-  override def page: Option[Section[_]] = Some(EquipmentSection(index))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(EquipmentSection(index))
 }
 
 object EquipmentDomain {

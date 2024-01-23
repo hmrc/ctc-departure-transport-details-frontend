@@ -177,7 +177,10 @@ package object domain {
       to {
         a =>
           val t = fun(a)
-          pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
+          pages =>
+            UserAnswersReader.apply(
+              ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
+            )
       }
 
     def to[T](fun: A => Read[T]): Read[T] = pages =>
@@ -196,7 +199,10 @@ package object domain {
       to {
         case (a, b) =>
           val t = fun(a, b)
-          pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
+          pages =>
+            UserAnswersReader.apply(
+              ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
+            )
       }
 
     def to[T](fun: (A, B) => Read[T]): Read[T] = pages =>
@@ -213,7 +219,10 @@ package object domain {
       to {
         case (a, b, c) =>
           val t = fun(a, b, c)
-          pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
+          pages =>
+            UserAnswersReader.apply(
+              ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
+            )
       }
 
     def to[T](fun: (A, B, C) => Read[T]): Read[T] = pages =>
@@ -231,7 +240,10 @@ package object domain {
       to {
         case (a, b, c, d) =>
           val t = fun(a, b, c, d)
-          pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
+          pages =>
+            UserAnswersReader.apply(
+              ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
+            )
       }
 
     def to[T](fun: (A, B, C, D) => Read[T]): Read[T] = pages =>
@@ -250,7 +262,10 @@ package object domain {
       to {
         case (a, b, c, d, e) =>
           val t = fun(a, b, c, d, e)
-          pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
+          pages =>
+            UserAnswersReader.apply(
+              ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
+            )
       }
 
     def to[T](fun: (A, B, C, D, E) => Read[T]): Read[T] = pages =>
@@ -270,7 +285,10 @@ package object domain {
       to {
         case (a, b, c, d, e, f) =>
           val t = fun(a, b, c, d, e, f)
-          pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
+          pages =>
+            UserAnswersReader.apply(
+              ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
+            )
       }
 
     def to[T](fun: (A, B, C, D, E, F) => Read[T]): Read[T] = pages =>
@@ -291,7 +309,10 @@ package object domain {
       to {
         case (a, b, c, d, e, f, g) =>
           val t = fun(a, b, c, d, e, f, g)
-          pages => ReaderSuccess(t, pages.append(t.page)).toUserAnswersReader
+          pages =>
+            UserAnswersReader.apply(
+              ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
+            )
       }
 
     def to[T](fun: (A, B, C, D, E, F, G) => Read[T]): Read[T] = pages =>

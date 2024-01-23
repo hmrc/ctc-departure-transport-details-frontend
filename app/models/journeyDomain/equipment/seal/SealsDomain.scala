@@ -18,13 +18,13 @@ package models.journeyDomain.equipment.seal
 
 import models.domain._
 import models.journeyDomain.JourneyDomainModel
-import models.{Index, RichJsArray}
+import models.{Index, RichJsArray, UserAnswers}
 import pages.sections.Section
 import pages.sections.equipment.SealsSection
 
 case class SealsDomain(value: Seq[SealDomain])(equipmentIndex: Index) extends JourneyDomainModel {
 
-  override def page: Option[Section[_]] = Some(SealsSection(equipmentIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(SealsSection(equipmentIndex))
 }
 
 object SealsDomain {

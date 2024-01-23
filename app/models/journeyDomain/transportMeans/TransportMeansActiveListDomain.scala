@@ -17,19 +17,17 @@
 package models.journeyDomain.transportMeans
 
 import config.PhaseConfig
-import controllers.transportMeans.active.routes
 import models.domain._
-import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, Phase, RichJsArray, UserAnswers}
+import models.journeyDomain.JourneyDomainModel
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.Section
 import pages.sections.transportMeans.ActivesSection
-import play.api.mvc.Call
 
 case class TransportMeansActiveListDomain(
   transportMeansActiveListDomain: Seq[TransportMeansActiveDomain]
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
-    Some(routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(ActivesSection)
 }
 
 object TransportMeansActiveListDomain {

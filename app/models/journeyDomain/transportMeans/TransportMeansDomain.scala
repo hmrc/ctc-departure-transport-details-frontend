@@ -22,7 +22,7 @@ import config.PhaseConfig
 import models.domain._
 import models.journeyDomain.JourneyDomainModel
 import models.reference.BorderMode
-import models.{OptionalBoolean, Phase}
+import models.{OptionalBoolean, Phase, UserAnswers}
 import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.sections.Section
@@ -31,7 +31,7 @@ import pages.transportMeans._
 
 sealed trait TransportMeansDomain extends JourneyDomainModel {
 
-  override def page: Option[Section[_]] = Some(TransportMeansSection)
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(TransportMeansSection)
 }
 
 object TransportMeansDomain {

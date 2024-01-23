@@ -19,6 +19,7 @@ package models.journeyDomain
 import config.Constants.ModeOfTransport.Mail
 import config.PhaseConfig
 import models.ProcedureType.Normal
+import models.UserAnswers
 import models.domain._
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
 import models.journeyDomain.carrierDetails.CarrierDetailsDomain
@@ -43,7 +44,7 @@ case class TransportDomain(
   equipmentsAndCharges: EquipmentsAndChargesDomain
 ) extends JourneyDomainModel {
 
-  override def page: Option[Section[_]] = Some(TransportSection)
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(TransportSection)
 }
 
 object TransportDomain {

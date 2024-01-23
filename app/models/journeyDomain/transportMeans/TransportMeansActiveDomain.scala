@@ -39,7 +39,7 @@ sealed trait TransportMeansActiveDomain extends JourneyDomainModel {
 
   def asString(implicit messages: Messages): String
 
-  override def page: Option[Section[_]] = Some(ActiveSection(index))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(ActiveSection(index))
 }
 
 object TransportMeansActiveDomain {
@@ -80,8 +80,7 @@ case class TransitionTransportMeansActiveDomain(
 
   override def asString(implicit messages: Messages): String = this.toString
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
-    TransportMeansSection.route(userAnswers, mode)
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(TransportMeansSection)
 }
 
 object TransitionTransportMeansActiveDomain {
@@ -149,6 +148,13 @@ case class PostTransitionTransportMeansActiveDomain(
       ActiveSection(index).route(userAnswers, mode)
     } else {
       TransportMeansSection.route(userAnswers, mode)
+    }
+
+  override def page(userAnswers: UserAnswers): Option[Section[_]] =
+    if (PostTransitionTransportMeansActiveDomain.hasMultiplicity(userAnswers)) {
+      super.page(userAnswers)
+    } else {
+      Some(TransportMeansSection)
     }
 }
 

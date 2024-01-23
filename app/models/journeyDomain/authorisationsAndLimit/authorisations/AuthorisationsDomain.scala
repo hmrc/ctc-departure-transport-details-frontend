@@ -18,13 +18,13 @@ package models.journeyDomain.authorisationsAndLimit.authorisations
 
 import models.domain._
 import models.journeyDomain.JourneyDomainModel
-import models.{Index, RichJsArray}
+import models.{Index, RichJsArray, UserAnswers}
 import pages.sections.Section
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
 
 case class AuthorisationsDomain(authorisations: Seq[AuthorisationDomain]) extends JourneyDomainModel {
 
-  override def page: Option[Section[_]] = Some(AuthorisationsSection)
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(AuthorisationsSection)
 }
 
 object AuthorisationsDomain {
