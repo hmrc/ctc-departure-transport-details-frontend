@@ -56,14 +56,14 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         "when at least one office of transit added" - {
           "must be true" in {
             val userAnswers = emptyUserAnswers.setValue(OfficesOfTransitSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
-            val result      = TransportMeansActiveDomain.hasMultiplicity(userAnswers, Phase.PostTransition)
+            val result      = TransportMeansActiveDomain.hasMultiplicity(userAnswers)(mockPostTransitionPhaseConfig)
             result mustBe true
           }
         }
 
         "when no offices of transit added" - {
           "must be false" in {
-            val result = TransportMeansActiveDomain.hasMultiplicity(emptyUserAnswers, Phase.PostTransition)
+            val result = TransportMeansActiveDomain.hasMultiplicity(emptyUserAnswers)(mockPostTransitionPhaseConfig)
             result mustBe false
           }
         }
@@ -382,14 +382,14 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         "when at least one office of transit added" - {
           "must be false" in {
             val userAnswers = emptyUserAnswers.setValue(OfficesOfTransitSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
-            val result      = TransportMeansActiveDomain.hasMultiplicity(userAnswers, Phase.Transition)
+            val result      = TransportMeansActiveDomain.hasMultiplicity(userAnswers)(mockTransitionPhaseConfig)
             result mustBe false
           }
         }
 
         "when no offices of transit added" - {
           "must be false" in {
-            val result = TransportMeansActiveDomain.hasMultiplicity(emptyUserAnswers, Phase.Transition)
+            val result = TransportMeansActiveDomain.hasMultiplicity(emptyUserAnswers)(mockTransitionPhaseConfig)
             result mustBe false
           }
         }

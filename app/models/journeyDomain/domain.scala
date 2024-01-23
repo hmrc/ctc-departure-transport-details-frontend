@@ -35,8 +35,12 @@ package object domain {
     def apply[A](fn: UserAnswers => EitherType[ReaderSuccess[A]]): UserAnswersReader[A] =
       ReaderT[EitherType, UserAnswers, ReaderSuccess[A]](fn)
 
-    def success[A](a: A): Read[A] = pages => {
-      val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _ => Right(ReaderSuccess(a, pages))
+    def success[A](a: A): Read[A] = success {
+      (_: UserAnswers) => a
+    }
+
+    def success[A](f: UserAnswers => A): Read[A] = pages => {
+      val fn: UserAnswers => EitherType[ReaderSuccess[A]] = ua => Right(ReaderSuccess(f(ua), pages))
       apply(fn)
     }
 
@@ -178,9 +182,9 @@ package object domain {
         a =>
           val t = fun(a)
           pages =>
-            UserAnswersReader.apply(
+            UserAnswersReader.apply {
               ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
-            )
+            }
       }
 
     def to[T](fun: A => Read[T]): Read[T] = pages =>
@@ -200,9 +204,9 @@ package object domain {
         case (a, b) =>
           val t = fun(a, b)
           pages =>
-            UserAnswersReader.apply(
+            UserAnswersReader.apply {
               ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
-            )
+            }
       }
 
     def to[T](fun: (A, B) => Read[T]): Read[T] = pages =>
@@ -220,9 +224,9 @@ package object domain {
         case (a, b, c) =>
           val t = fun(a, b, c)
           pages =>
-            UserAnswersReader.apply(
+            UserAnswersReader.apply {
               ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
-            )
+            }
       }
 
     def to[T](fun: (A, B, C) => Read[T]): Read[T] = pages =>
@@ -241,9 +245,9 @@ package object domain {
         case (a, b, c, d) =>
           val t = fun(a, b, c, d)
           pages =>
-            UserAnswersReader.apply(
+            UserAnswersReader.apply {
               ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
-            )
+            }
       }
 
     def to[T](fun: (A, B, C, D) => Read[T]): Read[T] = pages =>
@@ -263,9 +267,9 @@ package object domain {
         case (a, b, c, d, e) =>
           val t = fun(a, b, c, d, e)
           pages =>
-            UserAnswersReader.apply(
+            UserAnswersReader.apply {
               ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
-            )
+            }
       }
 
     def to[T](fun: (A, B, C, D, E) => Read[T]): Read[T] = pages =>
@@ -286,9 +290,9 @@ package object domain {
         case (a, b, c, d, e, f) =>
           val t = fun(a, b, c, d, e, f)
           pages =>
-            UserAnswersReader.apply(
+            UserAnswersReader.apply {
               ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
-            )
+            }
       }
 
     def to[T](fun: (A, B, C, D, E, F) => Read[T]): Read[T] = pages =>
@@ -310,9 +314,9 @@ package object domain {
         case (a, b, c, d, e, f, g) =>
           val t = fun(a, b, c, d, e, f, g)
           pages =>
-            UserAnswersReader.apply(
+            UserAnswersReader.apply {
               ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
-            )
+            }
       }
 
     def to[T](fun: (A, B, C, D, E, F, G) => Read[T]): Read[T] = pages =>

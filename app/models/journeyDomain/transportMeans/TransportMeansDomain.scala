@@ -20,8 +20,8 @@ import config.Constants.ModeOfTransport.Rail
 import config.Constants.SecurityType.NoSecurityDetails
 import config.PhaseConfig
 import models.domain._
+import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansDomain.{borderModeOfTransportReader, transportMeansActiveReader}
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
 import models.reference.BorderMode
 import models.{Index, OptionalBoolean, Phase, UserAnswers}
 import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
@@ -42,17 +42,16 @@ object TransportMeansDomain {
       case Phase.Transition =>
         TransitionTransportMeansDomain.userAnswersReader
       case Phase.PostTransition =>
-        pages =>
-          UserAnswersReader
-            .apply(
-              ua => Right(ReaderSuccess(PostTransitionTransportMeansActiveDomain.hasMultiplicity(ua), pages))
-            )
-            .flatMap {
-              case ReaderSuccess(true, pages) =>
-                PostTransitionTransportMeansMultipleActiveDomain.userAnswersReader.apply(pages)
-              case ReaderSuccess(false, pages) =>
-                PostTransitionTransportMeansSingleActiveDomain.userAnswersReader.apply(pages)
-            }
+        UserAnswersReader
+          .success {
+            ua => PostTransitionTransportMeansActiveDomain.hasMultiplicity(ua)
+          }
+          .to {
+            case true =>
+              PostTransitionTransportMeansMultipleActiveDomain.userAnswersReader
+            case false =>
+              PostTransitionTransportMeansSingleActiveDomain.userAnswersReader
+          }
     }
 }
 

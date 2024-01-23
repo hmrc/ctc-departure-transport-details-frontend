@@ -50,10 +50,11 @@ sealed trait TransportMeansActiveDomain extends JourneyDomainModel {
 
 object TransportMeansActiveDomain {
 
-  def hasMultiplicity(userAnswers: UserAnswers, phase: Phase): Boolean = phase match {
-    case Phase.PostTransition => PostTransitionTransportMeansActiveDomain.hasMultiplicity(userAnswers)
-    case Phase.Transition     => false
-  }
+  def hasMultiplicity(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Boolean =
+    phaseConfig.phase match {
+      case Phase.PostTransition => PostTransitionTransportMeansActiveDomain.hasMultiplicity(userAnswers)
+      case Phase.Transition     => false
+    }
 
   implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): Read[TransportMeansActiveDomain] =
     phaseConfig.phase match {
@@ -162,7 +163,8 @@ object PostTransitionTransportMeansActiveDomain {
   def asString(identification: Identification, identificationNumber: String)(implicit messages: Messages): String =
     s"${identification.asString} - $identificationNumber"
 
-  def hasMultiplicity(userAnswers: UserAnswers): Boolean = userAnswers.get(OfficesOfTransitSection).isDefined
+  def hasMultiplicity(userAnswers: UserAnswers): Boolean =
+    userAnswers.get(OfficesOfTransitSection).isDefined
 
   implicit def userAnswersReader(index: Index): Read[TransportMeansActiveDomain] =
     (
