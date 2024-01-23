@@ -29,7 +29,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
 import pages.sections.external.OfficesOfTransitSection
-import pages.sections.transportMeans.{ActiveSection, TransportMeansSection}
+import pages.sections.transportMeans.ActiveSection
 import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.active._
 import play.api.libs.json.{JsArray, Json}
@@ -138,8 +138,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                   AddNationalityYesNoPage(index),
                   NationalityPage(index),
                   CustomsOfficeActiveBorderPage(index),
-                  ConveyanceReferenceNumberPage(index),
-                  TransportMeansSection
+                  ConveyanceReferenceNumberPage(index)
                 )
             }
           }
@@ -172,8 +171,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               IdentificationNumberPage(index),
               AddNationalityYesNoPage(index),
               CustomsOfficeActiveBorderPage(index),
-              ConveyanceReferenceNumberYesNoPage(index),
-              TransportMeansSection
+              ConveyanceReferenceNumberYesNoPage(index)
             )
           }
         }

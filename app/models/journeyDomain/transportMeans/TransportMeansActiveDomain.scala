@@ -39,6 +39,12 @@ sealed trait TransportMeansActiveDomain extends JourneyDomainModel {
 
   def asString(implicit messages: Messages): String
 
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
+    page(userAnswers) match {
+      case Some(value) => value.route(userAnswers, mode)
+      case None        => TransportMeansSection.route(userAnswers, mode)
+    }
+
   override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(ActiveSection(index))
 }
 
@@ -80,7 +86,7 @@ case class TransitionTransportMeansActiveDomain(
 
   override def asString(implicit messages: Messages): String = this.toString
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(TransportMeansSection)
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = None
 }
 
 object TransitionTransportMeansActiveDomain {
@@ -143,18 +149,11 @@ case class PostTransitionTransportMeansActiveDomain(
   override def asString(implicit messages: Messages): String =
     PostTransitionTransportMeansActiveDomain.asString(identification, identificationNumber)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
-    if (PostTransitionTransportMeansActiveDomain.hasMultiplicity(userAnswers)) {
-      ActiveSection(index).route(userAnswers, mode)
-    } else {
-      TransportMeansSection.route(userAnswers, mode)
-    }
-
   override def page(userAnswers: UserAnswers): Option[Section[_]] =
     if (PostTransitionTransportMeansActiveDomain.hasMultiplicity(userAnswers)) {
       super.page(userAnswers)
     } else {
-      Some(TransportMeansSection)
+      None
     }
 }
 
