@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package queries
+package pages.sections.transportMeans
 
-import models.UserAnswers
-import pages.Page
+import controllers.transportMeans.active.routes
+import models.{Mode, UserAnswers}
+import pages.sections.Section
+import play.api.libs.json.{JsArray, JsPath}
+import play.api.mvc.Call
 
-import scala.util.{Success, Try}
+case object ActivesSection extends Section[JsArray] {
 
-trait Gettable[A] extends Page
+  override def path: JsPath = TransportMeansSection.path \ toString
 
-trait Settable[A] extends Page {
+  override def toString: String = "active"
 
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode))
 }

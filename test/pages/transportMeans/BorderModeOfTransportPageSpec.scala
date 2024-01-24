@@ -20,7 +20,7 @@ import models.Index
 import models.reference.BorderMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
-import pages.sections.transportMeans.TransportMeansActiveSection
+import pages.sections.transportMeans.ActiveSection
 import play.api.libs.json.Json
 
 class BorderModeOfTransportPageSpec extends PageBehaviours {
@@ -41,13 +41,13 @@ class BorderModeOfTransportPageSpec extends PageBehaviours {
           borderMode =>
             val userAnswers = emptyUserAnswers
               .setValue(BorderModeOfTransportPage, borderMode)
-              .setValue(TransportMeansActiveSection(Index(0)), Json.obj("foo" -> "bar"))
+              .setValue(ActiveSection(Index(0)), Json.obj("foo" -> "bar"))
 
             forAll(arbitrary[BorderMode].retryUntil(_ != borderMode)) {
               differentBorderMode =>
                 val result = userAnswers.setValue(BorderModeOfTransportPage, differentBorderMode)
 
-                result.get(TransportMeansActiveSection(Index(0))) must not be defined
+                result.get(ActiveSection(Index(0))) must not be defined
             }
         }
       }

@@ -19,7 +19,7 @@ package pages.authorisationsAndLimit.authorisations.index
 import controllers.authorisationsAndLimit.authorisations.index.routes
 import models.reference.authorisations.AuthorisationType
 import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
+import pages.{InferredPage, QuestionPage}
 import pages.sections.authorisationsAndLimit.{AuthorisationSection, LimitSection}
 import pages.sections.equipment.EquipmentsSection
 import play.api.libs.json.JsPath
@@ -56,7 +56,7 @@ case class AuthorisationTypePage(authorisationIndex: Index) extends BaseAuthoris
     userAnswers.remove(InferredAuthorisationTypePage(authorisationIndex))
 }
 
-case class InferredAuthorisationTypePage(authorisationIndex: Index) extends BaseAuthorisationTypePage(authorisationIndex) {
+case class InferredAuthorisationTypePage(authorisationIndex: Index) extends BaseAuthorisationTypePage(authorisationIndex) with InferredPage[AuthorisationType] {
   override def toString: String = "inferredAuthorisationType"
 
   override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =

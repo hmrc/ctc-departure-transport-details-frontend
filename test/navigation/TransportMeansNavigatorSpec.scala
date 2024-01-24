@@ -37,7 +37,7 @@ class TransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
           forAll(arbitraryTransportMeansAnswers(emptyUserAnswers)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(answers.lrn, mode))
           }
         }
@@ -54,7 +54,7 @@ class TransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
             forAll(arbitraryTransportAnswers(emptyUserAnswers)) {
               answers =>
                 navigator
-                  .nextPage(answers)
+                  .nextPage(answers, None)
                   .mustBe(controllers.routes.TransportAnswersController.onPageLoad(answers.lrn))
             }
           }

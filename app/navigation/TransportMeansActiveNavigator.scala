@@ -46,5 +46,5 @@ class TransportMeansActiveNavigator(override val mode: Mode, index: Index)(impli
   override type T = TransportMeansActiveDomain
 
   implicit override val reader: UserAnswersReader[TransportMeansActiveDomain] =
-    TransportMeansActiveDomain.userAnswersReader(index)
+    TransportMeansActiveDomain.userAnswersReader(index).apply(Nil)
 }

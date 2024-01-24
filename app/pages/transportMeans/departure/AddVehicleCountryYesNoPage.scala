@@ -19,7 +19,7 @@ package pages.transportMeans.departure
 import controllers.transportMeans.departure.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transportMeans.TransportMeansDepartureSection
+import pages.sections.transportMeans.DepartureSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -27,7 +27,7 @@ import scala.util.Try
 
 case object AddVehicleCountryYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = TransportMeansDepartureSection.path \ toString
+  override def path: JsPath = DepartureSection.path \ toString
 
   override def toString: String = "addVehicleCountryYesNo"
 

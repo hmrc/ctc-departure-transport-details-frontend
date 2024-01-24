@@ -36,7 +36,7 @@ class SupplyChainActorNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           forAll(arbitrarySupplyChainActorAnswers(emptyUserAnswers, index)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.supplyChainActors.routes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode))
           }
         }
@@ -54,7 +54,7 @@ class SupplyChainActorNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
           forAll(arbitraryTransportAnswers(emptyUserAnswers)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.routes.TransportAnswersController.onPageLoad(answers.lrn))
           }
         }

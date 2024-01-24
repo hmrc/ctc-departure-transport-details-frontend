@@ -23,6 +23,7 @@ import controllers.supplyChainActors.{routes => supplyChainActorsRoutes}
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.TransportNavigatorProvider
+import pages.sections.supplyChainActors.SupplyChainActorsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -70,7 +71,7 @@ class AddAnotherSupplyChainActorController @Inject() (
             case true =>
               Redirect(supplyChainActorRoutes.SupplyChainActorTypeController.onPageLoad(lrn, mode, viewModel.nextIndex))
             case false =>
-              Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
+              Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(SupplyChainActorsSection)))
           }
         )
   }

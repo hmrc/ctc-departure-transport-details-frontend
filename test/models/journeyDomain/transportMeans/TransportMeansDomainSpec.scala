@@ -20,7 +20,6 @@ import base.SpecBase
 import config.Constants.SecurityType.NoSecurityDetails
 import config.PhaseConfig
 import generators.Generators
-import models.domain.{EitherType, UserAnswersReader}
 import models.reference.BorderMode
 import models.{OptionalBoolean, Phase}
 import org.mockito.Mockito.when
@@ -49,11 +48,12 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
-            val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-              TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
-            ).run(userAnswers)
+            val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe AddDepartureTransportMeansYesNoPage
+            result.left.value.pages mustBe Seq(
+              AddDepartureTransportMeansYesNoPage
+            )
           }
 
           "and add departures transport means yes/no is yes" - {
@@ -62,11 +62,13 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
                 .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
                 .setValue(AddDepartureTransportMeansYesNoPage, true)
 
-              val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
-              ).run(userAnswers)
+              val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe pages.transportMeans.departure.AddIdentificationTypeYesNoPage
+              result.left.value.page mustBe departure.AddIdentificationTypeYesNoPage
+              result.left.value.pages mustBe Seq(
+                AddDepartureTransportMeansYesNoPage,
+                departure.AddIdentificationTypeYesNoPage
+              )
             }
           }
         }
@@ -75,13 +77,13 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
           "and type of identification is unanswered" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.no)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
-            val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-              TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
-            ).run(userAnswers)
+            val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe pages.transportMeans.departure.IdentificationPage
+            result.left.value.page mustBe departure.IdentificationPage
+            result.left.value.pages mustBe Seq(
+              departure.IdentificationPage
+            )
           }
         }
       }
@@ -96,9 +98,8 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockPostTransitionPhaseConfig)) {
               userAnswers =>
-                val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                  TransportMeansDomain.userAnswersReader(mockPostTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = TransportMeansDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
                 result.left.value.page mustBe AddBorderModeOfTransportYesNoPage
             }
           }
@@ -112,9 +113,8 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
                 forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockPostTransitionPhaseConfig)) {
                   userAnswers =>
-                    val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                      TransportMeansDomain.userAnswersReader(mockPostTransitionPhaseConfig)
-                    ).run(userAnswers)
+                    val result = TransportMeansDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
                     result.left.value.page mustBe BorderModeOfTransportPage
                 }
             }
@@ -132,9 +132,8 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
-                val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                  TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
                 result.left.value.page mustBe AddBorderModeOfTransportYesNoPage
             }
           }
@@ -150,9 +149,8 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
                 forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
                   userAnswers =>
-                    val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                      TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
-                    ).run(userAnswers)
+                    val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
                     result.left.value.page mustBe BorderModeOfTransportPage
                 }
             }
@@ -168,9 +166,8 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
               userAnswers =>
-                val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                  TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
-                ).run(userAnswers)
+                val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
                 result.left.value.page mustBe AddBorderModeOfTransportYesNoPage
             }
           }
@@ -186,9 +183,8 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
                 forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
                   userAnswers =>
-                    val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                      TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
-                    ).run(userAnswers)
+                    val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
                     result.left.value.page mustBe AddBorderModeOfTransportYesNoPage
                 }
             }
@@ -212,9 +208,8 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
                 forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
                   userAnswers =>
-                    val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                      TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
-                    ).run(userAnswers)
+                    val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
                     result.left.value.page mustBe NationalityPage(index)
                 }
             }
@@ -232,9 +227,8 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
                 forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
                   userAnswers =>
-                    val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                      TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
-                    ).run(userAnswers)
+                    val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
                     result.left.value.page mustBe AddActiveBorderTransportMeansYesNoPage
                 }
             }
@@ -253,9 +247,8 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
               forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockTransitionPhaseConfig)) {
                 userAnswers =>
-                  val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                    TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig)
-                  ).run(userAnswers)
+                  val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
                   result.left.value.page mustBe AddActiveBorderTransportMeansYesNoPage
               }
           }
@@ -273,9 +266,8 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
           forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockPostTransitionPhaseConfig)) {
             userAnswers =>
-              val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                TransportMeansDomain.userAnswersReader(mockPostTransitionPhaseConfig)
-              ).run(userAnswers)
+              val result = TransportMeansDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
               result.left.value.page mustBe AddActiveBorderTransportMeansYesNoPage
           }
         }
@@ -291,9 +283,8 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
               forAll(arbitraryTransportMeansDepartureAnswers(userAnswers)(mockPostTransitionPhaseConfig)) {
                 userAnswers =>
-                  val result: EitherType[TransportMeansDomain] = UserAnswersReader[TransportMeansDomain](
-                    TransportMeansDomain.userAnswersReader(mockPostTransitionPhaseConfig)
-                  ).run(userAnswers)
+                  val result = TransportMeansDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+
                   result.left.value.page mustBe IdentificationPage(index)
               }
           }

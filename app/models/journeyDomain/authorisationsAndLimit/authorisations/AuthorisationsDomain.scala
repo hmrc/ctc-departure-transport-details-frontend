@@ -16,35 +16,29 @@
 
 package models.journeyDomain.authorisationsAndLimit.authorisations
 
-import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, Phase, RichJsArray, UserAnswers}
+import models.domain._
+import models.journeyDomain.JourneyDomainModel
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.Section
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
-import play.api.mvc.Call
 
 case class AuthorisationsDomain(authorisations: Seq[AuthorisationDomain]) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
-    Some(controllers.authorisationsAndLimit.authorisations.routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.lrn, mode))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(AuthorisationsSection)
 }
 
 object AuthorisationsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[AuthorisationsDomain] = {
+  implicit val userAnswersReader: Read[AuthorisationsDomain] = {
 
-    val authReader: UserAnswersReader[Seq[AuthorisationDomain]] =
-      AuthorisationsSection.arrayReader.flatMap {
+    val authorisationsReader: Read[Seq[AuthorisationDomain]] =
+      AuthorisationsSection.arrayReader.to {
         case x if x.isEmpty =>
-          UserAnswersReader[AuthorisationDomain](
-            AuthorisationDomain.userAnswersReader(Index(0))
-          ).map(Seq(_))
-
+          AuthorisationDomain.userAnswersReader(Index(0)).toSeq
         case x =>
-          x.traverse[AuthorisationDomain](
-            AuthorisationDomain.userAnswersReader
-          ).map(_.toSeq)
+          x.traverse[AuthorisationDomain](AuthorisationDomain.userAnswersReader(_).apply(_))
       }
 
-    UserAnswersReader[Seq[AuthorisationDomain]](authReader).map(AuthorisationsDomain(_))
+    authorisationsReader.map(AuthorisationsDomain.apply)
   }
 }

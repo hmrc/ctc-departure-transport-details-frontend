@@ -19,7 +19,7 @@ package pages.transportMeans.active
 import controllers.transportMeans.active.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.transportMeans.TransportMeansActiveSection
+import pages.sections.transportMeans.ActiveSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -27,7 +27,7 @@ import scala.util.Try
 
 case class ConveyanceReferenceNumberYesNoPage(index: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = TransportMeansActiveSection(index).path \ toString
+  override def path: JsPath = ActiveSection(index).path \ toString
 
   override def toString: String = "conveyanceReferenceNumberYesNo"
 

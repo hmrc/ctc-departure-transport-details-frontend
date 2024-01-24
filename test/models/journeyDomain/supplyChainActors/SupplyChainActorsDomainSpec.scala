@@ -19,8 +19,9 @@ package models.journeyDomain.supplyChainActors
 import base.SpecBase
 import generators.Generators
 import models.Index
-import models.domain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
+import pages.sections.supplyChainActors.SupplyChainActorsSection
+import pages.supplyChainActors.index.SupplyChainActorTypePage
 
 class SupplyChainActorsDomainSpec extends SpecBase with Generators {
 
@@ -35,10 +36,21 @@ class SupplyChainActorsDomainSpec extends SpecBase with Generators {
           arbitrarySupplyChainActorAnswers(updatedUserAnswers, Index(index)).sample.value
       })
 
-      val result: EitherType[SupplyChainActorsDomain] = UserAnswersReader[SupplyChainActorsDomain].run(userAnswers)
+      val result = SupplyChainActorsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.SupplyChainActorsDomain.length mustBe numberOfSupplyChainActors
+      result.value.value.SupplyChainActorsDomain.length mustBe numberOfSupplyChainActors
+      result.value.pages.last mustBe SupplyChainActorsSection
+    }
 
+    "cannot be parsed from user answers" - {
+      "when no supply chain actors" in {
+        val result = SupplyChainActorsDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
+
+        result.left.value.page mustBe SupplyChainActorTypePage(Index(0))
+        result.left.value.pages mustBe Seq(
+          SupplyChainActorTypePage(Index(0))
+        )
+      }
     }
   }
 }

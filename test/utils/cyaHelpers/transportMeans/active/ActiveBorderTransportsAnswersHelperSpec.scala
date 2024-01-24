@@ -22,8 +22,8 @@ import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import generators.Generators
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
-import models.reference.{BorderMode, Nationality}
 import models.reference.transportMeans.active.Identification
+import models.reference.{BorderMode, Nationality}
 import models.{Mode, NormalMode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -65,7 +65,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
             forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index)(mockPhaseConfig), arbitrary[Mode]) {
               (userAnswers, mode) =>
                 val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
-                val active = PostTransitionTransportMeansActiveDomain.userAnswersReader(index).run(userAnswers).value
+                val active = PostTransitionTransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers).value.value
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(

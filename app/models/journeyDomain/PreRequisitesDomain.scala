@@ -16,10 +16,9 @@
 
 package models.journeyDomain
 
-import cats.implicits._
 import config.Constants.DeclarationType._
 import models.OptionalBoolean
-import models.domain.{UserAnswersReader, _}
+import models.domain._
 import models.reference.Country
 import pages.external.DeclarationTypePage
 import pages.preRequisites._
@@ -29,20 +28,23 @@ case class PreRequisitesDomain(
   countryOfDispatch: Option[Country],
   itemsDestinationCountry: Option[Country],
   containerIndicator: OptionalBoolean
-)
+) extends JourneyDomainModel
 
 object PreRequisitesDomain {
 
-  implicit val countryOfDispatchReader: UserAnswersReader[Option[Country]] =
-    DeclarationTypePage.reader.flatMap {
-      case TIR => SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
-      case _   => none[Country].pure[UserAnswersReader]
+  implicit val countryOfDispatchReader: Read[Option[Country]] =
+    DeclarationTypePage.reader.to {
+      case TIR =>
+        SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
+      case _ =>
+        UserAnswersReader.none
     }
 
-  implicit val userAnswersReader: UserAnswersReader[PreRequisitesDomain] = (
-    SameUcrYesNoPage.filterOptionalDependent(identity)(UniqueConsignmentReferencePage.reader),
-    countryOfDispatchReader,
-    TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader),
-    ContainerIndicatorPage.reader
-  ).tupled.map((PreRequisitesDomain.apply _).tupled)
+  implicit val userAnswersReader: Read[PreRequisitesDomain] =
+    (
+      SameUcrYesNoPage.filterOptionalDependent(identity)(UniqueConsignmentReferencePage.reader),
+      countryOfDispatchReader,
+      TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader),
+      ContainerIndicatorPage.reader
+    ).map(PreRequisitesDomain.apply)
 }

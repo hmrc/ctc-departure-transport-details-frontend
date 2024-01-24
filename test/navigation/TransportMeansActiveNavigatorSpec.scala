@@ -46,7 +46,7 @@ class TransportMeansActiveNavigatorSpec extends SpecBase with ScalaCheckProperty
             forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex)) {
               answers =>
                 navigator
-                  .nextPage(answers)
+                  .nextPage(answers, None)
                   .mustBe(controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(answers.lrn, mode))
             }
           }
@@ -65,7 +65,7 @@ class TransportMeansActiveNavigatorSpec extends SpecBase with ScalaCheckProperty
               forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, activeIndex)(mockPhaseConfig)) {
                 answers =>
                   navigator
-                    .nextPage(answers)
+                    .nextPage(answers, None)
                     .mustBe(controllers.transportMeans.active.routes.CheckYourAnswersController.onPageLoad(lrn, mode, index))
               }
             }
@@ -76,7 +76,7 @@ class TransportMeansActiveNavigatorSpec extends SpecBase with ScalaCheckProperty
               forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex)(mockPhaseConfig)) {
                 answers =>
                   navigator
-                    .nextPage(answers)
+                    .nextPage(answers, None)
                     .mustBe(controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(answers.lrn, mode))
               }
             }
@@ -95,7 +95,7 @@ class TransportMeansActiveNavigatorSpec extends SpecBase with ScalaCheckProperty
             forAll(arbitraryTransportMeansAnswers(emptyUserAnswers)) {
               answers =>
                 navigator
-                  .nextPage(answers)
+                  .nextPage(answers, None)
                   .mustBe(controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(answers.lrn, mode))
             }
           }

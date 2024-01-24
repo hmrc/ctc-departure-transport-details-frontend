@@ -49,6 +49,6 @@ class AuthorisationsAnswersHelper(
           nameWhenComplete = _.asString,
           nameWhenInProgress = (userAnswers.get(AuthorisationTypePage(index)) orElse userAnswers.get(InferredAuthorisationTypePage(index))).map(_.forDisplay),
           removeRoute = removeRoute
-        )(AuthorisationDomain.userAnswersReader(index))
+        )(AuthorisationDomain.userAnswersReader(index).apply(Nil))
     }.checkRemoveLinks(userAnswers.get(AddAuthorisationsYesNoPage).isEmpty)
 }

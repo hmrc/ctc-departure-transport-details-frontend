@@ -37,7 +37,7 @@ class TransportMeansActiveListNavigatorSpec extends SpecBase with ScalaCheckProp
           forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.transportMeans.active.routes.AddAnotherBorderTransportController.onPageLoad(answers.lrn, mode))
           }
         }
@@ -56,7 +56,7 @@ class TransportMeansActiveListNavigatorSpec extends SpecBase with ScalaCheckProp
             forAll(arbitraryTransportMeansAnswers(emptyUserAnswers)) {
               answers =>
                 navigator
-                  .nextPage(answers)
+                  .nextPage(answers, None)
                   .mustBe(controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(answers.lrn, mode))
             }
           }

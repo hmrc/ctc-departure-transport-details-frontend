@@ -34,7 +34,7 @@ class TransportNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
             val navigator         = navigatorProvider.apply(mode)
 
             navigator
-              .nextPage(answers)
+              .nextPage(answers, None)
               .mustBe(controllers.routes.TransportAnswersController.onPageLoad(answers.lrn))
         }
       }

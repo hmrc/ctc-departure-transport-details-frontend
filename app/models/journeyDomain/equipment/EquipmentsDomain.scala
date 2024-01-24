@@ -16,27 +16,29 @@
 
 package models.journeyDomain.equipment
 
-import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, Phase, RichJsArray, UserAnswers}
+import models.domain._
+import models.journeyDomain.JourneyDomainModel
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.Section
 import pages.sections.equipment.EquipmentsSection
-import play.api.mvc.Call
 
 case class EquipmentsDomain(value: Seq[EquipmentDomain]) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
-    Some(controllers.equipment.routes.AddAnotherEquipmentController.onPageLoad(userAnswers.lrn, mode))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(EquipmentsSection)
 }
 
 object EquipmentsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[EquipmentsDomain] =
-    EquipmentsSection.arrayReader
-      .flatMap {
+  implicit val userAnswersReader: Read[EquipmentsDomain] = {
+
+    val equipmentsReader: Read[Seq[EquipmentDomain]] =
+      EquipmentsSection.arrayReader.to {
         case x if x.isEmpty =>
-          UserAnswersReader(EquipmentDomain.userAnswersReader(Index(0))).map(Seq(_))
+          EquipmentDomain.userAnswersReader(Index(0)).toSeq
         case x =>
-          x.traverse[EquipmentDomain]
+          x.traverse[EquipmentDomain](EquipmentDomain.userAnswersReader(_).apply(_))
       }
-      .map(EquipmentsDomain(_))
+
+    equipmentsReader.map(EquipmentsDomain.apply)
+  }
 }

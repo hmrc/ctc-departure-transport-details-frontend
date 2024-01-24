@@ -19,8 +19,7 @@ package pages.transportMeans
 import controllers.transportMeans.routes
 import models.{Mode, UserAnswers}
 import pages.QuestionPage
-import pages.sections.TransportSection
-import pages.sections.transportMeans.TransportMeansDepartureSection
+import pages.sections.transportMeans.{DeparturesSection, TransportMeansSection}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,7 +27,7 @@ import scala.util.Try
 
 case object AddDepartureTransportMeansYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = TransportSection.path \ toString
+  override def path: JsPath = TransportMeansSection.path \ toString
 
   override def toString: String = "addDepartureTransportMeansYesNo"
 
@@ -36,7 +35,7 @@ case object AddDepartureTransportMeansYesNoPage extends QuestionPage[Boolean] {
     Some(routes.AddDepartureTransportMeansYesNoController.onPageLoad(userAnswers.lrn, mode))
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = value match {
-    case Some(false) => userAnswers.remove(TransportMeansDepartureSection)
+    case Some(false) => userAnswers.remove(DeparturesSection)
     case _           => super.cleanup(value, userAnswers)
   }
 }

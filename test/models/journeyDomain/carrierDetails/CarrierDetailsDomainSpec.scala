@@ -19,7 +19,6 @@ package models.journeyDomain.carrierDetails
 import base.SpecBase
 import commonTestUtils.UserAnswersSpecHelper
 import generators.Generators
-import models.domain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import pages.carrierDetails._
 import pages.carrierDetails.contact._
@@ -51,9 +50,15 @@ class CarrierDetailsDomainSpec extends SpecBase with UserAnswersSpecHelper with 
           )
         )
 
-        val result: EitherType[CarrierDetailsDomain] = UserAnswersReader[CarrierDetailsDomain].run(userAnswers)
+        val result = CarrierDetailsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          IdentificationNumberPage,
+          AddContactYesNoPage,
+          NamePage,
+          TelephoneNumberPage
+        )
       }
 
       "when contact person has not been provided" in {
@@ -66,9 +71,13 @@ class CarrierDetailsDomainSpec extends SpecBase with UserAnswersSpecHelper with 
           contactPerson = None
         )
 
-        val result: EitherType[CarrierDetailsDomain] = UserAnswersReader[CarrierDetailsDomain].run(userAnswers)
+        val result = CarrierDetailsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          IdentificationNumberPage,
+          AddContactYesNoPage
+        )
       }
     }
 
@@ -77,18 +86,25 @@ class CarrierDetailsDomainSpec extends SpecBase with UserAnswersSpecHelper with 
       "when identification number has not been answered" in {
         val userAnswers = emptyUserAnswers
 
-        val result: EitherType[CarrierDetailsDomain] = UserAnswersReader[CarrierDetailsDomain].run(userAnswers)
+        val result = CarrierDetailsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe IdentificationNumberPage
+        result.left.value.pages mustBe Seq(
+          IdentificationNumberPage
+        )
       }
 
       "when add contact person yes/no has not been answered" in {
         val userAnswers = emptyUserAnswers
           .setValue(IdentificationNumberPage, identificationNumber)
 
-        val result: EitherType[CarrierDetailsDomain] = UserAnswersReader[CarrierDetailsDomain].run(userAnswers)
+        val result = CarrierDetailsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe AddContactYesNoPage
+        result.left.value.pages mustBe Seq(
+          IdentificationNumberPage,
+          AddContactYesNoPage
+        )
       }
     }
   }

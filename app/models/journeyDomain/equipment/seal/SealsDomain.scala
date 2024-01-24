@@ -16,21 +16,29 @@
 
 package models.journeyDomain.equipment.seal
 
-import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.{Index, RichJsArray}
+import models.domain._
+import models.journeyDomain.JourneyDomainModel
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.Section
 import pages.sections.equipment.SealsSection
 
-case class SealsDomain(value: Seq[SealDomain])
+case class SealsDomain(value: Seq[SealDomain])(equipmentIndex: Index) extends JourneyDomainModel {
+
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(SealsSection(equipmentIndex))
+}
 
 object SealsDomain {
 
-  implicit def userAnswersReader(equipmentIndex: Index): UserAnswersReader[SealsDomain] =
-    SealsSection(equipmentIndex).arrayReader
-      .flatMap {
+  implicit def userAnswersReader(equipmentIndex: Index): Read[SealsDomain] = {
+
+    val sealsReader: Read[Seq[SealDomain]] =
+      SealsSection(equipmentIndex).arrayReader.to {
         case x if x.isEmpty =>
-          UserAnswersReader(SealDomain.userAnswersReader(equipmentIndex, Index(0))).map(Seq(_))
+          SealDomain.userAnswersReader(equipmentIndex, Index(0)).toSeq
         case x =>
-          x.traverse[SealDomain](SealDomain.userAnswersReader(equipmentIndex, _))
+          x.traverse[SealDomain](SealDomain.userAnswersReader(equipmentIndex, _).apply(_))
       }
-      .map(SealsDomain(_))
+
+    sealsReader.map(SealsDomain.apply(_)(equipmentIndex))
+  }
 }

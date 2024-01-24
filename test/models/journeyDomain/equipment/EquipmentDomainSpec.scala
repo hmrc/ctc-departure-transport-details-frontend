@@ -18,17 +18,15 @@ package models.journeyDomain.equipment
 
 import base.SpecBase
 import generators.Generators
-import models.reference.authorisations.AuthorisationType
-import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.equipment.seal.{SealDomain, SealsDomain}
+import models.reference.authorisations.AuthorisationType
 import models.{Index, OptionalBoolean, ProcedureType}
 import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
-import pages.equipment.AddTransportEquipmentYesNoPage
 import pages.equipment.index._
 import pages.equipment.index.seals.IdentificationNumberPage
 import pages.external.ProcedureTypePage
 import pages.preRequisites.ContainerIndicatorPage
-import pages.sections.equipment.EquipmentSection
+import pages.sections.equipment.{EquipmentSection, SealsSection}
 import play.api.libs.json.Json
 
 class EquipmentDomainSpec extends SpecBase with Generators {
@@ -58,15 +56,20 @@ class EquipmentDomainSpec extends SpecBase with Generators {
                 Seq(
                   SealDomain(sealId)(equipmentIndex, sealIndex)
                 )
-              )
+              )(equipmentIndex)
             )
           )(equipmentIndex)
 
-          val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](
-            EquipmentDomain.userAnswersReader(index)
-          ).run(userAnswers)
+          val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            ContainerIdentificationNumberPage(equipmentIndex),
+            AddSealYesNoPage(equipmentIndex),
+            IdentificationNumberPage(equipmentIndex, sealIndex),
+            SealsSection(equipmentIndex),
+            EquipmentSection(equipmentIndex)
+          )
         }
 
         "when there are no seals" in {
@@ -81,13 +84,15 @@ class EquipmentDomainSpec extends SpecBase with Generators {
             seals = None
           )(equipmentIndex)
 
-          val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](
-            EquipmentDomain.userAnswersReader(index)
-          ).run(userAnswers)
+          val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            ContainerIdentificationNumberPage(equipmentIndex),
+            AddSealYesNoPage(equipmentIndex),
+            EquipmentSection(equipmentIndex)
+          )
         }
-
       }
 
       "cannot be parsed from user answers" - {
@@ -96,13 +101,13 @@ class EquipmentDomainSpec extends SpecBase with Generators {
             val userAnswers = emptyUserAnswers
               .setValue(ProcedureTypePage, ProcedureType.Normal)
               .setValue(ContainerIndicatorPage, OptionalBoolean.no)
-              .setValue(AddTransportEquipmentYesNoPage, true)
 
-            val result: EitherType[EquipmentDomain] = UserAnswersReader[EquipmentDomain](
-              EquipmentDomain.userAnswersReader(index)
-            ).run(userAnswers)
+            val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe AddSealYesNoPage(equipmentIndex)
+            result.left.value.pages mustBe Seq(
+              AddSealYesNoPage(equipmentIndex)
+            )
           }
         }
       }
@@ -120,11 +125,12 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
             val expectedResult = Some(containerId)
 
-            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              EquipmentDomain.containerIdReads(index)
-            ).run(userAnswers)
+            val result = EquipmentDomain.containerIdReads(index).apply(Nil).run(userAnswers)
 
-            result.value mustBe expectedResult
+            result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              ContainerIdentificationNumberPage(index)
+            )
           }
 
           "and not at index 0" - {
@@ -139,11 +145,13 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
               val expectedResult = Some(containerId)
 
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                EquipmentDomain.containerIdReads(index)
-              ).run(userAnswers)
+              val result = EquipmentDomain.containerIdReads(index).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                AddContainerIdentificationNumberYesNoPage(index),
+                ContainerIdentificationNumberPage(index)
+              )
             }
 
             "and add container id yes/no is false" in {
@@ -154,11 +162,12 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
               val expectedResult = None
 
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                EquipmentDomain.containerIdReads(index)
-              ).run(userAnswers)
+              val result = EquipmentDomain.containerIdReads(index).apply(Nil).run(userAnswers)
 
-              result.value mustBe expectedResult
+              result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                AddContainerIdentificationNumberYesNoPage(index)
+              )
             }
           }
         }
@@ -169,11 +178,10 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
           val expectedResult = None
 
-          val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-            EquipmentDomain.containerIdReads(index)
-          ).run(userAnswers)
+          val result = EquipmentDomain.containerIdReads(index).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
+          result.value.pages mustBe Nil
         }
       }
 
@@ -185,11 +193,12 @@ class EquipmentDomainSpec extends SpecBase with Generators {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
-            val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-              EquipmentDomain.containerIdReads(index)
-            ).run(userAnswers)
+            val result = EquipmentDomain.containerIdReads(index).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe ContainerIdentificationNumberPage(index)
+            result.left.value.pages mustBe Seq(
+              ContainerIdentificationNumberPage(index)
+            )
           }
         }
 
@@ -201,11 +210,12 @@ class EquipmentDomainSpec extends SpecBase with Generators {
               val userAnswers = emptyUserAnswers
                 .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
-              val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                EquipmentDomain.containerIdReads(index)
-              ).run(userAnswers)
+              val result = EquipmentDomain.containerIdReads(index).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe AddContainerIdentificationNumberYesNoPage(index)
+              result.left.value.pages mustBe Seq(
+                AddContainerIdentificationNumberYesNoPage(index)
+              )
             }
 
             "and add container id yes/no is true" - {
@@ -215,11 +225,13 @@ class EquipmentDomainSpec extends SpecBase with Generators {
                   .setValue(EquipmentSection(Index(0)), Json.obj("foo" -> "bar"))
                   .setValue(AddContainerIdentificationNumberYesNoPage(index), true)
 
-                val result: EitherType[Option[String]] = UserAnswersReader[Option[String]](
-                  EquipmentDomain.containerIdReads(index)
-                ).run(userAnswers)
+                val result = EquipmentDomain.containerIdReads(index).apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe ContainerIdentificationNumberPage(index)
+                result.left.value.pages mustBe Seq(
+                  AddContainerIdentificationNumberYesNoPage(index),
+                  ContainerIdentificationNumberPage(index)
+                )
               }
             }
           }
@@ -236,11 +248,12 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
           val expectedResult = None
 
-          val result: EitherType[Option[SealsDomain]] = UserAnswersReader[Option[SealsDomain]](
-            EquipmentDomain.sealsReads(equipmentIndex)
-          ).run(userAnswers)
+          val result = EquipmentDomain.sealsReads(equipmentIndex).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            AddSealYesNoPage(equipmentIndex)
+          )
         }
 
         "when add seals yes/no is yes" in {
@@ -254,14 +267,17 @@ class EquipmentDomainSpec extends SpecBase with Generators {
               Seq(
                 SealDomain(sealId)(equipmentIndex, sealIndex)
               )
-            )
+            )(equipmentIndex)
           )
 
-          val result: EitherType[Option[SealsDomain]] = UserAnswersReader[Option[SealsDomain]](
-            EquipmentDomain.sealsReads(equipmentIndex)
-          ).run(userAnswers)
+          val result = EquipmentDomain.sealsReads(equipmentIndex).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            AddSealYesNoPage(equipmentIndex),
+            IdentificationNumberPage(equipmentIndex, sealIndex),
+            SealsSection(equipmentIndex)
+          )
         }
       }
 
@@ -273,11 +289,12 @@ class EquipmentDomainSpec extends SpecBase with Generators {
               .setValue(AuthorisationTypePage(Index(0)), authTypeACR)
               .setValue(AuthorisationTypePage(Index(1)), authTypeSSE)
 
-            val result: EitherType[Option[SealsDomain]] = UserAnswersReader[Option[SealsDomain]](
-              EquipmentDomain.sealsReads(equipmentIndex)
-            ).run(userAnswers)
+            val result = EquipmentDomain.sealsReads(equipmentIndex).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe IdentificationNumberPage(equipmentIndex, Index(0))
+            result.left.value.pages mustBe Seq(
+              IdentificationNumberPage(equipmentIndex, sealIndex)
+            )
           }
         }
 
@@ -288,11 +305,12 @@ class EquipmentDomainSpec extends SpecBase with Generators {
               .setValue(AuthorisationTypePage(Index(0)), authTypeACR)
               .setValue(AuthorisationTypePage(Index(1)), authTypeTRD)
 
-            val result: EitherType[Option[SealsDomain]] = UserAnswersReader[Option[SealsDomain]](
-              EquipmentDomain.sealsReads(equipmentIndex)
-            ).run(userAnswers)
+            val result = EquipmentDomain.sealsReads(equipmentIndex).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe AddSealYesNoPage(equipmentIndex)
+            result.left.value.pages mustBe Seq(
+              AddSealYesNoPage(equipmentIndex)
+            )
           }
         }
 
@@ -303,11 +321,12 @@ class EquipmentDomainSpec extends SpecBase with Generators {
               .setValue(AuthorisationTypePage(Index(0)), authTypeSSE)
               .setValue(AuthorisationTypePage(Index(1)), authTypeACR)
 
-            val result: EitherType[Option[SealsDomain]] = UserAnswersReader[Option[SealsDomain]](
-              EquipmentDomain.sealsReads(equipmentIndex)
-            ).run(userAnswers)
+            val result = EquipmentDomain.sealsReads(equipmentIndex).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe AddSealYesNoPage(equipmentIndex)
+            result.left.value.pages mustBe Seq(
+              AddSealYesNoPage(equipmentIndex)
+            )
           }
         }
 
@@ -318,11 +337,12 @@ class EquipmentDomainSpec extends SpecBase with Generators {
               .setValue(AuthorisationTypePage(Index(0)), authTypeACR)
               .setValue(AuthorisationTypePage(Index(1)), authTypeTRD)
 
-            val result: EitherType[Option[SealsDomain]] = UserAnswersReader[Option[SealsDomain]](
-              EquipmentDomain.sealsReads(equipmentIndex)
-            ).run(userAnswers)
+            val result = EquipmentDomain.sealsReads(equipmentIndex).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe AddSealYesNoPage(equipmentIndex)
+            result.left.value.pages mustBe Seq(
+              AddSealYesNoPage(equipmentIndex)
+            )
           }
         }
       }

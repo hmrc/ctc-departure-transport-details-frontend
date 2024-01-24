@@ -43,5 +43,5 @@ class EquipmentsNavigator(override val mode: Mode)(implicit override val appConf
   override type T = EquipmentsDomain
 
   implicit override val reader: UserAnswersReader[EquipmentsDomain] =
-    EquipmentsDomain.userAnswersReader
+    EquipmentsDomain.userAnswersReader.apply(Nil)
 }

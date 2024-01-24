@@ -66,7 +66,7 @@ object TransportMeansAnswersViewModel {
 
       val borderMeansSection = {
         val row = helper.addActiveBorderTransportMeans.toSeq
-        if (TransportMeansActiveDomain.hasMultiplicity(userAnswers, phaseConfig.phase)) {
+        if (TransportMeansActiveDomain.hasMultiplicity(userAnswers)) {
           Section(
             sectionTitle = messages("transportMeans.borderMeans.subheading"),
             rows = row ++ helper.activeBorderTransportsMeans,

@@ -16,8 +16,7 @@
 
 package models.journeyDomain.supplyChainActors
 
-import cats.implicits.catsSyntaxTuple2Semigroupal
-import models.domain.{GettableAsReaderOps, UserAnswersReader}
+import models.domain._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.reference.supplyChainActors.SupplyChainActorType
@@ -26,7 +25,11 @@ import pages.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActor
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
-case class SupplyChainActorDomain(role: SupplyChainActorType, identification: String)(index: Index) extends JourneyDomainModel {
+case class SupplyChainActorDomain(
+  role: SupplyChainActorType,
+  identification: String
+)(index: Index)
+    extends JourneyDomainModel {
 
   def asString(implicit messages: Messages): String =
     SupplyChainActorDomain.asString(role, identification)
@@ -46,12 +49,10 @@ object SupplyChainActorDomain {
   def asString(role: SupplyChainActorType, identification: String)(implicit messages: Messages): String =
     s"${role.asString} - $identification"
 
-  def userAnswersReader(index: Index): UserAnswersReader[SupplyChainActorDomain] =
+  def userAnswersReader(index: Index): Read[SupplyChainActorDomain] =
     (
       SupplyChainActorTypePage(index).reader,
       IdentificationNumberPage(index).reader
-    ).mapN {
-      (actor, identification) => SupplyChainActorDomain(actor, identification)(index)
-    }
+    ).map(SupplyChainActorDomain.apply(_, _)(index))
 
 }

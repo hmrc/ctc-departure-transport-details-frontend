@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package queries
+package pages.sections.transportMeans
 
-import models.UserAnswers
-import pages.Page
+import pages.sections.Section
+import play.api.libs.json.{JsArray, JsPath}
 
-import scala.util.{Success, Try}
+case object DeparturesSection extends Section[JsArray] {
 
-trait Gettable[A] extends Page
+  override def path: JsPath = TransportMeansSection.path \ toString
 
-trait Settable[A] extends Page {
-
-  def cleanup(value: Option[A], userAnswers: UserAnswers): Try[UserAnswers] =
-    Success(userAnswers)
+  override def toString: String = "departure"
 }

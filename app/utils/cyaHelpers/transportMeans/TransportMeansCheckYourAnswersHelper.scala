@@ -18,11 +18,11 @@ package utils.cyaHelpers.transportMeans
 
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.transportMeans.active.routes
-import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
+import models.journeyDomain.transportMeans.{PostTransitionTransportMeansActiveDomain, TransportMeansActiveDomain}
 import models.reference.transportMeans.departure.Identification
 import models.reference.{BorderMode, InlandMode, Nationality}
 import models.{Index, Mode, UserAnswers}
-import pages.sections.transportMeans.TransportMeansActiveListSection
+import pages.sections.transportMeans.ActivesSection
 import pages.transportMeans._
 import pages.transportMeans.departure._
 import play.api.i18n.Messages
@@ -38,17 +38,17 @@ class TransportMeansCheckYourAnswersHelper(
     extends AnswersHelper(userAnswers, mode) {
 
   def activeBorderTransportsMeans: Seq[SummaryListRow] =
-    getAnswersAndBuildSectionRows(TransportMeansActiveListSection)(activeBorderTransportMeans)
+    getAnswersAndBuildSectionRows(ActivesSection)(activeBorderTransportMeans)
 
   // only used in post-transition (no multiplicity during transition period)
-  def activeBorderTransportMeans(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[PostTransitionTransportMeansActiveDomain](
+  def activeBorderTransportMeans(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[TransportMeansActiveDomain](
     formatAnswer = _.asString.toText,
     prefix = "transportMeans.active",
     id = Some(s"change-active-border-transport-means-${index.display}"),
     args = index.display
-  )(PostTransitionTransportMeansActiveDomain.userAnswersReader(index))
+  )(PostTransitionTransportMeansActiveDomain.userAnswersReader(index).apply(Nil))
 
-  def addOrRemoveActiveBorderTransportsMeans(): Option[Link] = buildLink(TransportMeansActiveListSection) {
+  def addOrRemoveActiveBorderTransportsMeans(): Option[Link] = buildLink(ActivesSection) {
     Link(
       id = "add-or-remove-border-means-of-transport",
       text = messages("transportMeans.borderMeans.addOrRemove"),

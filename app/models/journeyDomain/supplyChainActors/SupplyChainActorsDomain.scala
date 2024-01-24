@@ -16,39 +16,31 @@
 
 package models.journeyDomain.supplyChainActors
 
-import cats.implicits._
-import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, Phase, RichJsArray, UserAnswers}
+import models.domain._
+import models.journeyDomain.JourneyDomainModel
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.Section
 import pages.sections.supplyChainActors.SupplyChainActorsSection
-import play.api.mvc.Call
 
 case class SupplyChainActorsDomain(
   SupplyChainActorsDomain: Seq[SupplyChainActorDomain]
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
-    Some(controllers.supplyChainActors.routes.AddAnotherSupplyChainActorController.onPageLoad(userAnswers.lrn, mode))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(SupplyChainActorsSection)
 }
 
 object SupplyChainActorsDomain {
 
-  implicit val userAnswersReader: UserAnswersReader[SupplyChainActorsDomain] = {
+  implicit val userAnswersReader: Read[SupplyChainActorsDomain] = {
 
-    val actorsReader: UserAnswersReader[Seq[SupplyChainActorDomain]] =
-      SupplyChainActorsSection.arrayReader.flatMap {
+    val supplyChainActorsReader: Read[Seq[SupplyChainActorDomain]] =
+      SupplyChainActorsSection.arrayReader.to {
         case x if x.isEmpty =>
-          UserAnswersReader[SupplyChainActorDomain](
-            SupplyChainActorDomain.userAnswersReader(Index(0))
-          ).map(Seq(_))
-
+          SupplyChainActorDomain.userAnswersReader(Index(0)).toSeq
         case x =>
-          x.traverse[SupplyChainActorDomain](
-            SupplyChainActorDomain.userAnswersReader
-          ).map(_.toSeq)
+          x.traverse[SupplyChainActorDomain](SupplyChainActorDomain.userAnswersReader(_).apply(_))
       }
 
-    UserAnswersReader[Seq[SupplyChainActorDomain]](actorsReader).map(SupplyChainActorsDomain(_))
-
+    supplyChainActorsReader.map(SupplyChainActorsDomain.apply)
   }
 }

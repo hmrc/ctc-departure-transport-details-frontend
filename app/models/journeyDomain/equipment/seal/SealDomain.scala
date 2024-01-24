@@ -16,11 +16,13 @@
 
 package models.journeyDomain.equipment.seal
 
-import models.domain.{GettableAsReaderOps, UserAnswersReader}
+import controllers.equipment.index.seals.routes
+import models.domain._
 import models.journeyDomain.Stage._
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.{Index, Mode, Phase, UserAnswers}
 import pages.equipment.index.seals.IdentificationNumberPage
+import pages.sections.equipment.SealsSection
 import play.api.mvc.Call
 
 case class SealDomain(
@@ -30,17 +32,17 @@ case class SealDomain(
 
   override def toString: String = identificationNumber
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
     stage match {
       case AccessingJourney =>
-        controllers.equipment.index.seals.routes.IdentificationNumberController.onPageLoad(userAnswers.lrn, mode, equipmentIndex, sealIndex)
-      case CompletingJourney => controllers.equipment.index.routes.AddAnotherSealController.onPageLoad(userAnswers.lrn, mode, equipmentIndex)
+        Some(routes.IdentificationNumberController.onPageLoad(userAnswers.lrn, mode, equipmentIndex, sealIndex))
+      case CompletingJourney =>
+        SealsSection(equipmentIndex).route(userAnswers, mode)
     }
-  }
 }
 
 object SealDomain {
 
-  implicit def userAnswersReader(equipmentIndex: Index, sealIndex: Index): UserAnswersReader[SealDomain] =
+  implicit def userAnswersReader(equipmentIndex: Index, sealIndex: Index): Read[SealDomain] =
     IdentificationNumberPage(equipmentIndex, sealIndex).reader.map(SealDomain(_)(equipmentIndex, sealIndex))
 }

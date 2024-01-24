@@ -17,7 +17,7 @@
 package pages.external
 
 import config.Constants.DeclarationType._
-import models.domain.{GettableAsReaderOps, UserAnswersReader}
+import models.domain._
 import pages.ReadOnlyPage
 import play.api.libs.json.JsPath
 
@@ -27,8 +27,8 @@ case object ApprovedOperatorPage extends ReadOnlyPage[Boolean] {
 
   override def toString: String = "approvedOperator"
 
-  def inferredReader: UserAnswersReader[Boolean] = DeclarationTypePage.reader.flatMap {
-    case TIR => UserAnswersReader(false)
+  def inferredReader: Read[Boolean] = DeclarationTypePage.reader.to {
+    case TIR => UserAnswersReader.success(false)
     case _   => ApprovedOperatorPage.reader
   }
 }

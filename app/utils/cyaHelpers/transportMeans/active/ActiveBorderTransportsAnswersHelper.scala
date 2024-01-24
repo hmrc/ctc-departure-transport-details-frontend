@@ -18,9 +18,9 @@ package utils.cyaHelpers.transportMeans.active
 
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.transportMeans.active.routes
-import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
+import models.journeyDomain.transportMeans.{PostTransitionTransportMeansActiveDomain, TransportMeansActiveDomain}
 import models.{Index, Mode, UserAnswers}
-import pages.sections.transportMeans.TransportMeansActiveListSection
+import pages.sections.transportMeans.ActivesSection
 import pages.transportMeans.active._
 import play.api.i18n.Messages
 import utils.cyaHelpers.AnswersHelper
@@ -42,13 +42,13 @@ class ActiveBorderTransportsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(
         case _                                                  => None
       }
 
-    buildListItems(TransportMeansActiveListSection) {
+    buildListItems(ActivesSection) {
       index =>
-        buildListItem[PostTransitionTransportMeansActiveDomain](
+        buildListItem[TransportMeansActiveDomain](
           nameWhenComplete = _.asString,
           nameWhenInProgress = nameWhenInProgress(index),
           removeRoute = Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(lrn, mode, index))
-        )(PostTransitionTransportMeansActiveDomain.userAnswersReader(index))
+        )(PostTransitionTransportMeansActiveDomain.userAnswersReader(index).apply(Nil))
     }
   }
 

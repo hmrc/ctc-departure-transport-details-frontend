@@ -20,7 +20,7 @@ import models.reference.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 import pages.sections.authorisationsAndLimit.AuthorisationsAndLimitSection
-import pages.sections.transportMeans.{TransportMeansActiveListSection, TransportMeansDepartureSection}
+import pages.sections.transportMeans.{ActivesSection, DeparturesSection}
 import play.api.libs.json.{JsArray, Json}
 
 class InlandModePageSpec extends PageBehaviours {
@@ -40,17 +40,17 @@ class InlandModePageSpec extends PageBehaviours {
             inlandMode =>
               val userAnswers = emptyUserAnswers
                 .setValue(InlandModePage, inlandMode)
-                .setValue(TransportMeansDepartureSection, Json.obj("foo" -> "bar"))
-                .setValue(TransportMeansActiveListSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+                .setValue(DeparturesSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+                .setValue(ActivesSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
                 .setValue(AuthorisationsAndLimitSection, Json.obj("foo" -> "bar"))
 
               forAll(arbitrary[InlandMode].filterNot(_.code == "5").filterNot(_ == inlandMode)) {
                 differentInlandModeNotMail =>
                   val result = userAnswers.setValue(InlandModePage, differentInlandModeNotMail)
 
-                  result.get(TransportMeansDepartureSection) must not be defined
+                  result.get(DeparturesSection) must not be defined
                   result.get(AuthorisationsAndLimitSection) must not be defined
-                  result.get(TransportMeansActiveListSection) mustBe defined
+                  result.get(ActivesSection) mustBe defined
               }
           }
         }
@@ -65,15 +65,15 @@ class InlandModePageSpec extends PageBehaviours {
           inlandMode =>
             val userAnswers = emptyUserAnswers
               .setValue(InlandModePage, inlandMode)
-              .setValue(TransportMeansDepartureSection, Json.obj("foo" -> "bar"))
-              .setValue(TransportMeansActiveListSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+              .setValue(DeparturesSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
+              .setValue(ActivesSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
               .setValue(AuthorisationsAndLimitSection, Json.obj("foo" -> "bar"))
 
             val result = userAnswers.setValue(InlandModePage, mailInlandMode)
 
-            result.get(TransportMeansDepartureSection) must not be defined
+            result.get(DeparturesSection) must not be defined
             result.get(AuthorisationsAndLimitSection) must not be defined
-            result.get(TransportMeansActiveListSection) must not be defined
+            result.get(ActivesSection) must not be defined
         }
       }
     }

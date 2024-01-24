@@ -19,8 +19,8 @@ package pages.transportMeans.active
 import controllers.transportMeans.active.routes
 import models.reference.transportMeans.active.Identification
 import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
-import pages.sections.transportMeans.TransportMeansActiveSection
+import pages.sections.transportMeans.ActiveSection
+import pages.{InferredPage, QuestionPage}
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
@@ -28,7 +28,7 @@ import scala.util.Try
 
 abstract class BaseIdentificationPage(index: Index) extends QuestionPage[Identification] {
 
-  override def path: JsPath = TransportMeansActiveSection(index).path \ toString
+  override def path: JsPath = ActiveSection(index).path \ toString
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.IdentificationController.onPageLoad(userAnswers.lrn, mode, index))
@@ -49,7 +49,7 @@ case class IdentificationPage(index: Index) extends BaseIdentificationPage(index
     userAnswers.remove(InferredIdentificationPage(index))
 }
 
-case class InferredIdentificationPage(index: Index) extends BaseIdentificationPage(index) {
+case class InferredIdentificationPage(index: Index) extends BaseIdentificationPage(index) with InferredPage[Identification] {
   override def toString: String = "inferredIdentification"
 
   override def cleanup(userAnswers: UserAnswers): Try[UserAnswers] =

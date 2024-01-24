@@ -26,10 +26,9 @@ import models.journeyDomain.equipment.{EquipmentDomain, EquipmentsDomain}
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.journeyDomain.transportMeans.{TransportMeansActiveDomain, TransportMeansDepartureDomain, TransportMeansDomain}
 import models.journeyDomain.{PreRequisitesDomain, TransportDomain}
-import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, UserAnswers}
+import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, SubmissionState, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import models.SubmissionState
 
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
@@ -50,7 +49,7 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
 
     def rec(userAnswers: UserAnswers): Gen[UserAnswers] =
       userAnswersReader.run(userAnswers) match {
-        case Left(ReaderError(page, _)) =>
+        case Left(ReaderError(page, _, _)) =>
           generateAnswer
             .apply(page)
             .map {
@@ -70,33 +69,53 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
     buildUserAnswers[TransportDomain](userAnswers)
 
   def arbitraryPreRequisitesAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
-    buildUserAnswers[PreRequisitesDomain](userAnswers)
+    buildUserAnswers[PreRequisitesDomain](userAnswers)(
+      PreRequisitesDomain.userAnswersReader.apply(Nil)
+    )
 
   def arbitraryTransportMeansAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
-    buildUserAnswers[TransportMeansDomain](userAnswers)
+    buildUserAnswers[TransportMeansDomain](userAnswers)(
+      TransportMeansDomain.userAnswersReader.apply(Nil)
+    )
 
   def arbitraryTransportMeansDepartureAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
-    buildUserAnswers[TransportMeansDepartureDomain](userAnswers)
+    buildUserAnswers[TransportMeansDepartureDomain](userAnswers)(
+      TransportMeansDepartureDomain.userAnswersReader.apply(Nil)
+    )
 
   def arbitraryTransportMeansActiveAnswers(userAnswers: UserAnswers, index: Index)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
-    buildUserAnswers[TransportMeansActiveDomain](userAnswers)(TransportMeansActiveDomain.userAnswersReader(index))
+    buildUserAnswers[TransportMeansActiveDomain](userAnswers)(
+      TransportMeansActiveDomain.userAnswersReader(index).apply(Nil)
+    )
 
   def arbitrarySupplyChainActorAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
-    buildUserAnswers[SupplyChainActorDomain](userAnswers)(SupplyChainActorDomain.userAnswersReader(index))
+    buildUserAnswers[SupplyChainActorDomain](userAnswers)(
+      SupplyChainActorDomain.userAnswersReader(index).apply(Nil)
+    )
 
   def arbitraryAuthorisationAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
-    buildUserAnswers[AuthorisationDomain](userAnswers)(AuthorisationDomain.userAnswersReader(index))
+    buildUserAnswers[AuthorisationDomain](userAnswers)(
+      AuthorisationDomain.userAnswersReader(index).apply(Nil)
+    )
 
   def arbitraryLimitAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
-    buildUserAnswers[LimitDomain](userAnswers)
+    buildUserAnswers[LimitDomain](userAnswers)(
+      LimitDomain.userAnswersReader.apply(Nil)
+    )
 
   def arbitraryEquipmentsAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
-    buildUserAnswers[EquipmentsDomain](userAnswers)
+    buildUserAnswers[EquipmentsDomain](userAnswers)(
+      EquipmentsDomain.userAnswersReader.apply(Nil)
+    )
 
   def arbitraryEquipmentAnswers(userAnswers: UserAnswers, equipmentIndex: Index): Gen[UserAnswers] =
-    buildUserAnswers[EquipmentDomain](userAnswers)(EquipmentDomain.userAnswersReader(equipmentIndex))
+    buildUserAnswers[EquipmentDomain](userAnswers)(
+      EquipmentDomain.userAnswersReader(equipmentIndex).apply(Nil)
+    )
 
   def arbitrarySealAnswers(userAnswers: UserAnswers, equipmentIndex: Index, sealIndex: Index): Gen[UserAnswers] =
-    buildUserAnswers[SealDomain](userAnswers)(SealDomain.userAnswersReader(equipmentIndex, sealIndex))
+    buildUserAnswers[SealDomain](userAnswers)(
+      SealDomain.userAnswersReader(equipmentIndex, sealIndex).apply(Nil)
+    )
 
 }

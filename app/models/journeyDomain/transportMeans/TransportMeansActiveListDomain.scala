@@ -16,41 +16,32 @@
 
 package models.journeyDomain.transportMeans
 
-import cats.implicits._
 import config.PhaseConfig
-import controllers.transportMeans.active.routes
-import models.domain.{JsArrayGettableAsReaderOps, UserAnswersReader}
-import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, Phase, RichJsArray, UserAnswers}
-import pages.sections.transportMeans.TransportMeansActiveListSection
-import play.api.mvc.Call
+import models.domain._
+import models.journeyDomain.JourneyDomainModel
+import models.{Index, RichJsArray, UserAnswers}
+import pages.sections.Section
+import pages.sections.transportMeans.ActivesSection
 
 case class TransportMeansActiveListDomain(
   transportMeansActiveListDomain: Seq[TransportMeansActiveDomain]
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
-    Some(routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(ActivesSection)
 }
 
 object TransportMeansActiveListDomain {
 
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportMeansActiveListDomain] = {
+  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansActiveListDomain] = {
 
-    val activeListReader: UserAnswersReader[Seq[TransportMeansActiveDomain]] =
-      TransportMeansActiveListSection.arrayReader.flatMap {
+    val activesReader: Read[Seq[TransportMeansActiveDomain]] =
+      ActivesSection.arrayReader.to {
         case x if x.isEmpty =>
-          UserAnswersReader[TransportMeansActiveDomain](
-            TransportMeansActiveDomain.userAnswersReader(Index(0))
-          ).map(Seq(_))
-
+          TransportMeansActiveDomain.userAnswersReader(Index(0)).toSeq
         case x =>
-          x.traverse[TransportMeansActiveDomain](
-            TransportMeansActiveDomain.userAnswersReader
-          ).map(_.toSeq)
+          x.traverse[TransportMeansActiveDomain](TransportMeansActiveDomain.userAnswersReader(_).apply(_))
       }
 
-    UserAnswersReader[Seq[TransportMeansActiveDomain]](activeListReader).map(TransportMeansActiveListDomain(_))
-
+    activesReader.map(TransportMeansActiveListDomain.apply)
   }
 }

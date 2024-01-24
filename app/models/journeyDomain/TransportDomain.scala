@@ -16,24 +16,23 @@
 
 package models.journeyDomain
 
-import cats.implicits._
 import config.Constants.ModeOfTransport.Mail
 import config.PhaseConfig
 import models.ProcedureType.Normal
-import models.domain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, UserAnswersReader}
+import models.UserAnswers
+import models.domain._
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
 import models.journeyDomain.carrierDetails.CarrierDetailsDomain
 import models.journeyDomain.equipment.EquipmentsAndChargesDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
 import models.reference.InlandMode
-import models.{Mode, Phase, UserAnswers}
 import pages.authorisationsAndLimit.{AddAuthorisationsYesNoPage, AuthorisationsInferredPage}
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
+import pages.sections.{Section, TransportSection}
 import pages.supplyChainActors.SupplyChainActorYesNoPage
 import pages.transportMeans.{AddInlandModeYesNoPage, InlandModePage}
-import play.api.mvc.Call
 
 case class TransportDomain(
   preRequisites: PreRequisitesDomain,
@@ -45,51 +44,40 @@ case class TransportDomain(
   equipmentsAndCharges: EquipmentsAndChargesDomain
 ) extends JourneyDomainModel {
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
-    Some(controllers.routes.TransportAnswersController.onPageLoad(userAnswers.lrn))
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(TransportSection)
 }
 
 object TransportDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportDomain] = {
 
-    implicit lazy val transportMeansReads: UserAnswersReader[Option[TransportMeansDomain]] =
-      InlandModePage.optionalReader.map(_.map(_.code)).flatMap {
-        case Some(Mail) => none[TransportMeansDomain].pure[UserAnswersReader]
-        case _          => UserAnswersReader[TransportMeansDomain].map(Some(_))
+    implicit lazy val transportMeansReads: Read[Option[TransportMeansDomain]] =
+      InlandModePage.optionalReader.to {
+        case Some(InlandMode(Mail, _)) => UserAnswersReader.none
+        case _                         => TransportMeansDomain.userAnswersReader.toOption
       }
 
-    for {
-      preRequisites          <- UserAnswersReader[PreRequisitesDomain]
-      inlandMode             <- AddInlandModeYesNoPage.filterOptionalDependent(identity)(InlandModePage.reader)
-      transportMeans         <- transportMeansReads
-      supplyChainActors      <- SupplyChainActorYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[SupplyChainActorsDomain])
-      authorisationsAndLimit <- authorisationsAndLimitReads
-      carrierDetails         <- CarrierDetailYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[CarrierDetailsDomain])
-      equipmentsAndCharges   <- UserAnswersReader[EquipmentsAndChargesDomain]
-    } yield TransportDomain(
-      preRequisites,
-      inlandMode,
-      transportMeans,
-      supplyChainActors,
-      authorisationsAndLimit,
-      carrierDetails,
-      equipmentsAndCharges
-    )
+    (
+      PreRequisitesDomain.userAnswersReader,
+      AddInlandModeYesNoPage.filterOptionalDependent(identity)(InlandModePage.reader),
+      transportMeansReads,
+      SupplyChainActorYesNoPage.filterOptionalDependent(identity)(SupplyChainActorsDomain.userAnswersReader),
+      authorisationsAndLimitReads,
+      CarrierDetailYesNoPage.filterOptionalDependent(identity)(CarrierDetailsDomain.userAnswersReader),
+      EquipmentsAndChargesDomain.userAnswersReader
+    ).map(TransportDomain.apply).apply(Nil)
   }
 
-  implicit lazy val authorisationsAndLimitReads: UserAnswersReader[Option[AuthorisationsAndLimitDomain]] = {
-    for {
-      approvedOperator <- ApprovedOperatorPage.inferredReader
-      procedureType    <- ProcedureTypePage.reader
-      reader <- (approvedOperator, procedureType) match {
-        case (false, Normal) =>
-          AddAuthorisationsYesNoPage.filterOptionalDependent(identity)(UserAnswersReader[AuthorisationsAndLimitDomain])
-        case _ =>
-          AuthorisationsInferredPage.reader.flatMap {
-            _ => UserAnswersReader[AuthorisationsAndLimitDomain].map(Some(_))
-          }
-      }
-    } yield reader
-  }
+  implicit lazy val authorisationsAndLimitReads: Read[Option[AuthorisationsAndLimitDomain]] =
+    (
+      ApprovedOperatorPage.inferredReader,
+      ProcedureTypePage.reader
+    ).to {
+      case (false, Normal) =>
+        AddAuthorisationsYesNoPage.filterOptionalDependent(identity)(AuthorisationsAndLimitDomain.userAnswersReader)
+      case _ =>
+        AuthorisationsInferredPage.reader.to {
+          _ => AuthorisationsAndLimitDomain.userAnswersReader.toOption
+        }
+    }
 }

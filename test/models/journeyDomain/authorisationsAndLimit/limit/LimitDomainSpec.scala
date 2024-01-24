@@ -18,7 +18,6 @@ package models.journeyDomain.authorisationsAndLimit.limit
 
 import base.SpecBase
 import generators.Generators
-import models.domain.{EitherType, UserAnswersReader}
 import pages.authorisationsAndLimit.limit.LimitDatePage
 
 import java.time.LocalDate
@@ -40,24 +39,26 @@ class LimitDomainSpec extends SpecBase with Generators {
           limitDate = date
         )
 
-        val result: EitherType[LimitDomain] = UserAnswersReader[LimitDomain](LimitDomain.userAnswersReader)
-          .run(userAnswers)
+        val result = LimitDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          LimitDatePage
+        )
       }
-
     }
 
     "can not be parsed from UserAnswers" - {
 
       "when limit date is not provided" in {
 
-        val result: EitherType[LimitDomain] = UserAnswersReader[LimitDomain](LimitDomain.userAnswersReader)
-          .run(emptyUserAnswers)
+        val result = LimitDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe LimitDatePage
+        result.left.value.pages mustBe Seq(
+          LimitDatePage
+        )
       }
-
     }
   }
 }

@@ -18,10 +18,10 @@ package models.journeyDomain.equipment.seals
 
 import base.SpecBase
 import models.Index
-import models.domain.{EitherType, UserAnswersReader}
 import models.journeyDomain.equipment.seal.{SealDomain, SealsDomain}
 import org.scalacheck.Gen
 import pages.equipment.index.seals.IdentificationNumberPage
+import pages.sections.equipment.SealsSection
 
 class SealsDomainSpec extends SpecBase {
 
@@ -41,25 +41,28 @@ class SealsDomainSpec extends SpecBase {
             SealDomain(seal1)(equipmentIndex, Index(0)),
             SealDomain(seal2)(equipmentIndex, Index(1))
           )
+        )(equipmentIndex)
+
+        val result = SealsDomain.userAnswersReader(equipmentIndex).apply(Nil).run(userAnswers)
+
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          IdentificationNumberPage(equipmentIndex, Index(0)),
+          IdentificationNumberPage(equipmentIndex, Index(1)),
+          SealsSection(equipmentIndex)
         )
-
-        val result: EitherType[SealsDomain] = UserAnswersReader[SealsDomain](
-          SealsDomain.userAnswersReader(equipmentIndex)
-        ).run(userAnswers)
-
-        result.value mustBe expectedResult
       }
     }
 
     "can not be read from user answers" - {
       "when there aren't any seals" in {
-        val result: EitherType[SealsDomain] = UserAnswersReader[SealsDomain](
-          SealsDomain.userAnswersReader(equipmentIndex)
-        ).run(emptyUserAnswers)
+        val result = SealsDomain.userAnswersReader(equipmentIndex).apply(Nil).run(emptyUserAnswers)
 
         result.left.value.page mustBe IdentificationNumberPage(equipmentIndex, Index(0))
+        result.left.value.pages mustBe Seq(
+          IdentificationNumberPage(equipmentIndex, Index(0))
+        )
       }
     }
   }
-
 }

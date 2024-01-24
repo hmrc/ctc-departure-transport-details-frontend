@@ -36,7 +36,7 @@ class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           forAll(arbitrarySealAnswers(emptyUserAnswers, equipmentIndex, sealIndex)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.equipment.index.routes.AddAnotherSealController.onPageLoad(lrn, mode, equipmentIndex))
           }
         }
@@ -54,7 +54,7 @@ class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
           forAll(arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex)) {
             answers =>
               navigator
-                .nextPage(answers)
+                .nextPage(answers, None)
                 .mustBe(controllers.equipment.index.routes.EquipmentAnswersController.onPageLoad(answers.lrn, mode, equipmentIndex))
           }
         }

@@ -19,10 +19,8 @@ package models.journeyDomain.transportMeans
 import base.SpecBase
 import config.PhaseConfig
 import generators.Generators
-import models.domain.{EitherType, UserAnswersReader}
-import models.reference.Nationality
-import models.reference.InlandMode
 import models.reference.transportMeans.departure.Identification
+import models.reference.{InlandMode, Nationality}
 import models.{OptionalBoolean, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -60,11 +58,16 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
             nationality = Some(nationality)
           )
 
-          val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-            TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-          ).run(userAnswers)
+          val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            AddIdentificationTypeYesNoPage,
+            IdentificationPage,
+            MeansIdentificationNumberPage,
+            AddVehicleCountryYesNoPage,
+            VehicleCountryPage
+          )
         }
       }
     }
@@ -77,22 +80,25 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
         "when add identification page is missing" in {
 
-          val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-            TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-          ).run(emptyUserAnswers)
+          val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(emptyUserAnswers)
 
           result.left.value.page mustBe AddIdentificationTypeYesNoPage
+          result.left.value.pages mustBe Seq(
+            AddIdentificationTypeYesNoPage
+          )
         }
 
         "when identification page is missing" in {
           val userAnswers = emptyUserAnswers
             .setValue(AddIdentificationTypeYesNoPage, true)
 
-          val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-            TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-          ).run(userAnswers)
+          val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe IdentificationPage
+          result.left.value.pages mustBe Seq(
+            AddIdentificationTypeYesNoPage,
+            IdentificationPage
+          )
         }
 
         "when identification number page is missing" in {
@@ -100,11 +106,14 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
             .setValue(AddIdentificationTypeYesNoPage, true)
             .setValue(IdentificationPage, identification)
 
-          val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-            TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-          ).run(userAnswers)
+          val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe MeansIdentificationNumberPage
+          result.left.value.pages mustBe Seq(
+            AddIdentificationTypeYesNoPage,
+            IdentificationPage,
+            MeansIdentificationNumberPage
+          )
         }
 
         "when add vehicle country page is missing" in {
@@ -113,11 +122,15 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
             .setValue(IdentificationPage, identification)
             .setValue(MeansIdentificationNumberPage, identificationNumber)
 
-          val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-            TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-          ).run(userAnswers)
+          val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe AddVehicleCountryYesNoPage
+          result.left.value.pages mustBe Seq(
+            AddIdentificationTypeYesNoPage,
+            IdentificationPage,
+            MeansIdentificationNumberPage,
+            AddVehicleCountryYesNoPage
+          )
         }
 
         "when vehicle country page is missing" in {
@@ -127,11 +140,16 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
             .setValue(MeansIdentificationNumberPage, identificationNumber)
             .setValue(AddVehicleCountryYesNoPage, true)
 
-          val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-            TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-          ).run(userAnswers)
+          val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe VehicleCountryPage
+          result.left.value.pages mustBe Seq(
+            AddIdentificationTypeYesNoPage,
+            IdentificationPage,
+            MeansIdentificationNumberPage,
+            AddVehicleCountryYesNoPage,
+            VehicleCountryPage
+          )
         }
       }
 
@@ -145,11 +163,12 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
               .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
 
-            val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-              TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-            ).run(userAnswers)
+            val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe AddIdentificationTypeYesNoPage
+            result.left.value.pages mustBe Seq(
+              AddIdentificationTypeYesNoPage
+            )
           }
 
           "and identification page is missing" in {
@@ -158,11 +177,13 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
               .setValue(AddDepartureTransportMeansYesNoPage, true)
               .setValue(AddIdentificationTypeYesNoPage, true)
 
-            val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-              TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-            ).run(userAnswers)
+            val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe IdentificationPage
+            result.left.value.pages mustBe Seq(
+              AddIdentificationTypeYesNoPage,
+              IdentificationPage
+            )
           }
 
           "and add identification number yes/no page is missing" in {
@@ -171,11 +192,13 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
               .setValue(AddDepartureTransportMeansYesNoPage, true)
               .setValue(AddIdentificationTypeYesNoPage, false)
 
-            val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-              TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-            ).run(userAnswers)
+            val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe AddIdentificationNumberYesNoPage
+            result.left.value.pages mustBe Seq(
+              AddIdentificationTypeYesNoPage,
+              AddIdentificationNumberYesNoPage
+            )
           }
 
           "and identification number page is missing" in {
@@ -185,11 +208,14 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
               .setValue(AddIdentificationTypeYesNoPage, false)
               .setValue(AddIdentificationNumberYesNoPage, true)
 
-            val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-              TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-            ).run(userAnswers)
+            val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe MeansIdentificationNumberPage
+            result.left.value.pages mustBe Seq(
+              AddIdentificationTypeYesNoPage,
+              AddIdentificationNumberYesNoPage,
+              MeansIdentificationNumberPage
+            )
           }
 
           "and add nationality yes/no page is missing" in {
@@ -200,11 +226,14 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
               .setValue(AddIdentificationTypeYesNoPage, false)
               .setValue(AddIdentificationNumberYesNoPage, false)
 
-            val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-              TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-            ).run(userAnswers)
+            val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe AddVehicleCountryYesNoPage
+            result.left.value.pages mustBe Seq(
+              AddIdentificationTypeYesNoPage,
+              AddIdentificationNumberYesNoPage,
+              AddVehicleCountryYesNoPage
+            )
           }
 
           "and nationality page is missing" in {
@@ -216,11 +245,15 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
               .setValue(AddIdentificationNumberYesNoPage, false)
               .setValue(AddVehicleCountryYesNoPage, true)
 
-            val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-              TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-            ).run(userAnswers)
+            val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe VehicleCountryPage
+            result.left.value.pages mustBe Seq(
+              AddIdentificationTypeYesNoPage,
+              AddIdentificationNumberYesNoPage,
+              AddVehicleCountryYesNoPage,
+              VehicleCountryPage
+            )
           }
         }
 
@@ -231,11 +264,12 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
               .setValue(ContainerIndicatorPage, containerIndicator)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
 
-            val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-              TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-            ).run(userAnswers)
+            val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe IdentificationPage
+            result.left.value.pages mustBe Seq(
+              IdentificationPage
+            )
           }
 
           "and identification number page is missing" in {
@@ -243,11 +277,13 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
               .setValue(ContainerIndicatorPage, containerIndicator)
               .setValue(IdentificationPage, arbitrary[Identification].sample.value)
 
-            val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-              TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-            ).run(userAnswers)
+            val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe MeansIdentificationNumberPage
+            result.left.value.pages mustBe Seq(
+              IdentificationPage,
+              MeansIdentificationNumberPage
+            )
           }
         }
 
@@ -256,46 +292,72 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
           "and identification type page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, containerIndicator)
-              .setValue(AddIdentificationTypeYesNoPage, true)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
+              .setValue(AddIdentificationTypeYesNoPage, true)
 
-            val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-              TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-            ).run(userAnswers)
+            val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe IdentificationPage
+            result.left.value.pages mustBe Seq(
+              AddIdentificationTypeYesNoPage,
+              IdentificationPage
+            )
           }
 
           "and identification number page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, containerIndicator)
-              .setValue(AddIdentificationNumberYesNoPage, true)
               .setValue(IdentificationPage, arbitrary[Identification].sample.value)
+              .setValue(AddIdentificationNumberYesNoPage, true)
 
-            val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-              TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-            ).run(userAnswers)
+            val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe MeansIdentificationNumberPage
+            result.left.value.pages mustBe Seq(
+              IdentificationPage,
+              AddIdentificationNumberYesNoPage,
+              MeansIdentificationNumberPage
+            )
           }
         }
 
-        "and container indicator is 0 or not sure" - {
-          val containerIndicator = Gen.oneOf(OptionalBoolean.no, OptionalBoolean.maybe).sample.value
-
+        "and container indicator is 0" - {
           "and nationality page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, containerIndicator)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.no)
               .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
               .setValue(IdentificationPage, arbitrary[Identification].sample.value)
               .setValue(MeansIdentificationNumberPage, Gen.alphaNumStr.sample.value)
-              .setValue(AddIdentificationNumberYesNoPage, true)
 
-            val result: EitherType[TransportMeansDepartureDomain] = UserAnswersReader[TransportMeansDepartureDomain](
-              TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig)
-            ).run(userAnswers)
+            val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe VehicleCountryPage
+            result.left.value.pages mustBe Seq(
+              IdentificationPage,
+              MeansIdentificationNumberPage,
+              VehicleCountryPage
+            )
+          }
+        }
+
+        "and container indicator is not sure" - {
+          "and nationality page is missing" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(ContainerIndicatorPage, OptionalBoolean.maybe)
+              .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
+              .setValue(IdentificationPage, arbitrary[Identification].sample.value)
+              .setValue(AddIdentificationNumberYesNoPage, true)
+              .setValue(MeansIdentificationNumberPage, Gen.alphaNumStr.sample.value)
+
+            val result = TransportMeansDepartureDomain.userAnswersReader(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+            result.left.value.page mustBe VehicleCountryPage
+            result.left.value.pages mustBe Seq(
+              IdentificationPage,
+              AddIdentificationNumberYesNoPage,
+              MeansIdentificationNumberPage,
+              VehicleCountryPage
+            )
           }
         }
       }

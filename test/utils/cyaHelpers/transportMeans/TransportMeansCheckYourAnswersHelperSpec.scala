@@ -20,17 +20,15 @@ import base.SpecBase
 import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import generators.Generators
-import models.domain.UserAnswersReader
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
-import models.reference.{InlandMode, Nationality}
 import models.reference.transportMeans.departure.{Identification => DepartureIdentification}
-import models.reference.BorderMode
+import models.reference.{BorderMode, InlandMode, Nationality}
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
-import pages.sections.transportMeans.TransportMeansActiveSection
+import pages.sections.transportMeans.ActiveSection
 import pages.transportMeans._
 import pages.transportMeans.active.NationalityPage
 import pages.transportMeans.departure._
@@ -71,9 +69,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
 
                 forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index)(mockPhaseConfig), arbitrary[Mode]) {
                   (userAnswers, mode) =>
-                    val abtm = UserAnswersReader[PostTransitionTransportMeansActiveDomain](
-                      PostTransitionTransportMeansActiveDomain.userAnswersReader(index)
-                    ).run(userAnswers).value
+                    val abtm = PostTransitionTransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers).value.value
 
                     val helper = new TransportMeansCheckYourAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
                     val result = helper.activeBorderTransportMeans(index).get
@@ -110,7 +106,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
         "when active border transports means array is non-empty" in {
           forAll(arbitrary[Mode]) {
             mode =>
-              val answers = emptyUserAnswers.setValue(TransportMeansActiveSection(Index(0)), Json.obj("foo" -> "bar"))
+              val answers = emptyUserAnswers.setValue(ActiveSection(Index(0)), Json.obj("foo" -> "bar"))
               val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
               val result  = helper.addOrRemoveActiveBorderTransportsMeans().get
 

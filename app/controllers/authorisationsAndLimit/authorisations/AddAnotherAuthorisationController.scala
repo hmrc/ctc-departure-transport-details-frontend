@@ -23,6 +23,7 @@ import controllers.authorisationsAndLimit.{routes => authorisationsRoutes}
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.TransportNavigatorProvider
+import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -78,7 +79,7 @@ class AddAnotherAuthorisationController @Inject() (
                 case true =>
                   Redirect(authorisationRoutes.AuthorisationTypeController.onPageLoad(lrn, mode, viewModel.nextIndex))
                 case false =>
-                  Redirect(navigatorProvider(mode).nextPage(request.userAnswers))
+                  Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(AuthorisationsSection)))
               }
             )
       }

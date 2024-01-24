@@ -54,7 +54,7 @@ class AuthorisationReferenceNumberController @Inject() (
   private val prefix = "authorisations.authorisationReferenceNumber"
 
   private def approvedOperator(implicit request: Request): Option[Boolean] =
-    ApprovedOperatorPage.inferredReader.run(request.userAnswers).toOption
+    ApprovedOperatorPage.inferredReader.apply(Nil).map(_.value).run(request.userAnswers).toOption
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)

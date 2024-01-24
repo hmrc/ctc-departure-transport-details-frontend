@@ -19,7 +19,6 @@ package models.journeyDomain.equipment
 import base.SpecBase
 import config.Constants.SecurityType.NoSecurityDetails
 import generators.{Generators, UserAnswersGenerator}
-import models.domain.{EitherType, UserAnswersReader}
 import models.reference.equipment.PaymentMethod
 import models.{Index, OptionalBoolean}
 import org.scalacheck.Arbitrary.arbitrary
@@ -36,33 +35,34 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
       "when add transport equipment yes/no is no and no security" - {
         "equipments and payment method must both be None" in {
           val userAnswers = emptyUserAnswers
+            .setValue(SecurityDetailsTypePage, NoSecurityDetails)
             .setValue(ContainerIndicatorPage, OptionalBoolean.no)
             .setValue(AddTransportEquipmentYesNoPage, false)
-            .setValue(SecurityDetailsTypePage, NoSecurityDetails)
 
           val expectedResult = EquipmentsAndChargesDomain(
             equipments = None,
             paymentMethod = None
           )
 
-          val result: EitherType[EquipmentsAndChargesDomain] = UserAnswersReader[EquipmentsAndChargesDomain].run(userAnswers)
+          val result = EquipmentsAndChargesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            AddTransportEquipmentYesNoPage
+          )
         }
       }
 
       "when container indicator is maybe (not sure) and NoSecurityDetails" - {
         "redirect to next page" in {
           val initialAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, OptionalBoolean.maybe)
             .setValue(SecurityDetailsTypePage, NoSecurityDetails)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.maybe)
 
           forAll(arbitraryEquipmentAnswers(initialAnswers, Index(0))) {
             userAnswers =>
-              val result: EitherType[Option[EquipmentsDomain]] = UserAnswersReader[Option[EquipmentsDomain]](
-                EquipmentsAndChargesDomain.equipmentsReader
-              ).run(userAnswers)
-              result.value must not be defined
+              val result = EquipmentsAndChargesDomain.equipmentsReader.apply(Nil).run(userAnswers)
+              result.value.value must not be defined
           }
         }
       }
@@ -72,17 +72,17 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
           val securityType = arbitrary[String](arbitrarySomeSecurityDetailsType).sample.value
 
           val userAnswers = emptyUserAnswers
-            .setValue(ContainerIndicatorPage, OptionalBoolean.maybe)
             .setValue(SecurityDetailsTypePage, securityType)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.maybe)
 
-          val result: EitherType[EquipmentsAndChargesDomain] = UserAnswersReader[EquipmentsAndChargesDomain](
-            EquipmentsAndChargesDomain.userAnswersReader
-          ).run(userAnswers)
+          val result = EquipmentsAndChargesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
           result.left.value.page mustBe AddPaymentMethodYesNoPage
+          result.left.value.pages mustBe Seq(
+            AddPaymentMethodYesNoPage
+          )
         }
       }
-
     }
 
     "equipmentsReads" - {
@@ -94,10 +94,8 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
           forAll(arbitraryEquipmentAnswers(initialAnswers, Index(0))) {
             userAnswers =>
-              val result: EitherType[Option[EquipmentsDomain]] = UserAnswersReader[Option[EquipmentsDomain]](
-                EquipmentsAndChargesDomain.equipmentsReader
-              ).run(userAnswers)
-              result.value must be(defined)
+              val result = EquipmentsAndChargesDomain.equipmentsReader.apply(Nil).run(userAnswers)
+              result.value.value must be(defined)
           }
         }
 
@@ -109,10 +107,8 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
             forAll(arbitraryEquipmentAnswers(initialAnswers, Index(0))) {
               userAnswers =>
-                val result: EitherType[Option[EquipmentsDomain]] = UserAnswersReader[Option[EquipmentsDomain]](
-                  EquipmentsAndChargesDomain.equipmentsReader
-                ).run(userAnswers)
-                result.value must be(defined)
+                val result = EquipmentsAndChargesDomain.equipmentsReader.apply(Nil).run(userAnswers)
+                result.value.value must be(defined)
             }
           }
 
@@ -121,33 +117,27 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
               .setValue(ContainerIndicatorPage, OptionalBoolean.no)
               .setValue(AddTransportEquipmentYesNoPage, false)
 
-            val result: EitherType[Option[EquipmentsDomain]] = UserAnswersReader[Option[EquipmentsDomain]](
-              EquipmentsAndChargesDomain.equipmentsReader
-            ).run(userAnswers)
-            result.value must not be defined
+            val result = EquipmentsAndChargesDomain.equipmentsReader.apply(Nil).run(userAnswers)
+            result.value.value must not be defined
+            result.value.pages mustBe Seq(
+              AddTransportEquipmentYesNoPage
+            )
           }
         }
       }
 
       "cannot be read from user answers" - {
-        "when container indicator is not answered" in {
-          val result: EitherType[Option[EquipmentsDomain]] = UserAnswersReader[Option[EquipmentsDomain]](
-            EquipmentsAndChargesDomain.equipmentsReader
-          ).run(emptyUserAnswers)
-
-          result.left.value.page mustBe ContainerIndicatorPage
-        }
-
         "when container indicator is false" - {
           "and add transport equipment yes/no is unanswered" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.no)
 
-            val result: EitherType[Option[EquipmentsDomain]] = UserAnswersReader[Option[EquipmentsDomain]](
-              EquipmentsAndChargesDomain.equipmentsReader
-            ).run(userAnswers)
+            val result = EquipmentsAndChargesDomain.equipmentsReader.apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe AddTransportEquipmentYesNoPage
+            result.left.value.pages mustBe Seq(
+              AddTransportEquipmentYesNoPage
+            )
           }
         }
       }
@@ -161,11 +151,10 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
           val expectedResult = None
 
-          val result: EitherType[Option[PaymentMethod]] = UserAnswersReader[Option[PaymentMethod]](
-            EquipmentsAndChargesDomain.chargesReader
-          ).run(userAnswers)
+          val result = EquipmentsAndChargesDomain.chargesReader.apply(Nil).run(userAnswers)
 
-          result.value mustBe expectedResult
+          result.value.value mustBe expectedResult
+          result.value.pages mustBe Nil
         }
 
         "when there is security" - {
@@ -178,11 +167,12 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
                 val expectedResult = None
 
-                val result: EitherType[Option[PaymentMethod]] = UserAnswersReader[Option[PaymentMethod]](
-                  EquipmentsAndChargesDomain.chargesReader
-                ).run(userAnswers)
+                val result = EquipmentsAndChargesDomain.chargesReader.apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
+                result.value.pages mustBe Seq(
+                  AddPaymentMethodYesNoPage
+                )
             }
           }
 
@@ -196,11 +186,13 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
                 val expectedResult = Some(paymentMethod)
 
-                val result: EitherType[Option[PaymentMethod]] = UserAnswersReader[Option[PaymentMethod]](
-                  EquipmentsAndChargesDomain.chargesReader
-                ).run(userAnswers)
+                val result = EquipmentsAndChargesDomain.chargesReader.apply(Nil).run(userAnswers)
 
-                result.value mustBe expectedResult
+                result.value.value mustBe expectedResult
+                result.value.pages mustBe Seq(
+                  AddPaymentMethodYesNoPage,
+                  PaymentMethodPage
+                )
             }
           }
         }
@@ -214,11 +206,12 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
                 val userAnswers = emptyUserAnswers
                   .setValue(SecurityDetailsTypePage, security)
 
-                val result: EitherType[Option[PaymentMethod]] = UserAnswersReader[Option[PaymentMethod]](
-                  EquipmentsAndChargesDomain.chargesReader
-                ).run(userAnswers)
+                val result = EquipmentsAndChargesDomain.chargesReader.apply(Nil).run(userAnswers)
 
                 result.left.value.page mustBe AddPaymentMethodYesNoPage
+                result.left.value.pages mustBe Seq(
+                  AddPaymentMethodYesNoPage
+                )
             }
           }
 
@@ -230,11 +223,13 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
                     .setValue(SecurityDetailsTypePage, security)
                     .setValue(AddPaymentMethodYesNoPage, true)
 
-                  val result: EitherType[Option[PaymentMethod]] = UserAnswersReader[Option[PaymentMethod]](
-                    EquipmentsAndChargesDomain.chargesReader
-                  ).run(userAnswers)
+                  val result = EquipmentsAndChargesDomain.chargesReader.apply(Nil).run(userAnswers)
 
                   result.left.value.page mustBe PaymentMethodPage
+                  result.left.value.pages mustBe Seq(
+                    AddPaymentMethodYesNoPage,
+                    PaymentMethodPage
+                  )
               }
             }
           }
@@ -242,5 +237,4 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
       }
     }
   }
-
 }

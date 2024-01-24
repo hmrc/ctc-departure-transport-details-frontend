@@ -40,6 +40,6 @@ class EquipmentsAnswersHelper(
           nameWhenComplete = _.asString,
           nameWhenInProgress = Some(EquipmentDomain.asString(userAnswers.get(ContainerIdentificationNumberPage(equipmentIndex)), equipmentIndex)),
           removeRoute = Some(routes.RemoveTransportEquipmentController.onPageLoad(lrn, mode, equipmentIndex))
-        )(EquipmentDomain.userAnswersReader(equipmentIndex))
+        )(EquipmentDomain.userAnswersReader(equipmentIndex).apply(Nil))
     }.checkRemoveLinks(userAnswers.get(AddTransportEquipmentYesNoPage).isEmpty)
 }

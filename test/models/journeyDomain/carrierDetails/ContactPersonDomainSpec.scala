@@ -19,7 +19,6 @@ package models.journeyDomain.carrierDetails
 import base.SpecBase
 import commonTestUtils.UserAnswersSpecHelper
 import generators.Generators
-import models.domain.{EitherType, UserAnswersReader}
 import org.scalacheck.Gen
 import pages.carrierDetails.contact._
 
@@ -42,9 +41,13 @@ class ContactPersonDomainSpec extends SpecBase with UserAnswersSpecHelper with G
           telephoneNumber = telephoneNumber
         )
 
-        val result: EitherType[ContactPersonDomain] = UserAnswersReader[ContactPersonDomain].run(userAnswers)
+        val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value mustBe expectedResult
+        result.value.value mustBe expectedResult
+        result.value.pages mustBe Seq(
+          NamePage,
+          TelephoneNumberPage
+        )
       }
     }
 
@@ -56,9 +59,12 @@ class ContactPersonDomainSpec extends SpecBase with UserAnswersSpecHelper with G
         val userAnswers = emptyUserAnswers
           .setValue(TelephoneNumberPage, telephoneNumber)
 
-        val result: EitherType[ContactPersonDomain] = UserAnswersReader[ContactPersonDomain].run(userAnswers)
+        val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe NamePage
+        result.left.value.pages mustBe Seq(
+          NamePage
+        )
       }
 
       "when contact person has no telephone number" in {
@@ -67,9 +73,13 @@ class ContactPersonDomainSpec extends SpecBase with UserAnswersSpecHelper with G
         val userAnswers = emptyUserAnswers
           .setValue(NamePage, name)
 
-        val result: EitherType[ContactPersonDomain] = UserAnswersReader[ContactPersonDomain].run(userAnswers)
+        val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
         result.left.value.page mustBe TelephoneNumberPage
+        result.left.value.pages mustBe Seq(
+          NamePage,
+          TelephoneNumberPage
+        )
       }
     }
   }
