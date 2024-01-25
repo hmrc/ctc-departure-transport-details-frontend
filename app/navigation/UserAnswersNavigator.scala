@@ -17,7 +17,7 @@
 package navigation
 
 import config.{FrontendAppConfig, PhaseConfig}
-import models.domain._
+import models.journeyDomain._
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.Stage.CompletingJourney
 import models.journeyDomain.{JourneyDomainModel, ReaderSuccess, Stage}

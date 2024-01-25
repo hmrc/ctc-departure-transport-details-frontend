@@ -16,7 +16,7 @@
 
 package models.journeyDomain
 
-import models.domain._
+import models.journeyDomain._
 
 case class ReaderSuccess[A](value: A, pages: Pages) {
 

@@ -19,7 +19,7 @@ package controllers.equipment
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.domain.UserAnswersReader
+import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.equipment.EquipmentDomain
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}

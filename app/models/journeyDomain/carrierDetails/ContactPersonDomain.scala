@@ -16,7 +16,7 @@
 
 package models.journeyDomain.carrierDetails
 
-import models.domain._
+import models.journeyDomain._
 import models.journeyDomain.JourneyDomainModel
 import pages.carrierDetails.contact._
 

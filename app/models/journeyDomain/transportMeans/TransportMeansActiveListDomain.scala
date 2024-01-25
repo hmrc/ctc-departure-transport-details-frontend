@@ -17,7 +17,7 @@
 package models.journeyDomain.transportMeans
 
 import config.PhaseConfig
-import models.domain._
+import models.journeyDomain._
 import models.journeyDomain.JourneyDomainModel
 import models.{Index, RichJsArray, UserAnswers}
 import pages.sections.Section

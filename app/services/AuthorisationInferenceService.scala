@@ -18,7 +18,7 @@ package services
 
 import config.Constants.ModeOfTransport._
 import models.ProcedureType.{Normal, Simplified}
-import models.domain._
+import models.journeyDomain._
 import models.journeyDomain.ReaderSuccess
 import models.reference.authorisations.AuthorisationType
 import models.{Index, UserAnswers}

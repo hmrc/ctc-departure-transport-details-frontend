@@ -16,7 +16,7 @@
 
 package models.journeyDomain.authorisationsAndLimit.limit
 
-import models.domain._
+import models.journeyDomain._
 import models.journeyDomain.JourneyDomainModel
 import pages.authorisationsAndLimit.limit.LimitDatePage
 
