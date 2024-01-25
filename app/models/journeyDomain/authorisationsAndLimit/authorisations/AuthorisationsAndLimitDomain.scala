@@ -17,7 +17,7 @@
 package models.journeyDomain.authorisationsAndLimit.authorisations
 
 import config.Constants.AdditionalDeclarationType._
-import models.domain._
+import models.journeyDomain._
 import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
 import pages.external.AdditionalDeclarationTypePage

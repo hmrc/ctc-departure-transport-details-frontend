@@ -16,7 +16,7 @@
 
 package models.journeyDomain.supplyChainActors
 
-import models.domain._
+import models.journeyDomain._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.reference.supplyChainActors.SupplyChainActorType

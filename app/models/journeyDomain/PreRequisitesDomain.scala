@@ -18,7 +18,7 @@ package models.journeyDomain
 
 import config.Constants.DeclarationType._
 import models.OptionalBoolean
-import models.domain._
+import models.journeyDomain._
 import models.reference.Country
 import pages.external.DeclarationTypePage
 import pages.preRequisites._

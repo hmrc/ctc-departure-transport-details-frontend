@@ -15,7 +15,7 @@
  */
 
 import cats.implicits._
-import models.domain._
+import models.journeyDomain._
 import models.journeyDomain.ReaderSuccess
 import play.api.libs.json._
 

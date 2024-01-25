@@ -18,7 +18,7 @@ package models.journeyDomain.equipment
 
 import config.Constants.SecurityType._
 import models.OptionalBoolean
-import models.domain._
+import models.journeyDomain._
 import models.journeyDomain.JourneyDomainModel
 import models.reference.equipment.PaymentMethod
 import pages.equipment._

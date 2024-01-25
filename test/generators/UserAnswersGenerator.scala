@@ -17,7 +17,7 @@
 package generators
 
 import config.PhaseConfig
-import models.domain.UserAnswersReader
+import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain

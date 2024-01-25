@@ -16,7 +16,7 @@
 
 package models.journeyDomain.equipment
 
-import models.domain._
+import models.journeyDomain._
 import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.equipment.seal.SealsDomain
 import models.{Index, OptionalBoolean, ProcedureType, UserAnswers}

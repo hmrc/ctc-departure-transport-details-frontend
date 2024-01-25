@@ -17,7 +17,7 @@
 package pages.external
 
 import config.Constants.DeclarationType._
-import models.domain._
+import models.journeyDomain._
 import pages.ReadOnlyPage
 import play.api.libs.json.JsPath
 

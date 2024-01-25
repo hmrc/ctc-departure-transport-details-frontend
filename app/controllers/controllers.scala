@@ -17,7 +17,7 @@
 import cats.data.ReaderT
 import config.{FrontendAppConfig, PhaseConfig}
 import models.TaskStatus.{Completed, InProgress}
-import models.domain.UserAnswersReader
+import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.OpsError.WriterError
 import models.journeyDomain.TransportDomain
 import models.requests.MandatoryDataRequest

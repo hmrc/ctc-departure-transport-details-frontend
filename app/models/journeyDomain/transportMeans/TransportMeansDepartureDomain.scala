@@ -18,7 +18,7 @@ package models.journeyDomain.transportMeans
 
 import config.Constants.ModeOfTransport.Rail
 import config.PhaseConfig
-import models.domain._
+import models.journeyDomain._
 import models.journeyDomain.JourneyDomainModel
 import models.reference.transportMeans.departure.Identification
 import models.reference.{InlandMode, Nationality}

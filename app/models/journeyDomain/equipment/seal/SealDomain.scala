@@ -17,7 +17,7 @@
 package models.journeyDomain.equipment.seal
 
 import controllers.equipment.index.seals.routes
-import models.domain._
+import models.journeyDomain._
 import models.journeyDomain.Stage._
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.{Index, Mode, Phase, UserAnswers}

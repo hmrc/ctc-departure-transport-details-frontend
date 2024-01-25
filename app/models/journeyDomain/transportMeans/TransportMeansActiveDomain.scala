@@ -19,7 +19,7 @@ package models.journeyDomain.transportMeans
 import config.Constants.ModeOfTransport.Rail
 import config.Constants.SecurityType.NoSecurityDetails
 import config.PhaseConfig
-import models.domain._
+import models.journeyDomain._
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.reference.transportMeans.active.Identification
 import models.reference.{BorderMode, CustomsOffice, Nationality}
