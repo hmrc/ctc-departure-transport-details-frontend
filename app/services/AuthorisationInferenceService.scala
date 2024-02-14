@@ -42,15 +42,16 @@ class AuthorisationInferenceService @Inject() () {
         InlandModePage.optionalReader.apply(_: Pages).map(_.to(_.map(_.code)))
       ).to {
         case (procedureType, reducedDataset, inlandMode) =>
-          val foo = (procedureType, reducedDataset, inlandMode) match {
-            case (Simplified, _, _) =>
-              authTypeACR.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
-            case (Normal, true, Some(Maritime | Rail | Air)) =>
-              authTypeTRD.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
-            case _ =>
-              Some(userAnswers)
+          UserAnswersReader.success {
+            (procedureType, reducedDataset, inlandMode) match {
+              case (Simplified, _, _) =>
+                authTypeACR.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
+              case (Normal, true, Some(Maritime | Rail | Air)) =>
+                authTypeTRD.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
+              case _ =>
+                Some(userAnswers)
+            }
           }
-          UserAnswersReader.success(foo)
       }.apply(Nil)
 
     reader.apply(userAnswers) match {
