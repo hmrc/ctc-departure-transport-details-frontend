@@ -29,7 +29,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class MeansOfTransportIdentificationTypesService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
   def getMeansOfTransportIdentificationTypes(inlandMode: Option[InlandMode])(implicit hc: HeaderCarrier): Future[Seq[Identification]] =
-    referenceDataConnector.getMeansOfTransportIdentificationTypes().map(filter(_, inlandMode)).map(sort)
+    referenceDataConnector
+      .getMeansOfTransportIdentificationTypes()
+      .map(_.toSeq)
+      .map(filter(_, inlandMode))
 
   private def filter(
     identificationTypes: Seq[Identification],
@@ -39,7 +42,4 @@ class MeansOfTransportIdentificationTypesService @Inject() (referenceDataConnect
       case Some(InlandMode(code, _)) if code != Fixed && code != Unknown => identificationTypes.filter(_.code.startsWith(code))
       case _                                                             => identificationTypes.filterNot(_.code == UnknownIdentification)
     }
-
-  private def sort(identificationTypes: Seq[Identification]): Seq[Identification] =
-    identificationTypes.sortBy(_.code.toLowerCase)
 }

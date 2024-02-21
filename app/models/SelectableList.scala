@@ -16,12 +16,20 @@
 
 package models
 
+import cats.data.NonEmptySet
 import models.reference.CustomsOffice
 import play.api.libs.json.{JsArray, JsError, JsSuccess, Reads}
+import services.RichNonEmptySet
 
 case class SelectableList[T <: Selectable](values: Seq[T])
 
 object SelectableList {
+
+  def apply[T <: Selectable](seq: Seq[T]): SelectableList[T] =
+    new SelectableList[T](seq)
+
+  def apply[T <: Selectable](nonEmptySet: NonEmptySet[T]): SelectableList[T] =
+    apply(nonEmptySet.toSeq)
 
   private def customsOfficeListReads(key: String): Reads[SelectableList[CustomsOffice]] = Reads[SelectableList[CustomsOffice]] {
     case JsArray(values) =>

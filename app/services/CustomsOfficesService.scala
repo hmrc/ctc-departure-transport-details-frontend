@@ -16,6 +16,8 @@
 
 package services
 
+import cats.data.NonEmptySet
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.SelectableList.{officesOfExitReads, officesOfTransitReads}
 import models.reference.CustomsOffice
 import models.{RichOptionalJsArray, SelectableList, UserAnswers}
@@ -26,15 +28,18 @@ import javax.inject.Inject
 
 class CustomsOfficesService @Inject() () {
 
-  private def sort(customsOffices: Seq[CustomsOffice]): SelectableList[CustomsOffice] =
-    SelectableList(customsOffices.distinctBy(_.id).sortBy(_.name.toLowerCase))
-
   def getCustomsOffices(userAnswers: UserAnswers): SelectableList[CustomsOffice] = {
     val officesOfExit       = userAnswers.get(OfficesOfExitSection).validate(officesOfExitReads).map(_.values).getOrElse(Nil)
     val officesOfTransit    = userAnswers.get(OfficesOfTransitSection).validate(officesOfTransitReads).map(_.values).getOrElse(Nil)
     val officeOfDestination = userAnswers.get(OfficeOfDestinationPage).toSeq
 
-    sort(officesOfExit ++ officesOfTransit ++ officeOfDestination)
+    val offices = officesOfExit ++ officesOfTransit ++ officeOfDestination
+    offices.toList match {
+      case Nil =>
+        throw new NoReferenceDataFoundException
+      case head :: tail =>
+        SelectableList(NonEmptySet.of(head, tail: _*).toSeq)
+    }
   }
 
 }

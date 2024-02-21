@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,11 @@
  * limitations under the License.
  */
 
-package models.reference
+import cats.data.NonEmptySet
 
-import cats.Order
-import models.Selectable
-import play.api.libs.json.{Format, Json}
+package object services {
 
-case class Nationality(code: String, description: String) extends Selectable {
-
-  override def toString: String = s"$description - $code"
-
-  override val value: String = code
-}
-
-object Nationality {
-  implicit val format: Format[Nationality] = Json.format[Nationality]
-
-  implicit val order: Order[Nationality] = (x: Nationality, y: Nationality) => {
-    x.description.compareToIgnoreCase(y.description)
+  implicit class RichNonEmptySet[T](value: NonEmptySet[T]) {
+    def toSeq: Seq[T] = value.toNonEmptyList.toList
   }
 }

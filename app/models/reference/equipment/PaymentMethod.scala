@@ -16,6 +16,7 @@
 
 package models.reference.equipment
 
+import cats.Order
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Format, Json}
@@ -26,12 +27,14 @@ case class PaymentMethod(method: String, description: String) extends Radioable[
 
   override def toString: String = StringEscapeUtils.unescapeXml(description)
 
-  override val messageKeyPrefix: String = PaymentMethod.messageKeyPrefix
+  override val messageKeyPrefix: String = "equipment.paymentMethod"
 
 }
 
 object PaymentMethod extends DynamicEnumerableType[PaymentMethod] {
   implicit val format: Format[PaymentMethod] = Json.format[PaymentMethod]
 
-  val messageKeyPrefix = "equipment.paymentMethod"
+  implicit val order: Order[PaymentMethod] = (x: PaymentMethod, y: PaymentMethod) => {
+    x.code.compareToIgnoreCase(y.code)
+  }
 }

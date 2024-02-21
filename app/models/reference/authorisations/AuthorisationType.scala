@@ -16,6 +16,7 @@
 
 package models.reference.authorisations
 
+import cats.Order
 import config.Constants.AuthorisationType._
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
@@ -26,7 +27,7 @@ case class AuthorisationType(code: String, description: String) extends Radioabl
 
   override def toString: String = StringEscapeUtils.unescapeXml(description)
 
-  override val messageKeyPrefix: String = AuthorisationType.messageKeyPrefix
+  override val messageKeyPrefix: String = "authorisations.authorisationType"
 
   def isACR: Boolean = code == ACR
   def isTRD: Boolean = code == TRD
@@ -34,9 +35,9 @@ case class AuthorisationType(code: String, description: String) extends Radioabl
 
   def forDisplay(implicit messages: Messages): String =
     code match {
-      case ACR => messages(s"${AuthorisationType.messageKeyPrefix}.forDisplay.ACR")
-      case SSE => messages(s"${AuthorisationType.messageKeyPrefix}.forDisplay.SSE")
-      case TRD => messages(s"${AuthorisationType.messageKeyPrefix}.forDisplay.TRD")
+      case ACR => messages(s"$messageKeyPrefix.forDisplay.ACR")
+      case SSE => messages(s"$messageKeyPrefix.forDisplay.SSE")
+      case TRD => messages(s"$messageKeyPrefix.forDisplay.TRD")
       case _   => code
     }
 }
@@ -44,5 +45,7 @@ case class AuthorisationType(code: String, description: String) extends Radioabl
 object AuthorisationType extends DynamicEnumerableType[AuthorisationType] {
   implicit val format: Format[AuthorisationType] = Json.format[AuthorisationType]
 
-  val messageKeyPrefix = "authorisations.authorisationType"
+  implicit val order: Order[AuthorisationType] = (x: AuthorisationType, y: AuthorisationType) => {
+    x.code.compareToIgnoreCase(y.code)
+  }
 }

@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.reference.equipment.PaymentMethod
 import org.mockito.ArgumentMatchers.any
@@ -39,6 +40,9 @@ class PaymentMethodsServiceSpec extends SpecBase with BeforeAndAfterEach {
   private val paymentMethod6 = PaymentMethod("Z", "Not pre-paid")
   private val paymentMethod7 = PaymentMethod("D", "Other")
 
+  private val paymentMethods =
+    NonEmptySet.of(paymentMethod1, paymentMethod2, paymentMethod3, paymentMethod4, paymentMethod5, paymentMethod6, paymentMethod7)
+
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
     super.beforeEach()
@@ -49,10 +53,10 @@ class PaymentMethodsServiceSpec extends SpecBase with BeforeAndAfterEach {
     "getPaymentMethods" - {
       "must return a list of payment methods" in {
         when(mockRefDataConnector.getPaymentMethods()(any(), any()))
-          .thenReturn(Future.successful(Seq(paymentMethod1, paymentMethod2, paymentMethod3, paymentMethod4, paymentMethod5, paymentMethod6, paymentMethod7)))
+          .thenReturn(Future.successful(paymentMethods))
 
         service.getPaymentMethods().futureValue mustBe
-          Seq(paymentMethod1, paymentMethod2, paymentMethod3, paymentMethod4, paymentMethod5, paymentMethod6, paymentMethod7)
+          Seq(paymentMethod1, paymentMethod2, paymentMethod3, paymentMethod7, paymentMethod4, paymentMethod5, paymentMethod6)
 
         verify(mockRefDataConnector).getPaymentMethods()(any(), any())
       }

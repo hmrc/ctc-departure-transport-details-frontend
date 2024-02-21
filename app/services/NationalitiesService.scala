@@ -31,9 +31,5 @@ class NationalitiesService @Inject() (
   def getNationalities()(implicit hc: HeaderCarrier): Future[SelectableList[Nationality]] =
     referenceDataConnector
       .getNationalities()
-      .map(sort)
-
-  private def sort(nationalities: Seq[Nationality]): SelectableList[Nationality] =
-    SelectableList(nationalities.sortBy(_.description.toLowerCase))
-
+      .map(SelectableList(_))
 }

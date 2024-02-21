@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.CustomsOffice
 import models.{Index, SelectableList}
 import org.scalatest.BeforeAndAfterEach
@@ -84,7 +85,10 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
         result mustBe SelectableList(Seq(exitOffice2, transitOffice2, exitOffice1, transitOffice1, destinationOffice))
       }
 
-    }
+      "must throw an exception if no offices found in user answers" in {
 
+        a[NoReferenceDataFoundException] must be thrownBy service.getCustomsOffices(emptyUserAnswers)
+      }
+    }
   }
 }

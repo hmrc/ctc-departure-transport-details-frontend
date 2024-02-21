@@ -26,5 +26,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PaymentMethodsService @Inject() (referenceDataConnector: ReferenceDataConnector)(implicit ec: ExecutionContext) {
 
   def getPaymentMethods()(implicit hc: HeaderCarrier): Future[Seq[PaymentMethod]] =
-    referenceDataConnector.getPaymentMethods()
+    referenceDataConnector
+      .getPaymentMethods()
+      .map(_.toSeq)
 }

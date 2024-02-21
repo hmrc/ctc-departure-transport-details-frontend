@@ -16,6 +16,8 @@
 
 package connectors
 
+import cats.Order
+import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.authorisations.AuthorisationType
@@ -27,71 +29,104 @@ import play.api.Logging
 import play.api.http.Status.OK
 import play.api.libs.json._
 import sttp.model.HeaderNames
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse, StringContextOps}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClient) extends Logging {
+class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClientV2) extends Logging {
 
-  def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
-    val url = s"${config.referenceDataUrl}/lists/CountryCodesFullList"
-    http.GET[Seq[Country]](url, headers = version2Header)
+  def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] = {
+    val url = url"${config.referenceDataUrl}/lists/CountryCodesFullList"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Country]]
   }
 
-  def getNationalities()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Nationality]] = {
-    val url = s"${config.referenceDataUrl}/lists/Nationality"
-    http.GET[Seq[Nationality]](url, headers = version2Header)
+  def getNationalities()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Nationality]] = {
+    val url = url"${config.referenceDataUrl}/lists/Nationality"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Nationality]]
   }
 
-  def getCountryCodesCommonTransit()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[Country]] = {
-    val url = s"${config.referenceDataUrl}/lists/CountryCodesCommonTransit"
-    http.GET[Seq[Country]](url, headers = version2Header)
+  def getCountryCodesCommonTransit()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] = {
+    val url = url"${config.referenceDataUrl}/lists/CountryCodesCommonTransit"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[Country]]
   }
 
-  def getTransportModeCodes[T <: ModeOfTransport[T]]()(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: Reads[T]): Future[Seq[T]] = {
-    val url = s"${config.referenceDataUrl}/lists/TransportModeCode"
-    http.GET[Seq[T]](url, headers = version2Header)
+  def getTransportModeCodes[T <: ModeOfTransport[T]]()(implicit
+    ec: ExecutionContext,
+    hc: HeaderCarrier,
+    reads: Reads[T],
+    order: Order[T]
+  ): Future[NonEmptySet[T]] = {
+    val url = url"${config.referenceDataUrl}/lists/TransportModeCode"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[T]]
   }
 
-  def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[departure.Identification]] = {
-    val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
-    http.GET[Seq[departure.Identification]](url, headers = version2Header)
+  def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[departure.Identification]] = {
+    val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[departure.Identification]]
   }
 
-  def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[active.Identification]] = {
-    val url = s"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
-    http.GET[Seq[active.Identification]](url, headers = version2Header)
+  def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[active.Identification]] = {
+    val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[active.Identification]]
   }
 
-  def getSupplyChainActorTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[SupplyChainActorType]] = {
-    val url = s"${config.referenceDataUrl}/lists/AdditionalSupplyChainActorRoleCode"
-    http.GET[Seq[SupplyChainActorType]](url, headers = version2Header)
+  def getSupplyChainActorTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[SupplyChainActorType]] = {
+    val url = url"${config.referenceDataUrl}/lists/AdditionalSupplyChainActorRoleCode"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[SupplyChainActorType]]
   }
 
-  def getAuthorisationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[AuthorisationType]] = {
-    val url = s"${config.referenceDataUrl}/lists/AuthorisationTypeDeparture"
-    http.GET[Seq[AuthorisationType]](url, headers = version2Header)
+  def getAuthorisationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[AuthorisationType]] = {
+    val url = url"${config.referenceDataUrl}/lists/AuthorisationTypeDeparture"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[AuthorisationType]]
   }
 
-  def getPaymentMethods()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Seq[PaymentMethod]] = {
-    val url = s"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
-    http.GET[Seq[PaymentMethod]](url, headers = version2Header)
+  def getPaymentMethods()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[PaymentMethod]] = {
+    val url = url"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[PaymentMethod]]
   }
 
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
   )
 
-  implicit def responseHandlerGeneric[A](implicit reads: Reads[A]): HttpReads[Seq[A]] =
+  implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[NonEmptySet[A]] =
     (_: String, _: String, response: HttpResponse) => {
       response.status match {
         case OK =>
-          (response.json \ "data").validate[Seq[A]] match {
+          (response.json \ "data").validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               throw new NoReferenceDataFoundException
-            case JsSuccess(value, _) =>
-              value
+            case JsSuccess(head :: tail, _) =>
+              NonEmptySet.of(head, tail: _*)
             case JsError(errors) =>
               throw JsResultException(errors)
           }

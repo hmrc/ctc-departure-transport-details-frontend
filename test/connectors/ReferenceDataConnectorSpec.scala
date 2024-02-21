@@ -17,6 +17,7 @@
 package connectors
 
 import base._
+import cats.data.NonEmptySet
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference._
@@ -92,7 +93,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countriesResponseJson("CountryCodesFullList")))
         )
 
-        val expectedResult: Seq[Country] = Seq(
+        val expectedResult = NonEmptySet.of(
           Country(CountryCode("GB"), "United Kingdom"),
           Country(CountryCode("AD"), "Andorra")
         )
@@ -144,7 +145,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(nationalitiesResponseJson))
         )
 
-        val expectedResult: Seq[Nationality] = Seq(
+        val expectedResult = NonEmptySet.of(
           Nationality("AR", "Argentina"),
           Nationality("AU", "Australia")
         )
@@ -170,7 +171,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(countriesResponseJson("CountryCodesCommonTransit")))
         )
 
-        val expectedResult: Seq[Country] = Seq(
+        val expectedResult = NonEmptySet.of(
           Country(CountryCode("GB"), "United Kingdom"),
           Country(CountryCode("AD"), "Andorra")
         )
@@ -225,7 +226,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
               .willReturn(okJson(transportModeCodesResponseJson))
           )
 
-          val expectedResult: Seq[InlandMode] = Seq(
+          val expectedResult = NonEmptySet.of(
             InlandMode("1", "Maritime"),
             InlandMode("2", "Rail")
           )
@@ -250,7 +251,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
               .willReturn(okJson(transportModeCodesResponseJson))
           )
 
-          val expectedResult: Seq[BorderMode] = Seq(
+          val expectedResult = NonEmptySet.of(
             BorderMode("1", "Maritime"),
             BorderMode("2", "Rail")
           )
@@ -303,7 +304,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(identificationCodesDepartureResponseJson))
         )
 
-        val expectedResult: Seq[departure.Identification] = Seq(
+        val expectedResult = NonEmptySet.of(
           departure.Identification("10", "IMO ship identification number"),
           departure.Identification("11", "Name of a sea-going vessel")
         )
@@ -355,7 +356,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(identificationCodesActiveResponseJson))
         )
 
-        val expectedResult: Seq[active.Identification] = Seq(
+        val expectedResult = NonEmptySet.of(
           active.Identification("10", "IMO ship identification number"),
           active.Identification("11", "Name of a sea-going vessel")
         )
@@ -407,7 +408,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(supplyChainActorTypesResponseJson))
         )
 
-        val expectedResult: Seq[SupplyChainActorType] = Seq(
+        val expectedResult = NonEmptySet.of(
           SupplyChainActorType("CS", "Consolidator"),
           SupplyChainActorType("MF", "Manufacturer")
         )
@@ -459,7 +460,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(authorisationTypesResponseJson))
         )
 
-        val expectedResult: Seq[AuthorisationType] = Seq(
+        val expectedResult = NonEmptySet.of(
           AuthorisationType(
             "C521",
             "ACR - authorisation for the status of authorised consignor for Union transit"
@@ -514,7 +515,7 @@ class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixture
             .willReturn(okJson(paymentMethodsResponseJson))
         )
 
-        val expectedResult: Seq[PaymentMethod] = Seq(
+        val expectedResult = NonEmptySet.of(
           PaymentMethod("A", "Cash"),
           PaymentMethod("B", "Credit card")
         )
