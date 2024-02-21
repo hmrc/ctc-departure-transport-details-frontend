@@ -18,7 +18,7 @@ package services
 
 import config.Constants.ModeOfTransport._
 import connectors.ReferenceDataConnector
-import models.reference.{BorderMode, InlandMode, ModeOfTransport}
+import models.reference.{BorderMode, InlandMode}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -29,25 +29,12 @@ class TransportModeCodesService @Inject() (referenceDataConnector: ReferenceData
   def getInlandModes()(implicit hc: HeaderCarrier): Future[Seq[InlandMode]] =
     referenceDataConnector
       .getTransportModeCodes[InlandMode]()
+      .map(_.toSeq)
       .map(_.filterNot(_.code == Unknown))
-      .map(sort)
 
   def getBorderModes()(implicit hc: HeaderCarrier): Future[Seq[BorderMode]] =
     referenceDataConnector
       .getTransportModeCodes[BorderMode]()
-      .map(filterBorderModes)
-      .map(sort)
-
-  private def filterBorderModes(
-    borderModeTypes: Seq[BorderMode]
-  ): Seq[BorderMode] = {
-    val agreedBorderModes = Seq(Maritime, Rail, Road, Air)
-
-    borderModeTypes.filter(
-      mode => agreedBorderModes.contains(mode.code)
-    )
-  }
-
-  private def sort[T <: ModeOfTransport[T]](transportModeCodes: Seq[T]): Seq[T] =
-    transportModeCodes.sortBy(_.code.toLowerCase)
+      .map(_.toSeq)
+      .map(_.filter(_.isOneOf(Maritime, Rail, Road, Air)))
 }

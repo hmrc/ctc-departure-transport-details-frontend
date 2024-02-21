@@ -16,6 +16,7 @@
 
 package models.reference
 
+import cats.Order
 import config.Constants.ModeOfTransport._
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
@@ -33,24 +34,30 @@ case class InlandMode(code: String, description: String) extends ModeOfTransport
 
   override def toString: String = StringEscapeUtils.unescapeXml(description)
 
-  override val messageKeyPrefix: String = InlandMode.messageKeyPrefix
+  override val messageKeyPrefix: String = "transportMeans.inlandMode"
 }
 
 object InlandMode extends DynamicEnumerableType[InlandMode] {
   implicit val format: Format[InlandMode] = Json.format[InlandMode]
 
-  val messageKeyPrefix = "transportMeans.inlandMode"
+  implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => {
+    x.code.compareToIgnoreCase(y.code)
+  }
 }
 
 case class BorderMode(code: String, description: String) extends ModeOfTransport[BorderMode] {
 
   override def toString: String = StringEscapeUtils.unescapeXml(description)
 
-  override val messageKeyPrefix: String = BorderMode.messageKeyPrefix
+  def isOneOf(codes: String*): Boolean = codes.contains(code)
+
+  override val messageKeyPrefix: String = "transportMeans.borderModeOfTransport"
 }
 
 object BorderMode extends DynamicEnumerableType[BorderMode] {
   implicit val format: Format[BorderMode] = Json.format[BorderMode]
 
-  val messageKeyPrefix = "transportMeans.borderModeOfTransport"
+  implicit val order: Order[BorderMode] = (x: BorderMode, y: BorderMode) => {
+    x.code.compareToIgnoreCase(y.code)
+  }
 }

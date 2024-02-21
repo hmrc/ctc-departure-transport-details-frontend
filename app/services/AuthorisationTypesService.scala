@@ -33,9 +33,9 @@ class AuthorisationTypesService @Inject() (referenceDataConnector: ReferenceData
   ): Future[Seq[AuthorisationType]] =
     referenceDataConnector
       .getAuthorisationTypes()
+      .map(_.toSeq)
       .map(filter(_, userAnswers, index))
       .map(_.filterNot(_.isACR))
-      .map(sort)
 
   private def filter(
     authorisationTypes: Seq[AuthorisationType],
@@ -54,8 +54,5 @@ class AuthorisationTypesService @Inject() (referenceDataConnector: ReferenceData
   }
 
   def getAll()(implicit hc: HeaderCarrier): Future[Seq[AuthorisationType]] =
-    referenceDataConnector.getAuthorisationTypes().map(sort)
-
-  private def sort(authorisationTypes: Seq[AuthorisationType]): Seq[AuthorisationType] =
-    authorisationTypes.sortBy(_.code.toLowerCase)
+    referenceDataConnector.getAuthorisationTypes().map(_.toSeq)
 }

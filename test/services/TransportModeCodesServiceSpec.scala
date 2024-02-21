@@ -17,6 +17,7 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.reference.{BorderMode, InlandMode}
 import org.mockito.ArgumentMatchers.any
@@ -48,15 +49,16 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
       val inlandMode6 = InlandMode("2", "Rail")
       val inlandMode7 = InlandMode("1", "Maritime")
       val inlandMode8 = InlandMode("9", "Mode unknown (Own propulsion)")
+      val inlandModes = NonEmptySet.of(inlandMode1, inlandMode2, inlandMode3, inlandMode4, inlandMode5, inlandMode6, inlandMode7, inlandMode8)
 
       "must return a list of sorted inland modes excluding Unknown" in {
-        when(mockRefDataConnector.getTransportModeCodes[InlandMode]()(any(), any(), any()))
-          .thenReturn(Future.successful(Seq(inlandMode1, inlandMode2, inlandMode3, inlandMode4, inlandMode5, inlandMode6, inlandMode7, inlandMode8)))
+        when(mockRefDataConnector.getTransportModeCodes[InlandMode]()(any(), any(), any(), any()))
+          .thenReturn(Future.successful(inlandModes))
 
         service.getInlandModes().futureValue mustBe
           Seq(inlandMode7, inlandMode6, inlandMode5, inlandMode4, inlandMode3, inlandMode2, inlandMode1)
 
-        verify(mockRefDataConnector).getTransportModeCodes[InlandMode]()(any(), any(), any())
+        verify(mockRefDataConnector).getTransportModeCodes[InlandMode]()(any(), any(), any(), any())
       }
     }
 
@@ -70,15 +72,16 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
       val borderMode6 = BorderMode("2", "Rail")
       val borderMode7 = BorderMode("1", "Maritime")
       val borderMode8 = BorderMode("9", "Mode unknown (Own propulsion)")
+      val borderModes = NonEmptySet.of(borderMode1, borderMode2, borderMode3, borderMode4, borderMode5, borderMode6, borderMode7, borderMode8)
 
       "must return the agreed list of sorted border modes" in {
-        when(mockRefDataConnector.getTransportModeCodes[BorderMode]()(any(), any(), any()))
-          .thenReturn(Future.successful(Seq(borderMode1, borderMode2, borderMode3, borderMode4, borderMode5, borderMode6, borderMode7, borderMode8)))
+        when(mockRefDataConnector.getTransportModeCodes[BorderMode]()(any(), any(), any(), any()))
+          .thenReturn(Future.successful(borderModes))
 
         service.getBorderModes().futureValue mustBe
           Seq(borderMode7, borderMode6, borderMode5, borderMode4)
 
-        verify(mockRefDataConnector).getTransportModeCodes[BorderMode]()(any(), any(), any())
+        verify(mockRefDataConnector).getTransportModeCodes[BorderMode]()(any(), any(), any(), any())
       }
     }
   }

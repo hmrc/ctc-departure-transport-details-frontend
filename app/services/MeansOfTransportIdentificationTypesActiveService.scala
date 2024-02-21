@@ -31,7 +31,10 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
   def getMeansOfTransportIdentificationTypesActive(index: Index, borderModeOfTransport: Option[BorderMode])(implicit
     hc: HeaderCarrier
   ): Future[Seq[Identification]] =
-    referenceDataConnector.getMeansOfTransportIdentificationTypesActive().map(filter(_, index, borderModeOfTransport)).map(sort)
+    referenceDataConnector
+      .getMeansOfTransportIdentificationTypesActive()
+      .map(_.toSeq)
+      .map(filter(_, index, borderModeOfTransport))
 
   private def filter(
     identificationTypes: Seq[Identification],
@@ -46,7 +49,4 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
       case _ => identificationTypesExcludingUnknown
     }
   }
-
-  private def sort(identificationTypes: Seq[Identification]): Seq[Identification] =
-    identificationTypes.sortBy(_.code.toLowerCase)
 }

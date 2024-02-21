@@ -16,6 +16,7 @@
 
 package models.reference.transportMeans.departure
 
+import cats.Order
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Format, Json}
@@ -26,12 +27,14 @@ case class Identification(`type`: String, description: String) extends Radioable
 
   override def toString: String = StringEscapeUtils.unescapeXml(description)
 
-  override val messageKeyPrefix: String = Identification.messageKeyPrefix
+  override val messageKeyPrefix: String = "transportMeans.departure.identification"
 
 }
 
 object Identification extends DynamicEnumerableType[Identification] {
   implicit val format: Format[Identification] = Json.format[Identification]
 
-  val messageKeyPrefix = "transportMeans.departure.identification"
+  implicit val order: Order[Identification] = (x: Identification, y: Identification) => {
+    x.code.compareToIgnoreCase(y.code)
+  }
 }
