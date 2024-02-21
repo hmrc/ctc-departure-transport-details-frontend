@@ -16,10 +16,10 @@
 
 package connectors
 
-import base._
 import cats.data.NonEmptySet
 import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
+import itbase.ItSpecBase
 import models.reference._
 import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
@@ -33,7 +33,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class ReferenceDataConnectorSpec extends SpecBase with AppWithDefaultMockFixtures with WireMockServerHandler with ScalaCheckPropertyChecks {
+class ReferenceDataConnectorSpec extends ItSpecBase with ScalaCheckPropertyChecks {
 
   private val baseUrl = "customs-reference-data/test-only"
 
