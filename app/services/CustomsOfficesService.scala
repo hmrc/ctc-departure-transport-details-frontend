@@ -36,7 +36,7 @@ class CustomsOfficesService @Inject() () {
     val offices = officesOfExit ++ officesOfTransit ++ officeOfDestination
     offices.toList match {
       case Nil =>
-        throw new NoReferenceDataFoundException
+        throw new NoReferenceDataFoundException("")
       case head :: tail =>
         SelectableList(NonEmptySet.of(head, tail: _*).toSeq)
     }
