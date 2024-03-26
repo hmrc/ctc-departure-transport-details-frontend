@@ -20,7 +20,6 @@ import config.Constants.ModeOfTransport.Mail
 import config.PhaseConfig
 import models.ProcedureType.Normal
 import models.UserAnswers
-import models.journeyDomain._
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
 import models.journeyDomain.carrierDetails.CarrierDetailsDomain
 import models.journeyDomain.equipment.EquipmentsAndChargesDomain
