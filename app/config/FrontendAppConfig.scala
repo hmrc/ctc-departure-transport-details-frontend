@@ -70,4 +70,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   def absoluteURL(url: String): String = configuration.get[String]("host") + url
 
   val dependentTasks: Seq[String] = configuration.get[Seq[String]]("dependent-tasks")
+
+  val allowedRedirectUrls: Seq[String] = configuration.get[Seq[String]]("urls.allowedRedirects")
 }

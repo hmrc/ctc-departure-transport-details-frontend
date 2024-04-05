@@ -31,6 +31,7 @@ import play.api.mvc.{Call, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpVerbs.GET
+import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, RedirectUrl}
 
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
@@ -169,6 +170,15 @@ package object controllers {
 
     def navigateTo(route: String)(implicit executionContext: ExecutionContext): Future[Result] =
       navigateTo(Call(GET, route))
+
+    def navigateTo(url: RedirectUrl)(implicit executionContext: ExecutionContext, appConfig: FrontendAppConfig): Future[Result] = {
+      import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
+      write.map {
+        _ =>
+          val redirectUrlPolicy = AbsoluteWithHostnameFromAllowlist(appConfig.allowedRedirectUrls: _*)
+          Redirect(url.get(redirectUrlPolicy).url)
+      }
+    }
 
     def getNextPage()(implicit navigator: UserAnswersNavigator, executionContext: ExecutionContext, frontendAppConfig: FrontendAppConfig): Future[Call] =
       write.map {
