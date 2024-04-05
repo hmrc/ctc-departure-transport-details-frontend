@@ -17,9 +17,8 @@
 import cats.data.ReaderT
 import config.{FrontendAppConfig, PhaseConfig}
 import models.TaskStatus.{Completed, InProgress}
-import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.OpsError.WriterError
-import models.journeyDomain.TransportDomain
+import models.journeyDomain.{TransportDomain, UserAnswersReader}
 import models.requests.MandatoryDataRequest
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import navigation.UserAnswersNavigator
@@ -31,7 +30,7 @@ import play.api.mvc.{Call, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpVerbs.GET
-import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, RedirectUrl}
+import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, OnlyRelative, RedirectUrl}
 
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
@@ -175,7 +174,7 @@ package object controllers {
       import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
       write.map {
         _ =>
-          val redirectUrlPolicy = AbsoluteWithHostnameFromAllowlist(appConfig.allowedRedirectUrls: _*)
+          val redirectUrlPolicy = AbsoluteWithHostnameFromAllowlist(appConfig.allowedRedirectUrls: _*) | OnlyRelative
           Redirect(url.get(redirectUrlPolicy).url)
       }
     }
