@@ -139,6 +139,10 @@ transportMeans.departure.addIdentificationTypeYesNo.checkYourAnswersLabel = Do y
 transportMeans.departure.addIdentificationTypeYesNo.change.hidden = if you want to add the type of identification for the departure means of transport
 transportMeans.departure.addIdentificationTypeYesNo.error.required = Select yes if you want to add a type of identification
 
+transportMeans.departure.removeTransportMeansOfDepartureYesNo.title = Are you sure you want to remove this departure means of transport?
+transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading = Are you sure you want to remove this departure means of transport?
+transportMeans.departure.removeTransportMeansOfDepartureYesNo.error.required = Select yes if you want to remove this departure means of transport
+
 transportMeans.departure.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.departure.identification.heading = Which identification do you want to use for this vehicle?
 transportMeans.departure.identification.10 = IMO ship identification number
