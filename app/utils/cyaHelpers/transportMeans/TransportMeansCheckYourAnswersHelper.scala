@@ -18,13 +18,11 @@ package utils.cyaHelpers.transportMeans
 
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.transportMeans.active.routes
-import models.journeyDomain.transportMeans.{PostTransitionTransportMeansActiveDomain, TransportMeansActiveDomain}
-import models.reference.transportMeans.departure.Identification
-import models.reference.{BorderMode, InlandMode, Nationality}
+import models.journeyDomain.transportMeans.{PostTransitionTransportMeansActiveDomain, TransportMeansActiveDomain, TransportMeansDepartureDomain}
+import models.reference.{BorderMode, InlandMode}
 import models.{Index, Mode, UserAnswers}
-import pages.sections.transportMeans.ActivesSection
+import pages.sections.transportMeans.{ActivesSection, DeparturesSection}
 import pages.transportMeans._
-import pages.transportMeans.departure._
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -47,6 +45,16 @@ class TransportMeansCheckYourAnswersHelper(
     id = Some(s"change-active-border-transport-means-${index.display}"),
     args = index.display
   )(PostTransitionTransportMeansActiveDomain.userAnswersReader(index).apply(Nil))
+
+  def departureTransportsMeans: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(DeparturesSection)(departureTransportMeans)
+
+  def departureTransportMeans(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[TransportMeansDepartureDomain](
+    formatAnswer = formatAsText,
+    prefix = "transportMeans.departure",
+    id = Some(s"change-departure-means-of-transport-${index.display}"),
+    args = index.display
+  )(TransportMeansDepartureDomain.userAnswersReader(index).apply(Nil))
 
   def addOrRemoveActiveBorderTransportsMeans(): Option[Link] = buildLink(ActivesSection) {
     Link(
@@ -92,48 +100,6 @@ class TransportMeansCheckYourAnswersHelper(
     formatAnswer = formatAsYesOrNo,
     prefix = "transportMeans.addDepartureTransportMeansYesNo",
     id = Some("change-add-departure-transport-means")
-  )
-
-  def departureIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
-    page = IdentificationPage,
-    formatAnswer = formatDynamicEnumAsText(_),
-    prefix = "transportMeans.departure.identification",
-    id = Some("change-transport-means-departure-identification")
-  )
-
-  def departureIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[String](
-    page = MeansIdentificationNumberPage,
-    formatAnswer = formatAsText,
-    prefix = "transportMeans.departure.meansIdentificationNumber",
-    id = Some("change-transport-means-departure-identification-number")
-  )
-
-  def departureNationality: Option[SummaryListRow] = getAnswerAndBuildRow[Nationality](
-    page = VehicleCountryPage,
-    formatAnswer = _.toString.toText,
-    prefix = "transportMeans.departure.vehicleCountry",
-    id = Some("change-transport-means-departure-vehicle-nationality")
-  )
-
-  def departureAddTypeYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddIdentificationTypeYesNoPage,
-    formatAnswer = formatAsYesOrNo,
-    prefix = "transportMeans.departure.addIdentificationTypeYesNo",
-    id = Some("change-transport-means-departure-add-identification-type")
-  )
-
-  def departureAddIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddIdentificationNumberYesNoPage,
-    formatAnswer = formatAsYesOrNo,
-    prefix = "transportMeans.departure.addIdentificationNumberYesNo",
-    id = Some("change-transport-means-departure-add-identification-number")
-  )
-
-  def departureAddNationality: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddVehicleCountryYesNoPage,
-    formatAnswer = formatAsYesOrNo,
-    prefix = "transportMeans.departure.addVehicleCountryYesNo",
-    id = Some("change-transport-means-departure-add-nationality")
   )
 
   def addActiveBorderTransportMeans: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](

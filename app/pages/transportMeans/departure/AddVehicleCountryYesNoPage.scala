@@ -17,7 +17,7 @@
 package pages.transportMeans.departure
 
 import controllers.transportMeans.departure.routes
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transportMeans.DepartureSection
 import play.api.libs.json.JsPath
@@ -25,18 +25,18 @@ import play.api.mvc.Call
 
 import scala.util.Try
 
-case object AddVehicleCountryYesNoPage extends QuestionPage[Boolean] {
+case class AddVehicleCountryYesNoPage(departureIndex: Index) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = DepartureSection.path \ toString
+  override def path: JsPath = DepartureSection(departureIndex).path \ toString
 
   override def toString: String = "addVehicleCountryYesNo"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex))
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) => userAnswers.remove(VehicleCountryPage)
+      case Some(false) => userAnswers.remove(VehicleCountryPage(departureIndex))
       case _           => super.cleanup(value, userAnswers)
     }
 }

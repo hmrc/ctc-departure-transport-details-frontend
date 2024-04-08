@@ -70,10 +70,10 @@ object TransitionTransportMeansDomain {
         case Some(OptionalBoolean.yes) =>
           AddDepartureTransportMeansYesNoPage
             .filterOptionalDependent(identity) {
-              TransportMeansDepartureDomain.userAnswersReader
+              TransportMeansDepartureDomain.userAnswersReader(Index(0))
             }
         case _ =>
-          TransportMeansDepartureDomain.userAnswersReader.toOption
+          TransportMeansDepartureDomain.userAnswersReader(Index(0)).toOption
       }
 
     lazy val borderModeOfTransportReader: Read[Option[BorderMode]] = {
@@ -131,7 +131,7 @@ object PostTransitionTransportMeansDomain {
 }
 
 case class PostTransitionTransportMeansMultipleActiveDomain(
-  transportMeansDeparture: TransportMeansDepartureDomain,
+  transportMeansDeparture: TransportMeansDepartureListDomain,
   borderModeOfTransport: Option[BorderMode],
   transportMeansActiveList: Option[TransportMeansActiveListDomain]
 ) extends PostTransitionTransportMeansDomain
@@ -140,14 +140,14 @@ object PostTransitionTransportMeansMultipleActiveDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansDomain] =
     (
-      TransportMeansDepartureDomain.userAnswersReader,
+      TransportMeansDepartureListDomain.userAnswersReader,
       borderModeOfTransportReader,
       transportMeansActiveReader(TransportMeansActiveListDomain.userAnswersReader)
     ).map(PostTransitionTransportMeansMultipleActiveDomain.apply)
 }
 
 case class PostTransitionTransportMeansSingleActiveDomain(
-  transportMeansDeparture: TransportMeansDepartureDomain,
+  transportMeansDeparture: TransportMeansDepartureListDomain,
   borderModeOfTransport: Option[BorderMode],
   transportMeansActiveList: Option[TransportMeansActiveDomain]
 ) extends PostTransitionTransportMeansDomain
@@ -156,7 +156,7 @@ object PostTransitionTransportMeansSingleActiveDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansDomain] =
     (
-      TransportMeansDepartureDomain.userAnswersReader,
+      TransportMeansDepartureListDomain.userAnswersReader,
       borderModeOfTransportReader,
       transportMeansActiveReader(TransportMeansActiveDomain.userAnswersReader(Index(0)))
     ).map(PostTransitionTransportMeansSingleActiveDomain.apply)

@@ -43,18 +43,13 @@ object TransportMeansAnswersViewModel {
         ).flatten
       )
 
-      val departureMeansSection = Section(
-        sectionTitle = messages("transportMeans.departureMeans.subheading"),
-        rows = Seq(
-          helper.addDepartureTransportMeans,
-          helper.departureAddTypeYesNo,
-          helper.departureIdentificationType,
-          helper.departureAddIdentificationNumber,
-          helper.departureIdentificationNumber,
-          helper.departureAddNationality,
-          helper.departureNationality
-        ).flatten
-      )
+      val departureMeansSection = {
+        val row = helper.addDepartureTransportMeans.toSeq
+        Section(
+          sectionTitle = messages("transportMeans.departureMeans.subheading"),
+          rows = row ++ helper.departureTransportsMeans
+        )
+      }
 
       val borderModeSection = Section(
         sectionTitle = messages("transportMeans.borderMode.subheading"),
