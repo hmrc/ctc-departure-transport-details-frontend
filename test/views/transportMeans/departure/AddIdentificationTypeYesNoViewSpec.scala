@@ -25,7 +25,7 @@ import views.html.transportMeans.departure.AddIdentificationTypeYesNoView
 class AddIdentificationTypeYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddIdentificationTypeYesNoView].apply(form, lrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddIdentificationTypeYesNoView].apply(form, lrn, NormalMode, departureIndex)(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.departure.addIdentificationTypeYesNo"
 
