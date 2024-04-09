@@ -56,11 +56,11 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, TransportMeansSection, addAnother(lrn, mode)) {
       implicit request =>
-        val insetTextValue: String = foo(request)
+        val insetTextValue: String = insetText(request)
         Ok(view(form(transportMeansIndex), lrn, mode, transportMeansIndex, insetTextValue))
     }
 
-  private def foo(request: DataRequest[AnyContent]): String = {
+  private def insetText(request: DataRequest[AnyContent]): String = {
     val transport: Option[Identification]      = request.userAnswers.get(IdentificationPage)
     val meansOfTransportNumber: Option[String] = request.userAnswers.get(MeansIdentificationNumberPage)
     val meansOfTransportNumberString: String = meansOfTransportNumber
@@ -77,7 +77,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     .requireIndex(lrn, TransportMeansSection, addAnother(lrn, mode))
     .async {
       implicit request =>
-        val insetTextValue: String = foo(request)
+        val insetTextValue: String = insetText(request)
         form(transportMeansIndex)
           .bindFromRequest()
           .fold(
