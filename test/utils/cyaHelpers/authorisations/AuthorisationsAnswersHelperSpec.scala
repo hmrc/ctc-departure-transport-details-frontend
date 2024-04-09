@@ -24,7 +24,12 @@ import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
-import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
+import pages.authorisationsAndLimit.authorisations.index.{
+  AuthorisationReferenceNumberPage,
+  AuthorisationTypePage,
+  InferredAuthorisationTypePage,
+  IsMandatoryPage
+}
 import viewModels.ListItem
 
 class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -53,6 +58,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
                 (mode, authType, reference) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(InferredAuthorisationTypePage(Index(0)), authType)
+                    .setValue(IsMandatoryPage(Index(0)), true)
                     .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
 
                   val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
@@ -97,8 +103,10 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
                 (mode, authType, reference) =>
                   val userAnswers = emptyUserAnswers
                     .setValue(InferredAuthorisationTypePage(Index(0)), authType)
+                    .setValue(IsMandatoryPage(Index(0)), true)
                     .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
                     .setValue(InferredAuthorisationTypePage(Index(1)), authType)
+                    .setValue(IsMandatoryPage(Index(1)), true)
                     .setValue(AuthorisationReferenceNumberPage(Index(1)), reference)
 
                   val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
@@ -115,7 +123,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
                       ListItem(
                         name = s"${authType.forDisplay} - $reference",
                         changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
-                        removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(1)).url)
+                        removeUrl = None
                       )
                     )
                   )
@@ -162,6 +170,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
                   val userAnswers = emptyUserAnswers
                     .setValue(AddAuthorisationsYesNoPage, true)
                     .setValue(InferredAuthorisationTypePage(Index(0)), authType)
+                    .setValue(IsMandatoryPage(Index(0)), true)
                     .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
 
                   val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
@@ -208,8 +217,10 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
                   val userAnswers = emptyUserAnswers
                     .setValue(AddAuthorisationsYesNoPage, true)
                     .setValue(InferredAuthorisationTypePage(Index(0)), authType)
+                    .setValue(IsMandatoryPage(Index(0)), true)
                     .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
                     .setValue(InferredAuthorisationTypePage(Index(1)), authType)
+                    .setValue(IsMandatoryPage(Index(1)), true)
                     .setValue(AuthorisationReferenceNumberPage(Index(1)), reference)
 
                   val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
@@ -226,7 +237,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
                       ListItem(
                         name = s"${authType.forDisplay} - $reference",
                         changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
-                        removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(1)).url)
+                        removeUrl = None
                       )
                     )
                   )
@@ -273,8 +284,10 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
             (mode, authType, reference) =>
               val userAnswers = emptyUserAnswers
                 .setValue(InferredAuthorisationTypePage(Index(0)), authType)
+                .setValue(IsMandatoryPage(Index(0)), true)
                 .setValue(AuthorisationReferenceNumberPage(Index(0)), reference)
                 .setValue(InferredAuthorisationTypePage(Index(1)), authType)
+                .setValue(IsMandatoryPage(Index(1)), true)
                 .setValue(AuthorisationReferenceNumberPage(Index(1)), reference)
                 .setValue(InferredAuthorisationTypePage(Index(2)), authType)
               val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
@@ -291,7 +304,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
                   ListItem(
                     name = s"${authType.forDisplay} - $reference",
                     changeUrl = routes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
-                    removeUrl = Some(routes.RemoveAuthorisationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(1)).url)
+                    removeUrl = None
                   )
                 ),
                 Left(

@@ -45,7 +45,7 @@ class AuthorisationInferenceController @Inject() (
 
   def infer(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      authorisationTypesService.getAll().flatMap {
+      authorisationTypesService.getAuthorisationTypes().flatMap {
         authorisationTypes =>
           val userAnswers                              = authorisationInferenceService.inferAuthorisations(request.userAnswers, authorisationTypes)
           implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
