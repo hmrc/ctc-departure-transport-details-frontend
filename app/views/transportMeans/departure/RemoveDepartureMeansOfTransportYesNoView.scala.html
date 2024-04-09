@@ -17,17 +17,18 @@
 @import controllers.transportMeans.departure.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
+    insetText: InsetText,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, transportIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, transportIndex: Index,  insetTextValue: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transportMeans.departure.removeTransportMeansOfDepartureYesNo.title", transportIndex.display),
@@ -41,9 +42,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading", transportIndex.display),
-                caption = Some(messages("departureMeansOfTransport.caption"))
+                caption = Some(messages("departureMeansOfTransport.caption")),
+                additionalHtml = insetText(insetTextValue)
             )
         )
 
