@@ -19,9 +19,7 @@ package viewModels.transportMeans
 import base.SpecBase
 import config.PhaseConfig
 import generators.Generators
-import models.reference.{InlandMode, Nationality}
-import models.reference.transportMeans.departure.{Identification => DepartureIdentification}
-import models.reference.BorderMode
+import models.reference.{BorderMode, InlandMode}
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -50,25 +48,6 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
       val section = result.sections.head
       section.sectionTitle.get mustBe "Inland mode of transport"
       section.rows.size mustBe 1
-      section.addAnotherLink must not be defined
-    }
-
-    "must render a departure means section" in {
-      val userAnswers = emptyUserAnswers
-        .setValue(AddDepartureTransportMeansYesNoPage, true)
-        .setValue(departure.IdentificationPage, arbitrary[DepartureIdentification].sample.value)
-        .setValue(departure.MeansIdentificationNumberPage, Gen.alphaNumStr.sample.value)
-        .setValue(departure.VehicleCountryPage, arbitrary[Nationality].sample.value)
-        .setValue(departure.AddIdentificationNumberYesNoPage, true)
-        .setValue(departure.AddIdentificationTypeYesNoPage, true)
-        .setValue(departure.AddVehicleCountryYesNoPage, true)
-
-      val viewModelProvider = new TransportMeansAnswersViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers, mode)
-
-      val section = result.sections(1)
-      section.sectionTitle.get mustBe "Departure means of transport"
-      section.rows.size mustBe 7
       section.addAnotherLink must not be defined
     }
 
