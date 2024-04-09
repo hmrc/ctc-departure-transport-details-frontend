@@ -66,7 +66,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
             IdentificationPage(departureIndex),
             MeansIdentificationNumberPage(departureIndex),
             AddVehicleCountryYesNoPage(departureIndex),
-            VehicleCountryPage
+            VehicleCountryPage(departureIndex)
           )
         }
       }
@@ -312,7 +312,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
             val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe MeansIdentificationNumberPage
+            result.left.value.page mustBe MeansIdentificationNumberPage(departureIndex)
             result.left.value.pages mustBe Seq(
               IdentificationPage(departureIndex),
               AddIdentificationNumberYesNoPage(departureIndex),

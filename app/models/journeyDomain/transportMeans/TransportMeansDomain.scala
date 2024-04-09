@@ -56,7 +56,7 @@ object TransportMeansDomain {
 }
 
 case class TransitionTransportMeansDomain(
-  transportMeansDeparture: Option[TransportMeansDepartureDomain],
+  transportMeansDepartureList: Option[TransportMeansDepartureListDomain],
   borderModeOfTransport: Option[BorderMode],
   transportMeansActiveList: Option[TransportMeansActiveDomain]
 ) extends TransportMeansDomain
@@ -65,15 +65,15 @@ object TransitionTransportMeansDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansDomain] = {
 
-    lazy val transportMeansDepartureReader: Read[Option[TransportMeansDepartureDomain]] =
+    lazy val transportMeansDepartureReader: Read[Option[TransportMeansDepartureListDomain]] =
       ContainerIndicatorPage.optionalReader.to {
         case Some(OptionalBoolean.yes) =>
           AddDepartureTransportMeansYesNoPage
             .filterOptionalDependent(identity) {
-              TransportMeansDepartureDomain.userAnswersReader(Index(0))
+              TransportMeansDepartureListDomain.userAnswersReader
             }
         case _ =>
-          TransportMeansDepartureDomain.userAnswersReader(Index(0)).toOption
+          TransportMeansDepartureListDomain.userAnswersReader.toOption
       }
 
     lazy val borderModeOfTransportReader: Read[Option[BorderMode]] = {
@@ -131,7 +131,7 @@ object PostTransitionTransportMeansDomain {
 }
 
 case class PostTransitionTransportMeansMultipleActiveDomain(
-  transportMeansDeparture: TransportMeansDepartureListDomain,
+  transportMeansDepartureList: TransportMeansDepartureListDomain,
   borderModeOfTransport: Option[BorderMode],
   transportMeansActiveList: Option[TransportMeansActiveListDomain]
 ) extends PostTransitionTransportMeansDomain
@@ -147,7 +147,7 @@ object PostTransitionTransportMeansMultipleActiveDomain {
 }
 
 case class PostTransitionTransportMeansSingleActiveDomain(
-  transportMeansDeparture: TransportMeansDepartureListDomain,
+  transportMeansDepartureList: TransportMeansDepartureListDomain,
   borderModeOfTransport: Option[BorderMode],
   transportMeansActiveList: Option[TransportMeansActiveDomain]
 ) extends PostTransitionTransportMeansDomain

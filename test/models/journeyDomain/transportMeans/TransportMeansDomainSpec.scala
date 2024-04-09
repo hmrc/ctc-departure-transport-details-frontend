@@ -64,10 +64,10 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
               val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe departure.AddIdentificationTypeYesNoPage
+              result.left.value.page mustBe departure.AddIdentificationTypeYesNoPage(departureIndex)
               result.left.value.pages mustBe Seq(
                 AddDepartureTransportMeansYesNoPage,
-                departure.AddIdentificationTypeYesNoPage
+                departure.AddIdentificationTypeYesNoPage(departureIndex)
               )
             }
           }
@@ -80,9 +80,9 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
             val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe departure.IdentificationPage
+            result.left.value.page mustBe departure.IdentificationPage(departureIndex)
             result.left.value.pages mustBe Seq(
-              departure.IdentificationPage
+              departure.IdentificationPage(departureIndex)
             )
           }
         }
