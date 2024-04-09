@@ -84,7 +84,6 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, transportMeansIndex, insetTextValue))),
             {
               case true =>
-                // TODO - update items task status
                 TransportMeansSection
                   .removeFromUserAnswers()
                   .updateTask()
