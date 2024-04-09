@@ -23,7 +23,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.reference.transportMeans.departure.Identification
 import models.requests.DataRequest
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode, TransportMeans, UserAnswers}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.sections.transportMeans.TransportMeansSection
 import pages.transportMeans.departure.{AddVehicleCountryYesNoPage, IdentificationPage, MeansIdentificationNumberPage}
@@ -56,32 +56,22 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, TransportMeansSection, addAnother(lrn, mode)) {
       implicit request =>
-        val insetTextValue: String = insetText(request)
-        Ok(view(form(transportMeansIndex), lrn, mode, transportMeansIndex, insetTextValue))
+        val insetText = formatInsetText(request.userAnswers, transportMeansIndex)
+        Ok(view(form(transportMeansIndex), lrn, mode, transportMeansIndex, insetText))
     }
 
-  private def insetText(request: DataRequest[AnyContent]): String = {
-    val transport: Option[Identification]      = request.userAnswers.get(IdentificationPage)
-    val meansOfTransportNumber: Option[String] = request.userAnswers.get(MeansIdentificationNumberPage)
-    val meansOfTransportNumberString: String = meansOfTransportNumber
-      .map(
-        mt => s" - $mt"
-      )
-      .getOrElse("")
-    if (transport.nonEmpty) {
-      s"${transport.get}$meansOfTransportNumberString"
-    } else ""
-  }
+  private def formatInsetText(userAnswers: UserAnswers, transportMeansIndex: Index): String =
+    TransportMeans(userAnswers, transportMeansIndex).map(_.forRemoveDisplay).getOrElse("")
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, TransportMeansSection, addAnother(lrn, mode))
     .async {
       implicit request =>
-        val insetTextValue: String = insetText(request)
+        val insetText = formatInsetText(request.userAnswers, transportMeansIndex)
         form(transportMeansIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, transportMeansIndex, insetTextValue))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, transportMeansIndex, insetText))),
             {
               case true =>
                 TransportMeansSection
