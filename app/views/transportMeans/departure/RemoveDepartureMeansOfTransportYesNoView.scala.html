@@ -40,6 +40,8 @@
 
         @errorSummary(form.errors)
 
+        @if(insetTextValue.nonEmpty){
+
         @inputYesNo(
             field = form("value"),
             yesNoType = YesNoWithAdditionalHtml(
@@ -48,6 +50,17 @@
                 additionalHtml = insetText(insetTextValue)
             )
         )
+        } else {
+
+        @inputYesNo(
+            field = form("value"),
+            yesNoType = OrdinaryYesNo(
+                heading = messages("transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading", transportIndex.display),
+                caption = Some(messages("departureMeansOfTransport.caption"))
+            )
+        )
+
+        }
 
         @button(attributes = Map("id" -> "submit"))
     }
