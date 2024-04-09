@@ -16,11 +16,12 @@
 
 package models
 
+import models.reference.transportMeans.departure.Identification
 import pages.transportMeans.departure.{IdentificationPage, MeansIdentificationNumberPage}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads
 
-case class TransportMeans(index: Index, identificationType: Option[TransportMeansIdentification], identificationNumber: Option[String]) {
+case class TransportMeans(index: Index, identificationType: Option[Identification], identificationNumber: Option[String]) {
 
   def forRemoveDisplay: String = (identificationType, identificationNumber) match {
     case (Some(a), Some(b)) => s"$a - $b"
@@ -35,7 +36,7 @@ object TransportMeans {
 
   def apply(userAnswers: UserAnswers, transportMeansIndex: Index): Option[TransportMeans] = {
     implicit val reads: Reads[TransportMeans] = (
-      IdentificationPage.path.readNullable[TransportMeansIdentification] and
+      IdentificationPage.path.readNullable[Identification] and
         MeansIdentificationNumberPage.path.readNullable[String]
     ).apply {
       (identifier, identificationNumber) => TransportMeans(transportMeansIndex, identifier, identificationNumber)
