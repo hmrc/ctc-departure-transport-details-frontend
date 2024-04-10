@@ -138,7 +138,7 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
         when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
           .thenReturn(Future.successful(authorisationTypes))
 
-        service.getAll().futureValue mustBe Seq(c521, c523, c524)
+        service.getAuthorisationTypes().futureValue mustBe NonEmptySet.of(c521, c523, c524)
 
         verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
       }

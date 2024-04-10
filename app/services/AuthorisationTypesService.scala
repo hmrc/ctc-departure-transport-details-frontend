@@ -16,6 +16,7 @@
 
 package services
 
+import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import models.reference.authorisations.AuthorisationType
 import models.{Index, UserAnswers}
@@ -31,8 +32,7 @@ class AuthorisationTypesService @Inject() (referenceDataConnector: ReferenceData
   def getAuthorisationTypes(userAnswers: UserAnswers, index: Option[Index])(implicit
     hc: HeaderCarrier
   ): Future[Seq[AuthorisationType]] =
-    referenceDataConnector
-      .getAuthorisationTypes()
+    getAuthorisationTypes()
       .map(_.toSeq)
       .map(filter(_, userAnswers, index))
       .map(_.filterNot(_.isACR))
@@ -53,6 +53,6 @@ class AuthorisationTypesService @Inject() (referenceDataConnector: ReferenceData
     authorisationTypes.diff(authorisationTypesEntered)
   }
 
-  def getAll()(implicit hc: HeaderCarrier): Future[Seq[AuthorisationType]] =
-    referenceDataConnector.getAuthorisationTypes().map(_.toSeq)
+  def getAuthorisationTypes()(implicit hc: HeaderCarrier): Future[NonEmptySet[AuthorisationType]] =
+    referenceDataConnector.getAuthorisationTypes()
 }
