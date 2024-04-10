@@ -25,11 +25,11 @@ class IdentificationPageSpec extends PageBehaviours {
 
   "IdentificationPage" - {
 
-    beRetrievable[Identification](IdentificationPage)
+    beRetrievable[Identification](IdentificationPage(departureIndex))
 
-    beSettable[Identification](IdentificationPage)
+    beSettable[Identification](IdentificationPage(departureIndex))
 
-    beRemovable[Identification](IdentificationPage)
+    beRemovable[Identification](IdentificationPage(departureIndex))
 
     "cleanup" - {
       "when answer changes" - {
@@ -37,16 +37,16 @@ class IdentificationPageSpec extends PageBehaviours {
           forAll(arbitrary[Identification]) {
             identification =>
               val userAnswers = emptyUserAnswers
-                .setValue(IdentificationPage, identification)
-                .setValue(MeansIdentificationNumberPage, arbitrary[String].sample.value)
-                .setValue(VehicleCountryPage, arbitrary[Nationality].sample.value)
+                .setValue(IdentificationPage(departureIndex), identification)
+                .setValue(MeansIdentificationNumberPage(departureIndex), arbitrary[String].sample.value)
+                .setValue(VehicleCountryPage(departureIndex), arbitrary[Nationality].sample.value)
 
               forAll(arbitrary[Identification].retryUntil(_ != identification)) {
                 differentIdentification =>
-                  val result = userAnswers.setValue(IdentificationPage, differentIdentification)
+                  val result = userAnswers.setValue(IdentificationPage(departureIndex), differentIdentification)
 
-                  result.get(MeansIdentificationNumberPage) must not be defined
-                  result.get(VehicleCountryPage) must not be defined
+                  result.get(MeansIdentificationNumberPage(departureIndex)) must not be defined
+                  result.get(VehicleCountryPage(departureIndex)) must not be defined
               }
           }
         }

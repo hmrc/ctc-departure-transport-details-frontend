@@ -78,9 +78,9 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
       TransportMeansDomain.userAnswersReader.apply(Nil)
     )
 
-  def arbitraryTransportMeansDepartureAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
+  def arbitraryTransportMeansDepartureAnswers(userAnswers: UserAnswers, index: Index)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
     buildUserAnswers[TransportMeansDepartureDomain](userAnswers)(
-      TransportMeansDepartureDomain.userAnswersReader.apply(Nil)
+      TransportMeansDepartureDomain.userAnswersReader(index).apply(Nil)
     )
 
   def arbitraryTransportMeansActiveAnswers(userAnswers: UserAnswers, index: Index)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =

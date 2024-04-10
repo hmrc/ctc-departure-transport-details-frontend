@@ -19,9 +19,7 @@ package viewModels.transportMeans
 import base.SpecBase
 import config.PhaseConfig
 import generators.Generators
-import models.reference.{InlandMode, Nationality}
-import models.reference.transportMeans.departure.{Identification => DepartureIdentification}
-import models.reference.BorderMode
+import models.reference.{BorderMode, InlandMode}
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -53,23 +51,39 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
       section.addAnotherLink must not be defined
     }
 
-    "must render a departure means section" in {
-      val userAnswers = emptyUserAnswers
-        .setValue(AddDepartureTransportMeansYesNoPage, true)
-        .setValue(departure.IdentificationPage, arbitrary[DepartureIdentification].sample.value)
-        .setValue(departure.MeansIdentificationNumberPage, Gen.alphaNumStr.sample.value)
-        .setValue(departure.VehicleCountryPage, arbitrary[Nationality].sample.value)
-        .setValue(departure.AddIdentificationNumberYesNoPage, true)
-        .setValue(departure.AddIdentificationTypeYesNoPage, true)
-        .setValue(departure.AddVehicleCountryYesNoPage, true)
+    "must render a departure means section" - {
 
-      val viewModelProvider = new TransportMeansAnswersViewModelProvider()
-      val result            = viewModelProvider.apply(userAnswers, mode)
+      val sectionTitle = "Departure means of transport"
 
-      val section = result.sections(1)
-      section.sectionTitle.get mustBe "Departure means of transport"
-      section.rows.size mustBe 7
-      section.addAnotherLink must not be defined
+      "when none were added" in {
+        val userAnswers       = emptyUserAnswers.setValue(AddDepartureTransportMeansYesNoPage, false)
+        val viewModelProvider = new TransportMeansAnswersViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers, mode)(messages, phaseConfig)
+        val section           = result.sections(1)
+        section.sectionTitle.get mustBe sectionTitle
+        section.rows.size mustBe 1
+        section.addAnotherLink must not be defined
+      }
+
+      "when 1 or more were added" in {
+        val initialAnswers = emptyUserAnswers.setValue(AddDepartureTransportMeansYesNoPage, true)
+        forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxDepartureTransportMeans)) {
+          (mode, amount) =>
+            val userAnswersGen = (0 until amount).foldLeft(Gen.const(initialAnswers)) {
+              (acc, i) =>
+                acc.flatMap(arbitraryTransportMeansDepartureAnswers(_, Index(i))(phaseConfig))
+            }
+            forAll(userAnswersGen) {
+              userAnswers =>
+                val viewModelProvider = new TransportMeansAnswersViewModelProvider()
+                val result            = viewModelProvider.apply(userAnswers, mode)(messages, phaseConfig)
+                val section           = result.sections(1)
+                section.sectionTitle.get mustBe sectionTitle
+                section.rows.size mustBe amount + 1
+//                section.addAnotherLink must be(defined) // TODO Update when Add/Remove page is built for DTM
+            }
+        }
+      }
     }
 
     "must render a border mode section" in {

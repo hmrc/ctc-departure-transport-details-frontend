@@ -22,11 +22,11 @@ class AddIdentificationNumberYesNoPageSpec extends PageBehaviours {
 
   "AddIdentificationNumberYesNo Page Spec" - {
 
-    beRetrievable[Boolean](AddIdentificationNumberYesNoPage)
+    beRetrievable[Boolean](AddIdentificationNumberYesNoPage(departureIndex))
 
-    beSettable[Boolean](AddIdentificationNumberYesNoPage)
+    beSettable[Boolean](AddIdentificationNumberYesNoPage(departureIndex))
 
-    beRemovable[Boolean](AddIdentificationNumberYesNoPage)
+    beRemovable[Boolean](AddIdentificationNumberYesNoPage(departureIndex))
 
     "cleanup" - {
       "when NO selected" - {
@@ -34,12 +34,12 @@ class AddIdentificationNumberYesNoPageSpec extends PageBehaviours {
           forAll(nonEmptyString) {
             identificationNumber =>
               val userAnswers = emptyUserAnswers
-                .setValue(AddIdentificationNumberYesNoPage, true)
-                .setValue(MeansIdentificationNumberPage, identificationNumber)
+                .setValue(AddIdentificationNumberYesNoPage(departureIndex), true)
+                .setValue(MeansIdentificationNumberPage(departureIndex), identificationNumber)
 
-              val result = userAnswers.setValue(AddIdentificationNumberYesNoPage, false)
+              val result = userAnswers.setValue(AddIdentificationNumberYesNoPage(departureIndex), false)
 
-              result.get(MeansIdentificationNumberPage) must not be defined
+              result.get(MeansIdentificationNumberPage(departureIndex)) must not be defined
           }
         }
       }

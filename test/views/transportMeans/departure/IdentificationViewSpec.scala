@@ -30,7 +30,7 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[Identification] {
   override def form: Form[Identification] = new EnumerableFormProvider()(prefix, values)
 
   override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
-    injector.instanceOf[IdentificationView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[IdentificationView].apply(form, lrn, values, NormalMode, departureIndex)(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.departure.identification"
 

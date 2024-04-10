@@ -30,7 +30,7 @@ class VehicleCountryViewSpec extends InputSelectViewBehaviours[Nationality] {
   override def form: Form[Nationality] = new SelectableFormProvider()(prefix, SelectableList(values))
 
   override def applyView(form: Form[Nationality]): HtmlFormat.Appendable =
-    injector.instanceOf[VehicleCountryView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[VehicleCountryView].apply(form, lrn, values, NormalMode, departureIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[Nationality] = arbitraryNationality
 

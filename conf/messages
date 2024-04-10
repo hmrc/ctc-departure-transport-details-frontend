@@ -99,6 +99,9 @@ preRequisites.containerIndicator.error.required = Select yes if you are using an
 transportMeans.active.label = Active border transport means {0}
 transportMeans.active.change.hidden = active border transport means {0}
 
+transportMeans.departure.label = Departure means of transport {0}
+transportMeans.departure.change.hidden = departure means of transport {0}
+
 means.caption = Transport details - Modes and means of transport
 inlandMode.caption = Transport details - Inland mode of transport
 departureMeansOfTransport.caption = Transport details - Departure means of transport

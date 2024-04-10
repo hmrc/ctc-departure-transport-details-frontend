@@ -18,18 +18,18 @@ package pages.transportMeans.departure
 
 import controllers.transportMeans.departure.routes
 import models.reference.Nationality
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transportMeans.DepartureSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object VehicleCountryPage extends QuestionPage[Nationality] {
+case class VehicleCountryPage(departureIndex: Index) extends QuestionPage[Nationality] {
 
-  override def path: JsPath = DepartureSection.path \ toString
+  override def path: JsPath = DepartureSection(departureIndex).path \ toString
 
   override def toString: String = "vehicleCountry"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.VehicleCountryController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.VehicleCountryController.onPageLoad(userAnswers.lrn, mode, departureIndex))
 }

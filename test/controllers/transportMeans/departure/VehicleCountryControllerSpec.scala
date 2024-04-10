@@ -44,7 +44,7 @@ class VehicleCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val mode         = NormalMode
 
   private val mockNationalitiesService: NationalitiesService = mock[NationalitiesService]
-  private lazy val vehicleCountryRoute                       = routes.VehicleCountryController.onPageLoad(lrn, mode).url
+  private lazy val vehicleCountryRoute                       = routes.VehicleCountryController.onPageLoad(lrn, mode, departureIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -68,13 +68,13 @@ class VehicleCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, nationalityList.values, mode)(request, messages).toString
+        view(form, lrn, nationalityList.values, mode, departureIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
-      val userAnswers = emptyUserAnswers.setValue(VehicleCountryPage, nationality1)
+      val userAnswers = emptyUserAnswers.setValue(VehicleCountryPage(departureIndex), nationality1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, vehicleCountryRoute)
@@ -88,7 +88,7 @@ class VehicleCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, nationalityList.values, mode)(request, messages).toString
+        view(filledForm, lrn, nationalityList.values, mode, departureIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -123,7 +123,7 @@ class VehicleCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, nationalityList.values, mode)(request, messages).toString
+        view(boundForm, lrn, nationalityList.values, mode, departureIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

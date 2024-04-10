@@ -87,12 +87,12 @@ trait UserAnswersEntryGenerators {
   private def generateTransportMeansDepartureAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.transportMeans.departure._
     {
-      case AddIdentificationTypeYesNoPage   => arbitrary[Boolean].map(JsBoolean)
-      case IdentificationPage               => arbitrary[departure.Identification].map(Json.toJson(_))
-      case AddIdentificationNumberYesNoPage => arbitrary[Boolean].map(JsBoolean)
-      case MeansIdentificationNumberPage    => Gen.alphaNumStr.map(JsString)
-      case AddVehicleCountryYesNoPage       => arbitrary[Boolean].map(JsBoolean)
-      case VehicleCountryPage               => arbitrary[Nationality].map(Json.toJson(_))
+      case AddIdentificationTypeYesNoPage(_)   => arbitrary[Boolean].map(JsBoolean)
+      case IdentificationPage(_)               => arbitrary[departure.Identification].map(Json.toJson(_))
+      case AddIdentificationNumberYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
+      case MeansIdentificationNumberPage(_)    => Gen.alphaNumStr.map(JsString)
+      case AddVehicleCountryYesNoPage(_)       => arbitrary[Boolean].map(JsBoolean)
+      case VehicleCountryPage(_)               => arbitrary[Nationality].map(Json.toJson(_))
     }
   }
 

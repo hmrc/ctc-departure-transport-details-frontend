@@ -22,10 +22,10 @@ class MeansIdentificationNumberPageSpec extends PageBehaviours {
 
   "MeansIdentificationNumberPage" - {
 
-    beRetrievable[String](MeansIdentificationNumberPage)
+    beRetrievable[String](MeansIdentificationNumberPage(departureIndex))
 
-    beSettable[String](MeansIdentificationNumberPage)
+    beSettable[String](MeansIdentificationNumberPage(departureIndex))
 
-    beRemovable[String](MeansIdentificationNumberPage)
+    beRemovable[String](MeansIdentificationNumberPage(departureIndex))
   }
 }

@@ -20,8 +20,7 @@ import base.SpecBase
 import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import generators.Generators
-import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
-import models.reference.transportMeans.departure.{Identification => DepartureIdentification}
+import models.journeyDomain.transportMeans.{PostTransitionTransportMeansActiveDomain, TransportMeansDepartureDomain}
 import models.reference.{BorderMode, InlandMode, Nationality}
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
@@ -31,7 +30,6 @@ import pages.sections.external.OfficesOfTransitSection
 import pages.sections.transportMeans.ActiveSection
 import pages.transportMeans._
 import pages.transportMeans.active.NationalityPage
-import pages.transportMeans.departure._
 import play.api.libs.json.{JsArray, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -85,6 +83,45 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                     action.id mustBe "change-active-border-transport-means-1"
                 }
             }
+          }
+        }
+      }
+    }
+
+    "departureTransportMeans" - {
+
+      "must return None" - {
+        "when departure transport means is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)(messages, frontendAppConfig, phaseConfig)
+              val result = helper.departureTransportMeans(index)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when departure transport means is defined" in {
+
+          forAll(arbitraryTransportMeansDepartureAnswers(emptyUserAnswers, index), arbitrary[Mode]) {
+            (userAnswers, mode) =>
+              val dtm = TransportMeansDepartureDomain.userAnswersReader(index).apply(Nil).run(userAnswers).value.value
+
+              val helper = new TransportMeansCheckYourAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, phaseConfig)
+              val result = helper.departureTransportMeans(index).get
+
+              result.key.value mustBe "Departure means of transport 1"
+              result.value.value mustBe dtm.asString
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+//              action.href mustBe routes.CheckYourAnswersController
+//                .onPageLoad(userAnswers.lrn, mode, departureIndex)
+//                .url //TODO update when DTM CYA page is built
+              action.visuallyHiddenText.get mustBe "departure means of transport 1"
+              action.id mustBe "change-departure-means-of-transport-1"
           }
         }
       }
@@ -266,270 +303,6 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                           href = controllers.transportMeans.routes.AddDepartureTransportMeansYesNoController.onPageLoad(answers.lrn, mode).url,
                           visuallyHiddenText = Some("if you want to add identification for the departure means of transport"),
                           attributes = Map("id" -> "change-add-departure-transport-means")
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-          }
-        }
-      }
-    }
-
-    "departureAddTypeYesNo" - {
-      "must return None" - {
-        "when departureAddTypeYesNo undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.departureAddTypeYesNo
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when AddIdentificationTypeYesNoPage defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddIdentificationTypeYesNoPage, true)
-
-              val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
-              val result = helper.departureAddTypeYesNo
-
-              result mustBe Some(
-                SummaryListRow(
-                  key = Key("Do you want to add the type of identification?".toText),
-                  value = Value("Yes".toText),
-                  actions = Some(
-                    Actions(
-                      items = List(
-                        ActionItem(
-                          content = "Change".toText,
-                          href = controllers.transportMeans.departure.routes.AddIdentificationTypeYesNoController.onPageLoad(answers.lrn, mode).url,
-                          visuallyHiddenText = Some("if you want to add the type of identification for the departure means of transport"),
-                          attributes = Map("id" -> "change-transport-means-departure-add-identification-type")
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-          }
-        }
-      }
-    }
-
-    "departureAddIdentificationNumber" - {
-      "must return None" - {
-        "when departureAddIdentificationNumber undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.departureAddIdentificationNumber
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when AddIdentificationTypeYesNoPage defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddIdentificationNumberYesNoPage, true)
-
-              val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
-              val result = helper.departureAddIdentificationNumber
-
-              result mustBe Some(
-                SummaryListRow(
-                  key = Key("Do you want to add an identification number for this vehicle?".toText),
-                  value = Value("Yes".toText),
-                  actions = Some(
-                    Actions(
-                      items = List(
-                        ActionItem(
-                          content = "Change".toText,
-                          href = controllers.transportMeans.departure.routes.AddIdentificationNumberYesNoController.onPageLoad(answers.lrn, mode).url,
-                          visuallyHiddenText = Some("if you want to add an identification number for the departure means of transport"),
-                          attributes = Map("id" -> "change-transport-means-departure-add-identification-number")
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-          }
-        }
-      }
-    }
-
-    "departureAddNationality" - {
-      "must return None" - {
-        "when departureAddNationality undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.departureAddNationality
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when AddIdentificationTypeYesNoPage defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddVehicleCountryYesNoPage, true)
-
-              val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
-              val result = helper.departureAddNationality
-
-              result mustBe Some(
-                SummaryListRow(
-                  key = Key("Do you want to add the registered country for this vehicle?".toText),
-                  value = Value("Yes".toText),
-                  actions = Some(
-                    Actions(
-                      items = List(
-                        ActionItem(
-                          content = "Change".toText,
-                          href = controllers.transportMeans.departure.routes.AddVehicleCountryYesNoController.onPageLoad(answers.lrn, mode).url,
-                          visuallyHiddenText = Some("if you want to add the registered country for the departure means of transport"),
-                          attributes = Map("id" -> "change-transport-means-departure-add-nationality")
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-          }
-        }
-      }
-    }
-
-    "departureIdentificationType" - {
-      "must return None" - {
-        "when departureIdentificationPage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.departureIdentificationType
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when departureIdentificationPage is defined" in {
-          forAll(arbitrary[Mode], arbitrary[DepartureIdentification]) {
-            (mode, departureIdentification) =>
-              val answers = emptyUserAnswers.setValue(IdentificationPage, departureIdentification)
-              val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
-              val result  = helper.departureIdentificationType
-
-              result mustBe Some(
-                SummaryListRow(
-                  key = Key("Identification type".toText),
-                  value = Value(departureIdentification.asString.toText),
-                  actions = Some(
-                    Actions(
-                      items = List(
-                        ActionItem(
-                          content = "Change".toText,
-                          href = controllers.transportMeans.departure.routes.IdentificationController.onPageLoad(answers.lrn, mode).url,
-                          visuallyHiddenText = Some("identification type for the departure means of transport"),
-                          attributes = Map("id" -> "change-transport-means-departure-identification")
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-          }
-        }
-      }
-    }
-
-    "departureIdentificationNumber" - {
-      "must return None" - {
-        "when departureIdentificationNumberPage is undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.departureIdentificationNumber
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when departureIdentificationNumberPage is defined" in {
-          forAll(arbitrary[Mode], arbitrary[String]) {
-            (mode, identificationNumber) =>
-              val answers = emptyUserAnswers.setValue(MeansIdentificationNumberPage, identificationNumber)
-              val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
-              val result  = helper.departureIdentificationNumber
-
-              result mustBe Some(
-                SummaryListRow(
-                  key = Key("Identification number".toText),
-                  value = Value(s"$identificationNumber".toText),
-                  actions = Some(
-                    Actions(
-                      items = List(
-                        ActionItem(
-                          content = "Change".toText,
-                          href = controllers.transportMeans.departure.routes.MeansIdentificationNumberController.onPageLoad(answers.lrn, mode).url,
-                          visuallyHiddenText = Some("identification number for the departure means of transport"),
-                          attributes = Map("id" -> "change-transport-means-departure-identification-number")
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-          }
-        }
-      }
-    }
-
-    "departureNationality" - {
-      "must return None" - {
-        "when VehicleCountryPage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.departureNationality
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when VehicleCountryPage is defined" in {
-          forAll(arbitrary[Mode], arbitrary[Nationality]) {
-            (mode, nationality) =>
-              val answers = emptyUserAnswers.setValue(VehicleCountryPage, nationality)
-              val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
-              val result  = helper.departureNationality
-
-              result mustBe Some(
-                SummaryListRow(
-                  key = Key("Registered country".toText),
-                  value = Value(s"$nationality".toText),
-                  actions = Some(
-                    Actions(
-                      items = List(
-                        ActionItem(
-                          content = "Change".toText,
-                          href = controllers.transportMeans.departure.routes.VehicleCountryController.onPageLoad(answers.lrn, mode).url,
-                          visuallyHiddenText = Some("registered country for the departure means of transport"),
-                          attributes = Map("id" -> "change-transport-means-departure-vehicle-nationality")
                         )
                       )
                     )
