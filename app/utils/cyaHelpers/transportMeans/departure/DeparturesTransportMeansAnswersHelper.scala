@@ -17,11 +17,10 @@
 package utils.cyaHelpers.transportMeans.departure
 
 import config.{FrontendAppConfig, PhaseConfig}
-import controllers.transportMeans.active.routes
-import models.journeyDomain.transportMeans.{PostTransitionTransportMeansActiveDomain, TransportMeansActiveDomain, TransportMeansDepartureDomain}
+import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
 import models.{Index, Mode, UserAnswers}
-import pages.sections.transportMeans.{ActivesSection, DeparturesSection}
-import pages.transportMeans.active._
+import pages.sections.transportMeans.DeparturesSection
+import pages.transportMeans.departure._
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.AnswersHelper
@@ -35,7 +34,7 @@ class DeparturesTransportMeansAnswersHelper(userAnswers: UserAnswers, mode: Mode
 
   def listItems: Seq[Either[ListItem, ListItem]] = {
     def nameWhenInProgress(index: Index): Option[String] =
-      (userAnswers.get(IdentificationPage(index)), userAnswers.get(IdentificationNumberPage(index))) match {
+      (userAnswers.get(IdentificationPage(index)), userAnswers.get(MeansIdentificationNumberPage(index))) match {
         case (Some(identification), Some(identificationNumber)) => Some(s"${identification.asString} - $identificationNumber")
         case (Some(identification), None)                       => Some(identification.asString)
         case (None, Some(identificationNumber))                 => Some(identificationNumber)

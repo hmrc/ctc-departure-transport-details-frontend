@@ -22,6 +22,7 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases.Content
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import utils.cyaHelpers.transportMeans.departure.DeparturesTransportMeansAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
 
 import javax.inject.Inject
@@ -32,9 +33,7 @@ case class AddAnotherDepartureTransportMeansViewModel(
 ) extends AddAnotherViewModel {
   override val prefix: String = "transportMeans.departure.addAnotherDepartureTransportMeans"
 
-  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxActiveBorderTransports
-
-  def hint(implicit messages: Messages): Content = messages(s"$prefix.hint").toText
+  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxDepartureTransportMeans
 }
 
 object AddAnotherDepartureTransportMeansViewModel {
@@ -42,7 +41,9 @@ object AddAnotherDepartureTransportMeansViewModel {
   class AddAnotherDepartureTransportMeansViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig): AddAnotherDepartureTransportMeansViewModel = {
-      val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)
+      val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)
+
+      println(helper.listItems)
 
       val listItems = helper.listItems.collect {
         case Left(value)  => value
@@ -51,7 +52,7 @@ object AddAnotherDepartureTransportMeansViewModel {
 
       new AddAnotherDepartureTransportMeansViewModel(
         listItems,
-        onSubmitCall = controllers.transportMeans.active.routes.AddAnotherDepartureTransportMeansController.onSubmit(userAnswers.lrn, mode)
+        onSubmitCall = controllers.transportMeans.departure.routes.AddAnotherDepartureTransportMeansController.onSubmit(userAnswers.lrn, mode)
       )
     }
   }

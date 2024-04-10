@@ -24,7 +24,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.InlandModePage
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import viewModels.transportMeans.departure.AddAnotherDepartureTransportMeansViewModel.AddAnotherDepartureTransportMeansViewModelProvider
 
 class AddAnotherDepartureTransportMeansViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 

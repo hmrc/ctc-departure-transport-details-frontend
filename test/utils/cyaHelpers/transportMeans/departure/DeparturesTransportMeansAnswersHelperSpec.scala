@@ -17,17 +17,13 @@
 package utils.cyaHelpers.transportMeans.departure
 
 import base.SpecBase
-import config.Constants.SecurityType._
 import controllers.transportMeans.departure.routes
 import generators.Generators
 import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
 import models.reference.transportMeans.departure.Identification
-import models.reference.{BorderMode, Nationality}
 import models.{Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.external.SecurityDetailsTypePage
-import pages.transportMeans.BorderModeOfTransportPage
 import pages.transportMeans.departure.{IdentificationPage, MeansIdentificationNumberPage}
 import play.api.mvc.Call
 import viewModels.ListItem
