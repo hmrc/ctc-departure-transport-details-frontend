@@ -20,7 +20,7 @@ import base.SpecBase
 import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import generators.Generators
-import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
+import models.journeyDomain.transportMeans.{PostTransitionTransportMeansActiveDomain, TransportMeansDepartureDomain}
 import models.reference.{BorderMode, InlandMode, Nationality}
 import models.{Index, Mode, Phase}
 import org.mockito.Mockito.when
@@ -83,6 +83,45 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                     action.id mustBe "change-active-border-transport-means-1"
                 }
             }
+          }
+        }
+      }
+    }
+
+    "departureTransportMeans" - {
+
+      "must return None" - {
+        "when departure transport means is undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)(messages, frontendAppConfig, phaseConfig)
+              val result = helper.departureTransportMeans(index)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when departure transport means is defined" in {
+
+          forAll(arbitraryTransportMeansDepartureAnswers(emptyUserAnswers, index), arbitrary[Mode]) {
+            (userAnswers, mode) =>
+              val dtm = TransportMeansDepartureDomain.userAnswersReader(index).apply(Nil).run(userAnswers).value.value
+
+              val helper = new TransportMeansCheckYourAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, phaseConfig)
+              val result = helper.departureTransportMeans(index).get
+
+              result.key.value mustBe "Departure means of transport 1"
+              result.value.value mustBe dtm.asString
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+//              action.href mustBe routes.CheckYourAnswersController
+//                .onPageLoad(userAnswers.lrn, mode, departureIndex)
+//                .url //TODO update when DTM CYA page is built
+              action.visuallyHiddenText.get mustBe "departure means of transport 1"
+              action.id mustBe "change-departure-means-of-transport-1"
           }
         }
       }

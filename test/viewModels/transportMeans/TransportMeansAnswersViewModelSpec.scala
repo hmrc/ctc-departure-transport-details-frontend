@@ -51,6 +51,41 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
       section.addAnotherLink must not be defined
     }
 
+    "must render a departure means section" - {
+
+      val sectionTitle = "Departure means of transport"
+
+      "when none were added" in {
+        val userAnswers       = emptyUserAnswers.setValue(AddDepartureTransportMeansYesNoPage, false)
+        val viewModelProvider = new TransportMeansAnswersViewModelProvider()
+        val result            = viewModelProvider.apply(userAnswers, mode)(messages, phaseConfig)
+        val section           = result.sections(1)
+        section.sectionTitle.get mustBe sectionTitle
+        section.rows.size mustBe 1
+        section.addAnotherLink must not be defined
+      }
+
+      "when 1 or more were added" in {
+        val initialAnswers = emptyUserAnswers.setValue(AddDepartureTransportMeansYesNoPage, true)
+        forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxDepartureTransportMeans)) {
+          (mode, amount) =>
+            val userAnswersGen = (0 until amount).foldLeft(Gen.const(initialAnswers)) {
+              (acc, i) =>
+                acc.flatMap(arbitraryTransportMeansDepartureAnswers(_, Index(i))(phaseConfig))
+            }
+            forAll(userAnswersGen) {
+              userAnswers =>
+                val viewModelProvider = new TransportMeansAnswersViewModelProvider()
+                val result            = viewModelProvider.apply(userAnswers, mode)(messages, phaseConfig)
+                val section           = result.sections(1)
+                section.sectionTitle.get mustBe sectionTitle
+                section.rows.size mustBe amount + 1
+//                section.addAnotherLink must be(defined) // TODO Update when Add/Remove page is built for DTM
+            }
+        }
+      }
+    }
+
     "must render a border mode section" in {
       val userAnswers = emptyUserAnswers
         .setValue(AddBorderModeOfTransportYesNoPage, true)

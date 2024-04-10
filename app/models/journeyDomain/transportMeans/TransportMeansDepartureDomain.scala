@@ -22,13 +22,27 @@ import models.journeyDomain._
 import models.journeyDomain.JourneyDomainModel
 import models.reference.transportMeans.departure.Identification
 import models.reference.{InlandMode, Nationality}
-import models.{Index, OptionalBoolean, Phase}
+import models.{Index, Mode, OptionalBoolean, Phase, UserAnswers}
 import pages.preRequisites.ContainerIndicatorPage
+import pages.sections.Section
+import pages.sections.transportMeans.{DepartureSection, TransportMeansSection}
 import pages.transportMeans.departure._
 import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
+import play.api.i18n.Messages
+import play.api.mvc.Call
 
 sealed trait TransportMeansDepartureDomain extends JourneyDomainModel {
   val index: Index
+
+  def asString(implicit messages: Messages): String
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
+    page(userAnswers) match {
+      case Some(value) => value.route(userAnswers, mode)
+      case None        => TransportMeansSection.route(userAnswers, mode)
+    }
+
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(DepartureSection(index))
 }
 
 object TransportMeansDepartureDomain {
@@ -47,9 +61,18 @@ case class PostTransitionTransportMeansDepartureDomain(
   identificationNumber: String,
   nationality: Option[Nationality]
 )(override val index: Index)
-    extends TransportMeansDepartureDomain
+    extends TransportMeansDepartureDomain {
+
+  override def asString(implicit messages: Messages): String =
+    PostTransitionTransportMeansDepartureDomain.asString(identification, identificationNumber)
+}
 
 object PostTransitionTransportMeansDepartureDomain {
+
+  def asString(identification: Option[Identification], identificationNumber: String)(implicit messages: Messages): String =
+    identification.fold(identificationNumber)(
+      value => s"${value.asString} - $identificationNumber"
+    )
 
   implicit def userAnswersReader(index: Index): Read[TransportMeansDepartureDomain] =
     (
@@ -64,7 +87,10 @@ case class TransitionTransportMeansDepartureDomain(
   identificationNumber: Option[String],
   nationality: Option[Nationality]
 )(override val index: Index)
-    extends TransportMeansDepartureDomain
+    extends TransportMeansDepartureDomain {
+
+  override def asString(implicit messages: Messages): String = this.toString
+}
 
 object TransitionTransportMeansDepartureDomain {
 
