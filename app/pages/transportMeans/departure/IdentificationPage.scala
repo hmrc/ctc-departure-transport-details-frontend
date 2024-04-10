@@ -18,7 +18,7 @@ package pages.transportMeans.departure
 
 import controllers.transportMeans.departure.routes
 import models.reference.transportMeans.departure.Identification
-import models.{Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.transportMeans.DepartureSection
 import play.api.libs.json.JsPath
@@ -26,17 +26,17 @@ import play.api.mvc.Call
 
 import scala.util.Try
 
-case object IdentificationPage extends QuestionPage[Identification] {
+case class IdentificationPage(departureIndex: Index) extends QuestionPage[Identification] {
 
-  override def path: JsPath = DepartureSection.path \ toString
+  override def path: JsPath = DepartureSection(departureIndex).path \ toString
 
   override def toString: String = "identification"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.IdentificationController.onPageLoad(userAnswers.lrn, mode))
+    Some(routes.IdentificationController.onPageLoad(userAnswers.lrn, mode, departureIndex))
 
   override def cleanup(value: Option[Identification], userAnswers: UserAnswers): Try[UserAnswers] = value match {
-    case Some(_) => userAnswers.remove(MeansIdentificationNumberPage).flatMap(_.remove(VehicleCountryPage))
+    case Some(_) => userAnswers.remove(MeansIdentificationNumberPage(departureIndex)).flatMap(_.remove(VehicleCountryPage(departureIndex)))
     case None    => super.cleanup(value, userAnswers)
   }
 }

@@ -20,7 +20,7 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.IdentificationNumberFormProvider
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.departure.MeansIdentificationNumberPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -48,30 +48,30 @@ class MeansIdentificationNumberController @Inject() (
 
   private val prefix = "transportMeans.departure.meansIdentificationNumber"
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
       val form      = formProvider(prefix)
-      val viewModel = viewModelProvider.apply(request.userAnswers)
-      val preparedForm = request.userAnswers.get(MeansIdentificationNumberPage) match {
+      val viewModel = viewModelProvider.apply(request.userAnswers, departureIndex)
+      val preparedForm = request.userAnswers.get(MeansIdentificationNumberPage(departureIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm, lrn, mode, viewModel))
+      Ok(view(preparedForm, lrn, mode, viewModel, departureIndex))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       val form = formProvider(prefix)
       form
         .bindFromRequest()
         .fold(
           formWithErrors => {
-            val viewModel = viewModelProvider.apply(request.userAnswers)
-            Future.successful(BadRequest(view(formWithErrors, lrn, mode, viewModel)))
+            val viewModel = viewModelProvider.apply(request.userAnswers, departureIndex)
+            Future.successful(BadRequest(view(formWithErrors, lrn, mode, viewModel, departureIndex)))
           },
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            MeansIdentificationNumberPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            MeansIdentificationNumberPage(departureIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
 

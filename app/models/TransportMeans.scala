@@ -16,6 +16,7 @@
 
 package models
 
+import cats.conversions.all.autoConvertProfunctorVariance
 import models.reference.transportMeans.departure.Identification
 import pages.transportMeans.departure.{IdentificationPage, MeansIdentificationNumberPage}
 import play.api.libs.functional.syntax._
@@ -36,8 +37,8 @@ object TransportMeans {
 
   def apply(userAnswers: UserAnswers, transportMeansIndex: Index): Option[TransportMeans] = {
     implicit val reads: Reads[TransportMeans] = (
-      IdentificationPage.path.readNullable[Identification] and
-        MeansIdentificationNumberPage.path.readNullable[String]
+      IdentificationPage(transportMeansIndex).path.readNullable[Identification] and
+        MeansIdentificationNumberPage(transportMeansIndex).path.readNullable[String]
     ).apply {
       (identifier, identificationNumber) => TransportMeans(transportMeansIndex, identifier, identificationNumber)
     }

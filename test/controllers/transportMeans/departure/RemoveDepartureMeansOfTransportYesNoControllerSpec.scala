@@ -57,8 +57,8 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
       forAll(arbitrary[Identification].sample.value, nonEmptyString) {
         (identifier, identificationNumber) =>
           val userAnswers = emptyUserAnswers
-            .setValue(IdentificationPage, identifier)
-            .setValue(MeansIdentificationNumberPage, identificationNumber)
+            .setValue(IdentificationPage(index), identifier)
+            .setValue(MeansIdentificationNumberPage(index), identificationNumber)
 
           val insetText = TransportMeans(index, Some(identifier), Some(identificationNumber)).forRemoveDisplay
 
@@ -143,8 +143,8 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
       forAll(arbitrary[Identification], nonEmptyString) {
         (identifier, identificationNumber) =>
           val userAnswers = emptyUserAnswers
-            .setValue(IdentificationPage, identifier)
-            .setValue(MeansIdentificationNumberPage, identificationNumber)
+            .setValue(IdentificationPage(index), identifier)
+            .setValue(MeansIdentificationNumberPage(index), identificationNumber)
 
           val insetText = TransportMeans(index, Some(identifier), Some(identificationNumber)).forRemoveDisplay
 

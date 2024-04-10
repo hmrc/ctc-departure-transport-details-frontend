@@ -48,7 +48,7 @@ class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] 
   }
 
   private def applyView(app: Application, form: Form[String]): HtmlFormat.Appendable =
-    app.injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, viewModel)(fakeRequest, messages)
+    app.injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, viewModel, departureIndex)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
@@ -81,7 +81,7 @@ class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] 
     val viewModel      = MeansIdentificationNumberViewModel(None)
     val prefix: String = "transportMeans.departure.meansIdentificationNumber.withNoIDType"
     val form           = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
-    val view           = injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, viewModel)(fakeRequest, messages)
+    val view           = injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, viewModel, departureIndex)(fakeRequest, messages)
     val doc            = parseView(view)
 
     behave like pageWithTitle(doc, prefix)
@@ -97,7 +97,7 @@ class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] 
     val viewModel      = MeansIdentificationNumberViewModel(Some(identification))
     val prefix: String = "transportMeans.departure.meansIdentificationNumber.withIDType"
     val form           = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
-    val view           = injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, viewModel)(fakeRequest, messages)
+    val view           = injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, viewModel, departureIndex)(fakeRequest, messages)
     val doc            = parseView(view)
 
     behave like pageWithTitle(doc, prefix)

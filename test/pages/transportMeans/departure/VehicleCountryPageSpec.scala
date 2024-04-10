@@ -23,10 +23,10 @@ class VehicleCountryPageSpec extends PageBehaviours {
 
   "VehicleCountryPage" - {
 
-    beRetrievable[Nationality](VehicleCountryPage)
+    beRetrievable[Nationality](VehicleCountryPage(departureIndex))
 
-    beSettable[Nationality](VehicleCountryPage)
+    beSettable[Nationality](VehicleCountryPage(departureIndex))
 
-    beRemovable[Nationality](VehicleCountryPage)
+    beRemovable[Nationality](VehicleCountryPage(departureIndex))
   }
 }
