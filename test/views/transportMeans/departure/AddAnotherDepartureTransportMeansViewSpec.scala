@@ -31,7 +31,8 @@ class AddAnotherDepartureTransportMeansViewSpec extends ListWithActionsViewBehav
   private def formProvider(viewModel: AddAnotherDepartureTransportMeansViewModel) =
     new AddAnotherFormProvider()(viewModel.prefix, viewModel.allowMore)
 
-  private val viewModel            = arbitrary[AddAnotherDepartureTransportMeansViewModel].sample.value
+  private val viewModel =
+    arbitrary[AddAnotherDepartureTransportMeansViewModel](arbitraryAddAnotherDepartureTransportMeansViewModelNonRoadInlandMode).sample.value
   private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 

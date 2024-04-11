@@ -212,9 +212,17 @@ trait ViewModelGenerators {
 
   implicit lazy val arbitraryAddAnotherDepartureTransportMeansViewModel: Arbitrary[AddAnotherDepartureTransportMeansViewModel] = Arbitrary {
     for {
+      listItems        <- arbitrary[Seq[ListItem]]
+      isRoadInlandMode <- arbitrary[Boolean]
+      onSubmitCall     <- arbitrary[Call]
+    } yield AddAnotherDepartureTransportMeansViewModel(listItems, isRoadInlandMode, onSubmitCall)
+  }
+
+  lazy val arbitraryAddAnotherDepartureTransportMeansViewModelNonRoadInlandMode: Arbitrary[AddAnotherDepartureTransportMeansViewModel] = Arbitrary {
+    for {
       listItems    <- arbitrary[Seq[ListItem]]
       onSubmitCall <- arbitrary[Call]
-    } yield AddAnotherDepartureTransportMeansViewModel(listItems, onSubmitCall)
+    } yield AddAnotherDepartureTransportMeansViewModel(listItems, isRoadInlandMode = false, onSubmitCall)
   }
 
   implicit lazy val arbitraryMeansIdentificationNumberViewModel: Arbitrary[MeansIdentificationNumberViewModel] = Arbitrary {

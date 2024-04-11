@@ -17,14 +17,18 @@
 package utils.cyaHelpers.transportMeans.departure
 
 import base.SpecBase
+import config.PhaseConfig
 import controllers.transportMeans.departure.routes
 import generators.Generators
 import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
 import models.reference.transportMeans.departure.Identification
-import models.{Mode, NormalMode}
+import models.{Mode, NormalMode, OptionalBoolean, Phase}
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transportMeans.departure.{IdentificationPage, MeansIdentificationNumberPage}
+import pages.preRequisites.ContainerIndicatorPage
+import pages.transportMeans.AddDepartureTransportMeansYesNoPage
+import pages.transportMeans.departure.{AddIdentificationNumberYesNoPage, AddIdentificationTypeYesNoPage, IdentificationPage, MeansIdentificationNumberPage}
 import play.api.mvc.Call
 import viewModels.ListItem
 
@@ -51,7 +55,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
             Right(
               ListItem(
                 name = departure.asString,
-                changeUrl = Call("GET", "##").url,
+                changeUrl = routes.AddIdentificationTypeYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
                 removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
               )
             )
@@ -60,67 +64,160 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
     }
 
     "when user answers populated with an in progress departure transport means" - {
-      "and identification type is defined" in {
-        val identificationType = Identification("11", "Name of a sea-going vessel")
-        val userAnswers = emptyUserAnswers
-          .setValue(IdentificationPage(departureIndex), identificationType)
+      "and identification type is defined" - {
+        "when transition" in {
+          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+          when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+          val identificationType = Identification("11", "Name of a sea-going vessel")
+          val userAnswers = emptyUserAnswers
+            .setValue(IdentificationPage(departureIndex), identificationType)
 
-        forAll(arbitrary[Mode]) {
-          mode =>
-            val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)
-            helper.listItems mustBe Seq(
-              Left(
-                ListItem(
-                  name = identificationType.asString,
-                  changeUrl = routes.MeansIdentificationNumberController.onPageLoad(userAnswers.lrn, mode, index).url,
-                  removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
+              helper.listItems mustBe Seq(
+                Left(
+                  ListItem(
+                    name = identificationType.asString,
+                    changeUrl = routes.AddIdentificationNumberYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
+                    removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+                  )
                 )
               )
-            )
+          }
         }
+
+        "when post transition" in {
+          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+          when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+          val identificationType = Identification("11", "Name of a sea-going vessel")
+          val userAnswers = emptyUserAnswers
+            .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
+            .setValue(IdentificationPage(departureIndex), identificationType)
+
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
+              helper.listItems mustBe Seq(
+                Left(
+                  ListItem(
+                    name = identificationType.asString,
+                    changeUrl = routes.MeansIdentificationNumberController.onPageLoad(userAnswers.lrn, mode, index).url,
+                    removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+                  )
+                )
+              )
+          }
+        }
+
       }
 
-      "and identification number is defined" in {
+      "and identification number is defined" - {
         val identificationNumber = nonEmptyString.sample.value
-        val userAnswers = emptyUserAnswers
-          .setValue(IdentificationPage(index), Identification("21", "Train number"))
-          .setValue(MeansIdentificationNumberPage(index), identificationNumber)
+        "when in transition" in {
+          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+          when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+          val userAnswers = emptyUserAnswers
+            .setValue(AddDepartureTransportMeansYesNoPage, true)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+            .setValue(AddIdentificationTypeYesNoPage(index), false)
+            .setValue(AddIdentificationNumberYesNoPage(index), true)
+            .setValue(MeansIdentificationNumberPage(index), identificationNumber)
 
-        forAll(arbitrary[Mode]) {
-          mode =>
-            val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)
-            helper.listItems mustBe Seq(
-              Left(
-                ListItem(
-                  name = identificationNumber,
-                  changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
-                  removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
+              helper.listItems mustBe Seq(
+                Left(
+                  ListItem(
+                    name = identificationNumber,
+                    changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
+                    removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+                  )
                 )
               )
-            )
+          }
         }
+
+        "when in post transition" in {
+          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+          when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+          val userAnswers = emptyUserAnswers
+            .setValue(AddIdentificationTypeYesNoPage(index), false)
+            .setValue(MeansIdentificationNumberPage(index), identificationNumber)
+
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
+              helper.listItems mustBe Seq(
+                Left(
+                  ListItem(
+                    name = identificationNumber,
+                    changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
+                    removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+                  )
+                )
+              )
+          }
+        }
+
       }
 
-      "and identification type and identification number is defined" in {
+      "and identification type and identification number is defined" - {
+
         val identificationType   = Identification("11", "Name of a sea-going vessel")
         val identificationNumber = nonEmptyString.sample.value
-        val userAnswers = emptyUserAnswers
-          .setValue(IdentificationPage(index), identificationType)
-          .setValue(MeansIdentificationNumberPage(index), identificationNumber)
 
-        forAll(arbitrary[Mode]) {
-          mode =>
-            val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)
-            helper.listItems mustBe Seq(
-              Left(
-                ListItem(
-                  name = s"${identificationType.asString} - $identificationNumber",
-                  changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
-                  removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+        "when in transition" in {
+          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+          when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+          val userAnswers = emptyUserAnswers
+            .setValue(AddDepartureTransportMeansYesNoPage, true)
+            .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+            .setValue(AddIdentificationTypeYesNoPage(index), true)
+            .setValue(IdentificationPage(index), identificationType)
+            .setValue(AddIdentificationNumberYesNoPage(index), true)
+            .setValue(MeansIdentificationNumberPage(index), identificationNumber)
+
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
+              helper.listItems mustBe Seq(
+                Left(
+                  ListItem(
+                    name = s"${identificationType.asString} - $identificationNumber",
+                    changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
+                    removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+                  )
                 )
               )
-            )
+          }
         }
+
+        "when in post transition" in {
+          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+          when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+          val userAnswers = emptyUserAnswers
+            .setValue(AddIdentificationTypeYesNoPage(index), true)
+            .setValue(IdentificationPage(index), identificationType)
+            .setValue(AddIdentificationNumberYesNoPage(index), true)
+            .setValue(MeansIdentificationNumberPage(index), identificationNumber)
+
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
+              helper.listItems mustBe Seq(
+                Left(
+                  ListItem(
+                    name = s"${identificationType.asString} - $identificationNumber",
+                    changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
+                    removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+                  )
+                )
+              )
+          }
+        }
+
       }
     }
   }

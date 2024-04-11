@@ -18,10 +18,9 @@ package viewModels.transportMeans.departure
 
 import config.{FrontendAppConfig, PhaseConfig}
 import models.{Mode, UserAnswers}
+import pages.transportMeans.InlandModePage
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import uk.gov.hmrc.govukfrontend.views.Aliases.Content
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import utils.cyaHelpers.transportMeans.departure.DeparturesTransportMeansAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
 
@@ -29,11 +28,16 @@ import javax.inject.Inject
 
 case class AddAnotherDepartureTransportMeansViewModel(
   override val listItems: Seq[ListItem],
+  isRoadInlandMode: Boolean,
   onSubmitCall: Call
 ) extends AddAnotherViewModel {
   override val prefix: String = "transportMeans.departure.addAnotherDepartureTransportMeans"
 
-  override def allowMore(implicit config: FrontendAppConfig): Boolean = count < config.maxDepartureTransportMeans
+  override def allowMore(implicit config: FrontendAppConfig): Boolean =
+    if (isRoadInlandMode) count < config.maxRoadInlandModeDepartureTransportMeans else count < config.maxDepartureTransportMeans
+
+  override def maxLimitLabel(implicit messages: Messages): String =
+    if (isRoadInlandMode) messages(s"$prefix.roadInlandMode.maxLimit.label") else messages(s"$prefix.maxLimit.label")
 }
 
 object AddAnotherDepartureTransportMeansViewModel {
@@ -41,9 +45,9 @@ object AddAnotherDepartureTransportMeansViewModel {
   class AddAnotherDepartureTransportMeansViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig): AddAnotherDepartureTransportMeansViewModel = {
-      val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)
+      val isRoadInlandMode: Boolean = userAnswers.get(InlandModePage).exists(_.code == "3")
 
-      println(helper.listItems)
+      val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)
 
       val listItems = helper.listItems.collect {
         case Left(value)  => value
@@ -52,6 +56,7 @@ object AddAnotherDepartureTransportMeansViewModel {
 
       new AddAnotherDepartureTransportMeansViewModel(
         listItems,
+        isRoadInlandMode,
         onSubmitCall = controllers.transportMeans.departure.routes.AddAnotherDepartureTransportMeansController.onSubmit(userAnswers.lrn, mode)
       )
     }

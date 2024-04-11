@@ -69,10 +69,10 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
   private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 
-  "AddAnotherBorderTransport Controller" - {
+  "AddAnotherDepartureTransportMeans Controller" - {
 
-    "redirect to border mode of transport page" - {
-      "when 0 active border transports" in {
+    "redirect to add departure transport means yes/no page" - {
+      "when 0 departure transport means" in {
         when(mockViewModelProvider.apply(any(), any())(any(), any()))
           .thenReturn(viewModelWithNoItems)
 
@@ -86,7 +86,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.transportMeans.routes.BorderModeOfTransportController.onPageLoad(lrn, mode).url
+          controllers.transportMeans.routes.AddDepartureTransportMeansYesNoController.onPageLoad(lrn, mode).url
       }
     }
 
