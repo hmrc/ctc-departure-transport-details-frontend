@@ -18,13 +18,13 @@ package models.journeyDomain.transportMeans
 
 import config.Constants.ModeOfTransport.Rail
 import config.PhaseConfig
-import models.journeyDomain.{JourneyDomainModel, _}
+import models.journeyDomain._
 import models.reference.transportMeans.departure.Identification
 import models.reference.{InlandMode, Nationality}
 import models.{Index, OptionalBoolean, Phase}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.departure._
-import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
+import pages.transportMeans.InlandModePage
 import play.api.i18n.Messages
 
 sealed trait TransportMeansDepartureDomain extends JourneyDomainModel {
@@ -84,7 +84,7 @@ object TransitionTransportMeansDepartureDomain {
 
   implicit def userAnswersReader(index: Index): Read[TransportMeansDepartureDomain] = {
     lazy val identificationReader: Read[Option[Identification]] =
-      AddDepartureTransportMeansYesNoPage.optionalReader.to {
+      AddDepartureTransportMeansYesNoPage(index).optionalReader.to {
         case Some(_) =>
           ContainerIndicatorPage.optionalReader.to {
             case Some(OptionalBoolean.no) =>

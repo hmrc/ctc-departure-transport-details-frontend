@@ -23,6 +23,7 @@ import models.reference.{BorderMode, InlandMode}
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transportMeans.{ActivesSection, DeparturesSection}
 import pages.transportMeans._
+import pages.transportMeans.departure.AddDepartureTransportMeansYesNoPage
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -95,8 +96,8 @@ class TransportMeansCheckYourAnswersHelper(
     id = Some("change-transport-means-inland-mode")
   )
 
-  def addDepartureTransportMeans: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddDepartureTransportMeansYesNoPage,
+  def addDepartureTransportMeans(departureIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddDepartureTransportMeansYesNoPage(departureIndex),
     formatAnswer = formatAsYesOrNo,
     prefix = "transportMeans.addDepartureTransportMeansYesNo",
     id = Some("change-add-departure-transport-means")

@@ -29,6 +29,7 @@ import pages.preRequisites.ContainerIndicatorPage
 import pages.sections.Section
 import pages.sections.transportMeans.TransportMeansSection
 import pages.transportMeans._
+import pages.transportMeans.departure.AddDepartureTransportMeansYesNoPage
 
 sealed trait TransportMeansDomain extends JourneyDomainModel {
 
@@ -68,7 +69,7 @@ object TransitionTransportMeansDomain {
     lazy val transportMeansDepartureReader: Read[Option[TransportMeansDepartureListDomain]] =
       ContainerIndicatorPage.optionalReader.to {
         case Some(OptionalBoolean.yes) =>
-          AddDepartureTransportMeansYesNoPage
+          AddDepartureTransportMeansYesNoPage(Index(0)) // TODO: Update this during CTCP-4836
             .filterOptionalDependent(identity) {
               TransportMeansDepartureListDomain.userAnswersReader
             }

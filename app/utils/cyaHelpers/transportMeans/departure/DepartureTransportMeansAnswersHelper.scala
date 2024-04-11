@@ -21,6 +21,7 @@ import models.reference.Nationality
 import models.reference.transportMeans.departure.Identification
 import models.{Index, Mode, UserAnswers}
 import pages.transportMeans.departure.{
+  AddDepartureTransportMeansYesNoPage,
   AddIdentificationNumberYesNoPage,
   AddIdentificationTypeYesNoPage,
   AddVehicleCountryYesNoPage,
@@ -39,6 +40,13 @@ class DepartureTransportMeansAnswersHelper(
   departureIndex: Index
 )(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends AnswersHelper(userAnswers, mode) {
+
+  def addDepartureTransportMeans: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddDepartureTransportMeansYesNoPage(departureIndex),
+    formatAnswer = formatAsYesOrNo,
+    prefix = "transportMeans.addDepartureTransportMeansYesNo",
+    id = Some(s"change-add-departure-transport-means")
+  )
 
   def departureIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
     page = IdentificationPage(departureIndex),
