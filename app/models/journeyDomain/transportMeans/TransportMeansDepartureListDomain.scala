@@ -26,7 +26,8 @@ case class TransportMeansDepartureListDomain(
   transportMeansDepartureListDomain: Seq[TransportMeansDepartureDomain]
 ) extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(DeparturesSection)
+  override def page(userAnswers: UserAnswers): Option[Section[_]] =
+    None // TODO - change to Some(DeparturesSection) when 'add another' page built
 }
 
 object TransportMeansDepartureListDomain {

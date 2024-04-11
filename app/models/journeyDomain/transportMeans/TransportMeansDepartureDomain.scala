@@ -18,31 +18,19 @@ package models.journeyDomain.transportMeans
 
 import config.Constants.ModeOfTransport.Rail
 import config.PhaseConfig
-import models.journeyDomain._
-import models.journeyDomain.JourneyDomainModel
+import models.journeyDomain.{JourneyDomainModel, _}
 import models.reference.transportMeans.departure.Identification
 import models.reference.{InlandMode, Nationality}
-import models.{Index, Mode, OptionalBoolean, Phase, UserAnswers}
+import models.{Index, OptionalBoolean, Phase}
 import pages.preRequisites.ContainerIndicatorPage
-import pages.sections.Section
-import pages.sections.transportMeans.{DepartureSection, TransportMeansSection}
 import pages.transportMeans.departure._
 import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 
 sealed trait TransportMeansDepartureDomain extends JourneyDomainModel {
   val index: Index
 
   def asString(implicit messages: Messages): String
-
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
-    page(userAnswers) match {
-      case Some(value) => value.route(userAnswers, mode)
-      case None        => TransportMeansSection.route(userAnswers, mode)
-    }
-
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(DepartureSection(index))
 }
 
 object TransportMeansDepartureDomain {

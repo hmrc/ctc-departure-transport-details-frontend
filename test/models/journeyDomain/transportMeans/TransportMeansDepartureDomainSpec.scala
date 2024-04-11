@@ -27,7 +27,6 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.preRequisites.ContainerIndicatorPage
-import pages.sections.transportMeans.DepartureSection
 import pages.transportMeans.departure._
 import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
 
@@ -67,8 +66,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
             IdentificationPage(departureIndex),
             MeansIdentificationNumberPage(departureIndex),
             AddVehicleCountryYesNoPage(departureIndex),
-            VehicleCountryPage(departureIndex),
-            DepartureSection(departureIndex)
+            VehicleCountryPage(departureIndex)
           )
         }
       }

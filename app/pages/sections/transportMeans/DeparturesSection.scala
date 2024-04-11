@@ -16,12 +16,17 @@
 
 package pages.sections.transportMeans
 
+import models.{Mode, UserAnswers}
 import pages.sections.Section
 import play.api.libs.json.{JsArray, JsPath}
+import play.api.mvc.Call
 
 case object DeparturesSection extends Section[JsArray] {
 
   override def path: JsPath = TransportMeansSection.path \ toString
 
   override def toString: String = "departure"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    super.route(userAnswers, mode) // TODO - change to 'add another' page route
 }
