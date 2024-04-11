@@ -44,7 +44,7 @@ class DepartureTransportMeansAnswersHelper(
   def addDepartureTransportMeans: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddDepartureTransportMeansYesNoPage(departureIndex),
     formatAnswer = formatAsYesOrNo,
-    prefix = "transportMeans.addDepartureTransportMeansYesNo",
+    prefix = "transportMeans.departure.addDepartureTransportMeansYesNo",
     id = Some(s"change-add-departure-transport-means")
   )
 

@@ -44,7 +44,7 @@ class AddDepartureTransportMeansYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transportMeans.addDepartureTransportMeansYesNo")
+  private val form = formProvider("transportMeans.departure.addDepartureTransportMeansYesNo")
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>

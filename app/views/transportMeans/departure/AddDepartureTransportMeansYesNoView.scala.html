@@ -30,7 +30,7 @@
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportMeans.addDepartureTransportMeansYesNo.title"),
+    title = messages("transportMeans.departure.addDepartureTransportMeansYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -42,7 +42,7 @@
         @inputYesNo(
             field = form("value"),
             yesNoType = OrdinaryYesNo(
-                heading = messages("transportMeans.addDepartureTransportMeansYesNo.heading"),
+                heading = messages("transportMeans.departure.addDepartureTransportMeansYesNo.heading"),
                 caption = Some(messages("departureMeansOfTransport.caption"))
             )
         )

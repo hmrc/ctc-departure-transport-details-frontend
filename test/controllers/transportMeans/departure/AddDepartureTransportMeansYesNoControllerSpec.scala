@@ -35,7 +35,7 @@ import scala.concurrent.Future
 class AddDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider                            = new YesNoFormProvider()
-  private val form                                    = formProvider("transportMeans.addDepartureTransportMeansYesNo")
+  private val form                                    = formProvider("transportMeans.departure.addDepartureTransportMeansYesNo")
   private val mode                                    = NormalMode
   private lazy val addVehicleIdentificationYesNoRoute = routes.AddDepartureTransportMeansYesNoController.onPageLoad(lrn, mode, departureIndex).url
 

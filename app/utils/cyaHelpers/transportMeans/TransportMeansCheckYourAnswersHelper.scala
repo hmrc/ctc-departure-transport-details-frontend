@@ -99,7 +99,7 @@ class TransportMeansCheckYourAnswersHelper(
   def addDepartureTransportMeans(departureIndex: Index): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddDepartureTransportMeansYesNoPage(departureIndex),
     formatAnswer = formatAsYesOrNo,
-    prefix = "transportMeans.addDepartureTransportMeansYesNo",
+    prefix = "transportMeans.departure.addDepartureTransportMeansYesNo",
     id = Some("change-add-departure-transport-means")
   )
 

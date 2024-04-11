@@ -27,7 +27,7 @@ class AddDepartureTransportMeansYesNoViewSpec extends YesNoViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[AddDepartureTransportMeansYesNoView].apply(form, lrn, NormalMode, departureIndex)(fakeRequest, messages)
 
-  override val prefix: String = "transportMeans.addDepartureTransportMeansYesNo"
+  override val prefix: String = "transportMeans.departure.addDepartureTransportMeansYesNo"
 
   behave like pageWithTitle()
 
