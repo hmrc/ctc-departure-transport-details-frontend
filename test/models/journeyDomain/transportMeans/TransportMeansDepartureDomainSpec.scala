@@ -28,7 +28,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.departure._
-import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
+import pages.transportMeans.InlandModePage
 
 class TransportMeansDepartureDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
@@ -161,7 +161,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
           "and add identification type yes/no page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
+              .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
 
             val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
@@ -174,7 +174,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
           "and identification page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
+              .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
               .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
 
             val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
@@ -189,7 +189,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
           "and add identification number yes/no page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
+              .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
               .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
 
             val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
@@ -204,7 +204,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
           "and identification number page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
+              .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
               .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
               .setValue(AddIdentificationNumberYesNoPage(departureIndex), true)
 
@@ -221,8 +221,8 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
           "and add nationality yes/no page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
               .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
+              .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
               .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
               .setValue(AddIdentificationNumberYesNoPage(departureIndex), false)
 
@@ -238,9 +238,9 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
           "and nationality page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
               .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+              .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
               .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
               .setValue(AddIdentificationNumberYesNoPage(departureIndex), false)
               .setValue(AddVehicleCountryYesNoPage(departureIndex), true)
@@ -262,7 +262,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
           "and identification type page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, containerIndicator)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
+              .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
 
             val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
@@ -292,7 +292,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
           "and identification type page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, containerIndicator)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
+              .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
               .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
 
             val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)

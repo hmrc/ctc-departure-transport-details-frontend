@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package views.transportMeans
+package views.transportMeans.departure
 
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.transportMeans.AddDepartureTransportMeansYesNoView
+import views.html.transportMeans.departure.AddDepartureTransportMeansYesNoView
 
 class AddDepartureTransportMeansYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddDepartureTransportMeansYesNoView].apply(form, lrn, NormalMode)(fakeRequest, messages)
+    injector.instanceOf[AddDepartureTransportMeansYesNoView].apply(form, lrn, NormalMode, departureIndex)(fakeRequest, messages)
 
-  override val prefix: String = "transportMeans.addDepartureTransportMeansYesNo"
+  override val prefix: String = "transportMeans.departure.addDepartureTransportMeansYesNo"
 
   behave like pageWithTitle()
 

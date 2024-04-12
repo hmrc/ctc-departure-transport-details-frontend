@@ -44,7 +44,7 @@ object TransportMeansAnswersViewModel {
       )
 
       val departureMeansSection = {
-        val row = helper.addDepartureTransportMeans.toSeq
+        val row = helper.addDepartureTransportMeans(Index(0)).toSeq //TODO: Update during CTCP-4803 when modifying the format
         Section(
           sectionTitle = messages("transportMeans.departureMeans.subheading"),
           rows = row ++ helper.departureTransportsMeans

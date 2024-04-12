@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.transportMeans
+package controllers.transportMeans.departure
 
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
-import pages.transportMeans.AddDepartureTransportMeansYesNoPage
+import pages.transportMeans.departure.AddDepartureTransportMeansYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transportMeans.AddDepartureTransportMeansYesNoView
+import views.html.transportMeans.departure.AddDepartureTransportMeansYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,27 +44,27 @@ class AddDepartureTransportMeansYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transportMeans.addDepartureTransportMeansYesNo")
+  private val form = formProvider("transportMeans.departure.addDepartureTransportMeansYesNo")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddDepartureTransportMeansYesNoPage) match {
+      val preparedForm = request.userAnswers.get(AddDepartureTransportMeansYesNoPage(departureIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, mode))
+      Ok(view(preparedForm, lrn, mode, departureIndex))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, departureIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            AddDepartureTransportMeansYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            AddDepartureTransportMeansYesNoPage(departureIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )
   }

@@ -27,6 +27,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
 import pages.transportMeans._
+import pages.transportMeans.departure.AddDepartureTransportMeansYesNoPage
 import play.api.libs.json.{JsArray, Json}
 import viewModels.transportMeans.TransportMeansAnswersViewModel.TransportMeansAnswersViewModelProvider
 
@@ -56,17 +57,18 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
       val sectionTitle = "Departure means of transport"
 
       "when none were added" in {
-        val userAnswers       = emptyUserAnswers.setValue(AddDepartureTransportMeansYesNoPage, false)
+        val userAnswers       = emptyUserAnswers.setValue(AddDepartureTransportMeansYesNoPage(Index(0)), false)
         val viewModelProvider = new TransportMeansAnswersViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers, mode)(messages, phaseConfig)
         val section           = result.sections(1)
+
         section.sectionTitle.get mustBe sectionTitle
         section.rows.size mustBe 1
         section.addAnotherLink must not be defined
       }
 
       "when 1 or more were added" in {
-        val initialAnswers = emptyUserAnswers.setValue(AddDepartureTransportMeansYesNoPage, true)
+        val initialAnswers = emptyUserAnswers.setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
         forAll(arbitrary[Mode], Gen.choose(1, frontendAppConfig.maxDepartureTransportMeans)) {
           (mode, amount) =>
             val userAnswersGen = (0 until amount).foldLeft(Gen.const(initialAnswers)) {

@@ -18,17 +18,26 @@ package pages.transportMeans
 
 import pages.behaviours.PageBehaviours
 import pages.sections.transportMeans.DeparturesSection
+import pages.transportMeans.departure.{
+  AddDepartureTransportMeansYesNoPage,
+  AddIdentificationNumberYesNoPage,
+  AddIdentificationTypeYesNoPage,
+  AddVehicleCountryYesNoPage,
+  IdentificationPage,
+  MeansIdentificationNumberPage,
+  VehicleCountryPage
+}
 import play.api.libs.json.{JsArray, Json}
 
 class AddDepartureTransportMeansYesNoPageSpec extends PageBehaviours {
 
   "AddDepartureTransportMeansYesNoPage" - {
 
-    beRetrievable[Boolean](AddDepartureTransportMeansYesNoPage)
+    beRetrievable[Boolean](AddDepartureTransportMeansYesNoPage(departureIndex))
 
-    beSettable[Boolean](AddDepartureTransportMeansYesNoPage)
+    beSettable[Boolean](AddDepartureTransportMeansYesNoPage(departureIndex))
 
-    beRemovable[Boolean](AddDepartureTransportMeansYesNoPage)
+    beRemovable[Boolean](AddDepartureTransportMeansYesNoPage(departureIndex))
 
     "cleanup" - {
       "when no selected" - {
@@ -36,9 +45,14 @@ class AddDepartureTransportMeansYesNoPageSpec extends PageBehaviours {
           val userAnswers = emptyUserAnswers
             .setValue(DeparturesSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
 
-          val result = userAnswers.setValue(AddDepartureTransportMeansYesNoPage, false)
+          val result = userAnswers.setValue(AddDepartureTransportMeansYesNoPage(departureIndex), false)
 
-          result.get(DeparturesSection) must not be defined
+          result.get(AddIdentificationTypeYesNoPage(departureIndex)) must not be defined
+          result.get(AddIdentificationNumberYesNoPage(departureIndex)) must not be defined
+          result.get(AddVehicleCountryYesNoPage(departureIndex)) must not be defined
+          result.get(IdentificationPage(departureIndex)) must not be defined
+          result.get(MeansIdentificationNumberPage(departureIndex)) must not be defined
+          result.get(VehicleCountryPage(departureIndex)) must not be defined
         }
       }
     }

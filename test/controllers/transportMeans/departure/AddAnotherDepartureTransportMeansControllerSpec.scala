@@ -86,7 +86,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.transportMeans.routes.AddDepartureTransportMeansYesNoController.onPageLoad(lrn, mode).url
+          controllers.transportMeans.departure.routes.AddDepartureTransportMeansYesNoController.onPageLoad(lrn, mode, departureIndex).url
       }
     }
 
@@ -151,7 +151,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
       }
 
       "when no submitted" - {
-        "must redirect to CYA" in {
+        "must redirect to add border mode page" in {
           when(mockViewModelProvider.apply(any(), any())(any(), any()))
             .thenReturn(notMaxedOutViewModel)
 
@@ -165,13 +165,13 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual
-            controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(lrn, mode).url
+            controllers.transportMeans.routes.AddBorderModeOfTransportYesNoController.onPageLoad(lrn, mode).url
         }
       }
     }
 
     "when max limit reached" - {
-      "must redirect to CYA" in {
+      "must redirect to add border mode page" in {
         when(mockViewModelProvider.apply(any(), any())(any(), any()))
           .thenReturn(maxedOutViewModel)
 
@@ -185,7 +185,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(lrn, mode).url
+          controllers.transportMeans.routes.AddBorderModeOfTransportYesNoController.onPageLoad(lrn, mode).url
       }
     }
 
