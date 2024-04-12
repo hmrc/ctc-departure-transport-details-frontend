@@ -77,7 +77,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
               helper.listItems mustBe Seq(
                 Left(
                   ListItem(
-                    name = identificationType.asString,
+                    name = s"Departure means of transport ${index.display} - ${identificationType.asString}",
                     changeUrl = routes.AddIdentificationNumberYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
                     removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
                   )
@@ -100,7 +100,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
               helper.listItems mustBe Seq(
                 Left(
                   ListItem(
-                    name = identificationType.asString,
+                    name = s"Departure means of transport ${index.display} - ${identificationType.asString}",
                     changeUrl = routes.MeansIdentificationNumberController.onPageLoad(userAnswers.lrn, mode, index).url,
                     removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
                   )
@@ -129,7 +129,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
               helper.listItems mustBe Seq(
                 Left(
                   ListItem(
-                    name = identificationNumber,
+                    name = s"Departure means of transport ${index.display} - $identificationNumber",
                     changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
                     removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
                   )
@@ -151,7 +151,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
               helper.listItems mustBe Seq(
                 Left(
                   ListItem(
-                    name = identificationNumber,
+                    name = s"Departure means of transport ${index.display} - $identificationNumber",
                     changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
                     removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
                   )
@@ -184,7 +184,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
               helper.listItems mustBe Seq(
                 Left(
                   ListItem(
-                    name = s"${identificationType.asString} - $identificationNumber",
+                    name = s"Departure means of transport ${index.display} - ${identificationType.asString} - $identificationNumber",
                     changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
                     removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
                   )
@@ -208,7 +208,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
               helper.listItems mustBe Seq(
                 Left(
                   ListItem(
-                    name = s"${identificationType.asString} - $identificationNumber",
+                    name = s"Departure means of transport ${index.display} - ${identificationType.asString} - $identificationNumber",
                     changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
                     removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
                   )
