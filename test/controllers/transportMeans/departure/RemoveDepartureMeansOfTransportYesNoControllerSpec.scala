@@ -17,7 +17,6 @@
 package controllers.transportMeans.departure
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.equipment.routes
 import forms.YesNoFormProvider
 import generators.Generators
 import models.reference.transportMeans.departure.Identification
@@ -92,7 +91,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.AddAnotherEquipmentController.onPageLoad(lrn, mode).url //todo update when add another page built
+        redirectLocation(result).value mustEqual routes.AddAnotherDepartureTransportMeansController.onPageLoad(lrn, mode).url
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -115,7 +114,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.AddAnotherEquipmentController.onPageLoad(lrn, mode).url //todo update when add another page built
+        redirectLocation(result).value mustEqual routes.AddAnotherDepartureTransportMeansController.onPageLoad(lrn, mode).url
 
         verify(mockSessionRepository, never()).set(any())(any())
 
@@ -135,7 +134,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.AddAnotherEquipmentController.onPageLoad(lrn, mode).url //todo update when add another page built
+      redirectLocation(result).value mustEqual routes.AddAnotherDepartureTransportMeansController.onPageLoad(lrn, mode).url
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {

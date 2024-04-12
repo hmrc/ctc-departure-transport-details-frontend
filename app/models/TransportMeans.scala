@@ -35,12 +35,12 @@ case class TransportMeans(index: Index, identificationType: Option[Identificatio
 
 object TransportMeans {
 
-  def apply(userAnswers: UserAnswers, transportMeansIndex: Index): Option[TransportMeans] = {
+  def apply(userAnswers: UserAnswers, departureIndex: Index): Option[TransportMeans] = {
     implicit val reads: Reads[TransportMeans] = (
-      IdentificationPage(transportMeansIndex).path.readNullable[Identification] and
-        MeansIdentificationNumberPage(transportMeansIndex).path.readNullable[String]
+      IdentificationPage(departureIndex).path.readNullable[Identification] and
+        MeansIdentificationNumberPage(departureIndex).path.readNullable[String]
     ).apply {
-      (identifier, identificationNumber) => TransportMeans(transportMeansIndex, identifier, identificationNumber)
+      (identifier, identificationNumber) => TransportMeans(departureIndex, identifier, identificationNumber)
     }
     userAnswers.data.asOpt[TransportMeans]
   }

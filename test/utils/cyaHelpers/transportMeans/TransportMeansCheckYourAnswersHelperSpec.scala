@@ -119,7 +119,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               action.content.value mustBe "Change"
 //              action.href mustBe routes.CheckYourAnswersController
 //                .onPageLoad(userAnswers.lrn, mode, departureIndex)
-//                .url //TODO update when DTM CYA page is built
+//                .url //TODO update when Add DTM page is built
               action.visuallyHiddenText.get mustBe "departure means of transport 1"
               action.id mustBe "change-departure-means-of-transport-1"
           }

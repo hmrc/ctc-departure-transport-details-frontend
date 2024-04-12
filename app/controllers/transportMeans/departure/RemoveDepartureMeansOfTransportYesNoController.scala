@@ -18,20 +18,16 @@ package controllers.transportMeans.departure
 
 import config.PhaseConfig
 import controllers.actions._
-import controllers.equipment.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.reference.transportMeans.departure.Identification
-import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode, TransportMeans, UserAnswers}
-import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
+import navigation.TransportMeansNavigatorProvider
 import pages.sections.transportMeans.TransportMeansSection
-import pages.transportMeans.departure.{AddVehicleCountryYesNoPage, IdentificationPage, MeansIdentificationNumberPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.transportMeans.departure.{AddVehicleCountryYesNoView, RemoveDepartureMeansOfTransportYesNoView}
+import views.html.transportMeans.departure.RemoveDepartureMeansOfTransportYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,30 +44,30 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(transportMeansIndex: Index) = formProvider("transportMeans.departure.removeTransportMeansOfDepartureYesNo", transportMeansIndex.display)
+  private def form(departureIndex: Index) = formProvider("transportMeans.departure.removeTransportMeansOfDepartureYesNo", departureIndex.display)
 
   private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
-    routes.AddAnotherEquipmentController.onPageLoad(lrn, mode) //todo change to AddAnotherDepartureMeansOfTransportController once built
+    routes.AddAnotherDepartureTransportMeansController.onPageLoad(lrn, mode)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, TransportMeansSection, addAnother(lrn, mode)) {
       implicit request =>
-        val insetText = formatInsetText(request.userAnswers, transportMeansIndex)
-        Ok(view(form(transportMeansIndex), lrn, mode, transportMeansIndex, insetText))
+        val insetText = formatInsetText(request.userAnswers, departureIndex)
+        Ok(view(form(departureIndex), lrn, mode, departureIndex, insetText))
     }
 
-  private def formatInsetText(userAnswers: UserAnswers, transportMeansIndex: Index): String =
-    TransportMeans(userAnswers, transportMeansIndex).map(_.forRemoveDisplay).getOrElse("")
+  private def formatInsetText(userAnswers: UserAnswers, departureIndex: Index): String =
+    TransportMeans(userAnswers, departureIndex).map(_.forRemoveDisplay).getOrElse("")
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, transportMeansIndex: Index): Action[AnyContent] = actions
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, TransportMeansSection, addAnother(lrn, mode))
     .async {
       implicit request =>
-        val insetText = formatInsetText(request.userAnswers, transportMeansIndex)
-        form(transportMeansIndex)
+        val insetText = formatInsetText(request.userAnswers, departureIndex)
+        form(departureIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, transportMeansIndex, insetText))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, departureIndex, insetText))),
             {
               case true =>
                 TransportMeansSection

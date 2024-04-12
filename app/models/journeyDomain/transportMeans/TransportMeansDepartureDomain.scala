@@ -18,19 +18,31 @@ package models.journeyDomain.transportMeans
 
 import config.Constants.ModeOfTransport.Rail
 import config.PhaseConfig
+import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, _}
 import models.reference.transportMeans.departure.Identification
 import models.reference.{InlandMode, Nationality}
-import models.{Index, OptionalBoolean, Phase}
+import models.{Index, Mode, OptionalBoolean, Phase, UserAnswers}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.departure._
 import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
 import play.api.i18n.Messages
+import play.api.mvc.Call
 
 sealed trait TransportMeansDepartureDomain extends JourneyDomainModel {
   val index: Index
 
   def asString(implicit messages: Messages): String
+
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
+    stage match {
+      case AccessingJourney =>
+        controllers.transportMeans.departure.routes.AddIdentificationTypeYesNoController
+          .onPageLoad(userAnswers.lrn, mode, index) // TODO should be updated to AddIdentificationYesNo page
+      case CompletingJourney =>
+        controllers.transportMeans.departure.routes.AddAnotherDepartureTransportMeansController.onPageLoad(userAnswers.lrn, mode)
+    }
+  }
 }
 
 object TransportMeansDepartureDomain {
@@ -77,10 +89,19 @@ case class TransitionTransportMeansDepartureDomain(
 )(override val index: Index)
     extends TransportMeansDepartureDomain {
 
-  override def asString(implicit messages: Messages): String = this.toString
+  override def asString(implicit messages: Messages): String =
+    TransitionTransportMeansDepartureDomain.asString(identification, identificationNumber)
 }
 
 object TransitionTransportMeansDepartureDomain {
+
+  def asString(identification: Option[Identification], identificationNumber: Option[String])(implicit messages: Messages): String =
+    (identification, identificationNumber) match {
+      case (Some(id), Some(idNumber)) => s"${id.asString} - $idNumber"
+      case (Some(id), None)           => s"${id.asString}"
+      case (None, Some(idNumber))     => idNumber
+      case _                          => ""
+    }
 
   implicit def userAnswersReader(index: Index): Read[TransportMeansDepartureDomain] = {
     lazy val identificationReader: Read[Option[Identification]] =
