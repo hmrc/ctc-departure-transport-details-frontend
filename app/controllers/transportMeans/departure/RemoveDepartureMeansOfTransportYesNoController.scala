@@ -22,7 +22,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode, TransportMeans, UserAnswers}
 import navigation.TransportMeansNavigatorProvider
-import pages.sections.transportMeans.TransportMeansSection
+import pages.sections.transportMeans.{DepartureSection, TransportMeansSection}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -47,7 +47,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
   private def form(departureIndex: Index) = formProvider("transportMeans.departure.removeTransportMeansOfDepartureYesNo", departureIndex.display)
 
   private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
-    routes.AddAnotherDepartureTransportMeansController.onPageLoad(lrn, mode)
+    controllers.transportMeans.departure.routes.AddAnotherDepartureTransportMeansController.onPageLoad(lrn, mode)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, TransportMeansSection, addAnother(lrn, mode)) {
@@ -70,7 +70,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, departureIndex, insetText))),
             {
               case true =>
-                TransportMeansSection
+                DepartureSection(departureIndex)
                   .removeFromUserAnswers()
                   .updateTask()
                   .writeToSession()

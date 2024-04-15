@@ -26,7 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks._
-import pages.sections.transportMeans.TransportMeansSection
+import pages.sections.transportMeans.DepartureSection
 import pages.transportMeans.departure._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -80,7 +80,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
       "must redirect to add another departureTransportMeans and remove departureTransportMeans at specified index" in {
         reset(mockSessionRepository)
         when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
-        val userAnswers = emptyUserAnswers.setValue(TransportMeansSection, Json.obj())
+        val userAnswers = emptyUserAnswers.setValue(DepartureSection(departureIndex), Json.obj())
 
         setExistingUserAnswers(userAnswers)
 
@@ -95,7 +95,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.get(TransportMeansSection) mustNot be(defined)
+        userAnswersCaptor.getValue.get(DepartureSection(departureIndex)) mustNot be(defined)
       }
     }
 
@@ -103,7 +103,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
       "must redirect to add another departureTransportMeans and not remove departureTransportMeans at specified index" in {
         reset(mockSessionRepository)
         when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
-        val userAnswers = emptyUserAnswers.setValue(TransportMeansSection, Json.obj())
+        val userAnswers = emptyUserAnswers.setValue(DepartureSection(departureIndex), Json.obj())
 
         setExistingUserAnswers(userAnswers)
 
@@ -123,7 +123,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
 
     "must redirect to the next page when valid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers.setValue(TransportMeansSection, Json.obj()))
+      setExistingUserAnswers(emptyUserAnswers.setValue(DepartureSection(departureIndex), Json.obj()))
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 

@@ -56,7 +56,9 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
               ListItem(
                 name = departure.asString,
                 changeUrl = routes.AddIdentificationTypeYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
-                removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+                removeUrl = Some(
+                  controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
+                )
               )
             )
           )
@@ -80,7 +82,9 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
                   ListItem(
                     name = identificationType.asString,
                     changeUrl = routes.AddIdentificationNumberYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
-                    removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+                    removeUrl = Some(
+                      controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
+                    )
                   )
                 )
               )
@@ -103,7 +107,9 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
                   ListItem(
                     name = identificationType.asString,
                     changeUrl = routes.MeansIdentificationNumberController.onPageLoad(userAnswers.lrn, mode, index).url,
-                    removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+                    removeUrl = Some(
+                      controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
+                    )
                   )
                 )
               )
@@ -132,7 +138,9 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
                   ListItem(
                     name = identificationNumber,
                     changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
-                    removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+                    removeUrl = Some(
+                      controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
+                    )
                   )
                 )
               )
@@ -154,7 +162,9 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
                   ListItem(
                     name = identificationNumber,
                     changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
-                    removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+                    removeUrl = Some(
+                      controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
+                    )
                   )
                 )
               )
@@ -187,7 +197,9 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
                   ListItem(
                     name = s"${identificationType.asString} - $identificationNumber",
                     changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
-                    removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+                    removeUrl = Some(
+                      controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
+                    ) // TODO Should go to remove URl
                   )
                 )
               )
@@ -211,7 +223,9 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
                   ListItem(
                     name = s"${identificationType.asString} - $identificationNumber",
                     changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
-                    removeUrl = Some(Call("GET", "#").url) // TODO Should go to remove URl
+                    removeUrl = Some(
+                      controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
+                    )
                   )
                 )
               )

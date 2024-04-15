@@ -46,7 +46,8 @@ class DeparturesTransportMeansAnswersHelper(userAnswers: UserAnswers, mode: Mode
         buildListItem[TransportMeansDepartureDomain](
           nameWhenComplete = _.asString,
           nameWhenInProgress = nameWhenInProgress(index),
-          removeRoute = Some(Call("GET", "#")) //TODO Update to remove URL
+          removeRoute =
+            Some(controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(userAnswers.lrn, mode, index))
         )(TransportMeansDepartureDomain.userAnswersReader(index).apply(Nil))
     }
   }
