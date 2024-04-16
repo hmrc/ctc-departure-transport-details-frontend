@@ -29,7 +29,6 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.AddDepartureTransportMeansYesNoPage
 import pages.transportMeans.departure._
-import play.api.mvc.Call
 import viewModels.ListItem
 
 class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -199,7 +198,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
                     changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
                     removeUrl = Some(
                       controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
-                    ) // TODO Should go to remove URl
+                    )
                   )
                 )
               )

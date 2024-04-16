@@ -164,9 +164,9 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-//              action.href mustBe routes.CheckYourAnswersController
-//                .onPageLoad(userAnswers.lrn, mode, departureIndex)
-//                .url //TODO update when Add DTM page is built
+              action.href mustBe controllers.transportMeans.departure.routes.AddIdentificationTypeYesNoController
+                .onPageLoad(userAnswers.lrn, mode, departureIndex)
+                .url
               action.visuallyHiddenText.get mustBe "departure means of transport 1"
               action.id mustBe "change-departure-means-of-transport-1"
           }
