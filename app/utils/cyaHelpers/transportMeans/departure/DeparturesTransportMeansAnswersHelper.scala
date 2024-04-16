@@ -35,10 +35,11 @@ class DeparturesTransportMeansAnswersHelper(userAnswers: UserAnswers, mode: Mode
   def listItems: Seq[Either[ListItem, ListItem]] = {
     def nameWhenInProgress(index: Index): Option[String] =
       (userAnswers.get(IdentificationPage(index)), userAnswers.get(MeansIdentificationNumberPage(index))) match {
-        case (Some(identification), Some(identificationNumber)) => Some(s"${identification.asString} - $identificationNumber")
-        case (Some(identification), None)                       => Some(identification.asString)
-        case (None, Some(identificationNumber))                 => Some(identificationNumber)
-        case _                                                  => None
+        case (Some(identification), Some(identificationNumber)) =>
+          Some(s"Departure means of transport ${index.display} - ${identification.asString} - $identificationNumber")
+        case (Some(identification), None)       => Some(s"Departure means of transport ${index.display} - ${identification.asString}")
+        case (None, Some(identificationNumber)) => Some(s"Departure means of transport ${index.display} - $identificationNumber")
+        case _                                  => Some(s"Departure means of transport ${index.display}")
       }
 
     buildListItems(DeparturesSection) {

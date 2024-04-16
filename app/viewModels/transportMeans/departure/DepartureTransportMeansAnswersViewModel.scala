@@ -34,6 +34,7 @@ object DepartureTransportMeansAnswersViewModel {
       val helper = new DepartureTransportMeansAnswersHelper(userAnswers, mode, index)
 
       val rows = Seq(
+        helper.addDepartureTransportMeans,
         helper.departureAddTypeYesNo,
         helper.departureIdentificationType,
         helper.departureAddIdentificationNumber,

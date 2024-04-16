@@ -19,7 +19,7 @@ package controllers.transportMeans.departure
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import forms.AddAnotherFormProvider
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -50,7 +50,7 @@ class AddAnotherDepartureTransportMeansController @Inject() (
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, mode)
       viewModel.count match {
-        case 0 => Redirect(controllers.transportMeans.routes.AddDepartureTransportMeansYesNoController.onPageLoad(lrn, mode))
+        case 0 => Redirect(controllers.transportMeans.departure.routes.AddDepartureTransportMeansYesNoController.onPageLoad(lrn, mode, Index(0)))
         case _ => Ok(view(form(viewModel), lrn, viewModel))
       }
   }
@@ -64,7 +64,7 @@ class AddAnotherDepartureTransportMeansController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
           {
             case true  => Redirect(routes.IdentificationController.onPageLoad(lrn, mode, viewModel.nextIndex))
-            case false => Redirect(controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(lrn, mode))
+            case false => Redirect(controllers.transportMeans.routes.AddBorderModeOfTransportYesNoController.onPageLoad(lrn, mode))
           }
         )
   }

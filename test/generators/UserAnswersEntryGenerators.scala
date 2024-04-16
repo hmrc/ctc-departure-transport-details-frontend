@@ -25,6 +25,7 @@ import models.reference.transportMeans._
 import models.reference.BorderMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.transportMeans.departure.AddDepartureTransportMeansYesNoPage
 import play.api.libs.json._
 import queries.Gettable
 
@@ -77,7 +78,7 @@ trait UserAnswersEntryGenerators {
       generateTransportMeansActiveAnswer orElse {
         case AddInlandModeYesNoPage                 => arbitrary[Boolean].map(JsBoolean)
         case InlandModePage                         => arbitrary[InlandMode].map(Json.toJson(_))
-        case AddDepartureTransportMeansYesNoPage    => arbitrary[Boolean].map(JsBoolean)
+        case AddDepartureTransportMeansYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
         case AddBorderModeOfTransportYesNoPage      => arbitrary[Boolean].map(JsBoolean)
         case BorderModeOfTransportPage              => arbitrary[BorderMode].map(Json.toJson(_))
         case AddActiveBorderTransportMeansYesNoPage => arbitrary[Boolean].map(JsBoolean)
