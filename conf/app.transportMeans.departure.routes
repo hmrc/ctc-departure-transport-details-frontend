@@ -1,7 +1,3 @@
-GET        /departure-means-of-transport/:departureIndex/add-identification/:lrn                  controllers.transportMeans.departure.AddDepartureTransportMeansYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, departureIndex: Index)
-POST       /departure-means-of-transport/:departureIndex/add-identification/:lrn                  controllers.transportMeans.departure.AddDepartureTransportMeansYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, departureIndex: Index)
-GET        /departure-means-of-transport/:departureIndex/change-add-identification/:lrn           controllers.transportMeans.departure.AddDepartureTransportMeansYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, departureIndex: Index)
-POST       /departure-means-of-transport/:departureIndex/change-add-identification/:lrn           controllers.transportMeans.departure.AddDepartureTransportMeansYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, departureIndex: Index)
 
 GET        /departure-means-of-transport/:departureIndex/identification/:lrn                      controllers.transportMeans.departure.IdentificationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, departureIndex: Index)
 POST       /departure-means-of-transport/:departureIndex/identification/:lrn                      controllers.transportMeans.departure.IdentificationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, departureIndex: Index)

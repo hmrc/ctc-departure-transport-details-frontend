@@ -27,6 +27,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.preRequisites.ContainerIndicatorPage
+import pages.transportMeans.AddDepartureTransportMeansYesNoPage
 import pages.transportMeans.departure._
 import play.api.mvc.Call
 import viewModels.ListItem
@@ -124,7 +125,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
           when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
           val userAnswers = emptyUserAnswers
             .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-            .setValue(AddDepartureTransportMeansYesNoPage(index), true)
+            .setValue(AddDepartureTransportMeansYesNoPage, true)
             .setValue(AddIdentificationTypeYesNoPage(index), false)
             .setValue(AddIdentificationNumberYesNoPage(index), true)
             .setValue(MeansIdentificationNumberPage(index), identificationNumber)
@@ -181,7 +182,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
           val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
           when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
           val userAnswers = emptyUserAnswers
-            .setValue(AddDepartureTransportMeansYesNoPage(index), true)
+            .setValue(AddDepartureTransportMeansYesNoPage, true)
             .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
             .setValue(AddIdentificationTypeYesNoPage(index), true)
             .setValue(IdentificationPage(index), identificationType)

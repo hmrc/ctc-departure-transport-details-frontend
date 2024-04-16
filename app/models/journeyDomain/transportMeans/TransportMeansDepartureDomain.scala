@@ -25,7 +25,7 @@ import models.reference.{InlandMode, Nationality}
 import models.{Index, Mode, OptionalBoolean, Phase, UserAnswers}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.departure._
-import pages.transportMeans.InlandModePage
+import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
@@ -38,7 +38,7 @@ sealed trait TransportMeansDepartureDomain extends JourneyDomainModel {
     stage match {
       case AccessingJourney =>
         controllers.transportMeans.departure.routes.AddIdentificationTypeYesNoController
-          .onPageLoad(userAnswers.lrn, mode, index) // TODO should be updated to AddIdentificationYesNo page
+          .onPageLoad(userAnswers.lrn, mode, index)
       case CompletingJourney =>
         controllers.transportMeans.departure.routes.AddAnotherDepartureTransportMeansController.onPageLoad(userAnswers.lrn, mode)
     }
@@ -70,8 +70,8 @@ case class PostTransitionTransportMeansDepartureDomain(
 object PostTransitionTransportMeansDepartureDomain {
 
   def asString(identification: Option[Identification], identificationNumber: String, index: Index)(implicit messages: Messages): String =
-    identification.fold(s"Departure means of transport ${index.display} - $identificationNumber")(
-      value => s"Departure means of transport ${index.display} - ${value.asString} - $identificationNumber"
+    identification.fold(messages("departureTransportMeans.label.oneArg", index.display, identificationNumber))(
+      value => messages("departureTransportMeans.label.bothArgs", index.display, value.asString, identificationNumber)
     )
 
   implicit def userAnswersReader(index: Index): Read[TransportMeansDepartureDomain] =
@@ -97,15 +97,15 @@ object TransitionTransportMeansDepartureDomain {
 
   def asString(identification: Option[Identification], identificationNumber: Option[String], index: Index)(implicit messages: Messages): String =
     (identification, identificationNumber) match {
-      case (Some(id), Some(idNumber)) => s"Departure means of transport ${index.display} - ${id.asString} - $idNumber"
-      case (Some(id), None)           => s"Departure means of transport ${index.display} - ${id.asString}"
-      case (None, Some(idNumber))     => s"Departure means of transport ${index.display} - $idNumber"
-      case _                          => s"Departure means of transport ${index.display}"
+      case (Some(id), Some(idNumber)) => messages("departureTransportMeans.label.bothArgs", index.display, id.asString, idNumber)
+      case (Some(id), None)           => messages("departureTransportMeans.label.oneArg", index.display, id.asString)
+      case (None, Some(idNumber))     => messages("departureTransportMeans.label.oneArg", index.display, idNumber)
+      case _                          => messages("departureTransportMeans.label.noArgs", index.display)
     }
 
   implicit def userAnswersReader(index: Index): Read[TransportMeansDepartureDomain] = {
     lazy val identificationReader: Read[Option[Identification]] =
-      AddDepartureTransportMeansYesNoPage(index).optionalReader.to {
+      AddDepartureTransportMeansYesNoPage.optionalReader.to {
         case Some(_) =>
           ContainerIndicatorPage.optionalReader.to {
             case Some(OptionalBoolean.no) =>
