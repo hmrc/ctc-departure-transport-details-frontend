@@ -86,7 +86,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.transportMeans.departure.routes.AddDepartureTransportMeansYesNoController.onPageLoad(lrn, mode, departureIndex).url
+          controllers.transportMeans.routes.AddDepartureTransportMeansYesNoController.onPageLoad(lrn, mode).url
       }
     }
 

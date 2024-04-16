@@ -29,7 +29,6 @@ import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans._
 import pages.transportMeans.active.{IdentificationPage, NationalityPage}
-import pages.transportMeans.departure.AddDepartureTransportMeansYesNoPage
 
 class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -51,9 +50,9 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
             val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe AddDepartureTransportMeansYesNoPage(departureIndex)
+            result.left.value.page mustBe AddDepartureTransportMeansYesNoPage
             result.left.value.pages mustBe Seq(
-              AddDepartureTransportMeansYesNoPage(departureIndex)
+              AddDepartureTransportMeansYesNoPage
             )
           }
 
@@ -61,13 +60,13 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             "and add type of identification yes/no is unanswered" in {
               val userAnswers = emptyUserAnswers
                 .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-                .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
 
               val result = TransportMeansDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
               result.left.value.page mustBe departure.AddIdentificationTypeYesNoPage(departureIndex)
               result.left.value.pages mustBe Seq(
-                AddDepartureTransportMeansYesNoPage(departureIndex),
+                AddDepartureTransportMeansYesNoPage,
                 departure.AddIdentificationTypeYesNoPage(departureIndex)
               )
             }
@@ -129,7 +128,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             val userAnswers = emptyUserAnswers
               .setValue(OfficeOfDepartureInCL010Page, false)
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers, departureIndex)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -146,7 +145,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
                 val userAnswers = emptyUserAnswers
                   .setValue(OfficeOfDepartureInCL010Page, false)
                   .setValue(SecurityDetailsTypePage, securityType)
-                  .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
+                  .setValue(AddDepartureTransportMeansYesNoPage, true)
 
                 forAll(arbitraryTransportMeansDepartureAnswers(userAnswers, departureIndex)(mockTransitionPhaseConfig)) {
                   userAnswers =>
@@ -163,7 +162,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             val userAnswers = emptyUserAnswers
               .setValue(SecurityDetailsTypePage, NoSecurityDetails)
               .setValue(OfficeOfDepartureInCL010Page, true)
-              .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
 
             forAll(arbitraryTransportMeansDepartureAnswers(userAnswers, departureIndex)(mockTransitionPhaseConfig)) {
               userAnswers =>
@@ -180,7 +179,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
                 val userAnswers = emptyUserAnswers
                   .setValue(SecurityDetailsTypePage, securityType)
                   .setValue(OfficeOfDepartureInCL010Page, true)
-                  .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
+                  .setValue(AddDepartureTransportMeansYesNoPage, true)
 
                 forAll(arbitraryTransportMeansDepartureAnswers(userAnswers, departureIndex)(mockTransitionPhaseConfig)) {
                   userAnswers =>
@@ -205,7 +204,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
                 val userAnswers = emptyUserAnswers
                   .setValue(OfficeOfDepartureInCL010Page, false)
                   .setValue(SecurityDetailsTypePage, securityType)
-                  .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
+                  .setValue(AddDepartureTransportMeansYesNoPage, true)
                   .setValue(BorderModeOfTransportPage, borderMode)
 
                 forAll(arbitraryTransportMeansDepartureAnswers(userAnswers, departureIndex)(mockTransitionPhaseConfig)) {
@@ -224,7 +223,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
                 val userAnswers = emptyUserAnswers
                   .setValue(OfficeOfDepartureInCL010Page, false)
                   .setValue(SecurityDetailsTypePage, securityType)
-                  .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
+                  .setValue(AddDepartureTransportMeansYesNoPage, true)
                   .setValue(BorderModeOfTransportPage, BorderMode("2", "Rail"))
 
                 forAll(arbitraryTransportMeansDepartureAnswers(userAnswers, departureIndex)(mockTransitionPhaseConfig)) {
@@ -244,7 +243,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
               val userAnswers = emptyUserAnswers
                 .setValue(OfficeOfDepartureInCL010Page, true)
                 .setValue(SecurityDetailsTypePage, securityType)
-                .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
                 .setValue(AddBorderModeOfTransportYesNoPage, false)
 
               forAll(arbitraryTransportMeansDepartureAnswers(userAnswers, departureIndex)(mockTransitionPhaseConfig)) {
@@ -262,7 +261,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
         "securityDetails is type NoSecurityDetails" in {
 
           val userAnswers = emptyUserAnswers
-            .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
+            .setValue(AddDepartureTransportMeansYesNoPage, true)
             .setValue(SecurityDetailsTypePage, NoSecurityDetails)
             .setValue(AddBorderModeOfTransportYesNoPage, false)
 
@@ -279,7 +278,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
           forAll(securityGen) {
             securityType =>
               val userAnswers = emptyUserAnswers
-                .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
                 .setValue(SecurityDetailsTypePage, securityType)
                 .setValue(BorderModeOfTransportPage, arbitrary[BorderMode].sample.value)
 

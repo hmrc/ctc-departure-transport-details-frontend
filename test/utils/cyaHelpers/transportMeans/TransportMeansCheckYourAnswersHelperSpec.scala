@@ -30,7 +30,6 @@ import pages.sections.external.OfficesOfTransitSection
 import pages.sections.transportMeans.ActiveSection
 import pages.transportMeans._
 import pages.transportMeans.active.NationalityPage
-import pages.transportMeans.departure.AddDepartureTransportMeansYesNoPage
 import play.api.libs.json.{JsArray, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -46,7 +45,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
           forAll(arbitrary[Mode]) {
             mode =>
               val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.addDepartureTransportMeans(departureIndex)
+              val result = helper.addDepartureTransportMeans()
               result mustBe None
           }
         }
@@ -57,10 +56,10 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
           forAll(arbitrary[Mode]) {
             mode =>
               val answers = emptyUserAnswers
-                .setValue(AddDepartureTransportMeansYesNoPage(departureIndex), true)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
 
               val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
-              val result = helper.addDepartureTransportMeans(departureIndex)
+              val result = helper.addDepartureTransportMeans()
 
               result mustBe Some(
                 SummaryListRow(
@@ -71,8 +70,8 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                       items = List(
                         ActionItem(
                           content = "Change".toText,
-                          href = controllers.transportMeans.departure.routes.AddDepartureTransportMeansYesNoController
-                            .onPageLoad(answers.lrn, mode, departureIndex)
+                          href = controllers.transportMeans.routes.AddDepartureTransportMeansYesNoController
+                            .onPageLoad(answers.lrn, mode)
                             .url,
                           visuallyHiddenText = Some("if you want to add identification for the departure means of transport"),
                           attributes = Map("id" -> "change-add-departure-transport-means")
