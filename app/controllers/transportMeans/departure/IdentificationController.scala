@@ -61,6 +61,11 @@ class IdentificationController @Inject() (
       implicit request =>
         val viewModel              = viewModelProvider(request.userAnswers, departureIndex)
         def inlandMode: InlandMode = request.userAnswers.get(InlandModePage).getOrElse(InlandMode("", ""))
+        val para: String = (inlandMode.code, departureIndex) match {
+          case ("3", Index(0)) => viewModel.paragraph1
+          case ("3", _)        => viewModel.paragraph2
+          case _               => ""
+        }
         service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).map {
           identificationTypes =>
             val preparedForm = request.userAnswers.get(IdentificationPage(departureIndex)) match {
@@ -68,7 +73,7 @@ class IdentificationController @Inject() (
               case Some(value) => form(identificationTypes).fill(value)
             }
 
-            Ok(view(preparedForm, lrn, identificationTypes, mode, departureIndex, viewModel, inlandMode))
+            Ok(view(preparedForm, lrn, identificationTypes, mode, departureIndex, viewModel, para))
         }
     }
 
@@ -78,13 +83,17 @@ class IdentificationController @Inject() (
       implicit request =>
         val viewModel              = viewModelProvider(request.userAnswers, departureIndex)
         def inlandMode: InlandMode = request.userAnswers.get(InlandModePage).getOrElse(InlandMode("", ""))
-
+        val para: String = (inlandMode.code, departureIndex) match {
+          case ("3", Index(0)) => viewModel.paragraph1
+          case ("3", _)        => viewModel.paragraph2
+          case _               => ""
+        }
         service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).flatMap {
           identificationTypes =>
             form(identificationTypes)
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, identificationTypes, mode, departureIndex, viewModel, inlandMode))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, identificationTypes, mode, departureIndex, viewModel, para))),
                 value => {
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                   IdentificationPage(departureIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

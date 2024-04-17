@@ -17,9 +17,8 @@
 package views.transportMeans.departure
 
 import forms.EnumerableFormProvider
-import models.{Index, NormalMode}
-import models.reference.InlandMode
 import models.reference.transportMeans.departure.Identification
+import models.{Index, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
@@ -36,7 +35,7 @@ class IdentificationViewSingularSpec extends EnumerableViewBehaviours[Identifica
   override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
     injector
       .instanceOf[IdentificationView]
-      .apply(form, lrn, values, NormalMode, departureIndex, identificationViewModel, InlandMode("3", ""))(fakeRequest, messages)
+      .apply(form, lrn, values, NormalMode, departureIndex, identificationViewModel, identificationViewModel.paragraph1)(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.departure.identification"
 
@@ -71,7 +70,7 @@ class IdentificationViewMultipleSpec extends EnumerableViewBehaviours[Identifica
   override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
     injector
       .instanceOf[IdentificationView]
-      .apply(form, lrn, values, NormalMode, Index(1), identificationViewModel, InlandMode("3", ""))(fakeRequest, messages)
+      .apply(form, lrn, values, NormalMode, Index(1), identificationViewModel, identificationViewModel.paragraph2)(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.departure.identification"
 
@@ -106,7 +105,7 @@ class IdentificationViewNotRoadSpec extends EnumerableViewBehaviours[Identificat
   override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
     injector
       .instanceOf[IdentificationView]
-      .apply(form, lrn, values, NormalMode, departureIndex, identificationViewModel, InlandMode("2", ""))(fakeRequest, messages)
+      .apply(form, lrn, values, NormalMode, departureIndex, identificationViewModel, "")(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.departure.identification"
 
@@ -129,6 +128,6 @@ class IdentificationViewNotRoadSpec extends EnumerableViewBehaviours[Identificat
 
   behave like pageWithSubmitButton("Save and continue")
 
-  behave like pageWithoutContent(doc, "p", "You must add the registration number of the road vehicle for your inland mode.")
-  behave like pageWithoutContent(doc, "p", "You must add the registration number of the road trailer for your inland mode.")
+  behave like pageWithoutContent(doc, "p", identificationViewModel.paragraph1)
+  behave like pageWithoutContent(doc, "p", identificationViewModel.paragraph2)
 }
