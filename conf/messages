@@ -165,6 +165,8 @@ transportMeans.departure.identification.81 = Name of an inland waterways vehicle
 transportMeans.departure.identification.checkYourAnswersLabel = Identification type
 transportMeans.departure.identification.change.hidden = identification type for the departure means of transport
 transportMeans.departure.identification.error.required = Select which identification you want to use for this vehicle
+transportMeans.departure.identification.paragraph1 = You must add the registration number of the road vehicle for your inland mode.
+transportMeans.departure.identification.paragraph2 = You must add the registration number of the road trailer for your inland mode.
 
 transportMeans.departure.addIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
 transportMeans.departure.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?

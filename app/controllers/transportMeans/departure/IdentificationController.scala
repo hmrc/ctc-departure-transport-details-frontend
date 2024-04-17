@@ -20,6 +20,7 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
+import models.reference.InlandMode
 import models.reference.transportMeans.departure.Identification
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
@@ -31,6 +32,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.MeansOfTransportIdentificationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.transportMeans.departure.IdentificationViewModel.IdentificationViewModelProvider
 import views.html.transportMeans.departure.IdentificationView
 
 import javax.inject.Inject
@@ -44,7 +46,8 @@ class IdentificationController @Inject() (
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationView,
-  service: MeansOfTransportIdentificationTypesService
+  service: MeansOfTransportIdentificationTypesService,
+  viewModelProvider: IdentificationViewModelProvider
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
@@ -56,6 +59,8 @@ class IdentificationController @Inject() (
     .requireData(lrn)
     .async {
       implicit request =>
+        val viewModel              = viewModelProvider(request.userAnswers, departureIndex)
+        def inlandMode: InlandMode = request.userAnswers.get(InlandModePage).getOrElse(InlandMode("", ""))
         service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).map {
           identificationTypes =>
             val preparedForm = request.userAnswers.get(IdentificationPage(departureIndex)) match {
@@ -63,7 +68,7 @@ class IdentificationController @Inject() (
               case Some(value) => form(identificationTypes).fill(value)
             }
 
-            Ok(view(preparedForm, lrn, identificationTypes, mode, departureIndex))
+            Ok(view(preparedForm, lrn, identificationTypes, mode, departureIndex, viewModel, inlandMode))
         }
     }
 
@@ -71,12 +76,15 @@ class IdentificationController @Inject() (
     .requireData(lrn)
     .async {
       implicit request =>
+        val viewModel              = viewModelProvider(request.userAnswers, departureIndex)
+        def inlandMode: InlandMode = request.userAnswers.get(InlandModePage).getOrElse(InlandMode("", ""))
+
         service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).flatMap {
           identificationTypes =>
             form(identificationTypes)
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, identificationTypes, mode, departureIndex))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, identificationTypes, mode, departureIndex, viewModel, inlandMode))),
                 value => {
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                   IdentificationPage(departureIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

@@ -33,6 +33,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.MeansOfTransportIdentificationTypesService
+import viewModels.transportMeans.departure.IdentificationViewModel
 import views.html.transportMeans.departure.IdentificationView
 
 import scala.concurrent.Future
@@ -46,6 +47,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val form                     = formProvider[Identification]("transportMeans.departure.identification", identificationTypes)
   private val mode                     = NormalMode
   private lazy val identificationRoute = routes.IdentificationController.onPageLoad(lrn, mode, departureIndex).url
+  private val identificationViewModel  = new IdentificationViewModel(Some(Identification("3", "test")))
 
   private val mockMeansOfIdentificationTypesService = mock[MeansOfTransportIdentificationTypesService]
 
@@ -81,7 +83,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, identificationTypes, mode, departureIndex)(request, messages).toString
+        view(form, lrn, identificationTypes, mode, departureIndex, identificationViewModel, inlandMode)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -100,7 +102,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, identificationTypes, mode, departureIndex)(request, messages).toString
+        view(filledForm, lrn, identificationTypes, mode, departureIndex, identificationViewModel, inlandMode)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -133,7 +135,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, identificationTypes, mode, departureIndex)(request, messages).toString
+        view(boundForm, lrn, identificationTypes, mode, departureIndex, identificationViewModel, inlandMode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
