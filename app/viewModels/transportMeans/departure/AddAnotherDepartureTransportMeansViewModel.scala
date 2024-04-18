@@ -23,6 +23,7 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.transportMeans.departure.DeparturesTransportMeansAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
+import config.Constants.ModeOfTransport.Road
 
 import javax.inject.Inject
 
@@ -45,7 +46,7 @@ object AddAnotherDepartureTransportMeansViewModel {
   class AddAnotherDepartureTransportMeansViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig): AddAnotherDepartureTransportMeansViewModel = {
-      val isRoadInlandMode: Boolean = userAnswers.get(InlandModePage).exists(_.code == "3")
+      val isRoadInlandMode: Boolean = userAnswers.get(InlandModePage).exists(_.code == Road)
 
       val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)
 

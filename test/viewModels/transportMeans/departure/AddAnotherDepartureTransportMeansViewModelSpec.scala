@@ -43,6 +43,7 @@ class AddAnotherDepartureTransportMeansViewModelSpec extends SpecBase with Gener
             result.heading mustBe "You have added 1 departure means of transport"
             result.legend mustBe "Do you want to add another departure means of transport?"
             result.maxLimitLabel mustBe "You can only add up to 3 departure means of transport when using road as your mode. To add another, you need to remove one first."
+            result.allowMore mustBe true
         }
       }
 
@@ -59,17 +60,19 @@ class AddAnotherDepartureTransportMeansViewModelSpec extends SpecBase with Gener
             result.heading mustBe "You have added 1 departure means of transport"
             result.legend mustBe "Do you want to add another departure means of transport?"
             result.maxLimitLabel mustBe "You cannot add any more departure means of transport. To add another, you need to remove one first."
+            result.allowMore mustBe true
+
         }
       }
 
     }
 
-    "when there are multiple departure transport means" in {
+    "when departure transport means are at maximum" in {
       val formatter  = java.text.NumberFormat.getIntegerInstance
       val inlandMode = arbitrary[InlandMode](arbitraryNonRoadInlandMode).sample.value
       val answers    = emptyUserAnswers.setValue(InlandModePage, inlandMode)
 
-      forAll(arbitrary[Mode], Gen.choose(2, frontendAppConfig.maxDepartureTransportMeans)) {
+      forAll(arbitrary[Mode], frontendAppConfig.maxDepartureTransportMeans) {
         (mode, departureTransportMeans) =>
           val userAnswers = (0 until departureTransportMeans).foldLeft(answers) {
             (acc, i) =>
@@ -82,6 +85,7 @@ class AddAnotherDepartureTransportMeansViewModelSpec extends SpecBase with Gener
           result.heading mustBe s"You have added ${formatter.format(departureTransportMeans)} departure means of transport"
           result.legend mustBe "Do you want to add another departure means of transport?"
           result.maxLimitLabel mustBe "You cannot add any more departure means of transport. To add another, you need to remove one first."
+          result.allowMore mustBe false
       }
     }
   }

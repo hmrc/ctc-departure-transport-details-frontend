@@ -41,7 +41,6 @@
 
         @errorSummary(form.errors)
 
-
         @inputYesNo(
             field = form("value"),
             yesNoType = InputYesNoViewModel(
@@ -50,7 +49,6 @@
                 additionalHtml = insetText.map(x => govukInsetText(InsetText(content = Text(x))))
             )
         )
-
 
         @button(attributes = Map("id" -> "submit"))
     }
