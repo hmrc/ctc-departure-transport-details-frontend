@@ -32,7 +32,7 @@ class RemoveDepartureMeansOfTransportYesNoViewSpec extends YesNoViewBehaviours {
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveDepartureMeansOfTransportYesNoView]
-      .apply(form, lrn, mode, index, insetText)(fakeRequest, messages)
+      .apply(form, lrn, mode, index, Some(insetText))(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.departure.removeTransportMeansOfDepartureYesNo"
 
@@ -53,7 +53,7 @@ class RemoveDepartureMeansOfTransportYesNoViewSpec extends YesNoViewBehaviours {
   "when inset text undefined" - {
     val view = injector
       .instanceOf[RemoveDepartureMeansOfTransportYesNoView]
-      .apply(form, lrn, mode, index, "")(fakeRequest, messages)
+      .apply(form, lrn, mode, index, None)(fakeRequest, messages)
     val doc = parseView(view)
 
     behave like pageWithoutInsetText(doc)

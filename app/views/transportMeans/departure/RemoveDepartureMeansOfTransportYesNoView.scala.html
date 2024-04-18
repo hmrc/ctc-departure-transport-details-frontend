@@ -17,18 +17,19 @@
 @import controllers.transportMeans.departure.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
+@import viewModels.components.InputYesNoViewModel
 @import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
-    insetText: InsetText,
+    govukInsetText : GovukInsetText,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index,  insetTextValue: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index,  insetText: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transportMeans.departure.removeTransportMeansOfDepartureYesNo.title", departureIndex.display),
@@ -40,27 +41,16 @@
 
         @errorSummary(form.errors)
 
-        @if(insetTextValue.nonEmpty){
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
+            yesNoType = InputYesNoViewModel(
                 heading = messages("transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading", departureIndex.display),
                 caption = Some(messages("departureMeansOfTransport.caption")),
-                additionalHtml = insetText(insetTextValue)
-            )
-        )
-        } else {
-
-        @inputYesNo(
-            field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading", departureIndex.display),
-                caption = Some(messages("departureMeansOfTransport.caption"))
+                additionalHtml = insetText.map(x => govukInsetText(InsetText(content = Text(x))))
             )
         )
 
-        }
 
         @button(attributes = Map("id" -> "submit"))
     }

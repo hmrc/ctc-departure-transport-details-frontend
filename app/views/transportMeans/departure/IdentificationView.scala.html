@@ -45,10 +45,10 @@
 
         @inputRadio(
             field = form("value"),
-            radioType = RadioWithAdditionalHtml(
-                caption = Some(messages("departureMeansOfTransport.caption")),
+            radioType = InputRadioViewModel(
                 heading = identificationViewModel.heading,
-                additionalHtml = identificationViewModel.para.toParagraph
+                caption = Some(messages("departureMeansOfTransport.caption")),
+                additionalHtml = identificationViewModel.para.map(_.toParagraph)
             ),
             radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
             )

@@ -38,10 +38,10 @@ case class IdentificationViewModel(identification: Option[Identification], depar
 
   def paragraph2(implicit messages: Messages): String = messages(s"$prefix.paragraph2")
 
-  def para(implicit messages: Messages): String = (inlandMode, departureIndex) match {
-    case (Some(InlandMode(Road, _)), Index(0)) => paragraph1
-    case (Some(InlandMode(Road, _)), _)        => paragraph2
-    case _                                     => ""
+  def para(implicit messages: Messages): Option[String] = (inlandMode, departureIndex) match {
+    case (Some(InlandMode(Road, _)), Index(0)) => Some(paragraph1)
+    case (Some(InlandMode(Road, _)), _)        => Some(paragraph2)
+    case _                                     => None
   }
 }
 
