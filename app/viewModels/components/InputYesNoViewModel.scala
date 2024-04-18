@@ -40,8 +40,8 @@ object InputYesNoViewModel {
 
   def apply(
     heading: String,
-    caption: Option[String],
-    additionalHtml: Option[Html]
+    caption: Option[String] = None,
+    additionalHtml: Option[Html] = None
   ): InputYesNoViewModel = additionalHtml match {
     case Some(value) => YesNoWithAdditionalHtml(heading, caption, value)
     case None        => OrdinaryYesNo(heading, caption)
