@@ -24,12 +24,12 @@
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
-    govukInsetText : GovukInsetText,
+    insetText : InsetText,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index,  insetText: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index,  departureMeansOfTransport: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transportMeans.departure.removeTransportMeansOfDepartureYesNo.title", departureIndex.display),
@@ -46,7 +46,7 @@
             yesNoType = InputYesNoViewModel(
                 heading = messages("transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading", departureIndex.display),
                 caption = Some(messages("departureMeansOfTransport.caption")),
-                additionalHtml = insetText.map(x => govukInsetText(InsetText(content = Text(x))))
+                additionalHtml = departureMeansOfTransport.map(insetText(_))
             )
         )
 
