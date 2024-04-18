@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[Identification], lrn: LocalReferenceNumber, identifiers: Seq[Identification], mode: Mode, departureIndex: Index, identificationViewModel: IdentificationViewModel, para: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Identification], lrn: LocalReferenceNumber, identifiers: Seq[Identification], mode: Mode, departureIndex: Index, identificationViewModel: IdentificationViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = identificationViewModel.title,
@@ -48,7 +48,7 @@
             radioType = RadioWithAdditionalHtml(
                 caption = Some(messages("departureMeansOfTransport.caption")),
                 heading = identificationViewModel.heading,
-                additionalHtml = para.toParagraph
+                additionalHtml = identificationViewModel.para.toParagraph
             ),
             radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
             )

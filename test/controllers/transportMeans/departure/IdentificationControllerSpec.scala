@@ -17,6 +17,7 @@
 package controllers.transportMeans.departure
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.Constants.ModeOfTransport.Road
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.NormalMode
@@ -47,7 +48,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val form                     = formProvider[Identification]("transportMeans.departure.identification", identificationTypes)
   private val mode                     = NormalMode
   private lazy val identificationRoute = routes.IdentificationController.onPageLoad(lrn, mode, departureIndex).url
-  private val identificationViewModel  = new IdentificationViewModel(Some(Identification("3", "test")))
+  private val identificationViewModel  = new IdentificationViewModel(Some(Identification(Road, "test")), departureIndex, Some(InlandMode("code", "desc")))
 
   private val mockMeansOfIdentificationTypesService = mock[MeansOfTransportIdentificationTypesService]
 
@@ -62,9 +63,6 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val baseAnswers = emptyUserAnswers
     .setValue(InlandModePage, inlandMode)
 
-  private val baseAnswersWithInlandMode3 = emptyUserAnswers
-    .setValue(InlandModePage, InlandMode("3", ""))
-
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockMeansOfIdentificationTypesService)
@@ -73,7 +71,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
   "Identification Controller" - {
 
-    "must return OK and the correct view for a GET when inland mode code is not 3" in {
+    "must return OK and the correct view for a GET " in {
 
       setExistingUserAnswers(baseAnswers)
 
@@ -86,25 +84,10 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, identificationTypes, mode, departureIndex, identificationViewModel, "")(request, messages).toString
-    }
-    "must return OK and the correct view for a GET when inland mode code is  3" in {
-
-      setExistingUserAnswers(baseAnswersWithInlandMode3)
-
-      val request = FakeRequest(GET, identificationRoute)
-
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[IdentificationView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, lrn, identificationTypes, mode, departureIndex, identificationViewModel, identificationViewModel.paragraph1)(request, messages).toString
+        view(form, lrn, identificationTypes, mode, departureIndex, identificationViewModel)(request, messages).toString
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered and inland mode code is not 3" in {
+    "must populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers.setValue(IdentificationPage(departureIndex), identification)
       setExistingUserAnswers(userAnswers)
@@ -120,27 +103,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, identificationTypes, mode, departureIndex, identificationViewModel, "")(request, messages).toString
-    }
-    "must populate the view correctly on a GET when the question has previously been answered and inland mode code is  3" in {
-
-      val userAnswers = baseAnswersWithInlandMode3.setValue(IdentificationPage(departureIndex), identification)
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, identificationRoute)
-
-      val result = route(app, request).value
-
-      val filledForm = form.bind(Map("value" -> identification.code))
-
-      val view = injector.instanceOf[IdentificationView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(filledForm, lrn, identificationTypes, mode, departureIndex, identificationViewModel, identificationViewModel.paragraph1)(request,
-                                                                                                                                      messages
-        ).toString
+        view(filledForm, lrn, identificationTypes, mode, departureIndex, identificationViewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -159,7 +122,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
-    "must return a Bad Request and errors when invalid data is submitted and inlandMode code is not 3" in {
+    "must return a Bad Request and errors when invalid data is submitted and inlandMode" in {
 
       setExistingUserAnswers(baseAnswers)
 
@@ -173,23 +136,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, identificationTypes, mode, departureIndex, identificationViewModel, "")(request, messages).toString
-    }
-    "must return a Bad Request and errors when invalid data is submitted and inlandMode code is 3" in {
-
-      setExistingUserAnswers(baseAnswersWithInlandMode3)
-
-      val request   = FakeRequest(POST, identificationRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
-
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[IdentificationView]
-
-      status(result) mustEqual BAD_REQUEST
-
-      contentAsString(result) mustEqual
-        view(boundForm, lrn, identificationTypes, mode, departureIndex, identificationViewModel, identificationViewModel.paragraph1)(request, messages).toString
+        view(boundForm, lrn, identificationTypes, mode, departureIndex, identificationViewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

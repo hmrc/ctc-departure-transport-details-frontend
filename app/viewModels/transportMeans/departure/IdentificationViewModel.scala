@@ -16,14 +16,17 @@
 
 package viewModels.transportMeans.departure
 
+import config.Constants.ModeOfTransport.Road
+import models.reference.InlandMode
 import models.reference.transportMeans.departure.Identification
 import models.{Index, UserAnswers}
+import pages.transportMeans.InlandModePage
 import pages.transportMeans.departure.IdentificationPage
 import play.api.i18n.Messages
 
 import javax.inject.Inject
 
-case class IdentificationViewModel(identification: Option[Identification]) {
+case class IdentificationViewModel(identification: Option[Identification], departureIndex: Index, inlandMode: Option[InlandMode]) {
 
   val prefix: String = "transportMeans.departure.identification"
 
@@ -34,6 +37,12 @@ case class IdentificationViewModel(identification: Option[Identification]) {
   def paragraph1(implicit messages: Messages): String = messages(s"$prefix.paragraph1")
 
   def paragraph2(implicit messages: Messages): String = messages(s"$prefix.paragraph2")
+
+  def para(implicit messages: Messages): String = (inlandMode, departureIndex) match {
+    case (Some(InlandMode(Road, _)), Index(0)) => paragraph1
+    case (Some(InlandMode(Road, _)), _)        => paragraph2
+    case _                                     => ""
+  }
 }
 
 object IdentificationViewModel {
@@ -41,6 +50,6 @@ object IdentificationViewModel {
   class IdentificationViewModelProvider @Inject() () {
 
     def apply(userAnswers: UserAnswers, departureIndex: Index): IdentificationViewModel =
-      new IdentificationViewModel(userAnswers.get(IdentificationPage(departureIndex)))
+      new IdentificationViewModel(userAnswers.get(IdentificationPage(departureIndex)), departureIndex, userAnswers.get(InlandModePage))
   }
 }

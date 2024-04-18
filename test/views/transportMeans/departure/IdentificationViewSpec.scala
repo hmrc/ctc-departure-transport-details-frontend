@@ -16,7 +16,9 @@
 
 package views.transportMeans.departure
 
+import config.Constants.ModeOfTransport.{Air, Road}
 import forms.EnumerableFormProvider
+import models.reference.InlandMode
 import models.reference.transportMeans.departure.Identification
 import models.{Index, NormalMode}
 import play.api.data.Form
@@ -30,12 +32,12 @@ import views.html.transportMeans.departure.IdentificationView
 class IdentificationViewSingularSpec extends EnumerableViewBehaviours[Identification] {
 
   override def form: Form[Identification] = new EnumerableFormProvider()(prefix, values)
-  private val identificationViewModel     = new IdentificationViewModel(Some(Identification("2", "test")))
+  private val identificationViewModel     = new IdentificationViewModel(Some(Identification(Road, "test")), departureIndex, Some(InlandMode(Road, "desc")))
 
   override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
     injector
       .instanceOf[IdentificationView]
-      .apply(form, lrn, values, NormalMode, departureIndex, identificationViewModel, identificationViewModel.paragraph1)(fakeRequest, messages)
+      .apply(form, lrn, values, NormalMode, departureIndex, identificationViewModel)(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.departure.identification"
 
@@ -65,12 +67,12 @@ class IdentificationViewSingularSpec extends EnumerableViewBehaviours[Identifica
 class IdentificationViewMultipleSpec extends EnumerableViewBehaviours[Identification] {
 
   override def form: Form[Identification] = new EnumerableFormProvider()(prefix, values)
-  private val identificationViewModel     = new IdentificationViewModel(Some(Identification("2", "test")))
+  private val identificationViewModel     = new IdentificationViewModel(Some(Identification(Road, "test")), Index(1), Some(InlandMode(Road, "desc")))
 
   override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
     injector
       .instanceOf[IdentificationView]
-      .apply(form, lrn, values, NormalMode, Index(1), identificationViewModel, identificationViewModel.paragraph2)(fakeRequest, messages)
+      .apply(form, lrn, values, NormalMode, Index(1), identificationViewModel)(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.departure.identification"
 
@@ -100,12 +102,12 @@ class IdentificationViewMultipleSpec extends EnumerableViewBehaviours[Identifica
 class IdentificationViewNotRoadSpec extends EnumerableViewBehaviours[Identification] {
 
   override def form: Form[Identification] = new EnumerableFormProvider()(prefix, values)
-  private val identificationViewModel     = new IdentificationViewModel(Some(Identification("2", "test")))
+  private val identificationViewModel     = new IdentificationViewModel(Some(Identification(Air, "test")), departureIndex, Some(InlandMode(Air, "desc")))
 
   override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
     injector
       .instanceOf[IdentificationView]
-      .apply(form, lrn, values, NormalMode, departureIndex, identificationViewModel, "")(fakeRequest, messages)
+      .apply(form, lrn, values, NormalMode, departureIndex, identificationViewModel)(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.departure.identification"
 
