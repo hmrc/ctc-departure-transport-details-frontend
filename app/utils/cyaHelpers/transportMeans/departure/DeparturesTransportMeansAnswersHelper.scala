@@ -18,11 +18,10 @@ package utils.cyaHelpers.transportMeans.departure
 
 import config.{FrontendAppConfig, PhaseConfig}
 import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
-import models.{Index, Mode, UserAnswers}
+import models.{Index, Mode, TransportMeans, UserAnswers}
 import pages.sections.transportMeans.DeparturesSection
 import pages.transportMeans.departure._
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import utils.cyaHelpers.AnswersHelper
 import viewModels.ListItem
 
@@ -34,13 +33,7 @@ class DeparturesTransportMeansAnswersHelper(userAnswers: UserAnswers, mode: Mode
 
   def listItems: Seq[Either[ListItem, ListItem]] = {
     def nameWhenInProgress(index: Index): Option[String] =
-      (userAnswers.get(IdentificationPage(index)), userAnswers.get(MeansIdentificationNumberPage(index))) match {
-        case (Some(identification), Some(identificationNumber)) =>
-          Some(s"Departure means of transport ${index.display} - ${identification.asString} - $identificationNumber")
-        case (Some(identification), None)       => Some(s"Departure means of transport ${index.display} - ${identification.asString}")
-        case (None, Some(identificationNumber)) => Some(s"Departure means of transport ${index.display} - $identificationNumber")
-        case _                                  => Some(s"Departure means of transport ${index.display}")
-      }
+      TransportMeans(index, userAnswers.get(IdentificationPage(index)), userAnswers.get(MeansIdentificationNumberPage(index))).forAddAnotherDisplay
 
     buildListItems(DeparturesSection) {
       index =>
