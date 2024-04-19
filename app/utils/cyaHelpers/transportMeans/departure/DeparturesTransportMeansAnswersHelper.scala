@@ -20,9 +20,10 @@ import config.{FrontendAppConfig, PhaseConfig}
 import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
 import models.{Index, Mode, TransportMeans, UserAnswers}
 import pages.sections.transportMeans.DeparturesSection
+import pages.transportMeans.AddDepartureTransportMeansYesNoPage
 import pages.transportMeans.departure._
 import play.api.i18n.Messages
-import utils.cyaHelpers.AnswersHelper
+import utils.cyaHelpers.{AnswersHelper, RichListItems}
 import viewModels.ListItem
 
 class DeparturesTransportMeansAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit
@@ -43,7 +44,7 @@ class DeparturesTransportMeansAnswersHelper(userAnswers: UserAnswers, mode: Mode
           removeRoute =
             Some(controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(userAnswers.lrn, mode, index))
         )(TransportMeansDepartureDomain.userAnswersReader(index).apply(Nil))
-    }
+    }.checkRemoveLinks(userAnswers.get(AddDepartureTransportMeansYesNoPage).isEmpty)
   }
 
 }

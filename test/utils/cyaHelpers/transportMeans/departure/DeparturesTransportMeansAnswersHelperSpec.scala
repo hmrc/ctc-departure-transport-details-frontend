@@ -22,7 +22,7 @@ import controllers.transportMeans.departure.routes
 import generators.Generators
 import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
 import models.reference.transportMeans.departure.Identification
-import models.{Mode, NormalMode, OptionalBoolean, Phase}
+import models.{Index, Mode, NormalMode, OptionalBoolean, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -55,9 +55,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
               ListItem(
                 name = departure.asString,
                 changeUrl = routes.AddIdentificationTypeYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
-                removeUrl = Some(
-                  controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
-                )
+                removeUrl = None
               )
             )
           )
@@ -66,28 +64,88 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
 
     "when user answers populated with an in progress departure transport means" - {
       "and identification type is defined" - {
-        "when transition" in {
-          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-          when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
-          val identificationType = Identification("11", "Name of a sea-going vessel")
-          val userAnswers = emptyUserAnswers
-            .setValue(IdentificationPage(departureIndex), identificationType)
+        "when transition" - {
+          "when section is mandatory and there is 1 departure transport means" in {
+            val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+            when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+            val identificationType = Identification("11", "Name of a sea-going vessel")
+            val userAnswers = emptyUserAnswers
+              .setValue(IdentificationPage(departureIndex), identificationType)
 
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
-              helper.listItems mustBe Seq(
-                Left(
-                  ListItem(
-                    name = s"Departure means of transport ${index.display} - ${identificationType.asString}",
-                    changeUrl = routes.AddIdentificationNumberYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
-                    removeUrl = Some(
-                      controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
+                helper.listItems mustBe Seq(
+                  Left(
+                    ListItem(
+                      name = s"Departure means of transport ${index.display} - ${identificationType.asString}",
+                      changeUrl = routes.AddIdentificationNumberYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
+                      removeUrl = None
                     )
                   )
                 )
-              )
+            }
           }
+          "when section is mandatory and there are 2 departure transport means" in {
+            val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+            when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+            val identificationType = Identification("11", "Name of a sea-going vessel")
+            val userAnswers = emptyUserAnswers
+              .setValue(IdentificationPage(Index(0)), identificationType)
+              .setValue(IdentificationPage(Index(1)), identificationType)
+
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
+                helper.listItems mustBe Seq(
+                  Left(
+                    ListItem(
+                      name = s"Departure means of transport ${Index(0).display} - ${identificationType.asString}",
+                      changeUrl = routes.AddIdentificationNumberYesNoController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
+                      removeUrl = Some(
+                        controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, Index(0)).url
+                      )
+                    )
+                  ),
+                  Left(
+                    ListItem(
+                      name = s"Departure means of transport ${Index(1).display} - ${identificationType.asString}",
+                      changeUrl = routes.AddIdentificationNumberYesNoController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
+                      removeUrl = Some(
+                        controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, Index(1)).url
+                      )
+                    )
+                  )
+                )
+            }
+          }
+
+          "when section is optional" in {
+            val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
+            when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+            val identificationType = Identification("11", "Name of a sea-going vessel")
+            val userAnswers = emptyUserAnswers
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
+              .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
+              .setValue(IdentificationPage(departureIndex), identificationType)
+
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
+                helper.listItems mustBe Seq(
+                  Left(
+                    ListItem(
+                      name = s"Departure means of transport ${index.display} - ${identificationType.asString}",
+                      changeUrl = routes.AddIdentificationNumberYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
+                      removeUrl = Some(
+                        controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
+                      )
+                    )
+                  )
+                )
+            }
+          }
+
         }
 
         "when post transition" in {
@@ -106,9 +164,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
                   ListItem(
                     name = s"Departure means of transport ${index.display} - ${identificationType.asString}",
                     changeUrl = routes.MeansIdentificationNumberController.onPageLoad(userAnswers.lrn, mode, index).url,
-                    removeUrl = Some(
-                      controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
-                    )
+                    removeUrl = None
                   )
                 )
               )
@@ -161,9 +217,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
                   ListItem(
                     name = s"Departure means of transport ${index.display} - $identificationNumber",
                     changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
-                    removeUrl = Some(
-                      controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
-                    )
+                    removeUrl = None
                   )
                 )
               )
@@ -209,6 +263,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
           val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
           when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
           val userAnswers = emptyUserAnswers
+            .setValue(AddDepartureTransportMeansYesNoPage, true)
             .setValue(AddIdentificationTypeYesNoPage(index), true)
             .setValue(IdentificationPage(index), identificationType)
             .setValue(AddIdentificationNumberYesNoPage(index), true)
