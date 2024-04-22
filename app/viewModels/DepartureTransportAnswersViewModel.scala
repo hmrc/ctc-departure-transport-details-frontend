@@ -19,7 +19,7 @@ package viewModels
 import config.{FrontendAppConfig, PhaseConfig}
 import models.{CheckMode, Index, UserAnswers}
 import play.api.i18n.Messages
-import utils.cyaHelpers.DepartureTransportAnswersHelper
+import utils.cyaHelpers.transportMeans.departure.DepartureTransportMeansAnswersHelper
 
 import javax.inject.Inject
 
@@ -35,16 +35,16 @@ object DepartureTransportAnswersViewModel {
     def apply(userAnswers: UserAnswers, index: Index)(implicit messages: Messages, phaseConfig: PhaseConfig): DepartureTransportAnswersViewModel = {
       val mode = CheckMode
 
-      val helper = new DepartureTransportAnswersHelper(userAnswers, mode, index)
+      val helper = new DepartureTransportMeansAnswersHelper(userAnswers, mode, index)
 
       val preRequisitesSection = Section(
         rows = Seq(
-          helper.addModeIdentificationNumberYesNo,
-          helper.identificationOfMode,
-          helper.addIdentificationNumberYesNo,
-          helper.identificationNumber,
-          helper.addTransportNationalityYesNo,
-          helper.identificationNationality
+          helper.departureAddTypeYesNo,
+          helper.departureIdentificationType,
+          helper.departureAddIdentificationNumber,
+          helper.departureIdentificationNumber,
+          helper.departureAddNationality,
+          helper.departureNationality
         ).flatten
       )
 
