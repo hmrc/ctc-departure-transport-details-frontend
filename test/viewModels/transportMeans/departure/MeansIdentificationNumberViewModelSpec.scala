@@ -32,8 +32,8 @@ class MeansIdentificationNumberViewModelSpec extends SpecBase with ScalaCheckPro
       val result            = viewModelProvider.apply(emptyUserAnswers, departureIndex)
 
       result.prefix mustBe "transportMeans.departure.meansIdentificationNumber.withNoIDType"
-      result.title mustBe "What is the identification number for this vehicle?"
-      result.heading mustBe "What is the identification number for this vehicle?"
+      result.title mustBe "What is the identification for this vehicle?"
+      result.heading mustBe "What is the identification for this vehicle?"
     }
 
     "when identification type is not defined" in {
@@ -44,8 +44,8 @@ class MeansIdentificationNumberViewModelSpec extends SpecBase with ScalaCheckPro
           val result            = viewModelProvider.apply(userAnswers, departureIndex)
 
           result.prefix mustBe "transportMeans.departure.meansIdentificationNumber.withIDType"
-          result.title mustBe "What is the identification number for this vehicle?"
-          result.heading mustBe "What is the identification number for this vehicle?"
+          result.title mustBe "What is the identification for this vehicle?"
+          result.heading mustBe "What is the identification for this vehicle?"
       }
     }
   }

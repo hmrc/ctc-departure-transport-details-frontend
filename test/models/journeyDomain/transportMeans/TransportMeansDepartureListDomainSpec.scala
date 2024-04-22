@@ -20,7 +20,6 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
-import pages.sections.transportMeans.DeparturesSection
 import pages.transportMeans.departure.VehicleCountryPage
 
 class TransportMeansDepartureListDomainSpec extends SpecBase with Generators {
