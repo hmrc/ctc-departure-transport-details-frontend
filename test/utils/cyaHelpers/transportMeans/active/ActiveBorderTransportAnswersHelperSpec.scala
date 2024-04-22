@@ -61,8 +61,8 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
               result(1).key.value mustBe "Registered country"
               result(2).key.value mustBe "Do you want to add the type of identification?"
               result(3).key.value mustBe "Identification type"
-              result(4).key.value mustBe "Do you want to add an identification number for this vehicle?"
-              result(5).key.value mustBe "Identification number"
+              result(4).key.value mustBe "Do you want to add an identification for this vehicle?"
+              result(5).key.value mustBe "Identification"
               result(6).key.value mustBe "Customs office"
               result(7).key.value mustBe "Do you want to add a conveyance reference number?"
               result(8).key.value mustBe "Conveyance reference number"
@@ -78,8 +78,8 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
 
               result.head.key.value mustBe "Do you want to add the type of identification?"
               result(1).key.value mustBe "Identification type"
-              result(2).key.value mustBe "Do you want to add an identification number for this vehicle?"
-              result(3).key.value mustBe "Identification number"
+              result(2).key.value mustBe "Do you want to add an identification for this vehicle?"
+              result(3).key.value mustBe "Identification"
               result(4).key.value mustBe "Do you want to add the registered country for this vehicle?"
               result(5).key.value mustBe "Registered country"
               result(6).key.value mustBe "Customs office"
@@ -155,7 +155,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("Identification number".toText),
+                  key = Key("Identification".toText),
                   value = Value(identificationNumber.toText),
                   actions = Some(
                     Actions(
@@ -163,7 +163,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                         ActionItem(
                           content = "Change".toText,
                           href = routes.IdentificationNumberController.onPageLoad(answers.lrn, mode, index).url,
-                          visuallyHiddenText = Some("identification number for the border means of transport"),
+                          visuallyHiddenText = Some("identification for the border means of transport"),
                           attributes = Map("id" -> "change-transport-means-active-identification-number")
                         )
                       )
@@ -266,7 +266,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
 
     "activeBorderAddIdentificationNumber" - {
       "must return None" - {
-        "when add Identification Number is undefined" in {
+        "when add Identification is undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
               val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
@@ -277,7 +277,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
       }
 
       "must return Some(Row)" - {
-        "when add Identification Number is defined" in {
+        "when add Identification is defined" in {
           forAll(arbitrary[Mode]) {
             mode =>
               val answers = emptyUserAnswers.setValue(AddVehicleIdentificationNumberYesNoPage(index), true)
@@ -286,7 +286,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("Do you want to add an identification number for this vehicle?".toText),
+                  key = Key("Do you want to add an identification for this vehicle?".toText),
                   value = Value("Yes".toText),
                   actions = Some(
                     Actions(
@@ -294,7 +294,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                         ActionItem(
                           content = "Change".toText,
                           href = routes.AddVehicleIdentificationNumberYesNoController.onPageLoad(answers.lrn, mode, index).url,
-                          visuallyHiddenText = Some("if you want to add an identification number for the border means of transport"),
+                          visuallyHiddenText = Some("if you want to add an identification for the border means of transport"),
                           attributes = Map("id" -> "change-add-transport-means-identification-number")
                         )
                       )
