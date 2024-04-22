@@ -17,12 +17,11 @@
 package generators
 
 import models._
+import models.reference._
 import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
-import models.reference._
 import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
-import models.reference.BorderMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._

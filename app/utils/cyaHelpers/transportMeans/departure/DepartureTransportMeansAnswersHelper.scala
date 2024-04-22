@@ -20,17 +20,10 @@ import config.{FrontendAppConfig, PhaseConfig}
 import models.reference.Nationality
 import models.reference.transportMeans.departure.Identification
 import models.{Index, Mode, UserAnswers}
-import pages.transportMeans.departure.{
-  AddIdentificationNumberYesNoPage,
-  AddIdentificationTypeYesNoPage,
-  AddVehicleCountryYesNoPage,
-  IdentificationPage,
-  MeansIdentificationNumberPage,
-  VehicleCountryPage
-}
+import pages.transportMeans.departure._
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
 
 class DepartureTransportMeansAnswersHelper(
