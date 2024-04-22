@@ -37,10 +37,10 @@ import pages.transportMeans.departure.{
   VehicleCountryPage
 }
 import play.api.libs.json.{JsArray, Json}
-import viewModels.MiniTransportAnswersViewModel.MiniTransportAnswersViewModelProvider
+import viewModels.DepartureTransportAnswersViewModel.DepartureTransportAnswersViewModelProvider
 import viewModels.transportMeans.TransportMeansAnswersViewModel.TransportMeansAnswersViewModelProvider
 
-class MiniTransportAnswersViewModelProviderSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DepartureTransportAnswersViewModelProviderSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val mode = arbitrary[Mode].sample.value
 
@@ -54,7 +54,7 @@ class MiniTransportAnswersViewModelProviderSpec extends SpecBase with ScalaCheck
         .setValue(AddVehicleCountryYesNoPage(index), true)
         .setValue(VehicleCountryPage(index), Nationality("code", "description"))
 
-      val viewModelProvider = new MiniTransportAnswersViewModelProvider()
+      val viewModelProvider = new DepartureTransportAnswersViewModelProvider()
       val result            = viewModelProvider.apply(userAnswers, index)
 
       val section = result.sections.head

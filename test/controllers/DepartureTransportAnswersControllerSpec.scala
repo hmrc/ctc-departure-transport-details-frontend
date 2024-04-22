@@ -25,20 +25,20 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import viewModels.MiniTransportAnswersViewModel.MiniTransportAnswersViewModelProvider
-import viewModels.{MiniTransportAnswersViewModel, Section, TransportAnswersViewModel}
+import viewModels.DepartureTransportAnswersViewModel.DepartureTransportAnswersViewModelProvider
+import viewModels.{DepartureTransportAnswersViewModel, Section, TransportAnswersViewModel}
 import viewModels.TransportAnswersViewModel.TransportAnswersViewModelProvider
 import views.html.TransportAnswersView
-import views.html.transportMeans.MiniTransportAnswersView
+import views.html.transportMeans.DepartureTransportAnswersView
 
-class MiniTransportAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class DepartureTransportAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private lazy val mockViewModelProvider = mock[MiniTransportAnswersViewModelProvider]
+  private lazy val mockViewModelProvider = mock[DepartureTransportAnswersViewModelProvider]
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind[MiniTransportAnswersViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(bind[DepartureTransportAnswersViewModelProvider].toInstance(mockViewModelProvider))
 
   "Mini Transport Answers Controller" - {
 
@@ -46,26 +46,26 @@ class MiniTransportAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
       val sampleSections = arbitrary[List[Section]].sample.value
 
       when(mockViewModelProvider.apply(any(), any())(any(), any()))
-        .thenReturn(MiniTransportAnswersViewModel(sampleSections))
+        .thenReturn(DepartureTransportAnswersViewModel(sampleSections))
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, routes.MiniTransportAnswersController.onPageLoad(lrn, index).url)
+      val request = FakeRequest(GET, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onPageLoad(lrn, index).url)
 
       val result = route(app, request).value
 
-      val view = injector.instanceOf[MiniTransportAnswersView]
+      val view = injector.instanceOf[DepartureTransportAnswersView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(lrn, sampleSections)(request, messages).toString
+        view(lrn, index, sampleSections)(request, messages).toString
     }
 
     "must redirect to task list" in {
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, routes.MiniTransportAnswersController.onSubmit(lrn).url)
+      val request = FakeRequest(POST, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onSubmit(lrn, index).url)
 
       val result = route(app, request).value
 
@@ -77,7 +77,7 @@ class MiniTransportAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
     "must redirect to Session Expired for a GET if no existing data is found" in {
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, routes.MiniTransportAnswersController.onPageLoad(lrn, index).url)
+      val request = FakeRequest(GET, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onPageLoad(lrn, index).url)
 
       val result = route(app, request).value
 
@@ -89,7 +89,7 @@ class MiniTransportAnswersControllerSpec extends SpecBase with AppWithDefaultMoc
     "must redirect to Session Expired for a POST if no existing data is found" in {
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, routes.MiniTransportAnswersController.onSubmit(lrn).url)
+      val request = FakeRequest(POST, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onSubmit(lrn, index).url)
 
       val result = route(app, request).value
 

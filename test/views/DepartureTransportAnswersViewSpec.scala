@@ -21,16 +21,16 @@ import play.twirl.api.HtmlFormat
 import viewModels.Section
 import views.behaviours.CheckYourAnswersViewBehaviours
 import views.html.TransportAnswersView
-import views.html.transportMeans.MiniTransportAnswersView
+import views.html.transportMeans.DepartureTransportAnswersView
 
-class MiniTransportAnswersViewSpec extends CheckYourAnswersViewBehaviours {
+class DepartureTransportAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
   override val prefix: String = "miniCheckYourAnswers"
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
   override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
-    injector.instanceOf[MiniTransportAnswersView].apply(lrn, sections)(fakeRequest, messages)
+    injector.instanceOf[DepartureTransportAnswersView].apply(lrn, index, sections)(fakeRequest, messages)
 
   behave like pageWithTitle()
 
@@ -42,7 +42,7 @@ class MiniTransportAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
   behave like pageWithCheckYourAnswers()
 
-  behave like pageWithFormAction(routes.MiniTransportAnswersController.onSubmit(lrn).url)
+  behave like pageWithFormAction(controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onSubmit(lrn, index).url)
 
   behave like pageWithSubmitButton("Save and continue")
 

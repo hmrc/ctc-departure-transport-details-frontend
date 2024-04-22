@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.routes
+@import controllers.transportMeans.departure.routes
 @import models.LocalReferenceNumber
 @import viewModels.Section
 @import views.html.components.{AnswerSections, Button, Heading}
@@ -27,7 +27,7 @@
     formHelper: FormWithCSRF
 )
 
-@(lrn: LocalReferenceNumber, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(lrn: LocalReferenceNumber, index:Index, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("miniCheckYourAnswers.title"),
@@ -42,7 +42,7 @@
 
     @answerSections(sections)
 
-    @formHelper(action = routes.MiniTransportAnswersController.onSubmit(lrn), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.DepartureTransportAnswersController.onSubmit(lrn, index), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))
     }
 }

@@ -15,6 +15,3 @@ GET        /:lrn/update-task                                                    
 
 GET        /check-answers/:lrn                                                           controllers.TransportAnswersController.onPageLoad(lrn: LocalReferenceNumber)
 POST       /check-answers/:lrn                                                           controllers.TransportAnswersController.onSubmit(lrn: LocalReferenceNumber)
-
-GET        /mini-check-answers/:lrn/:index                                               controllers.MiniTransportAnswersController.onPageLoad(lrn: LocalReferenceNumber,index:Index)
-POST       /mini-check-answers/:lrn                                                      controllers.MiniTransportAnswersController.onSubmit(lrn: LocalReferenceNumber)

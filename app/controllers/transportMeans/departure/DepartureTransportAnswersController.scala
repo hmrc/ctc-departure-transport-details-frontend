@@ -14,30 +14,27 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.transportMeans.departure
 
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.Actions
-import models.{Index, LocalReferenceNumber, NormalMode}
+import models.{Index, LocalReferenceNumber}
 import navigation.TransportNavigatorProvider
-import pages.sections.equipment.EquipmentsSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.MiniTransportAnswersViewModel.MiniTransportAnswersViewModelProvider
-import viewModels.TransportAnswersViewModel.TransportAnswersViewModelProvider
-import views.html.TransportAnswersView
-import views.html.transportMeans.MiniTransportAnswersView
+import viewModels.DepartureTransportAnswersViewModel.DepartureTransportAnswersViewModelProvider
+import views.html.transportMeans.DepartureTransportAnswersView
 
 import javax.inject.Inject
 
-class MiniTransportAnswersController @Inject() (
+class DepartureTransportAnswersController @Inject() (
   override val messagesApi: MessagesApi,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
-  view: MiniTransportAnswersView,
+  view: DepartureTransportAnswersView,
   navigatorProvider: TransportNavigatorProvider,
-  viewModelProvider: MiniTransportAnswersViewModelProvider,
+  viewModelProvider: DepartureTransportAnswersViewModelProvider,
   config: FrontendAppConfig
 )(implicit phaseConfig: PhaseConfig)
     extends FrontendBaseController
@@ -46,10 +43,10 @@ class MiniTransportAnswersController @Inject() (
   def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
       val sections = viewModelProvider(request.userAnswers, index).sections
-      Ok(view(lrn, sections))
+      Ok(view(lrn, index, sections))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {
+  def onSubmit(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
       Redirect(config.sessionExpiredUrl) //TODO change to redirect correctly
   }

@@ -31,7 +31,7 @@ import pages.transportMeans.departure.{
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
 
-class MiniTransportAnswersHelper(
+class DepartureTransportAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   index: Index
@@ -42,14 +42,14 @@ class MiniTransportAnswersHelper(
     page = AddIdentificationTypeYesNoPage(index),
     formatAnswer = formatAsYesOrNo,
     prefix = "transportMeans.departure.addIdentificationTypeYesNo",
-    id = Some("")
+    id = Some("change-mode-identification-yes-no")
   )
 
   def identificationOfMode: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](
     page = IdentificationPage(index),
     formatAnswer = formatAsText,
     prefix = "transportMeans.departure.meansIdentificationNumber",
-    id = Some("")
+    id = Some("change-mode-identification")
   )
 
   def addIdentificationNumberYesNo: Option[SummaryListRow] = phaseConfig.phase match {
@@ -58,7 +58,7 @@ class MiniTransportAnswersHelper(
         page = AddIdentificationNumberYesNoPage(index),
         formatAnswer = formatAsYesOrNo,
         prefix = "transportMeans.departure.addIdentificationNumberYesNo",
-        id = Some("")
+        id = Some("change-identification-yes-no")
       )
     case Phase.PostTransition => None
   }
@@ -67,21 +67,21 @@ class MiniTransportAnswersHelper(
     page = MeansIdentificationNumberPage(index),
     formatAnswer = formatAsText,
     prefix = "transportMeans.departure.identification",
-    id = Some("")
+    id = Some("change-identification")
   )
 
   def addTransportNationalityYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddVehicleCountryYesNoPage(index),
     formatAnswer = formatAsYesOrNo,
     prefix = "transportMeans.departure.addVehicleCountryYesNo",
-    id = Some("")
+    id = Some("change-transport-nationality-yes-no")
   )
 
   def identificationNationality: Option[SummaryListRow] = getAnswerAndBuildRow[Nationality](
     page = VehicleCountryPage(index),
     formatAnswer = formatAsText,
     prefix = "transportMeans.departure.vehicleCountry",
-    id = Some("")
+    id = Some("change-transport-nationality")
   )
 
 }

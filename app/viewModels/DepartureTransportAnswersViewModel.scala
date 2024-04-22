@@ -19,23 +19,23 @@ package viewModels
 import config.{FrontendAppConfig, PhaseConfig}
 import models.{CheckMode, Index, UserAnswers}
 import play.api.i18n.Messages
-import utils.cyaHelpers.MiniTransportAnswersHelper
+import utils.cyaHelpers.DepartureTransportAnswersHelper
 
 import javax.inject.Inject
 
-case class MiniTransportAnswersViewModel(sections: Seq[Section])
+case class DepartureTransportAnswersViewModel(sections: Seq[Section])
 
-object MiniTransportAnswersViewModel {
+object DepartureTransportAnswersViewModel {
 
-  class MiniTransportAnswersViewModelProvider @Inject() (implicit
+  class DepartureTransportAnswersViewModelProvider @Inject() (implicit
     val config: FrontendAppConfig
   ) {
 
     // scalastyle:off method.length
-    def apply(userAnswers: UserAnswers, index: Index)(implicit messages: Messages, phaseConfig: PhaseConfig): MiniTransportAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, index: Index)(implicit messages: Messages, phaseConfig: PhaseConfig): DepartureTransportAnswersViewModel = {
       val mode = CheckMode
 
-      val helper = new MiniTransportAnswersHelper(userAnswers, mode, index)
+      val helper = new DepartureTransportAnswersHelper(userAnswers, mode, index)
 
       val preRequisitesSection = Section(
         rows = Seq(
@@ -49,7 +49,7 @@ object MiniTransportAnswersViewModel {
       )
 
       val sections = preRequisitesSection.toSeq
-      new MiniTransportAnswersViewModel(sections)
+      new DepartureTransportAnswersViewModel(sections)
     }
     // scalastyle:on method.length
   }
