@@ -30,13 +30,13 @@
 @(lrn: LocalReferenceNumber, index:Index, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("miniCheckYourAnswers.title"),
+    title = messages("transportMeans.departure.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
     @heading(
-        heading = messages("miniCheckYourAnswers.heading"),
+        heading = messages("transportMeans.departure.heading"),
         caption = Some(messages("caption"))
     )
 

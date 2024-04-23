@@ -25,7 +25,7 @@ import views.html.transportMeans.DepartureTransportAnswersView
 
 class DepartureTransportAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
-  override val prefix: String = "miniCheckYourAnswers"
+  override val prefix: String = "transportMeans.departure"
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
