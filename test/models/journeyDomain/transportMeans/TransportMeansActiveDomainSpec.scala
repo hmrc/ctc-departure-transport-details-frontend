@@ -545,7 +545,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
       "identificationNumberReader" - {
         "can not be parsed from user answers" - {
           "when border mode of transport is 2 (rail)" - {
-            "and identification number is unanswered" in {
+            "and identification is unanswered" in {
               val userAnswers = emptyUserAnswers
                 .setValue(BorderModeOfTransportPage, BorderMode("2", "Rail"))
 
@@ -559,7 +559,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           }
 
           "when registered country for vehicle is defined" - {
-            "and identification number is unanswered" in {
+            "and identification is unanswered" in {
               forAll(arbitrary[Nationality]) {
                 nationality =>
                   val userAnswers = emptyUserAnswers
@@ -576,7 +576,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           }
 
           "when border mode of transport is not 2 (rail) and registered country for vehicle is undefined" - {
-            "and add identification number yes/no is unanswered" in {
+            "and add identification yes/no is unanswered" in {
               forAll(arbitrary[Option[BorderMode]](arbitraryOptionalNonRailBorderModeOfTransport)) {
                 borderMode =>
                   val userAnswers = emptyUserAnswers.setValue(BorderModeOfTransportPage, borderMode)
@@ -590,7 +590,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               }
             }
 
-            "and identification number is unanswered" in {
+            "and identification is unanswered" in {
               forAll(arbitrary[Option[BorderMode]](arbitraryOptionalNonRailBorderModeOfTransport)) {
                 borderMode =>
                   val userAnswers = emptyUserAnswers

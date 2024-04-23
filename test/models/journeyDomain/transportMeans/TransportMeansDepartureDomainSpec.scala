@@ -186,7 +186,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
             )
           }
 
-          "and add identification number yes/no page is missing" in {
+          "and add identification yes/no page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
@@ -221,8 +221,8 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
           "and add nationality yes/no page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
               .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
+              .setValue(AddDepartureTransportMeansYesNoPage, true)
               .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
               .setValue(AddIdentificationNumberYesNoPage(departureIndex), false)
 
@@ -238,9 +238,9 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
           "and nationality page is missing" in {
             val userAnswers = emptyUserAnswers
+              .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
               .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
-              .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
               .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
               .setValue(AddIdentificationNumberYesNoPage(departureIndex), false)
               .setValue(AddVehicleCountryYesNoPage(departureIndex), true)
@@ -272,7 +272,7 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
             )
           }
 
-          "and identification number page is missing" in {
+          "and identification page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, containerIndicator)
               .setValue(IdentificationPage(departureIndex), arbitrary[Identification].sample.value)

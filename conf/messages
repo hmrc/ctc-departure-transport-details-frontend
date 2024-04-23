@@ -104,6 +104,10 @@ transportMeans.active.change.hidden = active border transport means {0}
 transportMeans.departure.label = Departure means of transport {0}
 transportMeans.departure.change.hidden = departure means of transport {0}
 
+departureTransportMeans.label.noArgs = Departure means of transport {0}
+departureTransportMeans.label.oneArg = Departure means of transport {0} - {1}
+departureTransportMeans.label.bothArgs = Departure means of transport {0} - {1} - {2}
+
 means.caption = Transport details - Modes and means of transport
 inlandMode.caption = Transport details - Inland mode of transport
 departureMeansOfTransport.caption = Transport details - Departure means of transport
@@ -160,24 +164,24 @@ transportMeans.departure.identification.checkYourAnswersLabel = Identification t
 transportMeans.departure.identification.change.hidden = identification type for the departure means of transport
 transportMeans.departure.identification.error.required = Select which identification you want to use for this vehicle
 
-transportMeans.departure.addIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
-transportMeans.departure.addIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
-transportMeans.departure.addIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add an identification number for this vehicle?
-transportMeans.departure.addIdentificationNumberYesNo.change.hidden = if you want to add an identification number for the departure means of transport
-transportMeans.departure.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
+transportMeans.departure.addIdentificationNumberYesNo.title = Do you want to add an identification for this vehicle?
+transportMeans.departure.addIdentificationNumberYesNo.heading = Do you want to add an identification for this vehicle?
+transportMeans.departure.addIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add an identification for this vehicle?
+transportMeans.departure.addIdentificationNumberYesNo.change.hidden = if you want to add an identification for the departure means of transport
+transportMeans.departure.addIdentificationNumberYesNo.error.required = Select yes if you want to add an identification for this vehicle
 
-transportMeans.departure.meansIdentificationNumber.withIDType.title = What is the identification number for this vehicle?
-transportMeans.departure.meansIdentificationNumber.withNoIDType.title = What is the identification number for this vehicle?
-transportMeans.departure.meansIdentificationNumber.withIDType.heading = What is the identification number for this vehicle?
-transportMeans.departure.meansIdentificationNumber.withNoIDType.heading = What is the identification number for this vehicle?
+transportMeans.departure.meansIdentificationNumber.withIDType.title = What is the identification for this vehicle?
+transportMeans.departure.meansIdentificationNumber.withNoIDType.title = What is the identification for this vehicle?
+transportMeans.departure.meansIdentificationNumber.withIDType.heading = What is the identification for this vehicle?
+transportMeans.departure.meansIdentificationNumber.withNoIDType.heading = What is the identification for this vehicle?
 transportMeans.departure.meansIdentificationNumber.hint.transition = This can be up to 27 characters long and include both letters and numbers.
 transportMeans.departure.meansIdentificationNumber.hint.postTransition = This can be up to 35 characters long and include both letters and numbers.
-transportMeans.departure.meansIdentificationNumber.checkYourAnswersLabel = Identification number
-transportMeans.departure.meansIdentificationNumber.change.hidden = identification number for the departure means of transport
-transportMeans.departure.meansIdentificationNumber.error.required = Enter the identification number for this vehicle
-transportMeans.departure.meansIdentificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
-transportMeans.departure.meansIdentificationNumber.error.length.transition = The identification number must be 27 characters or less
-transportMeans.departure.meansIdentificationNumber.error.length.postTransition = The identification number must be 35 characters or less
+transportMeans.departure.meansIdentificationNumber.checkYourAnswersLabel = Identification
+transportMeans.departure.meansIdentificationNumber.change.hidden = identification for the departure means of transport
+transportMeans.departure.meansIdentificationNumber.error.required = Enter the identification for this vehicle
+transportMeans.departure.meansIdentificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
+transportMeans.departure.meansIdentificationNumber.error.length.transition = The identification must be 27 characters or less
+transportMeans.departure.meansIdentificationNumber.error.length.postTransition = The identification must be 35 characters or less
 
 transportMeans.departure.addVehicleCountryYesNo.title = Do you want to add the registered country for this vehicle?
 transportMeans.departure.addVehicleCountryYesNo.heading = Do you want to add the registered country for this vehicle?
@@ -223,11 +227,11 @@ transportMeans.addActiveBorderTransportMeansYesNo.checkYourAnswersLabel = Do you
 transportMeans.addActiveBorderTransportMeansYesNo.change.hidden = if you want to add identification for the border means of transport
 transportMeans.addActiveBorderTransportMeansYesNo.error.required = Select yes if you want to add identification for this vehicle
 
-transportMeans.active.addVehicleIdentificationNumberYesNo.title = Do you want to add an identification number for this vehicle?
-transportMeans.active.addVehicleIdentificationNumberYesNo.heading = Do you want to add an identification number for this vehicle?
-transportMeans.active.addVehicleIdentificationNumberYesNo.error.required = Select yes if you want to add an identification number for this vehicle
-transportMeans.active.addVehicleIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add an identification number for this vehicle?
-transportMeans.active.addVehicleIdentificationNumberYesNo.change.hidden = if you want to add an identification number for the border means of transport
+transportMeans.active.addVehicleIdentificationNumberYesNo.title = Do you want to add an identification for this vehicle?
+transportMeans.active.addVehicleIdentificationNumberYesNo.heading = Do you want to add an identification for this vehicle?
+transportMeans.active.addVehicleIdentificationNumberYesNo.error.required = Select yes if you want to add an identification for this vehicle
+transportMeans.active.addVehicleIdentificationNumberYesNo.checkYourAnswersLabel = Do you want to add an identification for this vehicle?
+transportMeans.active.addVehicleIdentificationNumberYesNo.change.hidden = if you want to add an identification for the border means of transport
 
 transportMeans.active.addIdentificationYesNo.title = Do you want to add the type of identification?
 transportMeans.active.addIdentificationYesNo.heading = Do you want to add the type of identification?
@@ -256,16 +260,16 @@ transportMeans.active.addNationalityYesNo.checkYourAnswersLabel = Do you want to
 transportMeans.active.addNationalityYesNo.change.hidden = if you want to add the registered country for the border means of transport
 transportMeans.active.addNationalityYesNo.error.required = Select yes if you want to add the registered country for the vehicle crossing the border
 
-transportMeans.active.identificationNumber.title = What is the identification number for this vehicle?
-transportMeans.active.identificationNumber.heading = What is the identification number for this vehicle?
+transportMeans.active.identificationNumber.title = What is the identification for this vehicle?
+transportMeans.active.identificationNumber.heading = What is the identification for this vehicle?
 transportMeans.active.identificationNumber.hint.transition = This can be up to 27 characters long and include both letters and numbers.
 transportMeans.active.identificationNumber.hint.postTransition = This can be up to 35 characters long and include both letters and numbers.
-transportMeans.active.identificationNumber.checkYourAnswersLabel = Identification number
-transportMeans.active.identificationNumber.change.hidden = identification number for the border means of transport
-transportMeans.active.identificationNumber.error.required = Enter the identification number for this vehicle
-transportMeans.active.identificationNumber.error.invalid = The identification number must only include letters a to z and numbers 0 to 9
-transportMeans.active.identificationNumber.error.length.transition = The identification number must be 27 characters or less
-transportMeans.active.identificationNumber.error.length.postTransition = The identification number must be 35 characters or less
+transportMeans.active.identificationNumber.checkYourAnswersLabel = Identification
+transportMeans.active.identificationNumber.change.hidden = identification for the border means of transport
+transportMeans.active.identificationNumber.error.required = Enter the identification for this vehicle
+transportMeans.active.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
+transportMeans.active.identificationNumber.error.length.transition = The identification must be 27 characters or less
+transportMeans.active.identificationNumber.error.length.postTransition = The identification must be 35 characters or less
 
 transportMeans.active.nationality.title = What country is this vehicle registered to?
 transportMeans.active.nationality.heading = What country is this vehicle registered to?
@@ -577,3 +581,12 @@ equipment.paymentMethod.D = Other
 equipment.paymentMethod.checkYourAnswersLabel = Payment method
 equipment.paymentMethod.change.hidden = payment method for transport charges
 equipment.paymentMethod.error.required = Select which method of payment you want to use for transport charges
+
+transportMeans.departure.addAnotherDepartureTransportMeans.singular.title = You have added 1 departure means of transport
+transportMeans.departure.addAnotherDepartureTransportMeans.singular.heading = You have added 1 departure means of transport
+transportMeans.departure.addAnotherDepartureTransportMeans.plural.title = You have added {0} departure means of transport
+transportMeans.departure.addAnotherDepartureTransportMeans.plural.heading = You have added {0} departure means of transport
+transportMeans.departure.addAnotherDepartureTransportMeans.label = Do you want to add another departure means of transport?
+transportMeans.departure.addAnotherDepartureTransportMeans.maxLimit.label = You cannot add any more departure means of transport. To add another, you need to remove one first.
+transportMeans.departure.addAnotherDepartureTransportMeans.roadInlandMode.maxLimit.label = You can only add up to 3 departure means of transport when using road as your mode. To add another, you need to remove one first.
+transportMeans.departure.addAnotherDepartureTransportMeans.error.required = Select yes if you want to add another departure means of transport
