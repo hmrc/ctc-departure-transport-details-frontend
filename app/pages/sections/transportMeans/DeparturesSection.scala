@@ -16,7 +16,6 @@
 
 package pages.sections.transportMeans
 
-import controllers.transportMeans.departure.routes
 import models.{Mode, UserAnswers}
 import pages.sections.Section
 import play.api.libs.json.{JsArray, JsPath}
@@ -29,5 +28,5 @@ case object DeparturesSection extends Section[JsArray] {
   override def toString: String = "departure"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAnotherDepartureTransportMeansController.onPageLoad(userAnswers.lrn, mode))
+    super.route(userAnswers, mode) // TODO - change to 'add another' page route
 }

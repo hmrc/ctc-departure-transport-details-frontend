@@ -221,8 +221,8 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
           "and add nationality yes/no page is missing" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
+              .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
               .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
               .setValue(AddIdentificationNumberYesNoPage(departureIndex), false)
 
@@ -238,9 +238,9 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
           "and nationality page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
               .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
               .setValue(AddDepartureTransportMeansYesNoPage, true)
+              .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
               .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
               .setValue(AddIdentificationNumberYesNoPage(departureIndex), false)
               .setValue(AddVehicleCountryYesNoPage(departureIndex), true)

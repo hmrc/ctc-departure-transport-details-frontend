@@ -1,4 +1,3 @@
-
 GET        /departure-means-of-transport/:departureIndex/identification/:lrn                      controllers.transportMeans.departure.IdentificationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode, departureIndex: Index)
 POST       /departure-means-of-transport/:departureIndex/identification/:lrn                      controllers.transportMeans.departure.IdentificationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, departureIndex: Index)
 GET        /departure-means-of-transport/:departureIndex/change-identification/:lrn               controllers.transportMeans.departure.IdentificationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, departureIndex: Index)
@@ -28,11 +27,6 @@ GET        /departure-means-of-transport/:departureIndex/add-identification-type
 POST       /departure-means-of-transport/:departureIndex/add-identification-type/:lrn             controllers.transportMeans.departure.AddIdentificationTypeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, departureIndex: Index)
 GET        /departure-means-of-transport/:departureIndex/change-add-identification-type/:lrn      controllers.transportMeans.departure.AddIdentificationTypeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, departureIndex: Index)
 POST       /departure-means-of-transport/:departureIndex/change-add-identification-type/:lrn      controllers.transportMeans.departure.AddIdentificationTypeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, departureIndex: Index)
-
-GET        /departure-means-of-transport/add-another/:lrn                                         controllers.transportMeans.departure.AddAnotherDepartureTransportMeansController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /departure-means-of-transport/add-another/:lrn                                         controllers.transportMeans.departure.AddAnotherDepartureTransportMeansController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /departure-means-of-transport/change-add-another/:lrn                                  controllers.transportMeans.departure.AddAnotherDepartureTransportMeansController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /departure-means-of-transport/change-add-another/:lrn                                  controllers.transportMeans.departure.AddAnotherDepartureTransportMeansController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
 GET        /departure-means-of-transport/:index/check-answers/:lrn                                controllers.transportMeans.departure.DepartureTransportAnswersController.onPageLoad(lrn: LocalReferenceNumber,index:Index)
 POST       /departure-means-of-transport/:index/check-answers/:lrn                                controllers.transportMeans.departure.DepartureTransportAnswersController.onSubmit(lrn: LocalReferenceNumber,index:Index)

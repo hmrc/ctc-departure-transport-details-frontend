@@ -60,7 +60,6 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
         val viewModelProvider = new TransportMeansAnswersViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers, mode)(messages, phaseConfig)
         val section           = result.sections(1)
-
         section.sectionTitle.get mustBe sectionTitle
         section.rows.size mustBe 1
         section.addAnotherLink must not be defined
