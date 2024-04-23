@@ -102,10 +102,6 @@ transportMeans.active.change.hidden = active border transport means {0}
 transportMeans.departure.label = Departure means of transport {0}
 transportMeans.departure.change.hidden = departure means of transport {0}
 
-departureTransportMeans.label.noArgs = Departure means of transport {0}
-departureTransportMeans.label.oneArg = Departure means of transport {0} - {1}
-departureTransportMeans.label.bothArgs = Departure means of transport {0} - {1} - {2}
-
 means.caption = Transport details - Modes and means of transport
 inlandMode.caption = Transport details - Inland mode of transport
 departureMeansOfTransport.caption = Transport details - Departure means of transport
@@ -579,12 +575,3 @@ equipment.paymentMethod.D = Other
 equipment.paymentMethod.checkYourAnswersLabel = Payment method
 equipment.paymentMethod.change.hidden = payment method for transport charges
 equipment.paymentMethod.error.required = Select which method of payment you want to use for transport charges
-
-transportMeans.departure.addAnotherDepartureTransportMeans.singular.title = You have added 1 departure means of transport
-transportMeans.departure.addAnotherDepartureTransportMeans.singular.heading = You have added 1 departure means of transport
-transportMeans.departure.addAnotherDepartureTransportMeans.plural.title = You have added {0} departure means of transport
-transportMeans.departure.addAnotherDepartureTransportMeans.plural.heading = You have added {0} departure means of transport
-transportMeans.departure.addAnotherDepartureTransportMeans.label = Do you want to add another departure means of transport?
-transportMeans.departure.addAnotherDepartureTransportMeans.maxLimit.label = You cannot add any more departure means of transport. To add another, you need to remove one first.
-transportMeans.departure.addAnotherDepartureTransportMeans.roadInlandMode.maxLimit.label = You can only add up to 3 departure means of transport when using road as your mode. To add another, you need to remove one first.
-transportMeans.departure.addAnotherDepartureTransportMeans.error.required = Select yes if you want to add another departure means of transport
