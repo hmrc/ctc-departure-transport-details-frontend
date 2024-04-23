@@ -18,31 +18,19 @@ package models.journeyDomain.transportMeans
 
 import config.Constants.ModeOfTransport.Rail
 import config.PhaseConfig
-import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, _}
 import models.reference.transportMeans.departure.Identification
 import models.reference.{InlandMode, Nationality}
-import models.{Index, Mode, OptionalBoolean, Phase, UserAnswers}
+import models.{Index, OptionalBoolean, Phase}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.transportMeans.departure._
 import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
 import play.api.i18n.Messages
-import play.api.mvc.Call
 
 sealed trait TransportMeansDepartureDomain extends JourneyDomainModel {
   val index: Index
 
   def asString(implicit messages: Messages): String
-
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
-    stage match {
-      case AccessingJourney =>
-        controllers.transportMeans.departure.routes.AddIdentificationTypeYesNoController
-          .onPageLoad(userAnswers.lrn, mode, index)
-      case CompletingJourney =>
-        controllers.transportMeans.departure.routes.AddAnotherDepartureTransportMeansController.onPageLoad(userAnswers.lrn, mode)
-    }
-  }
 }
 
 object TransportMeansDepartureDomain {
@@ -64,14 +52,14 @@ case class PostTransitionTransportMeansDepartureDomain(
     extends TransportMeansDepartureDomain {
 
   override def asString(implicit messages: Messages): String =
-    PostTransitionTransportMeansDepartureDomain.asString(identification, identificationNumber, index)
+    PostTransitionTransportMeansDepartureDomain.asString(identification, identificationNumber)
 }
 
 object PostTransitionTransportMeansDepartureDomain {
 
-  def asString(identification: Option[Identification], identificationNumber: String, index: Index)(implicit messages: Messages): String =
-    identification.fold(messages("departureTransportMeans.label.oneArg", index.display, identificationNumber))(
-      value => messages("departureTransportMeans.label.bothArgs", index.display, value.asString, identificationNumber)
+  def asString(identification: Option[Identification], identificationNumber: String)(implicit messages: Messages): String =
+    identification.fold(identificationNumber)(
+      value => s"${value.asString} - $identificationNumber"
     )
 
   implicit def userAnswersReader(index: Index): Read[TransportMeansDepartureDomain] =
@@ -89,19 +77,10 @@ case class TransitionTransportMeansDepartureDomain(
 )(override val index: Index)
     extends TransportMeansDepartureDomain {
 
-  override def asString(implicit messages: Messages): String =
-    TransitionTransportMeansDepartureDomain.asString(identification, identificationNumber, index)
+  override def asString(implicit messages: Messages): String = this.toString
 }
 
 object TransitionTransportMeansDepartureDomain {
-
-  def asString(identification: Option[Identification], identificationNumber: Option[String], index: Index)(implicit messages: Messages): String =
-    (identification, identificationNumber) match {
-      case (Some(id), Some(idNumber)) => messages("departureTransportMeans.label.bothArgs", index.display, id.asString, idNumber)
-      case (Some(id), None)           => messages("departureTransportMeans.label.oneArg", index.display, id.asString)
-      case (None, Some(idNumber))     => messages("departureTransportMeans.label.oneArg", index.display, idNumber)
-      case _                          => messages("departureTransportMeans.label.noArgs", index.display)
-    }
 
   implicit def userAnswersReader(index: Index): Read[TransportMeansDepartureDomain] = {
     lazy val identificationReader: Read[Option[Identification]] =

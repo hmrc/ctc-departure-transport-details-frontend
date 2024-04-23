@@ -39,53 +39,6 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
 
   "TransportMeansCheckYourAnswersHelper" - {
 
-    "addDepartureTransportMeans" - {
-      "must return None" - {
-        "when AddDepartureTransportMeansYesNoPage undefined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.addDepartureTransportMeans()
-              result mustBe None
-          }
-        }
-      }
-
-      "must return Some(Row)" - {
-        "when AddDepartureTransportMeansYesNoPage defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddDepartureTransportMeansYesNoPage, true)
-
-              val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
-              val result = helper.addDepartureTransportMeans()
-
-              result mustBe Some(
-                SummaryListRow(
-                  key = Key("Do you want to add identification for this vehicle?".toText),
-                  value = Value("Yes".toText),
-                  actions = Some(
-                    Actions(
-                      items = List(
-                        ActionItem(
-                          content = "Change".toText,
-                          href = controllers.transportMeans.routes.AddDepartureTransportMeansYesNoController
-                            .onPageLoad(answers.lrn, mode)
-                            .url,
-                          visuallyHiddenText = Some("if you want to add identification for the departure means of transport"),
-                          attributes = Map("id" -> "change-add-departure-transport-means")
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-          }
-        }
-      }
-    }
-
     "activeBorderTransportMeans" - {
 
       "during post transition" - {
@@ -166,7 +119,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               action.content.value mustBe "Change"
 //              action.href mustBe routes.CheckYourAnswersController
 //                .onPageLoad(userAnswers.lrn, mode, departureIndex)
-//                .url //TODO update when Add DTM page is built
+//                .url //TODO update when DTM CYA page is built
               action.visuallyHiddenText.get mustBe "departure means of transport 1"
               action.id mustBe "change-departure-means-of-transport-1"
           }
@@ -305,6 +258,51 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                           href = controllers.transportMeans.routes.InlandModeController.onPageLoad(answers.lrn, mode).url,
                           visuallyHiddenText = Some("inland mode of transport"),
                           attributes = Map("id" -> "change-transport-means-inland-mode")
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+          }
+        }
+      }
+    }
+
+    "addDepartureTransportMeans" - {
+      "must return None" - {
+        "when AddDepartureTransportMeansYesNoPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addDepartureTransportMeans
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        "when AddDepartureTransportMeansYesNoPage defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
+
+              val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
+              val result = helper.addDepartureTransportMeans
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("Do you want to add identification for this vehicle?".toText),
+                  value = Value("Yes".toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = controllers.transportMeans.routes.AddDepartureTransportMeansYesNoController.onPageLoad(answers.lrn, mode).url,
+                          visuallyHiddenText = Some("if you want to add identification for the departure means of transport"),
+                          attributes = Map("id" -> "change-add-departure-transport-means")
                         )
                       )
                     )

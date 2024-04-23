@@ -50,7 +50,7 @@ class TransportMeansCheckYourAnswersHelper(
     getAnswersAndBuildSectionRows(DeparturesSection)(departureTransportMeans)
 
   def departureTransportMeans(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[TransportMeansDepartureDomain](
-    formatAnswer = _.asString.toText,
+    formatAnswer = formatAsText,
     prefix = "transportMeans.departure",
     id = Some(s"change-departure-means-of-transport-${index.display}"),
     args = index.display
@@ -95,7 +95,7 @@ class TransportMeansCheckYourAnswersHelper(
     id = Some("change-transport-means-inland-mode")
   )
 
-  def addDepartureTransportMeans(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def addDepartureTransportMeans: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddDepartureTransportMeansYesNoPage,
     formatAnswer = formatAsYesOrNo,
     prefix = "transportMeans.addDepartureTransportMeansYesNo",
