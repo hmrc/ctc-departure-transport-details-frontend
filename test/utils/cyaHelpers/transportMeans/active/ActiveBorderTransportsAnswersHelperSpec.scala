@@ -107,7 +107,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         }
       }
 
-      "and identification number is defined" in {
+      "and identification is defined" in {
         val identificationNumber = nonEmptyString.sample.value
         val userAnswers = emptyUserAnswers
           .setValue(SecurityDetailsTypePage, NoSecurityDetails)
@@ -130,7 +130,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         }
       }
 
-      "and identification type and identification number is defined" in {
+      "and identification type and identification is defined" in {
         val identificationType   = Identification("11", "Name of a sea-going vessel")
         val identificationNumber = nonEmptyString.sample.value
         val userAnswers = emptyUserAnswers

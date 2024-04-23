@@ -102,7 +102,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("Do you want to add an identification number for this vehicle?".toText),
+                  key = Key("Do you want to add an identification for this vehicle?".toText),
                   value = Value("Yes".toText),
                   actions = Some(
                     Actions(
@@ -112,7 +112,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                           href = controllers.transportMeans.departure.routes.AddIdentificationNumberYesNoController
                             .onPageLoad(answers.lrn, mode, departureIndex)
                             .url,
-                          visuallyHiddenText = Some("if you want to add an identification number for the departure means of transport"),
+                          visuallyHiddenText = Some("if you want to add an identification for the departure means of transport"),
                           attributes = Map("id" -> "change-transport-means-departure-add-identification-number")
                         )
                       )
@@ -235,7 +235,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("Identification number".toText),
+                  key = Key("Identification".toText),
                   value = Value(s"$identificationNumber".toText),
                   actions = Some(
                     Actions(
@@ -244,7 +244,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                           content = "Change".toText,
                           href =
                             controllers.transportMeans.departure.routes.MeansIdentificationNumberController.onPageLoad(answers.lrn, mode, departureIndex).url,
-                          visuallyHiddenText = Some("identification number for the departure means of transport"),
+                          visuallyHiddenText = Some("identification for the departure means of transport"),
                           attributes = Map("id" -> "change-transport-means-departure-identification-number")
                         )
                       )
