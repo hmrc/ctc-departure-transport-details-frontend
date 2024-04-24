@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package models.reference
+package models
 
-import cats.Order
-import models.Selectable
-import play.api.libs.json.{Format, Json}
+package object reference {
 
-case class Nationality(code: String, description: String) extends Selectable {
+  implicit class RichComparison[T](value: (T, T)) {
 
-  override def toString: String = s"$description - $code"
-
-  override val value: String = code
-}
-
-object Nationality {
-  implicit val format: Format[Nationality] = Json.format[Nationality]
-
-  implicit val order: Order[Nationality] = (x: Nationality, y: Nationality) => {
-    (x, y).compareBy(_.description, _.code)
+    def compareBy(fs: (T => String)*): Int =
+      value match {
+        case (x, y) =>
+          fs.toList match {
+            case Nil => 0
+            case f :: tail =>
+              f(x).compareToIgnoreCase(f(y)) match {
+                case 0      => compareBy(tail: _*)
+                case result => result
+              }
+          }
+      }
   }
 }
