@@ -35,6 +35,6 @@ object PaymentMethod extends DynamicEnumerableType[PaymentMethod] {
   implicit val format: Format[PaymentMethod] = Json.format[PaymentMethod]
 
   implicit val order: Order[PaymentMethod] = (x: PaymentMethod, y: PaymentMethod) => {
-    x.code.compareToIgnoreCase(y.code)
+    (x, y).compareBy(_.method)
   }
 }
