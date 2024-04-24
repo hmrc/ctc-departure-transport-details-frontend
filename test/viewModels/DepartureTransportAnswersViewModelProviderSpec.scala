@@ -50,6 +50,7 @@ class DepartureTransportAnswersViewModelProviderSpec extends SpecBase with Scala
       val userAnswers = emptyUserAnswers
         .setValue(AddIdentificationTypeYesNoPage(index), true)
         .setValue(IdentificationPage(index), Identification("type", "desc"))
+        .setValue(AddIdentificationNumberYesNoPage(index), true)
         .setValue(MeansIdentificationNumberPage(index), "id-means")
         .setValue(AddVehicleCountryYesNoPage(index), true)
         .setValue(VehicleCountryPage(index), Nationality("code", "description"))
@@ -59,7 +60,7 @@ class DepartureTransportAnswersViewModelProviderSpec extends SpecBase with Scala
 
       val section = result.sections.head
       section.sectionTitle mustBe None
-      section.rows.size mustBe 5
+      section.rows.size mustBe 6
       section.addAnotherLink must not be defined
     }
 

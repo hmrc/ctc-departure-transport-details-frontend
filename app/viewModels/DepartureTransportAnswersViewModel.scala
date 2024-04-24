@@ -39,7 +39,7 @@ object DepartureTransportAnswersViewModel {
 
       val preRequisitesSection = Section(
         rows = Seq(
-          helper.departureAddTypeYesNo,
+          helper.departureAddTypeYesNo(Some("checkYourAnswers")),
           helper.departureIdentificationType,
           helper.departureAddIdentificationNumber,
           helper.departureIdentificationNumber,

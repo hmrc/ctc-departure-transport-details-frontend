@@ -25,7 +25,7 @@ import views.html.transportMeans.DepartureTransportAnswersView
 
 class DepartureTransportAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
-  override val prefix: String = "transportMeans.departure"
+  override val prefix: String = "transportMeans.departure.checkYourAnswers"
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
@@ -36,7 +36,7 @@ class DepartureTransportAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
   behave like pageWithBackLink()
 
-  behave like pageWithSectionCaption("Transport details")
+  behave like pageWithSectionCaption("Transport details - Departure means of transport")
 
   behave like pageWithHeading()
 

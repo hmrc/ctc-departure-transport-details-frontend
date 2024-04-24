@@ -25,8 +25,13 @@ caption = Transport details
 
 checkYourAnswers.heading = Check your answers
 checkYourAnswers.title = Check your answers - Transport details
-transportMeans.departure.heading = Check your answers
-transportMeans.departure.title = Check your answers - Departure means of transport
+
+transportMeans.departure.checkYourAnswers.heading = Check your answers
+transportMeans.departure.checkYourAnswers.title = Check your answers - Departure means of transport
+
+transportMeans.departure.checkYourAnswers.addIdentificationTypeYesNo.checkYourAnswersLabel = Do you want to add the type of identification for the departure means of transport?
+transportMeans.departure.checkYourAnswers.addIdentificationTypeYesNo.change.hidden = if you want to add the type of identification for the departure means of transport
+
 checkYourAnswers.equipment.label = Transport equipment {0}
 checkYourAnswers.equipment.change.hidden = transport equipment {0}
 checkYourAnswers.supplyChainActor.label = Supply chain actor {0}
