@@ -39,7 +39,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           forAll(arbitrary[Mode]) {
             mode =>
               val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, mode, departureIndex)
-              val result = helper.departureAddTypeYesNo
+              val result = helper.departureAddTypeYesNo()
               result mustBe None
           }
         }
@@ -53,11 +53,41 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                 .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
 
               val helper = new DepartureTransportMeansAnswersHelper(answers, mode, departureIndex)
-              val result = helper.departureAddTypeYesNo
+              val result = helper.departureAddTypeYesNo()
 
               result mustBe Some(
                 SummaryListRow(
                   key = Key("Do you want to add the type of identification?".toText),
+                  value = Value("Yes".toText),
+                  actions = Some(
+                    Actions(
+                      items = List(
+                        ActionItem(
+                          content = "Change".toText,
+                          href = routes.AddIdentificationTypeYesNoController.onPageLoad(answers.lrn, mode, departureIndex).url,
+                          visuallyHiddenText = Some("if you want to add the type of identification for the departure means of transport"),
+                          attributes = Map("id" -> "change-transport-means-departure-add-identification-type")
+                        )
+                      )
+                    )
+                  )
+                )
+              )
+          }
+        }
+
+        "when AddIdentificationTypeYesNoPage defined and suffix is 'checkYourAnswers'" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers
+                .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
+
+              val helper = new DepartureTransportMeansAnswersHelper(answers, mode, departureIndex)
+              val result = helper.departureAddTypeYesNo(Some("checkYourAnswers"))
+
+              result mustBe Some(
+                SummaryListRow(
+                  key = Key("Do you want to add the type of identification for the departure means of transport?".toText),
                   value = Value("Yes".toText),
                   actions = Some(
                     Actions(

@@ -27,3 +27,6 @@ GET        /departure-means-of-transport/:departureIndex/add-identification-type
 POST       /departure-means-of-transport/:departureIndex/add-identification-type/:lrn             controllers.transportMeans.departure.AddIdentificationTypeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode, departureIndex: Index)
 GET        /departure-means-of-transport/:departureIndex/change-add-identification-type/:lrn      controllers.transportMeans.departure.AddIdentificationTypeYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode, departureIndex: Index)
 POST       /departure-means-of-transport/:departureIndex/change-add-identification-type/:lrn      controllers.transportMeans.departure.AddIdentificationTypeYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode, departureIndex: Index)
+
+GET        /departure-means-of-transport/:index/check-answers/:lrn                                controllers.transportMeans.departure.DepartureTransportAnswersController.onPageLoad(lrn: LocalReferenceNumber,index:Index)
+POST       /departure-means-of-transport/:index/check-answers/:lrn                                controllers.transportMeans.departure.DepartureTransportAnswersController.onSubmit(lrn: LocalReferenceNumber,index:Index)
