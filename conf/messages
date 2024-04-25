@@ -588,3 +588,7 @@ transportMeans.departure.addAnotherDepartureTransportMeans.label = Do you want t
 transportMeans.departure.addAnotherDepartureTransportMeans.maxLimit.label = You cannot add any more departure means of transport. To add another, you need to remove one first.
 transportMeans.departure.addAnotherDepartureTransportMeans.roadInlandMode.maxLimit.label = You can only add up to 3 departure means of transport when using road as your mode. To add another, you need to remove one first.
 transportMeans.departure.addAnotherDepartureTransportMeans.error.required = Select yes if you want to add another departure means of transport
+
+transportMeans.departure.removeTransportMeansOfDepartureYesNo.title = Are you sure you want to remove this departure means of transport?
+transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading = Are you sure you want to remove this departure means of transport?
+transportMeans.departure.removeTransportMeansOfDepartureYesNo.error.required = Select yes if you want to remove this departure means of transport
