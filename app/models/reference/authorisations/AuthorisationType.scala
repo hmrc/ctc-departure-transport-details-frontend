@@ -46,6 +46,6 @@ object AuthorisationType extends DynamicEnumerableType[AuthorisationType] {
   implicit val format: Format[AuthorisationType] = Json.format[AuthorisationType]
 
   implicit val order: Order[AuthorisationType] = (x: AuthorisationType, y: AuthorisationType) => {
-    x.code.compareToIgnoreCase(y.code)
+    (x, y).compareBy(_.code)
   }
 }

@@ -20,10 +20,17 @@ import config.{FrontendAppConfig, PhaseConfig}
 import models.reference.Nationality
 import models.reference.transportMeans.departure.Identification
 import models.{Index, Mode, UserAnswers}
-import pages.transportMeans.departure._
+import pages.transportMeans.departure.{
+  AddIdentificationNumberYesNoPage,
+  AddIdentificationTypeYesNoPage,
+  AddVehicleCountryYesNoPage,
+  IdentificationPage,
+  MeansIdentificationNumberPage,
+  VehicleCountryPage
+}
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import utils.cyaHelpers.AnswersHelper
 
 class DepartureTransportMeansAnswersHelper(
@@ -54,12 +61,22 @@ class DepartureTransportMeansAnswersHelper(
     id = Some("change-transport-means-departure-vehicle-nationality")
   )
 
-  def departureAddTypeYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
-    page = AddIdentificationTypeYesNoPage(departureIndex),
-    formatAnswer = formatAsYesOrNo,
-    prefix = "transportMeans.departure.addIdentificationTypeYesNo",
-    id = Some("change-transport-means-departure-add-identification-type")
-  )
+  def departureAddTypeYesNo(suffix: Option[String] = None): Option[SummaryListRow] = suffix.fold(
+    getAnswerAndBuildRow[Boolean](
+      page = AddIdentificationTypeYesNoPage(departureIndex),
+      formatAnswer = formatAsYesOrNo,
+      prefix = "transportMeans.departure.addIdentificationTypeYesNo",
+      id = Some("change-transport-means-departure-add-identification-type")
+    )
+  ) {
+    s =>
+      getAnswerAndBuildRow[Boolean](
+        page = AddIdentificationTypeYesNoPage(departureIndex),
+        formatAnswer = formatAsYesOrNo,
+        prefix = s"transportMeans.departure.$s.addIdentificationTypeYesNo",
+        id = Some("change-transport-means-departure-add-identification-type")
+      )
+  }
 
   def departureAddIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddIdentificationNumberYesNoPage(departureIndex),

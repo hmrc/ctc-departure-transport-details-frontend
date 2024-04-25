@@ -41,7 +41,7 @@ object InlandMode extends DynamicEnumerableType[InlandMode] {
   implicit val format: Format[InlandMode] = Json.format[InlandMode]
 
   implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => {
-    x.code.compareToIgnoreCase(y.code)
+    (x, y).compareBy(_.code)
   }
 }
 
