@@ -58,7 +58,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       .overrides(bind(classOf[TransportMeansNavigatorProvider]).toInstance(fakeTransportMeansNavigatorProvider))
       .overrides(bind(classOf[MeansOfTransportIdentificationTypesService]).toInstance(mockMeansOfIdentificationTypesService))
 
-  private val inlandMode = arbitrary[InlandMode].suchThat(_.code != "3").sample.value
+  private val inlandMode = arbitrary[InlandMode].suchThat(_.code != Road).sample.value
 
   private val baseAnswers = emptyUserAnswers
     .setValue(InlandModePage, inlandMode)

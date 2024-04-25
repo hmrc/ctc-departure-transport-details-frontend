@@ -26,9 +26,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.DepartureTransportAnswersViewModel.DepartureTransportAnswersViewModelProvider
-import viewModels.{DepartureTransportAnswersViewModel, Section, TransportAnswersViewModel}
-import viewModels.TransportAnswersViewModel.TransportAnswersViewModelProvider
-import views.html.TransportAnswersView
+import viewModels.{DepartureTransportAnswersViewModel, Section}
 import views.html.transportMeans.DepartureTransportAnswersView
 
 class DepartureTransportAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {

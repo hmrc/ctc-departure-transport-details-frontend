@@ -56,12 +56,13 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   def signOutUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/delete-lock"
 
-  lazy val maxSeals: Int                   = configuration.get[Int]("limits.maxSeals")
-  lazy val maxAuthorisations: Int          = configuration.get[Int]("limits.maxAuthorisations")
-  lazy val maxActiveBorderTransports: Int  = configuration.get[Int]("limits.maxActiveBorderTransports")
-  lazy val maxDepartureTransportMeans: Int = configuration.get[Int]("limits.maxDepartureTransportMeans")
-  lazy val maxSupplyChainActors: Int       = configuration.get[Int]("limits.maxSupplyChainActors")
-  lazy val maxEquipmentNumbers: Int        = configuration.get[Int]("limits.maxEquipmentNumbers")
+  lazy val maxSeals: Int                                 = configuration.get[Int]("limits.maxSeals")
+  lazy val maxAuthorisations: Int                        = configuration.get[Int]("limits.maxAuthorisations")
+  lazy val maxActiveBorderTransports: Int                = configuration.get[Int]("limits.maxActiveBorderTransports")
+  lazy val maxDepartureTransportMeans: Int               = configuration.get[Int]("limits.departure.maxDepartureTransportMeans")
+  lazy val maxRoadInlandModeDepartureTransportMeans: Int = configuration.get[Int]("limits.departure.maxRoadInlandModeDepartureTransportMeans")
+  lazy val maxSupplyChainActors: Int                     = configuration.get[Int]("limits.maxSupplyChainActors")
+  lazy val maxEquipmentNumbers: Int                      = configuration.get[Int]("limits.maxEquipmentNumbers")
 
   def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/declaration-summary"
 
