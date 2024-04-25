@@ -17,6 +17,7 @@
 package controllers.transportMeans.departure
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.Constants.ModeOfTransport.Road
 import forms.EnumerableFormProvider
 import generators.Generators
 import models.NormalMode
@@ -33,6 +34,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.MeansOfTransportIdentificationTypesService
+import viewModels.transportMeans.departure.IdentificationViewModel
 import views.html.transportMeans.departure.IdentificationView
 
 import scala.concurrent.Future
@@ -46,6 +48,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val form                     = formProvider[Identification]("transportMeans.departure.identification", identificationTypes)
   private val mode                     = NormalMode
   private lazy val identificationRoute = routes.IdentificationController.onPageLoad(lrn, mode, departureIndex).url
+  private val identificationViewModel  = new IdentificationViewModel(Some(Identification(Road, "test")), departureIndex, Some(InlandMode("code", "desc")))
 
   private val mockMeansOfIdentificationTypesService = mock[MeansOfTransportIdentificationTypesService]
 
@@ -55,7 +58,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       .overrides(bind(classOf[TransportMeansNavigatorProvider]).toInstance(fakeTransportMeansNavigatorProvider))
       .overrides(bind(classOf[MeansOfTransportIdentificationTypesService]).toInstance(mockMeansOfIdentificationTypesService))
 
-  private val inlandMode = arbitrary[InlandMode].sample.value
+  private val inlandMode = arbitrary[InlandMode].suchThat(_.code != "3").sample.value
 
   private val baseAnswers = emptyUserAnswers
     .setValue(InlandModePage, inlandMode)
@@ -68,7 +71,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
   "Identification Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET " in {
 
       setExistingUserAnswers(baseAnswers)
 
@@ -81,7 +84,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, identificationTypes, mode, departureIndex)(request, messages).toString
+        view(form, lrn, identificationTypes, mode, departureIndex, identificationViewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
@@ -100,7 +103,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, identificationTypes, mode, departureIndex)(request, messages).toString
+        view(filledForm, lrn, identificationTypes, mode, departureIndex, identificationViewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
@@ -119,7 +122,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       redirectLocation(result).value mustEqual onwardRoute.url
     }
 
-    "must return a Bad Request and errors when invalid data is submitted" in {
+    "must return a Bad Request and errors when invalid data is submitted and inlandMode" in {
 
       setExistingUserAnswers(baseAnswers)
 
@@ -133,7 +136,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, identificationTypes, mode, departureIndex)(request, messages).toString
+        view(boundForm, lrn, identificationTypes, mode, departureIndex, identificationViewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

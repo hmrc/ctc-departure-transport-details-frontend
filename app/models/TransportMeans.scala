@@ -16,9 +16,9 @@
 
 package models
 
-import cats.conversions.all.autoConvertProfunctorVariance
 import models.reference.transportMeans.departure.Identification
 import pages.transportMeans.departure.{IdentificationPage, MeansIdentificationNumberPage}
+import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads
 
@@ -31,6 +31,13 @@ case class TransportMeans(index: Index, identificationType: Option[Identificatio
     case (None, None)       => ""
   }
 
+  def forAddAnotherDisplay(implicit messages: Messages): Option[String] = (identificationType, identificationNumber) match {
+    case (Some(identification), Some(identificationNumber)) =>
+      Some(messages("departureTransportMeans.label.bothArgs", index.display, identification.asString, identificationNumber))
+    case (Some(identification), None)       => Some(messages("departureTransportMeans.label.oneArg", index.display, identification.asString))
+    case (None, Some(identificationNumber)) => Some(messages("departureTransportMeans.label.oneArg", index.display, identificationNumber))
+    case _                                  => Some(messages("departureTransportMeans.label.noArgs", index.display))
+  }
 }
 
 object TransportMeans {

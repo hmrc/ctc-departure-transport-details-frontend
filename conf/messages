@@ -592,3 +592,6 @@ transportMeans.departure.addAnotherDepartureTransportMeans.error.required = Sele
 transportMeans.departure.removeTransportMeansOfDepartureYesNo.title = Are you sure you want to remove this departure means of transport?
 transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading = Are you sure you want to remove this departure means of transport?
 transportMeans.departure.removeTransportMeansOfDepartureYesNo.error.required = Select yes if you want to remove this departure means of transport
+
+transportMeans.departure.identification.paragraph1 = You must add the registration number of the road vehicle for your inland mode.
+transportMeans.departure.identification.paragraph2 = You must add the registration number of the road trailer for your inland mode.

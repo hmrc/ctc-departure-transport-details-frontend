@@ -52,12 +52,12 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, TransportMeansSection, addAnother(lrn, mode)) {
       implicit request =>
-        val insetText = formatInsetText(request.userAnswers, departureIndex)
+        val insetText: Option[String] = formatInsetText(request.userAnswers, departureIndex)
         Ok(view(form(departureIndex), lrn, mode, departureIndex, insetText))
     }
 
-  private def formatInsetText(userAnswers: UserAnswers, departureIndex: Index): String =
-    TransportMeans(userAnswers, departureIndex).map(_.forRemoveDisplay).getOrElse("")
+  private def formatInsetText(userAnswers: UserAnswers, departureIndex: Index): Option[String] =
+    TransportMeans(userAnswers, departureIndex).map(_.forRemoveDisplay)
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, TransportMeansSection, addAnother(lrn, mode))

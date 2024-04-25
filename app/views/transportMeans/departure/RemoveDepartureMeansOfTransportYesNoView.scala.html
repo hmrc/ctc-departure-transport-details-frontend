@@ -17,18 +17,19 @@
 @import controllers.transportMeans.departure.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
+@import viewModels.components.InputYesNoViewModel
 @import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
-mainTemplate: MainTemplate,
-formHelper: FormWithCSRF,
-inputYesNo: InputYesNo,
-insetText: InsetText,
-errorSummary: ErrorSummary,
-button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputYesNo: InputYesNo,
+    insetText : InsetText,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index,  insetTextValue: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index, departureMeansOfTransport: Option[String])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transportMeans.departure.removeTransportMeansOfDepartureYesNo.title", departureIndex.display),
@@ -36,30 +37,20 @@ button: Button
     lrn = lrn
 ) {
 
-@formHelper(action = routes.RemoveDepartureMeansOfTransportYesNoController.onSubmit(lrn, mode, departureIndex), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RemoveDepartureMeansOfTransportYesNoController.onSubmit(lrn, mode, departureIndex), Symbol("autoComplete") -> "off") {
 
-    @errorSummary(form.errors)
+        @errorSummary(form.errors)
 
-    @if(insetTextValue.nonEmpty){
         @inputYesNo(
             field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
-            heading = messages("transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading", departureIndex.display),
-            caption = Some(messages("departureMeansOfTransport.caption")),
-            additionalHtml = insetText(insetTextValue)
-        )
-    )
-    } else {
-        @inputYesNo(
-            field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = InputYesNoViewModel(
                 heading = messages("transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading", departureIndex.display),
-                caption = Some(messages("departureMeansOfTransport.caption")
+                caption = Some(messages("departureMeansOfTransport.caption")),
+                additionalHtml = departureMeansOfTransport.map(insetText(_)
             )
         )
     )
 
-    }
         @button(attributes = Map("id" -> "submit"))
     }
 }

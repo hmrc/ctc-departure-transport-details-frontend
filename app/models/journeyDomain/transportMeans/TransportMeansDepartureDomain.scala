@@ -41,7 +41,7 @@ sealed trait TransportMeansDepartureDomain extends JourneyDomainModel {
           .onPageLoad(userAnswers.lrn, mode, index)
       case CompletingJourney =>
         controllers.transportMeans.departure.routes.AddAnotherDepartureTransportMeansController.onPageLoad(userAnswers.lrn, mode)
-    }
+    } // TODO override page with DepartureSection(index) when mini CYA is in
   }
 }
 
