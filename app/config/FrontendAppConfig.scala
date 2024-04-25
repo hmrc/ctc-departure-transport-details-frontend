@@ -54,7 +54,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   def keepAliveUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/keep-alive"
 
-  def signOutUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/delete-lock"
+  def signOutUrl(lrn: LocalReferenceNumber): String        = s"$departureHubUrl/$lrn/delete-lock"
+  def sessionExpiredUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/this-service-has-been-reset/$lrn"
 
   lazy val maxSeals: Int                   = configuration.get[Int]("limits.maxSeals")
   lazy val maxAuthorisations: Int          = configuration.get[Int]("limits.maxAuthorisations")
