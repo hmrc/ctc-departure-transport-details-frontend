@@ -20,6 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
+import pages.sections.transportMeans.{DepartureSection, DeparturesSection}
 import pages.transportMeans.departure.VehicleCountryPage
 
 class TransportMeansDepartureListDomainSpec extends SpecBase with Generators {
@@ -38,9 +39,8 @@ class TransportMeansDepartureListDomainSpec extends SpecBase with Generators {
       val result = TransportMeansDepartureListDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
       result.value.value.transportMeansDepartureListDomain.length mustBe numberOfDepartureTransportMeans
-      result.value.pages.last mustBe VehicleCountryPage(
-        Index(numberOfDepartureTransportMeans - 1)
-      ) // TODO - should be DeparturesSection when 'add another' page built
+      result.value.pages.last mustBe DeparturesSection
+
     }
   }
 }

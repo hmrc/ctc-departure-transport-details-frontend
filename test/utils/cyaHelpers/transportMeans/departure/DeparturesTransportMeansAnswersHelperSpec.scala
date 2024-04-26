@@ -21,6 +21,7 @@ import config.PhaseConfig
 import controllers.transportMeans.departure.routes
 import generators.Generators
 import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
+import models.reference.Nationality
 import models.reference.transportMeans.departure.Identification
 import models.{Index, Mode, NormalMode, OptionalBoolean, Phase}
 import org.mockito.Mockito.when
@@ -54,7 +55,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
             Right(
               ListItem(
                 name = departure.asString,
-                changeUrl = routes.AddIdentificationTypeYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
+                changeUrl = routes.DepartureTransportAnswersController.onPageLoad(userAnswers.lrn, index).url,
                 removeUrl = None
               )
             )
@@ -202,28 +203,6 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
           }
         }
 
-        "when in post transition" in {
-          val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-          when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
-          val userAnswers = emptyUserAnswers
-            .setValue(AddIdentificationTypeYesNoPage(index), false)
-            .setValue(MeansIdentificationNumberPage(index), identificationNumber)
-
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
-              helper.listItems mustBe Seq(
-                Left(
-                  ListItem(
-                    name = s"Departure means of transport ${index.display} - $identificationNumber",
-                    changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
-                    removeUrl = None
-                  )
-                )
-              )
-          }
-        }
-
       }
 
       "and identification type and identification number is defined" - {
@@ -260,25 +239,40 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
         }
 
         "when in post transition" in {
+
+          val nationality = arbitrary[Nationality].sample.value
+
           val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
           when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
+          val secondIndex = Index(1)
           val userAnswers = emptyUserAnswers
-            .setValue(AddDepartureTransportMeansYesNoPage, true)
-            .setValue(AddIdentificationTypeYesNoPage(index), true)
             .setValue(IdentificationPage(index), identificationType)
-            .setValue(AddIdentificationNumberYesNoPage(index), true)
             .setValue(MeansIdentificationNumberPage(index), identificationNumber)
+            .setValue(VehicleCountryPage(departureIndex), nationality)
+            .setValue(IdentificationPage(secondIndex), identificationType)
+            .setValue(MeansIdentificationNumberPage(secondIndex), identificationNumber)
+            .setValue(VehicleCountryPage(secondIndex), nationality)
 
           forAll(arbitrary[Mode]) {
             mode =>
               val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
               helper.listItems mustBe Seq(
-                Left(
+                Right(
                   ListItem(
                     name = s"Departure means of transport ${index.display} - ${identificationType.asString} - $identificationNumber",
-                    changeUrl = routes.AddVehicleCountryYesNoController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
+                    changeUrl = routes.DepartureTransportAnswersController.onPageLoad(userAnswers.lrn, departureIndex).url,
                     removeUrl = Some(
                       controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
+                    )
+                  )
+                ),
+                Right(
+                  ListItem(
+                    name = s"Departure means of transport ${secondIndex.display} - ${identificationType.asString} - $identificationNumber",
+                    changeUrl = routes.DepartureTransportAnswersController.onPageLoad(userAnswers.lrn, secondIndex).url,
+                    removeUrl = Some(
+                      controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, secondIndex).url
                     )
                   )
                 )

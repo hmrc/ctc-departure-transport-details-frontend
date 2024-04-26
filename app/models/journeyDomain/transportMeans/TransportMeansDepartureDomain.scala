@@ -24,6 +24,8 @@ import models.reference.transportMeans.departure.Identification
 import models.reference.{InlandMode, Nationality}
 import models.{Index, Mode, OptionalBoolean, Phase, UserAnswers}
 import pages.preRequisites.ContainerIndicatorPage
+import pages.sections.Section
+import pages.sections.transportMeans.{DepartureSection, TransportMeansSection}
 import pages.transportMeans.departure._
 import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
 import play.api.i18n.Messages
@@ -34,15 +36,14 @@ sealed trait TransportMeansDepartureDomain extends JourneyDomainModel {
 
   def asString(implicit messages: Messages): String
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
-    stage match {
-      case AccessingJourney =>
-        controllers.transportMeans.departure.routes.AddIdentificationTypeYesNoController
-          .onPageLoad(userAnswers.lrn, mode, index)
-      case CompletingJourney =>
-        controllers.transportMeans.departure.routes.AddAnotherDepartureTransportMeansController.onPageLoad(userAnswers.lrn, mode)
-    } // TODO override page with DepartureSection(index) when mini CYA is in
-  }
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
+    page(userAnswers) match {
+      case Some(value) => value.route(userAnswers, mode)
+      case None        => TransportMeansSection.route(userAnswers, mode)
+    }
+
+  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(DepartureSection(index))
+
 }
 
 object TransportMeansDepartureDomain {
@@ -57,9 +58,9 @@ object TransportMeansDepartureDomain {
 }
 
 case class PostTransitionTransportMeansDepartureDomain(
-  identification: Option[Identification],
+  identification: Identification,
   identificationNumber: String,
-  nationality: Option[Nationality]
+  nationality: Nationality
 )(override val index: Index)
     extends TransportMeansDepartureDomain {
 
@@ -69,16 +70,14 @@ case class PostTransitionTransportMeansDepartureDomain(
 
 object PostTransitionTransportMeansDepartureDomain {
 
-  def asString(identification: Option[Identification], identificationNumber: String, index: Index)(implicit messages: Messages): String =
-    identification.fold(messages("departureTransportMeans.label.oneArg", index.display, identificationNumber))(
-      value => messages("departureTransportMeans.label.bothArgs", index.display, value.asString, identificationNumber)
-    )
+  def asString(identification: Identification, identificationNumber: String, index: Index)(implicit messages: Messages): String =
+    messages("departureTransportMeans.label.bothArgs", index.display, identification.asString, identificationNumber)
 
   implicit def userAnswersReader(index: Index): Read[TransportMeansDepartureDomain] =
     (
-      AddIdentificationTypeYesNoPage(index).filterOptionalDependent(identity)(IdentificationPage(index).reader),
+      IdentificationPage(index).reader,
       MeansIdentificationNumberPage(index).reader,
-      AddVehicleCountryYesNoPage(index).filterOptionalDependent(identity)(VehicleCountryPage(index).reader)
+      VehicleCountryPage(index).reader
     ).map(PostTransitionTransportMeansDepartureDomain.apply(_, _, _)(index))
 }
 
