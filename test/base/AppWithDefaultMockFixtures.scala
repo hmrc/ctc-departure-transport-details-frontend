@@ -77,6 +77,12 @@ trait AppWithDefaultMockFixtures extends BeforeAndAfterEach with GuiceOneAppPerS
   protected val fakeTransportMeansActiveNavigatorProvider: TransportMeansActiveNavigatorProvider =
     (mode: Mode, index: Index) => new FakeTransportMeansActiveNavigator(onwardRoute, mode, index)
 
+  protected val fakeTransportMeansDepartureNavigatorProvider: TransportMeansDepartureNavigatorProvider =
+    (mode: Mode, index: Index) => new FakeTransportMeansDepartureNavigator(onwardRoute, mode, index)
+
+  protected val fakeTransportMeansDepartureListNavigatorProvider: TransportMeansDepartureListNavigatorProvider =
+    (mode: Mode) => new FakeTransportMeansDepartureListNavigator(onwardRoute, mode)
+
   protected val fakeTransportMeansActiveListNavigatorProvider: TransportMeansActiveListNavigatorProvider =
     (mode: Mode) => new FakeTransportMeansActiveListNavigator(onwardRoute, mode)
 

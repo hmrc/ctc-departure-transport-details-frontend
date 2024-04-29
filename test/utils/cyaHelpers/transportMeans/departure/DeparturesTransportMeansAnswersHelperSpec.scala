@@ -55,7 +55,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
             Right(
               ListItem(
                 name = departure.asString,
-                changeUrl = routes.DepartureTransportAnswersController.onPageLoad(userAnswers.lrn, index).url,
+                changeUrl = routes.DepartureTransportAnswersController.onPageLoad(userAnswers.lrn, mode, index).url,
                 removeUrl = None
               )
             )
@@ -261,7 +261,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
                 Right(
                   ListItem(
                     name = s"Departure means of transport ${index.display} - ${identificationType.asString} - $identificationNumber",
-                    changeUrl = routes.DepartureTransportAnswersController.onPageLoad(userAnswers.lrn, departureIndex).url,
+                    changeUrl = routes.DepartureTransportAnswersController.onPageLoad(userAnswers.lrn, mode, departureIndex).url,
                     removeUrl = Some(
                       controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, departureIndex).url
                     )
@@ -270,7 +270,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
                 Right(
                   ListItem(
                     name = s"Departure means of transport ${secondIndex.display} - ${identificationType.asString} - $identificationNumber",
-                    changeUrl = routes.DepartureTransportAnswersController.onPageLoad(userAnswers.lrn, secondIndex).url,
+                    changeUrl = routes.DepartureTransportAnswersController.onPageLoad(userAnswers.lrn, mode, secondIndex).url,
                     removeUrl = Some(
                       controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(lrn, mode, secondIndex).url
                     )

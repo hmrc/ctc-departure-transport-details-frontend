@@ -27,5 +27,5 @@ case class DepartureSection(departureIndex: Index) extends Section[JsObject] {
   override def path: JsPath = DeparturesSection.path \ departureIndex.position
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.DepartureTransportAnswersController.onPageLoad(userAnswers.lrn, departureIndex))
+    Some(routes.DepartureTransportAnswersController.onPageLoad(userAnswers.lrn, mode, departureIndex))
 }
