@@ -22,7 +22,7 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.reference.transportMeans.departure.Identification
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
+import navigation.{TransportMeansDepartureNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.InlandModePage
 import pages.transportMeans.departure.IdentificationPage
 import play.api.data.Form
@@ -40,7 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IdentificationController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: TransportMeansNavigatorProvider,
+  navigatorProvider: TransportMeansDepartureNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -83,7 +83,7 @@ class IdentificationController @Inject() (
               .fold(
                 formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, identificationTypes, mode, departureIndex, viewModel))),
                 value => {
-                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, departureIndex)
                   IdentificationPage(departureIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
                 }
               )

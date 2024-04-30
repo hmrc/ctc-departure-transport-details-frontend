@@ -16,6 +16,7 @@
 
 package models.journeyDomain.transportMeans
 
+import config.Constants.AdditionalDeclarationType
 import config.Constants.ModeOfTransport.Rail
 import config.Constants.SecurityType.NoSecurityDetails
 import config.PhaseConfig
@@ -24,7 +25,7 @@ import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansDomain.{borderModeOfTransportReader, transportMeansActiveReader}
 import models.reference.BorderMode
 import models.{Index, OptionalBoolean, Phase, UserAnswers}
-import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
+import pages.external.{AdditionalDeclarationTypePage, OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.sections.Section
 import pages.sections.transportMeans.TransportMeansSection

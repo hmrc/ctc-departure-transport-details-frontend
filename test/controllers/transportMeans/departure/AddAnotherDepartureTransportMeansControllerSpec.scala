@@ -21,6 +21,7 @@ import config.FrontendAppConfig
 import forms.AddAnotherFormProvider
 import generators.Generators
 import models.NormalMode
+import navigation.TransportMeansNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -53,6 +54,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[AddAnotherDepartureTransportMeansViewModelProvider]).toInstance(mockViewModelProvider))
+      .overrides(bind(classOf[TransportMeansNavigatorProvider]).toInstance(fakeTransportMeansNavigatorProvider))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -164,8 +166,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual
-            controllers.transportMeans.routes.AddBorderModeOfTransportYesNoController.onPageLoad(lrn, mode).url
+          redirectLocation(result).value mustEqual onwardRoute.url
         }
       }
     }
@@ -184,8 +185,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual
-          controllers.transportMeans.routes.AddBorderModeOfTransportYesNoController.onPageLoad(lrn, mode).url
+        redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
 
