@@ -1,3 +1,4 @@
+->         /                                                                          app.additionalReference.index.Routes
 
 GET        /additional-reference/add/:lrn                                             controllers.additionalReference.AddAdditionalReferenceYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /additional-reference/add/:lrn                                             controllers.additionalReference.AddAdditionalReferenceYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
