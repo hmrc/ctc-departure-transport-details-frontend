@@ -21,6 +21,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, 
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import itbase.{ItSpecBase, WireMockServerHandler}
 import models.reference._
+import models.reference.additionalReference.AdditionalReferenceType
 import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
 import models.reference.supplyChainActors.SupplyChainActorType
@@ -529,6 +530,59 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
       "must return an exception when an error response is returned" in {
         checkErrorResponse(url, connector.getPaymentMethods())
+      }
+    }
+
+    "getAdditionalReferences" - {
+      val url = s"/$baseUrl/lists/AdditionalReference"
+
+      "must return Seq of AdditionalReference when successful" in {
+
+        val additionalReferenceJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/AdditionalReference"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "AdditionalReference",
+            |  "data": [
+            | {
+            |    "documentType": "documentType1",
+            |    "description": "desc1"
+            |  },
+            |  {
+            |    "documentType": "documentType2",
+            |    "description": "desc2"
+            |  }
+            |]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(additionalReferenceJson))
+        )
+
+        val expectedResult: NonEmptySet[AdditionalReferenceType] = NonEmptySet.of(
+          AdditionalReferenceType("documentType1", "desc1"),
+          AdditionalReferenceType("documentType2", "desc2")
+        )
+
+        connector.getAdditionalReferences().futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getAdditionalReferences())
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getAdditionalReferences())
       }
     }
   }
