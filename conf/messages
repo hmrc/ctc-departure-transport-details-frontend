@@ -610,3 +610,7 @@ additionalReference.addAdditionalReferenceYesNo.title = Do you want to add an ad
 additionalReference.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for all items?
 additionalReference.addAdditionalReferenceYesNo.paragraph = This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document.
 additionalReference.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for all items
+
+additionalReference.index.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
+additionalReference.index.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+additionalReference.index.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
