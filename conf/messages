@@ -614,3 +614,9 @@ additionalReference.addAdditionalReferenceYesNo.error.required = Select yes if y
 additionalReference.index.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 additionalReference.index.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
 additionalReference.index.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
+
+additionalReference.index.additionalReferenceType.title = What type of additional reference do you want to add?
+additionalReference.index.additionalReferenceType.heading = What type of additional reference do you want to add?
+additionalReference.index.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
+additionalReference.index.additionalReferenceType.placeholder = Select an additional reference
+additionalReference.index.additionalReferenceType.error.required = Select the type of additional reference
