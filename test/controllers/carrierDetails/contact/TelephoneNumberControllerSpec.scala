@@ -137,7 +137,7 @@ class TelephoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when no contact name is found" in {
@@ -150,7 +150,7 @@ class TelephoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
       }
     }
 
@@ -167,7 +167,7 @@ class TelephoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when no contact name is found" in {
@@ -181,7 +181,7 @@ class TelephoneNumberControllerSpec extends SpecBase with AppWithDefaultMockFixt
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.technicalDifficultiesUrl
       }
     }
   }

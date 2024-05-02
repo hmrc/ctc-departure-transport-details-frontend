@@ -212,7 +212,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "if no authorisation is found" in {
@@ -241,7 +241,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "if no authorisation is found" in {

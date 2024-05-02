@@ -70,7 +70,7 @@ class AuthorisationReferenceNumberController @Inject() (
             }
 
             Ok(view(preparedForm, lrn, request.arg.forDisplay, mode, authorisationIndex, approvedOperator))
-          case _ => Redirect(config.sessionExpiredUrl)
+          case _ => Redirect(config.sessionExpiredUrl(lrn))
         }
     }
 
@@ -91,7 +91,7 @@ class AuthorisationReferenceNumberController @Inject() (
                   AuthorisationReferenceNumberPage(authorisationIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
                 }
               )
-          case _ => Future.successful(Redirect(config.sessionExpiredUrl))
+          case _ => Future.successful(Redirect(config.sessionExpiredUrl(lrn)))
         }
     }
 }

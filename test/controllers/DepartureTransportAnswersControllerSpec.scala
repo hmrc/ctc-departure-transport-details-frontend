@@ -26,9 +26,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import viewModels.DepartureTransportAnswersViewModel.DepartureTransportAnswersViewModelProvider
-import viewModels.{DepartureTransportAnswersViewModel, Section, TransportAnswersViewModel}
-import viewModels.TransportAnswersViewModel.TransportAnswersViewModelProvider
-import views.html.TransportAnswersView
+import viewModels.{DepartureTransportAnswersViewModel, Section}
 import views.html.transportMeans.DepartureTransportAnswersView
 
 class DepartureTransportAnswersControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
@@ -71,7 +69,7 @@ class DepartureTransportAnswersControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -83,7 +81,7 @@ class DepartureTransportAnswersControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -95,7 +93,7 @@ class DepartureTransportAnswersControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }
