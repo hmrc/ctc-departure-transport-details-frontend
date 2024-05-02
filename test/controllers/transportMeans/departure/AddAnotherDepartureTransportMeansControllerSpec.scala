@@ -66,7 +66,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
   private val viewModel = arbitrary[AddAnotherDepartureTransportMeansViewModel].sample.value
 
   private val viewModelWithNoItems = viewModel.copy(listItems = Nil)
-  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems)
+  private val notMaxedOutViewModel = viewModel.copy(listItems = listItems, isRoadInlandMode = false)
   private val maxedOutViewModel    = viewModel.copy(listItems = maxedOutListItems)
 
   "AddAnotherDepartureTransportMeans Controller" - {
