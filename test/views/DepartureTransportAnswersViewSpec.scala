@@ -16,11 +16,9 @@
 
 package views
 
-import controllers.routes
 import play.twirl.api.HtmlFormat
 import viewModels.Section
 import views.behaviours.CheckYourAnswersViewBehaviours
-import views.html.TransportAnswersView
 import views.html.transportMeans.DepartureTransportAnswersView
 
 class DepartureTransportAnswersViewSpec extends CheckYourAnswersViewBehaviours {
