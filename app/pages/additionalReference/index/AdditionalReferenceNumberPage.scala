@@ -16,27 +16,19 @@
 
 package pages.additionalReference.index
 
-import controllers.additionalReference.index.routes
 import models.{Index, Mode, UserAnswers}
+import controllers.additionalReference.index.routes
 import pages.QuestionPage
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-import scala.util.Try
-
-case class AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex: Index) extends QuestionPage[Boolean] {
+case class AdditionalReferenceNumberPage(additionalReferenceIndex: Index) extends QuestionPage[String] {
 
   override def path: JsPath = AdditionalReferenceSection(additionalReferenceIndex).path \ toString
 
-  override def toString: String = "addAdditionalReferenceNumberYesNo"
+  override def toString: String = "additionalReferenceNumber"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(userAnswers.lrn, mode, additionalReferenceIndex))
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(false) => userAnswers.remove(AdditionalReferenceNumberPage(additionalReferenceIndex))
-      case _           => super.cleanup(value, userAnswers)
-    }
+    Some(routes.AdditionalReferenceNumberController.onPageLoad(userAnswers.lrn, mode, additionalReferenceIndex))
 }

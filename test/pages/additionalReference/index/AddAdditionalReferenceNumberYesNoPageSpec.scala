@@ -30,5 +30,35 @@ class AddAdditionalReferenceNumberYesNoPageSpec extends PageBehaviours {
     beRemovable[Boolean](AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex))
   }
 
-  // TODO add clean up logic test
+  "cleanup" - {
+    "when no selected" - {
+      "must remove reference number" in {
+        forAll(arbitrary[String]) {
+          referenceNumber =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex), true)
+              .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex), referenceNumber)
+
+            val result = userAnswers.setValue(AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex), false)
+
+            result.get(AdditionalReferenceNumberPage(additionalReferenceIndex)) must not be defined
+        }
+      }
+    }
+
+    "when yes selected" - {
+      "must do nothing" in {
+        forAll(arbitrary[String]) {
+          number =>
+            val userAnswers = emptyUserAnswers
+              .setValue(AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex), true)
+              .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex), number)
+
+            val result = userAnswers.setValue(AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex), true)
+
+            result.get(AdditionalReferenceNumberPage(additionalReferenceIndex)) must be(defined)
+        }
+      }
+    }
+  }
 }
