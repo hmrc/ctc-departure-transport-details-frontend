@@ -294,13 +294,4 @@ trait ModelGenerators {
       values <- listWithMaxLength[T]()
     } yield values.distinctBy(_.code)
   }
-
-  implicit lazy val arbitraryAdditionalReference: Arbitrary[AdditionalReferenceType] =
-    Arbitrary {
-      for {
-        documentType <- nonEmptyString
-        description <- nonEmptyString
-      } yield AdditionalReferenceType(documentType, description)
-    }
-
 }

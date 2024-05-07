@@ -19,6 +19,7 @@ package generators
 import config.PhaseConfig
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.OpsError.ReaderError
+import models.journeyDomain.additionalReferences.AdditionalReferenceDomain
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
 import models.journeyDomain.equipment.seal.SealDomain
@@ -116,6 +117,11 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   def arbitrarySealAnswers(userAnswers: UserAnswers, equipmentIndex: Index, sealIndex: Index): Gen[UserAnswers] =
     buildUserAnswers[SealDomain](userAnswers)(
       SealDomain.userAnswersReader(equipmentIndex, sealIndex).apply(Nil)
+    )
+
+  def arbitraryAdditionalReferenceAnswers(userAnswers: UserAnswers, additionalReferenceIndex: Index): Gen[UserAnswers] =
+    buildUserAnswers[AdditionalReferenceDomain](userAnswers)(
+      AdditionalReferenceDomain.userAnswersReader(additionalReferenceIndex).apply(Nil)
     )
 
 }

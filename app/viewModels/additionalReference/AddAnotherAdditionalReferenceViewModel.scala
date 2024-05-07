@@ -21,6 +21,7 @@ import controllers.additionalReference.routes
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import utils.cyaHelpers.additionalReference.AdditionalReferenceAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
 
 import javax.inject.Inject
@@ -51,7 +52,7 @@ object AddAnotherAdditionalReferenceViewModel {
 
       new AddAnotherAdditionalReferenceViewModel(
         listItems,
-        onSubmitCall = routes.AddAnotherAdditionalReferenceController.onSubmit(userAnswers.lrn, mode)
+        onSubmitCall = Call("GET", "#") // TODO go to add another route
       )
     }
   }

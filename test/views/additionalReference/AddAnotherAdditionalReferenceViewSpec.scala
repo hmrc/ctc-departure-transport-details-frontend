@@ -20,6 +20,7 @@ import forms.AddAnotherFormProvider
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.additionalReference.AddAnotherAdditionalReferenceViewModel
 import views.behaviours.ListWithActionsViewBehaviours
 import views.html.additionalReference.AddAnotherAdditionalReferenceView
 
