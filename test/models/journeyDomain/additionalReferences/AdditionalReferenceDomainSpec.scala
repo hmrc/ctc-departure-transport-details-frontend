@@ -79,6 +79,7 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
               result.left.value.page mustBe AdditionalReferenceNumberPage(Index(0))
               result.left.value.pages mustBe Seq(
                 AdditionalReferenceTypePage(Index(0)),
+                AddAdditionalReferenceNumberYesNoPage(Index(0)),
                 AdditionalReferenceNumberPage(Index(0))
               )
           }

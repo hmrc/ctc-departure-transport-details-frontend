@@ -17,11 +17,10 @@
 package models.journeyDomain.additionalReferences
 
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, Stage, UserAnswersReader}
+import models.journeyDomain._
 import models.reference.additionalReference.AdditionalReferenceType
 import models.{Index, Mode, Phase, UserAnswers}
-import pages.additionalReference.index.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
-import pages.sections.additionalReference.AdditionalReferencesSection
+import pages.additionalReference.index.{AddAdditionalReferenceNumberYesNoPage, AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import play.api.mvc.Call
 
 case class AdditionalReferenceDomain(
@@ -37,7 +36,7 @@ case class AdditionalReferenceDomain(
       case AccessingJourney =>
         controllers.additionalReference.index.routes.AdditionalReferenceTypeController.onPageLoad(userAnswers.lrn, mode, additionalReferenceIndex)
       case CompletingJourney =>
-        Call("GET", "#") //TODO go to addAnother controller
+        controllers.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode)
     }
   }
 }
@@ -48,9 +47,11 @@ object AdditionalReferenceDomain {
     value => s" - $value"
   }
 
-  def userAnswersReader(index: Index): Read[AdditionalReferenceDomain] =
+  def userAnswersReader(additionalReferenceIndex: Index): Read[AdditionalReferenceDomain] =
     (
-      AdditionalReferenceTypePage(index).reader,
-      AdditionalReferenceNumberPage(index).optionalReader
-    ).map(AdditionalReferenceDomain.apply(_, _)(index))
+      AdditionalReferenceTypePage(additionalReferenceIndex).reader,
+      AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex).filterOptionalDependent(identity) {
+        AdditionalReferenceNumberPage(additionalReferenceIndex).reader
+      }
+    ).map(AdditionalReferenceDomain.apply(_, _)(additionalReferenceIndex))
 }

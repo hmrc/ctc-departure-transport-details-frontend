@@ -46,12 +46,13 @@ class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPrope
         }
       }
 
-      "when user answers populated with complete additional references" ignore {
+      "when user answers populated with complete additional references" in {
         forAll(arbitrary[Mode], arbitrary[AdditionalReferenceType], Gen.alphaNumStr) {
           (mode, refType, additionalReferenceNumber) =>
             val userAnswers = emptyUserAnswers
               .setValue(AddAdditionalReferenceYesNoPage, true)
               .setValue(AdditionalReferenceTypePage(Index(0)), refType)
+              .setValue(AddAdditionalReferenceNumberYesNoPage(Index(0)), true)
               .setValue(AdditionalReferenceNumberPage(Index(0)), additionalReferenceNumber)
               .setValue(AdditionalReferenceTypePage(Index(1)), refType)
               .setValue(AddAdditionalReferenceNumberYesNoPage(Index(1)), false)

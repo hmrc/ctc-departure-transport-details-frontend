@@ -52,7 +52,7 @@ object AddAnotherAdditionalReferenceViewModel {
 
       new AddAnotherAdditionalReferenceViewModel(
         listItems,
-        onSubmitCall = Call("GET", "#") // TODO go to add another route
+        onSubmitCall = routes.AddAnotherAdditionalReferenceController.onSubmit(userAnswers.lrn, mode)
       )
     }
   }

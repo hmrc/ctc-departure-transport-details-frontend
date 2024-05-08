@@ -16,6 +16,7 @@
 
 package pages.sections.additionalReference
 
+import controllers.additionalReference.routes
 import models.{Mode, UserAnswers}
 import pages.sections.{Section, TransportSection}
 import play.api.libs.json.{JsArray, JsPath}
@@ -28,5 +29,5 @@ case object AdditionalReferencesSection extends Section[JsArray] {
   override def toString: String = "additionalReferences"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(Call("GET", "#"))
+    Some(routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode))
 }

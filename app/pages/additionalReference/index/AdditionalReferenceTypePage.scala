@@ -31,5 +31,5 @@ case class AdditionalReferenceTypePage(additionalReferenceIndex: Index) extends 
   override def toString: String = "type"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAdditionalReferenceNumberYesNoController.onPageLoad(userAnswers.lrn, mode, additionalReferenceIndex))
+    Some(routes.AdditionalReferenceTypeController.onPageLoad(userAnswers.lrn, mode, additionalReferenceIndex))
 }
