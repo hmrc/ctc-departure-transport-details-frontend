@@ -48,7 +48,7 @@ class DepartureTransportAnswersController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      Redirect(config.sessionExpiredUrl) //TODO change to redirect correctly
+      Redirect(config.sessionExpiredUrl(lrn)) //TODO change to redirect correctly
   }
 
 }

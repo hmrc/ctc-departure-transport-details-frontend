@@ -17,17 +17,12 @@
 package viewModels
 
 import base.SpecBase
-import config.PhaseConfig
 import generators.Generators
 import models.reference.transportMeans.departure.Identification
-import models.reference.{BorderMode, InlandMode, Nationality}
-import models.{Index, Mode, Phase}
-import org.mockito.Mockito.when
+import models.reference.Nationality
+import models.Mode
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.sections.external.OfficesOfTransitSection
-import pages.transportMeans._
 import pages.transportMeans.departure.{
   AddIdentificationNumberYesNoPage,
   AddIdentificationTypeYesNoPage,
@@ -36,9 +31,7 @@ import pages.transportMeans.departure.{
   MeansIdentificationNumberPage,
   VehicleCountryPage
 }
-import play.api.libs.json.{JsArray, Json}
 import viewModels.DepartureTransportAnswersViewModel.DepartureTransportAnswersViewModelProvider
-import viewModels.transportMeans.TransportMeansAnswersViewModel.TransportMeansAnswersViewModelProvider
 
 class DepartureTransportAnswersViewModelProviderSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

@@ -155,7 +155,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+          redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
         }
       }
     }
@@ -259,7 +259,7 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+          redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
         }
       }
     }

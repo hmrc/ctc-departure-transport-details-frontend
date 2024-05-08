@@ -45,7 +45,6 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val notFoundUrl: String              = s"$departureHubUrl/not-found"
   val technicalDifficultiesUrl: String = s"$departureHubUrl/technical-difficulties"
-  val sessionExpiredUrl: String        = s"$departureHubUrl/this-service-has-been-reset"
 
   val unauthorisedUrl: String                = s"$departureHubUrl/error/cannot-use-service-no-eori"
   val unauthorisedWithGroupAccessUrl: String = s"$departureHubUrl/unauthorised-group-access"
@@ -54,7 +53,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   def keepAliveUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/keep-alive"
 
-  def signOutUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/delete-lock"
+  def signOutUrl(lrn: LocalReferenceNumber): String        = s"$departureHubUrl/$lrn/delete-lock"
+  def sessionExpiredUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/this-service-has-been-reset/$lrn"
 
   lazy val maxSeals: Int                   = configuration.get[Int]("limits.maxSeals")
   lazy val maxAuthorisations: Int          = configuration.get[Int]("limits.maxAuthorisations")
