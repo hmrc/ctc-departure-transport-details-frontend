@@ -62,6 +62,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val maxDepartureTransportMeans: Int = configuration.get[Int]("limits.maxDepartureTransportMeans")
   lazy val maxSupplyChainActors: Int       = configuration.get[Int]("limits.maxSupplyChainActors")
   lazy val maxEquipmentNumbers: Int        = configuration.get[Int]("limits.maxEquipmentNumbers")
+  lazy val maxAdditionalReferences: Int    = configuration.get[Int]("limits.maxAdditionalReferences")
 
   def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/declaration-summary"
 
