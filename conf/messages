@@ -626,3 +626,11 @@ additionalReference.index.additionalReferenceNumber.heading = Enter the addition
 additionalReference.index.additionalReferenceNumber.error.required = Enter the additional reference number
 additionalReference.index.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
 additionalReference.index.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
+additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference for all items
+additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference for all items
+additionalReference.addAnotherAdditionalReference.plural.title = You have added {0} additional references for all items
+additionalReference.addAnotherAdditionalReference.plural.heading = You have added {0} additional references for all items
+additionalReference.addAnotherAdditionalReference.maxLimit.label = You cannot add any more additional references for all items. To add another, you need to remove one first.
+additionalReference.addAnotherAdditionalReference.label = Do you want to add another additional reference for all items?
+additionalReference.addAnotherAdditionalReference.error.required = Select yes if you want to add another additional reference for all items

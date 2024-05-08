@@ -134,7 +134,7 @@ class ConfirmRemoveBorderTransportControllerSpec extends SpecBase with AppWithDe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when no active border transport means found" in {
@@ -162,7 +162,7 @@ class ConfirmRemoveBorderTransportControllerSpec extends SpecBase with AppWithDe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when no active border transport means found" in {

@@ -302,5 +302,4 @@ trait ModelGenerators {
       values <- listWithMaxLength[T]()
     } yield values.distinctBy(_.code)
   }
-
 }

@@ -31,6 +31,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.authorisationsAndLimit.authorisations.index.AuthorisationReferenceNumberView
+import play.api.Logging
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,7 +48,8 @@ class AuthorisationReferenceNumberController @Inject() (
   config: FrontendAppConfig
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
-    with I18nSupport {
+    with I18nSupport
+    with Logging {
 
   private type Request = SpecificDataRequestProvider1[AuthorisationType]#SpecificDataRequest[_]
 
@@ -70,7 +72,9 @@ class AuthorisationReferenceNumberController @Inject() (
             }
 
             Ok(view(preparedForm, lrn, request.arg.forDisplay, mode, authorisationIndex, approvedOperator))
-          case _ => Redirect(config.sessionExpiredUrl)
+          case _ =>
+            logger.error("Approved operator value could not be determined")
+            Redirect(config.technicalDifficultiesUrl)
         }
     }
 
@@ -91,7 +95,9 @@ class AuthorisationReferenceNumberController @Inject() (
                   AuthorisationReferenceNumberPage(authorisationIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
                 }
               )
-          case _ => Future.successful(Redirect(config.sessionExpiredUrl))
+          case _ =>
+            logger.error("Approved operator value could not be determined")
+            Future.successful(Redirect(config.technicalDifficultiesUrl))
         }
     }
 }
