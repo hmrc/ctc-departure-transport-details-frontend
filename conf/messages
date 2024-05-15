@@ -115,6 +115,7 @@ departureMeansOfTransport.caption = Transport details - Departure means of trans
 activeBorderModeOfTransport.caption = Transport details - Border mode of transport
 activeBorderMeansOfTransport.caption = Transport details - Border means of transport
 additionalReference.caption = Transport details - Additional reference
+additionalInformation.caption = Transport details - Additional information
 
 transportMeans.addInlandModeYesNo.title = Do you want to add an inland mode of transport?
 transportMeans.addInlandModeYesNo.heading = Do you want to add an inland mode of transport?
@@ -614,3 +615,10 @@ additionalReference.addAnotherAdditionalReference.plural.heading = You have adde
 additionalReference.addAnotherAdditionalReference.maxLimit.label = You cannot add any more additional references for all items. To add another, you need to remove one first.
 additionalReference.addAnotherAdditionalReference.label = Do you want to add another additional reference for all items?
 additionalReference.addAnotherAdditionalReference.error.required = Select yes if you want to add another additional reference for all items
+
+# Transport details - Additional Information
+
+additionalInformation.addAdditionalInformationYesNo.title = Do you want to add any additional information for all items?
+additionalInformation.addAdditionalInformationYesNo.heading = Do you want to add any additional information for all items?
+additionalInformation.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
+additionalInformation.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for all items
