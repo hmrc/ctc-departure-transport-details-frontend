@@ -38,7 +38,9 @@ class AdditionalReferenceAnswersHelper(userAnswers: UserAnswers, mode: Mode)(imp
         buildListItem[AdditionalReferenceDomain](
           nameWhenComplete = _.toString,
           nameWhenInProgress = userAnswers.get(AdditionalReferenceTypePage(additionalReferenceIndex)).map(_.toString),
-          removeRoute = Some(Call("GET", "#")) // TODO update to remove route when ready
+          removeRoute = Some(
+            controllers.additionalReference.index.routes.RemoveAdditionalReferenceYesNoController.onPageLoad(userAnswers.lrn, mode, additionalReferenceIndex)
+          )
         )(AdditionalReferenceDomain.userAnswersReader(additionalReferenceIndex).apply(Nil))
     }
 
