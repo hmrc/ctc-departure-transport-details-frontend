@@ -1002,7 +1002,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe controllers.additionalReference.routes.AddAdditionalReferenceYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe " if you want to add an additional reference  for all items"
+              action.visuallyHiddenText.get mustBe "if you want to add an additional reference  for all items"
               action.id mustBe "change-add-additional-reference"
           }
         }
@@ -1016,7 +1016,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.additionalReferences
-              result mustBe None
+              result mustBe Seq.empty
           }
         }
       }

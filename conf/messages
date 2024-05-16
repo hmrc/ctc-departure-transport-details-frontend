@@ -48,7 +48,6 @@ checkYourAnswers.transportEquipment.addOrRemove = Add or remove transport equipm
 checkYourAnswers.transportCharges = Transport charges
 checkYourAnswers.additionalReference = Additional references
 checkYourAnswers.additionalReference.addOrRemove = Add or remove additional references
-checkYourAnswers.additionalReference.addOrRemove.hidden =  if you want to add an additional reference  for all items
 
 # Transport details - Pre-requisites
 
@@ -597,7 +596,8 @@ additionalReference.addAdditionalReferenceYesNo.error.required = Select yes if y
 additionalReference.addAdditionalReferenceYesNo.checkYourAnswersLabel = Do you want to add an additional reference for all items?
 
 additionalReference.additionalReference.checkYourAnswersLabel = Additional reference {0}
-additionalReference.additionalReference.checkYourAnswersLabel.hidden = if you want to add any additional information for all items
+additionalReference.additionalReference.change.hidden = if you want to add any additional information for all items
+additionalReference.addAdditionalReferenceYesNo.change.hidden = if you want to add an additional reference  for all items
 
 additionalReference.index.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 additionalReference.index.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
