@@ -622,3 +622,11 @@ additionalInformation.addAdditionalInformationYesNo.title = Do you want to add a
 additionalInformation.addAdditionalInformationYesNo.heading = Do you want to add any additional information for all items?
 additionalInformation.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
 additionalInformation.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for all items
+
+additionalInformation.addAnotherAdditionalInformation.singular.title = You have added 1 additional information for all items
+additionalInformation.addAnotherAdditionalInformation.singular.heading = You have added 1 additional information for all items
+additionalInformation.addAnotherAdditionalInformation.plural.title = You have added {0} additional information for all items
+additionalInformation.addAnotherAdditionalInformation.plural.heading = You have added {0} additional information for all items
+additionalInformation.addAnotherAdditionalInformation.maxLimit.label = You cannot add any more additional information for all items. To add another, you need to remove one first.
+additionalInformation.addAnotherAdditionalInformation.label = Do you want to add any more additional information for all items?
+additionalInformation.addAnotherAdditionalInformation.error.required = Select yes if you want to add any more additional information for all items
