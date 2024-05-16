@@ -19,11 +19,7 @@ package views.additionalReference.index
 import forms.YesNoFormProvider
 import generators.Generators
 import models.NormalMode
-import models.reference.additionalReference.AdditionalReferenceType
-import models.removable.AdditionalReference
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.additionalReference.index.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -31,24 +27,12 @@ import views.html.additionalReference.index.RemoveAdditionalReferenceYesNoView
 
 class RemoveAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours with Generators {
 
-  private val additionalReferenceType   = arbitrary[AdditionalReferenceType].sample.value
-  private val additionalReferenceNumber = Gen.alphaStr.sample.value
-
-  private val userAnswersFullAdditionalReference = emptyUserAnswers
-    .setValue(AdditionalReferenceTypePage(index), additionalReferenceType)
-    .setValue(AdditionalReferenceNumberPage(index), additionalReferenceNumber)
-
-  private val userAnswersPartialAdditionalReference = emptyUserAnswers
-    .setValue(AdditionalReferenceTypePage(index), additionalReferenceType)
-    .setValue(AdditionalReferenceNumberPage(index), None)
-
-  private val additionalReference: Option[AdditionalReference]              = AdditionalReference(userAnswersFullAdditionalReference, index)
-  private val additionalReferenceWithoutNumber: Option[AdditionalReference] = AdditionalReference(userAnswersPartialAdditionalReference, index)
+  private val insetText = Gen.alphaStr.sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveAdditionalReferenceYesNoView]
-      .apply(form, lrn, NormalMode, additionalReferenceIndex, additionalReference.map(_.forRemoveDisplay))(fakeRequest, messages)
+      .apply(form, lrn, NormalMode, additionalReferenceIndex, Some(insetText))(fakeRequest, messages)
 
   override val prefix: String = "additionalReference.index.removeAdditionalReference"
 
@@ -62,25 +46,15 @@ class RemoveAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours with Ge
 
   behave like pageWithRadioItems()
 
-  behave like pageWithInsetText(s"$additionalReferenceType - $additionalReferenceNumber")
+  behave like pageWithInsetText(insetText)
 
   behave like pageWithSubmitButton("Save and continue")
 
-  "without a additional reference number" - {
-    val form: Form[Boolean] = new YesNoFormProvider()(prefix)
-    val view = injector
-      .instanceOf[RemoveAdditionalReferenceYesNoView]
-      .apply(form, lrn, NormalMode, additionalReferenceIndex, additionalReferenceWithoutNumber.map(_.forRemoveDisplay))(fakeRequest, messages)
-    val doc = parseView(view)
-
-    behave like pageWithInsetText(doc, s"$additionalReferenceType")
-  }
-
-  "without a additional reference" - {
-    val form: Form[Boolean] = new YesNoFormProvider()(prefix)
+  "when inset text undefined" - {
     val view = injector
       .instanceOf[RemoveAdditionalReferenceYesNoView]
       .apply(form, lrn, NormalMode, additionalReferenceIndex, None)(fakeRequest, messages)
+
     val doc = parseView(view)
 
     behave like pageWithoutInsetText(doc)
