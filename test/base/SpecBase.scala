@@ -50,15 +50,16 @@ trait SpecBase
   val lrn: LocalReferenceNumber     = LocalReferenceNumber("ABCD1234567890123").get
   val submitStatus: SubmissionState = SubmissionState.NotSubmitted
 
-  val index: Index                    = Index(0)
-  val activeIndex: Index              = Index(0)
-  val departureIndex: Index           = Index(0)
-  val actorIndex: Index               = Index(0)
-  val equipmentIndex: Index           = Index(0)
-  val sealIndex: Index                = Index(0)
-  val itemNumberIndex: Index          = Index(0)
-  val authorisationIndex: Index       = Index(0)
-  val additionalReferenceIndex: Index = Index(0)
+  val index: Index                      = Index(0)
+  val activeIndex: Index                = Index(0)
+  val departureIndex: Index             = Index(0)
+  val actorIndex: Index                 = Index(0)
+  val equipmentIndex: Index             = Index(0)
+  val sealIndex: Index                  = Index(0)
+  val itemNumberIndex: Index            = Index(0)
+  val authorisationIndex: Index         = Index(0)
+  val additionalReferenceIndex: Index   = Index(0)
+  val additionalInformationIndex: Index = Index(0)
 
   def fakeRequest: FakeRequest[AnyContent] = FakeRequest("", "")
 
