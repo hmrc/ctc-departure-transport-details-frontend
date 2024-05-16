@@ -20,6 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
 import models.reference.additionalReference.AdditionalReferenceType
+import models.removable.AdditionalReference
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -49,6 +50,8 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
   val additionalReferenceType: AdditionalReferenceType = arbitrary[AdditionalReferenceType].sample.value
   val additionalReferenceNumber: String                = Gen.alphaStr.sample.value
 
+  val additionalReference: AdditionalReference = AdditionalReference(additionalReferenceType, Some(additionalReferenceNumber))
+
   "RemoveAdditionalReferenceYesNoControllerSpec" - {
 
     "must return OK and the correct view for a GET" in {
@@ -66,7 +69,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, additionalReferenceIndex, additionalReferenceType.value, Some(additionalReferenceNumber))(request, messages).toString
+        view(form, lrn, mode, additionalReferenceIndex, Some(additionalReference.forRemoveDisplay))(request, messages).toString
     }
 
     "when yes submitted must redirect to add another additional reference and remove additional reference at specified index" in {
@@ -135,7 +138,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
       val view = injector.instanceOf[RemoveAdditionalReferenceYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, additionalReferenceIndex, additionalReferenceType.value, Some(additionalReferenceNumber))(request, messages).toString
+        view(boundForm, lrn, mode, additionalReferenceIndex, Some(additionalReference.forRemoveDisplay))(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET" - {

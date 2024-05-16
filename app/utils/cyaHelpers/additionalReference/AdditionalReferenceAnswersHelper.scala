@@ -22,7 +22,6 @@ import models.{Mode, UserAnswers}
 import pages.additionalReference.index.AdditionalReferenceTypePage
 import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import utils.cyaHelpers.AnswersHelper
 import viewModels.ListItem
 

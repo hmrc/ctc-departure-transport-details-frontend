@@ -18,13 +18,11 @@ package controllers.additionalReference.index
 
 import config.PhaseConfig
 import controllers.actions._
-import controllers.authorisationsAndLimit.authorisations.{routes => authRoutes}
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.reference.additionalReference.AdditionalReferenceType
-import models.requests.{SpecificDataRequestProvider1, SpecificDataRequestProvider2}
-import models.{Index, LocalReferenceNumber, Mode}
-import pages.additionalReference.index.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
+import models.removable.AdditionalReference
+import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
+import pages.additionalReference.index.AdditionalReferenceTypePage
 import pages.sections.additionalReference.AdditionalReferenceSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -48,9 +46,8 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[AdditionalReferenceType]#SpecificDataRequest[_]
-
-  private def additionalReferenceType(implicit request: Request): AdditionalReferenceType = request.arg
+  def insetText(userAnswers: UserAnswers, additionalReferenceIndex: Index): Option[String] =
+    AdditionalReference(userAnswers, additionalReferenceIndex).map(_.forRemoveDisplay)
 
   private def form: Form[Boolean] =
     formProvider("additionalReference.index.additionalReferenceNumber")
@@ -62,8 +59,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
     .requireIndex(lrn, AdditionalReferenceSection(additionalReferenceIndex), addAnother(lrn, mode))
     .andThen(getMandatoryPage.getFirst(AdditionalReferenceTypePage(additionalReferenceIndex))) {
       implicit request =>
-        val additionalReferenceNumber: Option[String] = request.userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex))
-        Ok(view(form, lrn, mode, additionalReferenceIndex, additionalReferenceType.value, additionalReferenceNumber))
+        Ok(view(form, lrn, mode, additionalReferenceIndex, insetText(request.userAnswers, additionalReferenceIndex)))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, additionalReferenceIndex: Index): Action[AnyContent] = actions
@@ -74,11 +70,9 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => {
-              val additionalReferenceNumber: Option[String] = request.userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex))
+            formWithErrors =>
               Future
-                .successful(BadRequest(view(formWithErrors, lrn, mode, additionalReferenceIndex, additionalReferenceType.value, additionalReferenceNumber)))
-            },
+                .successful(BadRequest(view(formWithErrors, lrn, mode, additionalReferenceIndex, insetText(request.userAnswers, additionalReferenceIndex)))),
             {
               case true =>
                 AdditionalReferenceSection(additionalReferenceIndex)
