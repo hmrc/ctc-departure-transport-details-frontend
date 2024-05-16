@@ -55,7 +55,7 @@ class RemoveAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours with Ge
 
   behave like pageWithSubmitButton("Save and continue")
 
-  "with an additional reference number" - {
+  "without a additional reference number" - {
     val form: Form[Boolean] = new YesNoFormProvider()(prefix)
     val view = injector
       .instanceOf[RemoveAdditionalReferenceYesNoView]
