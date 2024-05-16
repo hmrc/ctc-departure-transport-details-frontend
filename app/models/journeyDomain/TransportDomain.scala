@@ -21,7 +21,7 @@ import config.PhaseConfig
 import models.Phase.{PostTransition, Transition}
 import models.ProcedureType.Normal
 import models.UserAnswers
-import models.journeyDomain._
+import models.journeyDomain.additionalInformation.AdditionalInformationsDomain
 import models.journeyDomain.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
 import models.journeyDomain.carrierDetails.CarrierDetailsDomain
@@ -45,7 +45,8 @@ case class TransportDomain(
   authorisationsAndLimit: Option[AuthorisationsAndLimitDomain],
   carrierDetails: Option[CarrierDetailsDomain],
   equipmentsAndCharges: EquipmentsAndChargesDomain,
-  additionalReferences: Option[AdditionalReferencesDomain]
+  additionalReferences: Option[AdditionalReferencesDomain],
+  additionalInformations: Option[AdditionalInformationsDomain]
 ) extends JourneyDomainModel {
 
   override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(TransportSection)
@@ -67,6 +68,12 @@ object TransportDomain {
         case PostTransition => AddAdditionalReferenceYesNoPage.filterOptionalDependent(identity)(AdditionalReferencesDomain.userAnswersReader)
       }
 
+    implicit lazy val additionalInformationsReads: Read[Option[AdditionalInformationsDomain]] =
+      phaseConfig.phase match {
+        case Transition     => UserAnswersReader.none
+        case PostTransition => AddAdditionalInformationYesNoPage.filterOptionalDependent(identity)(AdditionalInformationsDomain.userAnswersReader)
+      }
+
     (
       PreRequisitesDomain.userAnswersReader,
       AddInlandModeYesNoPage.filterOptionalDependent(identity)(InlandModePage.reader),
@@ -75,7 +82,8 @@ object TransportDomain {
       authorisationsAndLimitReads,
       CarrierDetailYesNoPage.filterOptionalDependent(identity)(CarrierDetailsDomain.userAnswersReader),
       EquipmentsAndChargesDomain.userAnswersReader,
-      additionalReferencesReads
+      additionalReferencesReads,
+      additionalInformationsReads
     ).map(TransportDomain.apply).apply(Nil)
   }
 
