@@ -20,6 +20,8 @@ import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
+import navigation.TransportMeansNavigatorProvider
+import pages.sections.transportMeans.DeparturesSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -37,6 +39,7 @@ class AddAnotherDepartureTransportMeansController @Inject() (
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   viewModelProvider: AddAnotherDepartureTransportMeansViewModelProvider,
+  navigatorProvider: TransportMeansNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherDepartureTransportMeansView
 )(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
@@ -64,7 +67,7 @@ class AddAnotherDepartureTransportMeansController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
           {
             case true  => Redirect(routes.IdentificationController.onPageLoad(lrn, mode, viewModel.nextIndex))
-            case false => Redirect(controllers.transportMeans.routes.AddBorderModeOfTransportYesNoController.onPageLoad(lrn, mode))
+            case false => Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(DeparturesSection)))
           }
         )
   }

@@ -23,7 +23,7 @@ import generators.Generators
 import models.NormalMode
 import models.reference.InlandMode
 import models.reference.transportMeans.departure.Identification
-import navigation.TransportMeansNavigatorProvider
+import navigation.TransportMeansDepartureNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -55,7 +55,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[TransportMeansNavigatorProvider]).toInstance(fakeTransportMeansNavigatorProvider))
+      .overrides(bind(classOf[TransportMeansDepartureNavigatorProvider]).toInstance(fakeTransportMeansDepartureNavigatorProvider))
       .overrides(bind(classOf[MeansOfTransportIdentificationTypesService]).toInstance(mockMeansOfIdentificationTypesService))
 
   private val inlandMode = arbitrary[InlandMode](arbitraryNonRoadInlandMode).sample.value

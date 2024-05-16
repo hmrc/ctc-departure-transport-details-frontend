@@ -18,6 +18,8 @@ package controllers
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
+import models.NormalMode
+import navigation.TransportMeansDepartureListNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
@@ -37,8 +39,10 @@ class DepartureTransportAnswersControllerSpec extends SpecBase with AppWithDefau
     super
       .guiceApplicationBuilder()
       .overrides(bind[DepartureTransportAnswersViewModelProvider].toInstance(mockViewModelProvider))
+      .overrides(bind(classOf[TransportMeansDepartureListNavigatorProvider]).toInstance(fakeTransportMeansDepartureListNavigatorProvider))
 
   "Mini Transport Answers Controller" - {
+    val mode = NormalMode
 
     "must return OK and the correct view for a GET" in {
       val sampleSections = arbitrary[List[Section]].sample.value
@@ -48,7 +52,7 @@ class DepartureTransportAnswersControllerSpec extends SpecBase with AppWithDefau
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onPageLoad(lrn, index).url)
+      val request = FakeRequest(GET, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onPageLoad(lrn, mode, index).url)
 
       val result = route(app, request).value
 
@@ -57,25 +61,25 @@ class DepartureTransportAnswersControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(lrn, index, sampleSections)(request, messages).toString
+        view(lrn, mode, index, sampleSections)(request, messages).toString
     }
 
     "must redirect to task list" in {
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onSubmit(lrn, index).url)
+      val request = FakeRequest(POST, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onSubmit(lrn, mode, index).url)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onPageLoad(lrn, index).url)
+      val request = FakeRequest(GET, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onPageLoad(lrn, mode, index).url)
 
       val result = route(app, request).value
 
@@ -87,13 +91,25 @@ class DepartureTransportAnswersControllerSpec extends SpecBase with AppWithDefau
     "must redirect to Session Expired for a POST if no existing data is found" in {
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onSubmit(lrn, index).url)
+      val request = FakeRequest(POST, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onSubmit(lrn, mode, index).url)
 
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
+    }
+
+    "must redirect to next page" in {
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onSubmit(lrn, mode, index).url)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual onwardRoute.url
     }
   }
 }

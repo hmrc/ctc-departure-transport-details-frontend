@@ -27,6 +27,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.preRequisites.ContainerIndicatorPage
+import pages.sections.transportMeans.DepartureSection
 import pages.transportMeans.departure._
 import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
 
@@ -53,20 +54,19 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
             .setValue(VehicleCountryPage(departureIndex), nationality)
 
           val expectedResult = PostTransitionTransportMeansDepartureDomain(
-            identification = Some(identification),
+            identification = identification,
             identificationNumber = identificationNumber,
-            nationality = Some(nationality)
+            nationality = nationality
           )(departureIndex)
 
           val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
           result.value.value mustBe expectedResult
           result.value.pages mustBe Seq(
-            AddIdentificationTypeYesNoPage(departureIndex),
             IdentificationPage(departureIndex),
             MeansIdentificationNumberPage(departureIndex),
-            AddVehicleCountryYesNoPage(departureIndex),
-            VehicleCountryPage(departureIndex)
+            VehicleCountryPage(departureIndex),
+            DepartureSection(departureIndex)
           )
         }
       }
@@ -78,16 +78,6 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
         val mockPhaseConfig = mock[PhaseConfig]
         when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
-        "when add identification page is missing" in {
-
-          val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(emptyUserAnswers)
-
-          result.left.value.page mustBe AddIdentificationTypeYesNoPage(departureIndex)
-          result.left.value.pages mustBe Seq(
-            AddIdentificationTypeYesNoPage(departureIndex)
-          )
-        }
-
         "when identification page is missing" in {
           val userAnswers = emptyUserAnswers
             .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
@@ -96,7 +86,6 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
           result.left.value.page mustBe IdentificationPage(departureIndex)
           result.left.value.pages mustBe Seq(
-            AddIdentificationTypeYesNoPage(departureIndex),
             IdentificationPage(departureIndex)
           )
         }
@@ -110,26 +99,8 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
           result.left.value.page mustBe MeansIdentificationNumberPage(departureIndex)
           result.left.value.pages mustBe Seq(
-            AddIdentificationTypeYesNoPage(departureIndex),
             IdentificationPage(departureIndex),
             MeansIdentificationNumberPage(departureIndex)
-          )
-        }
-
-        "when add vehicle country page is missing" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
-            .setValue(IdentificationPage(departureIndex), identification)
-            .setValue(MeansIdentificationNumberPage(departureIndex), identificationNumber)
-
-          val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
-
-          result.left.value.page mustBe AddVehicleCountryYesNoPage(departureIndex)
-          result.left.value.pages mustBe Seq(
-            AddIdentificationTypeYesNoPage(departureIndex),
-            IdentificationPage(departureIndex),
-            MeansIdentificationNumberPage(departureIndex),
-            AddVehicleCountryYesNoPage(departureIndex)
           )
         }
 
@@ -144,10 +115,8 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
           result.left.value.page mustBe VehicleCountryPage(departureIndex)
           result.left.value.pages mustBe Seq(
-            AddIdentificationTypeYesNoPage(departureIndex),
             IdentificationPage(departureIndex),
             MeansIdentificationNumberPage(departureIndex),
-            AddVehicleCountryYesNoPage(departureIndex),
             VehicleCountryPage(departureIndex)
           )
         }
