@@ -18,15 +18,18 @@ package models.journeyDomain
 
 import config.Constants.ModeOfTransport.Mail
 import config.PhaseConfig
+import models.Phase.{PostTransition, Transition}
 import models.ProcedureType.Normal
 import models.UserAnswers
 import models.journeyDomain._
+import models.journeyDomain.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
 import models.journeyDomain.carrierDetails.CarrierDetailsDomain
 import models.journeyDomain.equipment.EquipmentsAndChargesDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
 import models.reference.InlandMode
+import pages.additionalReference.AddAdditionalReferenceYesNoPage
 import pages.authorisationsAndLimit.{AddAuthorisationsYesNoPage, AuthorisationsInferredPage}
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
@@ -41,7 +44,8 @@ case class TransportDomain(
   supplyChainActors: Option[SupplyChainActorsDomain],
   authorisationsAndLimit: Option[AuthorisationsAndLimitDomain],
   carrierDetails: Option[CarrierDetailsDomain],
-  equipmentsAndCharges: EquipmentsAndChargesDomain
+  equipmentsAndCharges: EquipmentsAndChargesDomain,
+  additionalReferences: Option[AdditionalReferencesDomain]
 ) extends JourneyDomainModel {
 
   override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(TransportSection)
@@ -57,6 +61,12 @@ object TransportDomain {
         case _                         => TransportMeansDomain.userAnswersReader.toOption
       }
 
+    implicit lazy val additionalReferencesReads: Read[Option[AdditionalReferencesDomain]] =
+      phaseConfig.phase match {
+        case Transition     => UserAnswersReader.none
+        case PostTransition => AddAdditionalReferenceYesNoPage.filterOptionalDependent(identity)(AdditionalReferencesDomain.userAnswersReader)
+      }
+
     (
       PreRequisitesDomain.userAnswersReader,
       AddInlandModeYesNoPage.filterOptionalDependent(identity)(InlandModePage.reader),
@@ -64,7 +74,8 @@ object TransportDomain {
       SupplyChainActorYesNoPage.filterOptionalDependent(identity)(SupplyChainActorsDomain.userAnswersReader),
       authorisationsAndLimitReads,
       CarrierDetailYesNoPage.filterOptionalDependent(identity)(CarrierDetailsDomain.userAnswersReader),
-      EquipmentsAndChargesDomain.userAnswersReader
+      EquipmentsAndChargesDomain.userAnswersReader,
+      additionalReferencesReads
     ).map(TransportDomain.apply).apply(Nil)
   }
 
