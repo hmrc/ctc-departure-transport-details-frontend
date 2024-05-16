@@ -33,10 +33,13 @@ import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationD
 import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
+import models.reference.additionalReference.AdditionalReferenceType
 import models.reference.equipment.PaymentMethod
 import models.{Index, Mode, OptionalBoolean}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.additionalReference.AddAdditionalReferenceYesNoPage
+import pages.additionalReference.index.AdditionalReferenceTypePage
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
 import pages.authorisationsAndLimit.limit.{AddLimitDateYesNoPage, LimitDatePage}
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
@@ -967,6 +970,76 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               action.href mustBe equipmentsRoutes.PaymentMethodController.onPageLoad(answers.lrn, mode).url
               action.visuallyHiddenText.get mustBe "payment method for transport charges"
               action.id mustBe "change-payment-method"
+          }
+        }
+      }
+    }
+
+    "addAdditionalReference" - {
+      "must return None" - {
+        s"when $AddAdditionalReferenceYesNoPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addAdditionalReferenceYesNo
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $AddAdditionalReferenceYesNoPage defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage, true)
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.addAdditionalReferenceYesNo.get
+
+              result.key.value mustBe "Do you want to add an additional reference for all items?"
+              result.value.value mustBe "Yes"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.additionalReference.routes.AddAdditionalReferenceYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustBe " if you want to add an additional reference  for all items"
+              action.id mustBe "change-add-additional-reference"
+          }
+        }
+      }
+    }
+
+    "additionalReference" - {
+      "must return None" - {
+        s"when $AdditionalReferenceTypePage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.additionalReferences
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $AdditionalReferenceTypePage defined" in {
+          forAll(arbitrary[Mode], arbitrary[AdditionalReferenceType]) {
+            (mode, additionalReferenceType) =>
+              val answers = emptyUserAnswers.setValue(AdditionalReferenceTypePage(additionalReferenceIndex), additionalReferenceType)
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.additionalReferences
+
+              result.head.key.value mustBe "Additional reference 1"
+              result.head.value.value mustBe additionalReferenceType.toString
+              val actions = result.head.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.additionalReference.index.routes.AdditionalReferenceTypeController
+                .onPageLoad(answers.lrn, mode, additionalReferenceIndex)
+                .url
+              action.visuallyHiddenText.get mustBe "if you want to add any additional information for all items"
+              action.id mustBe s"change-add-additional-reference-${additionalReferenceIndex.display}"
           }
         }
       }
