@@ -75,4 +75,14 @@ class RemoveAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours with Ge
 
     behave like pageWithInsetText(doc, s"$additionalReferenceType")
   }
+
+  "without a additional reference" - {
+    val form: Form[Boolean] = new YesNoFormProvider()(prefix)
+    val view = injector
+      .instanceOf[RemoveAdditionalReferenceYesNoView]
+      .apply(form, lrn, NormalMode, additionalReferenceIndex, None)(fakeRequest, messages)
+    val doc = parseView(view)
+
+    behave like pageWithoutInsetText(doc)
+  }
 }
