@@ -1,0 +1,5 @@
+
+GET        /additional-information/:additionalInformationIndex/comments/:lrn            controllers.additionalInformation.index.AdditionalInformationTextController.onPageLoad(lrn: LocalReferenceNumber, additionalInformationIndex:Index, mode: Mode = NormalMode)
+POST       /additional-information/:additionalInformationIndex/comments/:lrn            controllers.additionalInformation.index.AdditionalInformationTextController.onSubmit(lrn: LocalReferenceNumber, additionalInformationIndex:Index, mode: Mode = NormalMode)
+GET        /additional-information/:additionalInformationIndex/change-comments/:lrn     controllers.additionalInformation.index.AdditionalInformationTextController.onPageLoad(lrn: LocalReferenceNumber, additionalInformationIndex:Index, mode: Mode = CheckMode)
+POST       /additional-information/:additionalInformationIndex/change-comments/:lrn     controllers.additionalInformation.index.AdditionalInformationTextController.onSubmit(lrn: LocalReferenceNumber, additionalInformationIndex:Index, mode: Mode = CheckMode)
