@@ -118,6 +118,7 @@ inlandMode.caption = Transport details - Inland mode of transport
 departureMeansOfTransport.caption = Transport details - Departure means of transport
 activeBorderModeOfTransport.caption = Transport details - Border mode of transport
 activeBorderMeansOfTransport.caption = Transport details - Border means of transport
+additionalReference.caption = Transport details - Additional reference
 
 transportMeans.addInlandModeYesNo.title = Do you want to add an inland mode of transport?
 transportMeans.addInlandModeYesNo.heading = Do you want to add an inland mode of transport?
@@ -602,3 +603,34 @@ transportMeans.departure.removeTransportMeansOfDepartureYesNo.error.required = S
 
 transportMeans.departure.identification.paragraph1 = You must add the registration number of the road vehicle for your inland mode.
 transportMeans.departure.identification.paragraph2 = You must add the registration number of the road trailer for your inland mode.
+
+# Transport details - Additional Reference
+
+additionalReference.addAdditionalReferenceYesNo.title = Do you want to add an additional reference for all items?
+additionalReference.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for all items?
+additionalReference.addAdditionalReferenceYesNo.paragraph = This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document.
+additionalReference.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for all items
+
+additionalReference.index.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
+additionalReference.index.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
+additionalReference.index.addAdditionalReferenceNumberYesNo.error.required = Select yes if you want to add an additional reference number
+
+additionalReference.index.additionalReferenceType.title = What type of additional reference do you want to add?
+additionalReference.index.additionalReferenceType.heading = What type of additional reference do you want to add?
+additionalReference.index.additionalReferenceType.hint = Enter the reference name or code, like Carrier (AEO certificate number) or Y028.
+additionalReference.index.additionalReferenceType.placeholder = Select an additional reference
+additionalReference.index.additionalReferenceType.error.required = Select the type of additional reference
+
+additionalReference.index.additionalReferenceNumber.title = Enter the additional reference number
+additionalReference.index.additionalReferenceNumber.heading = Enter the additional reference number
+additionalReference.index.additionalReferenceNumber.error.required = Enter the additional reference number
+additionalReference.index.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
+additionalReference.index.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
+additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference for all items
+additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference for all items
+additionalReference.addAnotherAdditionalReference.plural.title = You have added {0} additional references for all items
+additionalReference.addAnotherAdditionalReference.plural.heading = You have added {0} additional references for all items
+additionalReference.addAnotherAdditionalReference.maxLimit.label = You cannot add any more additional references for all items. To add another, you need to remove one first.
+additionalReference.addAnotherAdditionalReference.label = Do you want to add another additional reference for all items?
+additionalReference.addAnotherAdditionalReference.error.required = Select yes if you want to add another additional reference for all items

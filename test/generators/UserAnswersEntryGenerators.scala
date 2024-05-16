@@ -23,6 +23,7 @@ import models.reference._
 import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
 import models.reference.BorderMode
+import models.reference.additionalReference.AdditionalReferenceType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.libs.json._
@@ -56,7 +57,8 @@ trait UserAnswersEntryGenerators {
       generateSupplyChainActorsAnswers orElse
       generateAuthorisationsAndLimitAnswers orElse
       generateCarrierDetailsAnswers orElse
-      generateEquipmentsAndChargesAnswers
+      generateEquipmentsAndChargesAnswers orElse
+      generateAdditionalReferencesAnswers
 
   private def generatePreRequisitesAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.preRequisites._
@@ -206,6 +208,26 @@ trait UserAnswersEntryGenerators {
     import pages.equipment.index.seals._
     {
       case IdentificationNumberPage(_, _) => Gen.alphaNumStr.map(JsString)
+    }
+  }
+
+  private def generateAdditionalReferencesAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.additionalReference._
+
+    val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
+      case AddAdditionalReferenceYesNoPage => arbitrary[Boolean].map(JsBoolean)
+    }
+
+    pf orElse
+      generateAdditionalReferenceAnswers
+  }
+
+  private def generateAdditionalReferenceAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.additionalReference.index._
+    {
+      case AdditionalReferenceTypePage(_)           => arbitrary[AdditionalReferenceType].map(Json.toJson(_))
+      case AddAdditionalReferenceNumberYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
+      case AdditionalReferenceNumberPage(_)         => Gen.alphaNumStr.map(JsString)
     }
   }
 }

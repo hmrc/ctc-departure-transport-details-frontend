@@ -1,0 +1,11 @@
+->         /                                                                          app.additionalReference.index.Routes
+
+GET        /additional-reference/add/:lrn                                             controllers.additionalReference.AddAdditionalReferenceYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /additional-reference/add/:lrn                                             controllers.additionalReference.AddAdditionalReferenceYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /additional-reference/change-add/:lrn                                      controllers.additionalReference.AddAdditionalReferenceYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /additional-reference/change-add/:lrn                                      controllers.additionalReference.AddAdditionalReferenceYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /additional-reference/add-another/:lrn                                     controllers.additionalReference.AddAnotherAdditionalReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /additional-reference/add-another/:lrn                                     controllers.additionalReference.AddAnotherAdditionalReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /additional-reference/change-add-another/:lrn                              controllers.additionalReference.AddAnotherAdditionalReferenceController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /additional-reference/change-add-another/:lrn                              controllers.additionalReference.AddAnotherAdditionalReferenceController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

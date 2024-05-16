@@ -20,6 +20,7 @@ import cats.Order
 import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
+import models.reference.additionalReference.AdditionalReferenceType
 import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
 import models.reference.supplyChainActors.SupplyChainActorType
@@ -112,6 +113,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .get(url)
       .setHeader(version2Header: _*)
       .execute[NonEmptySet[PaymentMethod]]
+  }
+
+  def getAdditionalReferences()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[AdditionalReferenceType]] = {
+    val url = url"${config.referenceDataUrl}/lists/AdditionalReference"
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[AdditionalReferenceType]]
   }
 
   private def version2Header: Seq[(String, String)] = Seq(

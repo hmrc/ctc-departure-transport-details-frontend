@@ -61,7 +61,19 @@ class DepartureTransportAnswersControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(lrn, mode, index, sampleSections)(request, messages).toString
+        view(lrn, index, sampleSections)(request, messages).toString
+    }
+
+    "must redirect to task list" in {
+      setExistingUserAnswers(emptyUserAnswers)
+
+      val request = FakeRequest(POST, controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onSubmit(lrn, index).url)
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -73,7 +85,7 @@ class DepartureTransportAnswersControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -85,7 +97,7 @@ class DepartureTransportAnswersControllerSpec extends SpecBase with AppWithDefau
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to next page" in {

@@ -19,6 +19,7 @@ package generators
 import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
+import models.reference.additionalReference.AdditionalReferenceType
 import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
 import models.reference.supplyChainActors.SupplyChainActorType
@@ -166,6 +167,14 @@ trait ModelGenerators {
       } yield Nationality(code, desc)
     }
 
+  implicit lazy val arbitraryAdditionalReferenceType: Arbitrary[AdditionalReferenceType] =
+    Arbitrary {
+      for {
+        docType <- nonEmptyString
+        desc    <- nonEmptyString
+      } yield AdditionalReferenceType(docType, desc)
+    }
+
   implicit def arbitrarySelectableList[T <: Selectable](implicit arbitrary: Arbitrary[T]): Arbitrary[SelectableList[T]] = Arbitrary {
     for {
       values <- listWithMaxLength[T]()
@@ -293,5 +302,4 @@ trait ModelGenerators {
       values <- listWithMaxLength[T]()
     } yield values.distinctBy(_.code)
   }
-
 }
