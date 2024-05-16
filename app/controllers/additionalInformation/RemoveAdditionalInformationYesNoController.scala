@@ -16,7 +16,6 @@
 
 package controllers.additionalInformation
 
-import config.PhaseConfig
 import controllers.actions._
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
@@ -40,7 +39,7 @@ class RemoveAdditionalInformationYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveAdditionalInformationYesNoView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -48,16 +47,18 @@ class RemoveAdditionalInformationYesNoController @Inject() (
     formProvider("additionalInformation.removeAdditionalInformationYesNo", additionalInformationIndex.display)
 
   private def addAnother(lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode): Call =
-    controllers.additionalInformation.routes.RemoveAdditionalInformationYesNoController
-      .onPageLoad(lrn, additionalInformationIndex, mode) //todo this will be add another page once implemented
+    controllers.additionalInformation.routes.AddAdditionalInformationYesNoController
+      .onPageLoad(lrn, mode) //todo this will be add another page once implemented
 
-  def additionalReference(userAnswers: UserAnswers, additionalInformationIndex: Index): String =
-    "AdditionalInformation" //todo replace with answer to additional information once implemented
+  def additionalInformation(userAnswers: UserAnswers, additionalInformationIndex: Index): String =
+    "Additional Information" //todo replace with answer to additional information once implemented
 
   def onPageLoad(lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode): Action[AnyContent] =
-    actions.requireIndex(lrn, AdditionalInformationSection(additionalInformationIndex), addAnother(lrn, additionalInformationIndex, mode)) {
+    actions.requireData(lrn) {
       implicit request =>
-        Ok(view(form(additionalInformationIndex), lrn, additionalInformationIndex, additionalReference(request.userAnswers, additionalInformationIndex), mode))
+        Ok(
+          view(form(additionalInformationIndex), lrn, additionalInformationIndex, additionalInformation(request.userAnswers, additionalInformationIndex), mode)
+        )
     }
 
   def onSubmit(lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode): Action[AnyContent] = actions
@@ -69,7 +70,7 @@ class RemoveAdditionalInformationYesNoController @Inject() (
           .fold(
             formWithErrors =>
               Future.successful(
-                BadRequest(view(formWithErrors, lrn, additionalInformationIndex, additionalReference(request.userAnswers, additionalInformationIndex), mode))
+                BadRequest(view(formWithErrors, lrn, additionalInformationIndex, additionalInformation(request.userAnswers, additionalInformationIndex), mode))
               ),
             value =>
               for {
