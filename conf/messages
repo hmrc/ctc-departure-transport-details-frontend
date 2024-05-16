@@ -630,3 +630,8 @@ additionalInformation.addAnotherAdditionalInformation.plural.heading = You have 
 additionalInformation.addAnotherAdditionalInformation.maxLimit.label = You cannot add any more additional information for all items. To add another, you need to remove one first.
 additionalInformation.addAnotherAdditionalInformation.label = Do you want to add any more additional information for all items?
 additionalInformation.addAnotherAdditionalInformation.error.required = Select yes if you want to add any more additional information for all items
+
+additionalInformation.addCommentsYesNo.title = Do you want to add any comments for the additional information?
+additionalInformation.addCommentsYesNo.heading = Do you want to add any comments for the additional information?
+additionalInformation.addCommentsYesNo.error.required = Select yes if you want to add any comments for the additional information
+
