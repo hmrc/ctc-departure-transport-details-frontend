@@ -16,6 +16,7 @@
 
 package views.additionalReference.index
 
+import forms.YesNoFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.additionalReference.AdditionalReferenceType
@@ -36,7 +37,7 @@ class RemoveAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours with Ge
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveAdditionalReferenceYesNoView]
-      .apply(form, lrn, NormalMode, authorisationIndex, additionalReferenceType, additionalReferenceNumber)(fakeRequest, messages)
+      .apply(form, lrn, NormalMode, authorisationIndex, additionalReferenceType, Some(additionalReferenceNumber))(fakeRequest, messages)
 
   override val prefix: String = "additionalReference.index.removeAdditionalReference"
 
@@ -53,4 +54,14 @@ class RemoveAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours with Ge
   behave like pageWithInsetText(s"$additionalReferenceType - $additionalReferenceNumber")
 
   behave like pageWithSubmitButton("Save and continue")
+
+  "with an additional reference number" - {
+    val form: Form[Boolean] = new YesNoFormProvider()(prefix)
+    val view = injector
+      .instanceOf[RemoveAdditionalReferenceYesNoView]
+      .apply(form, lrn, NormalMode, authorisationIndex, additionalReferenceType, None)(fakeRequest, messages)
+    val doc = parseView(view)
+
+    behave like pageWithInsetText(doc, s"$additionalReferenceType")
+  }
 }

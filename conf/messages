@@ -610,6 +610,7 @@ additionalReference.index.additionalReferenceNumber.error.invalidCharacters = Th
 additionalReference.index.removeAdditionalReference.title = Are you sure you want to remove this additional reference from all items?
 additionalReference.index.removeAdditionalReference.heading = Are you sure you want to remove this additional reference from all items?
 additionalReference.index.removeAdditionalReference.insetText = {0} - {1}
+additionalReference.index.removeAdditionalReference.insetTextTypeOnly = {0}
 additionalReference.index.removeAdditionalReference.error.required = Select yes if you want to remove this additional reference from all items
 
 

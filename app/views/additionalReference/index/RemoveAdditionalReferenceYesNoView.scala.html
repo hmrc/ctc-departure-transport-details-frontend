@@ -20,35 +20,40 @@
 @import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
-    mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF,
-    inputYesNo: InputYesNo,
+        mainTemplate: MainTemplate,
+        formHelper: FormWithCSRF,
+        inputYesNo: InputYesNo,
         insetText: InsetText,
         errorSummary: ErrorSummary,
-    button: Button
+        button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, additionalReferenceIndex: Index, additionalReferenceType: String, additionalReferenceNumber: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, additionalReferenceIndex: Index, additionalReferenceType: String, additionalReferenceNumber: Option[String])(implicit request: Request[_], messages: Messages)
 
-@mainTemplate(
-    title = messages("additionalReference.index.removeAdditionalReference.title"),
-    showBackLink = true,
-    lrn = lrn
-) {
+    @mainTemplate(
+        title = messages("additionalReference.index.removeAdditionalReference.title"),
+        showBackLink = true,
+        lrn = lrn
+    ) {
 
-    @formHelper(action = routes.RemoveAdditionalReferenceYesNoController.onSubmit(lrn, mode, additionalReferenceIndex), Symbol("autoComplete") -> "off") {
+        @formHelper(action = routes.RemoveAdditionalReferenceYesNoController.onSubmit(lrn, mode, additionalReferenceIndex), Symbol("autoComplete") -> "off") {
 
-        @errorSummary(form.errors)
+            @errorSummary(form.errors)
 
-        @inputYesNo(
-            field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("additionalReference.index.removeAdditionalReference.heading"),
-                caption = Some(messages("additionalReference.caption")),
-                additionalHtml = insetText(messages("additionalReference.index.removeAdditionalReference.insetText", additionalReferenceType, additionalReferenceNumber))
+            @inputYesNo(
+                field = form("value"),
+                yesNoType = YesNoWithAdditionalHtml(
+                    heading = messages("additionalReference.index.removeAdditionalReference.heading"),
+                    caption = Some(messages("additionalReference.caption")),
+                    additionalHtml = additionalReferenceNumber match {
+                case Some(additionalReferenceNumber) =>
+                    insetText(messages("additionalReference.index.removeAdditionalReference.insetText", additionalReferenceType, additionalReferenceNumber))
+                case None =>
+                    insetText(messages("additionalReference.index.removeAdditionalReference.insetTextTypeOnly", additionalReferenceType))
+                    }
+                )
             )
-        )
 
-        @button(attributes = Map("id" -> "submit"))
+            @button(attributes = Map("id" -> "submit"))
+        }
     }
-}

@@ -22,7 +22,7 @@ import controllers.authorisationsAndLimit.authorisations.{routes => authRoutes}
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.reference.additionalReference.AdditionalReferenceType
-import models.requests.SpecificDataRequestProvider2
+import models.requests.{SpecificDataRequestProvider1, SpecificDataRequestProvider2}
 import models.{Index, LocalReferenceNumber, Mode}
 import pages.additionalReference.index.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
 import pages.sections.additionalReference.AdditionalReferenceSection
@@ -48,12 +48,11 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider2[AdditionalReferenceType, String]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[AdditionalReferenceType]#SpecificDataRequest[_]
 
-  private def additionalReferenceType(implicit request: Request): AdditionalReferenceType = request.arg._1
-  private def additionalReferenceNumber(implicit request: Request): String                = request.arg._2
+  private def additionalReferenceType(implicit request: Request): AdditionalReferenceType = request.arg
 
-  private def form(implicit request: Request): Form[Boolean] =
+  private def form: Form[Boolean] =
     formProvider("additionalReference.index.additionalReferenceNumber")
 
   private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
@@ -61,24 +60,25 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, additionalReferenceIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, AdditionalReferenceSection(additionalReferenceIndex), addAnother(lrn, mode))
-    .andThen(getMandatoryPage.getFirst(AdditionalReferenceTypePage(additionalReferenceIndex)))
-    .andThen(getMandatoryPage.getSecond(AdditionalReferenceNumberPage(additionalReferenceIndex))) {
+    .andThen(getMandatoryPage.getFirst(AdditionalReferenceTypePage(additionalReferenceIndex))) {
       implicit request =>
+        val additionalReferenceNumber: Option[String] = request.userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex))
         Ok(view(form, lrn, mode, additionalReferenceIndex, additionalReferenceType.value, additionalReferenceNumber))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, additionalReferenceIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, AdditionalReferenceSection(additionalReferenceIndex), addAnother(lrn, mode))
     .andThen(getMandatoryPage.getFirst(AdditionalReferenceTypePage(additionalReferenceIndex)))
-    .andThen(getMandatoryPage.getSecond(AdditionalReferenceNumberPage(additionalReferenceIndex)))
     .async {
       implicit request =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors =>
+            formWithErrors => {
+              val additionalReferenceNumber: Option[String] = request.userAnswers.get(AdditionalReferenceNumberPage(additionalReferenceIndex))
               Future
-                .successful(BadRequest(view(formWithErrors, lrn, mode, additionalReferenceIndex, additionalReferenceType.value, additionalReferenceNumber))),
+                .successful(BadRequest(view(formWithErrors, lrn, mode, additionalReferenceIndex, additionalReferenceType.value, additionalReferenceNumber)))
+            },
             {
               case true =>
                 AdditionalReferenceSection(additionalReferenceIndex)
