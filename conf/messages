@@ -622,3 +622,9 @@ additionalInformation.addAdditionalInformationYesNo.title = Do you want to add a
 additionalInformation.addAdditionalInformationYesNo.heading = Do you want to add any additional information for all items?
 additionalInformation.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
 additionalInformation.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for all items
+
+additionalInformation.index.additionalInformationType.title = What type of additional information do you want to add?
+additionalInformation.index.additionalInformationType.heading = What type of additional information do you want to add?
+additionalInformation.index.additionalInformationType.hint = Enter the information name or code, like Export or 20300.
+additionalInformation.index.additionalInformationType.placeholder = Select an additional reference
+additionalInformation.index.additionalInformationType.error.required = Select the type of additional information
