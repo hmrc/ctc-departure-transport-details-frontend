@@ -44,7 +44,7 @@ class RemoveAdditionalInformationYesNoController @Inject() (
     with I18nSupport {
 
   private def form(): Form[Boolean] =
-    formProvider("additionalInformation.removeAdditionalInformationYesNo")
+    formProvider("additionalInformation.index.removeAdditionalInformationYesNo")
 
   private def addAnother(lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode): Call =
     controllers.additionalInformation.routes.AddAdditionalInformationYesNoController

@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 
-package views.additionalInformation
+package views.additionalInformation.index
 
+import generators.Generators
 import models.NormalMode
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.additionalInformation.AddCommentsYesNoView
+import views.html.additionalInformation.RemoveAdditionalInformationYesNoView
+import views.html.additionalReference.index.RemoveAdditionalReferenceYesNoView
 
-class AddCommentsYesNoViewSpec extends YesNoViewBehaviours {
+class RemoveAdditionalInformationYesNoViewSpec extends YesNoViewBehaviours with Generators {
+
+  private val insetText = "Additional information" //todo update once additional information page is built
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddCommentsYesNoView].apply(form, lrn, index, NormalMode)(fakeRequest, messages)
+    injector
+      .instanceOf[RemoveAdditionalInformationYesNoView]
+      .apply(form, lrn, index, insetText, NormalMode)(fakeRequest, messages)
 
-  override val prefix: String = "additionalInformation.addCommentsYesNo"
+  override val prefix: String = "additionalInformation.index.removeAdditionalInformationYesNo"
 
   behave like pageWithTitle()
 
@@ -39,5 +46,8 @@ class AddCommentsYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithRadioItems()
 
+  behave like pageWithInsetText("Additional information") //todo update once additional information page is built
+
   behave like pageWithSubmitButton("Save and continue")
+
 }
