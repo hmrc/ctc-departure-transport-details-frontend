@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package controllers.additionalInformation
+package controllers.additionalInformation.index
 
+import config.PhaseConfig
 import controllers.actions._
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
-import navigation.TransportNavigatorProvider
 import pages.sections.additionalInformation.AdditionalInformationSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,17 +35,16 @@ import scala.concurrent.{ExecutionContext, Future}
 class RemoveAdditionalInformationYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveAdditionalInformationYesNoView
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(additionalInformationIndex: Index): Form[Boolean] =
-    formProvider("additionalInformation.removeAdditionalInformationYesNo", additionalInformationIndex.display)
+  private def form(): Form[Boolean] =
+    formProvider("additionalInformation.removeAdditionalInformationYesNo")
 
   private def addAnother(lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode): Call =
     controllers.additionalInformation.routes.AddAdditionalInformationYesNoController
@@ -57,7 +57,7 @@ class RemoveAdditionalInformationYesNoController @Inject() (
     actions.requireData(lrn) {
       implicit request =>
         Ok(
-          view(form(additionalInformationIndex), lrn, additionalInformationIndex, additionalInformation(request.userAnswers, additionalInformationIndex), mode)
+          view(form(), lrn, additionalInformationIndex, additionalInformation(request.userAnswers, additionalInformationIndex), mode)
         )
     }
 
@@ -65,23 +65,26 @@ class RemoveAdditionalInformationYesNoController @Inject() (
     .requireIndex(lrn, AdditionalInformationSection(additionalInformationIndex), addAnother(lrn, additionalInformationIndex, mode))
     .async {
       implicit request =>
-        form(additionalInformationIndex)
+        form()
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(
-                BadRequest(view(formWithErrors, lrn, additionalInformationIndex, additionalInformation(request.userAnswers, additionalInformationIndex), mode))
-              ),
-            value =>
-              for {
-                updatedAnswers <-
-                  if (value) {
-                    Future.fromTry(request.userAnswers.remove(AdditionalInformationSection(additionalInformationIndex)))
-                  } else {
-                    Future.successful(request.userAnswers)
-                  }
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(addAnother(request.userAnswers.lrn, additionalInformationIndex, mode))
+              Future
+                .successful(
+                  BadRequest(
+                    view(formWithErrors, lrn, additionalInformationIndex, additionalInformation(request.userAnswers, additionalInformationIndex), mode)
+                  )
+                ),
+            {
+              case true =>
+                AdditionalInformationSection(additionalInformationIndex)
+                  .removeFromUserAnswers()
+                  .updateTask()
+                  .writeToSession()
+                  .navigateTo(addAnother(lrn, additionalInformationIndex, mode))
+              case false =>
+                Future.successful(Redirect(addAnother(lrn, additionalInformationIndex, mode)))
+            }
           )
 
     }

@@ -608,6 +608,12 @@ additionalReference.index.additionalReferenceNumber.error.required = Enter the a
 additionalReference.index.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
 additionalReference.index.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
 
+additionalReference.index.removeAdditionalReference.title = Are you sure you want to remove this additional reference from all items?
+additionalReference.index.removeAdditionalReference.heading = Are you sure you want to remove this additional reference from all items?
+additionalReference.index.removeAdditionalReference.insetText = {0} - {1}
+additionalReference.index.removeAdditionalReference.insetTextTypeOnly = {0}
+additionalReference.index.removeAdditionalReference.error.required = Select yes if you want to remove this additional reference from all items
+
 additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference for all items
 additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference for all items
 additionalReference.addAnotherAdditionalReference.plural.title = You have added {0} additional references for all items
@@ -630,3 +636,9 @@ additionalInformation.addCommentsYesNo.error.required = Select yes if you want t
 additionalInformation.removeAdditionalInformationYesNo.title = Are you sure you want to remove this additional information from all items?
 additionalInformation.removeAdditionalInformationYesNo.heading = Are you sure you want to remove this additional information from all items?
 additionalInformation.removeAdditionalInformationYesNo.error.required = Are you sure you want to remove this additional information from all items?
+
+additionalInformation.index.additionalInformationText.title = Enter your comments for the additional information
+additionalInformation.index.additionalInformationText.heading = Enter your comments for the additional information
+additionalInformation.index.additionalInformationText.error.required = Enter your comments for the additional information
+additionalInformation.index.additionalInformationText.error.length = Your comments must be 512 characters or less
+additionalInformation.index.additionalInformationText.error.invalidCharacters = Your comments must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces

@@ -63,14 +63,16 @@ class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPrope
                 ListItem(
                   name = s"${refType.toString} - $additionalReferenceNumber",
                   changeUrl = controllers.additionalReference.index.routes.AdditionalReferenceTypeController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
-                  removeUrl = Some(Call("GET", "#").url) // TODO update when Remove Controller added
+                  removeUrl =
+                    Some(controllers.additionalReference.index.routes.RemoveAdditionalReferenceYesNoController.onPageLoad(userAnswers.lrn, mode, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
                   name = refType.toString,
                   changeUrl = controllers.additionalReference.index.routes.AdditionalReferenceTypeController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
-                  removeUrl = Some(Call("GET", "#").url) // TODO update when Remove Controller added
+                  removeUrl =
+                    Some(controllers.additionalReference.index.routes.RemoveAdditionalReferenceYesNoController.onPageLoad(userAnswers.lrn, mode, Index(1)).url)
                 )
               )
             )

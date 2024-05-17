@@ -15,41 +15,43 @@
  *@
 
 @import controllers.additionalInformation.index.routes
+@import forms.Constants.maxAdditionalInfoTextLength
 @import models.LocalReferenceNumber
-@import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
+@import viewModels.components.InputCharacterCountViewModel._
+@import views.html.components.{Button, ErrorSummary, InputCharacterCount}
+
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputYesNo: InputYesNo,
-    insetText:InsetText,
+    inputCharacterCount: InputCharacterCount,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, additionalInformationIndex: Index, additionalInformation: String,mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, additionalInformationIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("additionalInformation.removeAdditionalInformationYesNo.title"),
+    title = messages("additionalInformation.index.additionalInformationText.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.RemoveAdditionalInformationYesNoController.onSubmit(lrn, additionalInformationIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AdditionalInformationTextController.onSubmit(lrn, additionalInformationIndex, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
-        @inputYesNo(
+        @inputCharacterCount(
             field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
-                heading = messages("additionalInformation.removeAdditionalInformationYesNo.heading"),
+            inputCharacterCountType = OrdinaryInputCharacterCount(
+                heading = messages("additionalInformation.index.additionalInformationText.heading"),
                 caption = Some(messages("additionalInformation.caption")),
-                additionalHtml = insetText(additionalInformation)
-
-            )
+            ),
+            label = messages("additionalInformation.index.additionalInformationText.heading"),
+            maxLength = maxAdditionalInfoTextLength
         )
 
         @button(attributes = Map("id" -> "submit"))
+
     }
 }
