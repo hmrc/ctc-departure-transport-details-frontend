@@ -27,9 +27,9 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import viewModels.additionalReference.AddAnotherAdditionalReferenceViewModel
-import viewModels.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
-import views.html.additionalReference.AddAnotherAdditionalReferenceView
+import viewModels.additionalInformation.AddAnotherAdditionalInformationViewModel
+import viewModels.additionalInformation.AddAnotherAdditionalInformationViewModel.AddAnotherAdditionalInformationViewModelProvider
+import views.html.additionalInformation.AddAnotherAdditionalInformationView
 
 import javax.inject.Inject
 
@@ -40,13 +40,13 @@ class AddAnotherAdditionalInformationController @Inject() (
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddAnotherAdditionalReferenceView,
-  viewModelProvider: AddAnotherAdditionalReferenceViewModelProvider
+  view: AddAnotherAdditionalInformationView,
+  viewModelProvider: AddAnotherAdditionalInformationViewModelProvider
 )(implicit config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(viewModel: AddAnotherAdditionalReferenceViewModel): Form[Boolean] = formProvider(viewModel.prefix, viewModel.allowMore)
+  private def form(viewModel: AddAnotherAdditionalInformationViewModel): Form[Boolean] = formProvider(viewModel.prefix, viewModel.allowMore)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
@@ -68,6 +68,7 @@ class AddAnotherAdditionalInformationController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
           {
             case true =>
+              // TODO: update later
               Redirect(controllers.additionalReference.index.routes.AdditionalReferenceTypeController.onPageLoad(lrn, mode, viewModel.nextIndex))
             case false =>
               Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(AdditionalReferencesSection)))

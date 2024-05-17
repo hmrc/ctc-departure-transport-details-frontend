@@ -1,5 +1,4 @@
 
-<<<<<<< HEAD
 GET        /additional-information/add/:lrn                                             controllers.additionalInformation.AddAdditionalInformationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /additional-information/add/:lrn                                             controllers.additionalInformation.AddAdditionalInformationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /additional-information/change-add/:lrn                                      controllers.additionalInformation.AddAdditionalInformationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

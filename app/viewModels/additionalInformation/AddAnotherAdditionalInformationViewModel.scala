@@ -21,6 +21,7 @@ import controllers.additionalInformation.routes
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
+import utils.cyaHelpers.additionalInformation.AdditionalInformationAnswersHelper
 import utils.cyaHelpers.additionalReference.AdditionalReferenceAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
 
@@ -38,12 +39,12 @@ case class AddAnotherAdditionalInformationViewModel(
 
 object AddAnotherAdditionalInformationViewModel {
 
-  class AddAnotherAdditionalReferenceViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
+  class AddAnotherAdditionalInformationViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit
       messages: Messages
     ): AddAnotherAdditionalInformationViewModel = {
-      val helper = new AdditionalReferenceAnswersHelper(userAnswers, mode)
+      val helper = new AdditionalInformationAnswersHelper(userAnswers, mode)
 
       val listItems = helper.listItems.collect {
         case Left(value)  => value

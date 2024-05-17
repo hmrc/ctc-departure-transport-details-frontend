@@ -28,9 +28,9 @@ import utils.cyaHelpers.AnswersHelper
 import viewModels.ListItem
 
 class AdditionalInformationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit
-                                                                               messages: Messages,
-                                                                               config: FrontendAppConfig,
-                                                                               phaseConfig: PhaseConfig
+  messages: Messages,
+  config: FrontendAppConfig,
+  phaseConfig: PhaseConfig
 ) extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =
@@ -38,7 +38,8 @@ class AdditionalInformationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(i
       additionalInformationIndex =>
         buildListItem[AdditionalReferenceDomain](
           nameWhenComplete = _.toString,
-          nameWhenInProgress = userAnswers.get(AdditionalInformationTypePage(additionalInformationIndex)).map(_.toString),
+          // TODO: update later
+          nameWhenInProgress = userAnswers.get(AdditionalReferenceTypePage(additionalInformationIndex)).map(_.toString),
           removeRoute = Some(Call("GET", "#")) // TODO change when remove page done
         )(AdditionalReferenceDomain.userAnswersReader(additionalInformationIndex).apply(Nil))
     }
