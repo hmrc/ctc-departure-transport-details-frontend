@@ -47,7 +47,7 @@ checkYourAnswers.transportEquipment = Transport equipment
 checkYourAnswers.transportEquipment.addOrRemove = Add or remove transport equipment
 checkYourAnswers.transportCharges = Transport charges
 checkYourAnswers.additionalReference = Additional references
-checkYourAnswers.additionalReference.addOrRemove = Add or remove additional references
+checkYourAnswers.additionalReference.addOrRemove = Add or remove additional reference for all items
 
 # Transport details - Pre-requisites
 
