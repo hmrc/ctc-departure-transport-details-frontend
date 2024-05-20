@@ -16,6 +16,7 @@
 
 @import controllers.additionalInformation.index.routes
 @import models.LocalReferenceNumber
+@import viewModels.components.InputYesNoViewModel
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
@@ -28,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, additionalInformationIndex: Index, additionalInformation: String,mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, additionalInformationIndex: Index, additionalInformation: Option[String], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("additionalInformation.index.removeAdditionalInformationYesNo.title"),
@@ -42,10 +43,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = YesNoWithAdditionalHtml(
+            yesNoType = InputYesNoViewModel(
                 heading = messages("additionalInformation.index.removeAdditionalInformationYesNo.heading"),
                 caption = Some(messages("additionalInformation.caption")),
-                additionalHtml = insetText(additionalInformation)
+                additionalHtml = additionalInformation.map(insetText(_))
 
             )
         )

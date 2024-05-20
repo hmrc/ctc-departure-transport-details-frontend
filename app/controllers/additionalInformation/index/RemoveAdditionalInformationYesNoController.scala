@@ -21,6 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
+import pages.additionalInformation.index.AdditionalInformationTypePage
 import pages.sections.additionalInformation.AdditionalInformationSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -50,8 +51,8 @@ class RemoveAdditionalInformationYesNoController @Inject() (
     controllers.additionalInformation.routes.AddAdditionalInformationYesNoController
       .onPageLoad(lrn, mode) //todo this will be add another page once implemented
 
-  def additionalInformation(userAnswers: UserAnswers, additionalInformationIndex: Index): String =
-    "Additional Information" //todo replace with answer to additional information once implemented
+  def additionalInformation(userAnswers: UserAnswers, additionalInformationIndex: Index): Option[String] =
+    userAnswers.get(AdditionalInformationTypePage(additionalInformationIndex)).map(_.code)
 
   def onPageLoad(lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(lrn) {

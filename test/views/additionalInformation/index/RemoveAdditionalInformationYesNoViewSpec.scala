@@ -23,16 +23,15 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.additionalInformation.RemoveAdditionalInformationYesNoView
-import views.html.additionalReference.index.RemoveAdditionalReferenceYesNoView
 
 class RemoveAdditionalInformationYesNoViewSpec extends YesNoViewBehaviours with Generators {
 
-  private val insetText = "Additional information" //todo update once additional information page is built
+  private val insetText = Gen.alphaStr.sample.value
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector
       .instanceOf[RemoveAdditionalInformationYesNoView]
-      .apply(form, lrn, index, insetText, NormalMode)(fakeRequest, messages)
+      .apply(form, lrn, index, Some(insetText), NormalMode)(fakeRequest, messages)
 
   override val prefix: String = "additionalInformation.index.removeAdditionalInformationYesNo"
 
@@ -46,7 +45,7 @@ class RemoveAdditionalInformationYesNoViewSpec extends YesNoViewBehaviours with 
 
   behave like pageWithRadioItems()
 
-  behave like pageWithInsetText("Additional information") //todo update once additional information page is built
+  behave like pageWithInsetText(insetText)
 
   behave like pageWithSubmitButton("Save and continue")
 
