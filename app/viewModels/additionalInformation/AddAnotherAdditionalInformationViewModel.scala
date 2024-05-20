@@ -22,7 +22,6 @@ import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.additionalInformation.AdditionalInformationAnswersHelper
-import utils.cyaHelpers.additionalReference.AdditionalReferenceAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
 
 import javax.inject.Inject

@@ -17,11 +17,11 @@
 package utils.cyaHelpers.additionalInformation
 
 import config.{FrontendAppConfig, PhaseConfig}
+import models.journeyDomain.additionalInformation.AdditionalInformationDomain
 import models.journeyDomain.additionalReferences.AdditionalReferenceDomain
 import models.{Mode, UserAnswers}
-import pages.additionalReference.index.AdditionalReferenceTypePage
+import pages.additionalInformation.index.AdditionalInformationTypePage
 import pages.sections.additionalInformation.AdditionalInformationListSection
-import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import utils.cyaHelpers.AnswersHelper
@@ -36,12 +36,11 @@ class AdditionalInformationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(i
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(AdditionalInformationListSection) {
       additionalInformationIndex =>
-        buildListItem[AdditionalReferenceDomain](
+        buildListItem[AdditionalInformationDomain](
           nameWhenComplete = _.toString,
-          // TODO: update later
-          nameWhenInProgress = userAnswers.get(AdditionalReferenceTypePage(additionalInformationIndex)).map(_.toString),
+          nameWhenInProgress = userAnswers.get(AdditionalInformationTypePage(additionalInformationIndex)).map(_.toString),
           removeRoute = Some(Call("GET", "#")) // TODO change when remove page done
-        )(AdditionalReferenceDomain.userAnswersReader(additionalInformationIndex).apply(Nil))
+        )(AdditionalInformationDomain.userAnswersReader(additionalInformationIndex).apply(Nil))
     }
 
 }

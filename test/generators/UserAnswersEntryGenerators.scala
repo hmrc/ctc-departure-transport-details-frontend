@@ -23,6 +23,7 @@ import models.reference._
 import models.reference.supplyChainActors.SupplyChainActorType
 import models.reference.transportMeans._
 import models.reference.BorderMode
+import models.reference.additionalInformation.AdditionalInformationCode
 import models.reference.additionalReference.AdditionalReferenceType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -58,7 +59,9 @@ trait UserAnswersEntryGenerators {
       generateAuthorisationsAndLimitAnswers orElse
       generateCarrierDetailsAnswers orElse
       generateEquipmentsAndChargesAnswers orElse
-      generateAdditionalReferencesAnswers
+      generateAdditionalReferencesAnswers orElse
+      generateAdditionalInformationAnswers
+
 
   private def generatePreRequisitesAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.preRequisites._
@@ -228,6 +231,24 @@ trait UserAnswersEntryGenerators {
       case AdditionalReferenceTypePage(_)           => arbitrary[AdditionalReferenceType].map(Json.toJson(_))
       case AddAdditionalReferenceNumberYesNoPage(_) => arbitrary[Boolean].map(JsBoolean)
       case AdditionalReferenceNumberPage(_)         => Gen.alphaNumStr.map(JsString)
+    }
+  }
+  private def generateAdditionalInformationAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.additionalInformation._
+
+    val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
+      case AddAdditionalInformationYesNoPage => arbitrary[Boolean].map(JsBoolean)
+    }
+
+    pf orElse
+      generateAdditionalInformationIndexAnswers
+  }
+
+  private def generateAdditionalInformationIndexAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
+    import pages.additionalInformation.index._
+    {
+      case AdditionalInformationTypePage(_)           => arbitrary[AdditionalInformationCode].map(Json.toJson(_))
+      case AdditionalInformationTextPage(_)         =>   Gen.alphaNumStr.map(JsString)
     }
   }
 }

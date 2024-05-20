@@ -18,19 +18,22 @@ package models.reference.additionalInformation
 
 import cats.Order
 import models.Selectable
-import play.api.libs.json.{Json, OFormat}
+
+import play.api.libs.json.{Format, Json}
 
 case class AdditionalInformationCode(code: String, description: String) extends Selectable {
 
-  override def toString: String = s"($code) $description"
+  override def toString: String = s"$code - $description"
 
   override val value: String = code
 }
 
 object AdditionalInformationCode {
-  implicit val format: OFormat[AdditionalInformationCode] = Json.format[AdditionalInformationCode]
+
+  implicit val format: Format[AdditionalInformationCode] = Json.format[AdditionalInformationCode]
 
   implicit val order: Order[AdditionalInformationCode] = (x: AdditionalInformationCode, y: AdditionalInformationCode) => {
-    x.description.compareToIgnoreCase(y.description)
+    (x, y).compareBy(_.code)
   }
+
 }

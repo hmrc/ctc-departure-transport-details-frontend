@@ -31,6 +31,5 @@ case class AdditionalInformationTypePage(additionalInformationIndex: Index) exte
   override def toString: String = "type"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(Call("GET", "#"))
-  //  Some(routes.AdditionalInformationTypeController.onPageLoad(additionalInformationIndex, userAnswers.lrn, mode))
+    Some(routes.AdditionalInformationTypeController.onPageLoad(additionalInformationIndex, userAnswers.lrn, mode))
 }

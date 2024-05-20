@@ -33,8 +33,8 @@ case class AdditionalInformationDomain(
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
     stage match {
-      case AccessingJourney => Call("GET", "#")
-      //     AdditionalInformationTypeController.onPageLoad(userAnswers.lrn, mode, additionalInformationIndex)
+      case AccessingJourney =>
+        controllers.additionalInformation.index.routes.AdditionalInformationTypeController.onPageLoad(additionalInformationIndex, userAnswers.lrn, mode)
       case CompletingJourney =>
         controllers.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode)
     }
