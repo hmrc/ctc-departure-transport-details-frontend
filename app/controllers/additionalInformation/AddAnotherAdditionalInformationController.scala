@@ -53,7 +53,7 @@ class AddAnotherAdditionalInformationController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, mode)
       viewModel.count match {
         case 0 =>
-          Redirect(controllers.additionalReference.routes.AddAdditionalReferenceYesNoController.onPageLoad(lrn, mode))
+          Redirect(controllers.additionalInformation.routes.AddAdditionalInformationYesNoController.onPageLoad(lrn, mode))
         case _ =>
           Ok(view(form(viewModel), lrn, viewModel))
       }
@@ -68,7 +68,7 @@ class AddAnotherAdditionalInformationController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
           {
             case true =>
-              // TODO: update later
+              // TODO: update later to AdditionalReferenceCodeController
               Redirect(controllers.additionalReference.index.routes.AdditionalReferenceTypeController.onPageLoad(lrn, mode, viewModel.nextIndex))
             case false =>
               Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(AdditionalReferencesSection)))

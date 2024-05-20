@@ -21,7 +21,7 @@ import pages.behaviours.PageBehaviours
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import play.api.libs.json.{JsArray, Json}
 
-class AddAdditionalInformationYesNoPageSpec extends PageBehaviours {
+class AddAdditionalInformationCodeYesNoPageSpec extends PageBehaviours {
 
   "AddAdditionalReferenceYesNoPage" - {
 

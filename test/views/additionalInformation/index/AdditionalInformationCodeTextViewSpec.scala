@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 
-package views.additionalInformation
+package views.additionalInformation.index
 
+import forms.AdditionalInformationFormProvider
+import forms.Constants.maxAdditionalInfoTextLength
+import generators.Generators
 import models.NormalMode
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.YesNoViewBehaviours
-import views.html.additionalInformation.AddAdditionalInformationYesNoView
+import views.behaviours.CharacterCountViewBehaviours
+import views.html.additionalInformation.index.AdditionalInformationTextView
 
-class AddAdditionalInformationYesNoViewSpec extends YesNoViewBehaviours {
+class AdditionalInformationCodeTextViewSpec extends CharacterCountViewBehaviours with Generators {
 
-  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddAdditionalInformationYesNoView].apply(form, lrn, NormalMode)(fakeRequest, messages)
+  override def form: Form[String] = new AdditionalInformationFormProvider()(prefix)
 
-  override val prefix: String = "additionalInformation.addAdditionalInformationYesNo"
+  override def applyView(form: Form[String]): HtmlFormat.Appendable =
+    injector.instanceOf[AdditionalInformationTextView].apply(form, lrn, NormalMode, additionalInformationIndex)(fakeRequest, messages)
+
+  override val prefix: String =
+    "additionalInformation.index.additionalInformationText"
 
   behave like pageWithTitle()
 
@@ -37,9 +44,7 @@ class AddAdditionalInformationYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithHeading()
 
-  behave like pageWithContent("p", "This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.")
-
-  behave like pageWithRadioItems()
+  behave like pageWithCharacterCount(maxAdditionalInfoTextLength)
 
   behave like pageWithSubmitButton("Save and continue")
 }

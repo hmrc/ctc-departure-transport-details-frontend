@@ -32,7 +32,7 @@ import views.html.additionalInformation.index.AdditionalInformationTextView
 
 import scala.concurrent.Future
 
-class AdditionalInformationTextControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
+class AdditionalInformationCodeTextControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private lazy val formProvider                   = new AdditionalInformationFormProvider()
   private lazy val form                           = formProvider("additionalInformation.index.additionalInformationText")

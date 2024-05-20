@@ -36,7 +36,7 @@ import viewModels.additionalInformation.AddAnotherAdditionalInformationViewModel
 import viewModels.additionalInformation.AddAnotherAdditionalInformationViewModel.AddAnotherAdditionalInformationViewModelProvider
 import views.html.additionalInformation.AddAnotherAdditionalInformationView
 
-class AddAnotherAdditionalInformationControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with MockitoSugar {
+class AddAnotherAdditionalInformationControllerSpecCode extends SpecBase with AppWithDefaultMockFixtures with Generators with MockitoSugar {
 
   private val formProvider = new AddAnotherFormProvider()
 
@@ -71,7 +71,7 @@ class AddAnotherAdditionalInformationControllerSpec extends SpecBase with AppWit
 
   "AddAnotherAdditionalInformation Controller" - {
 
-    "must redirect to add additional reference yes no page when 0 additional references added" in {
+    "must redirect to add additional information yes no page when 0 additional references added" in {
       when(mockViewModelProvider.apply(any(), any())(any()))
         .thenReturn(emptyViewModel)
 
