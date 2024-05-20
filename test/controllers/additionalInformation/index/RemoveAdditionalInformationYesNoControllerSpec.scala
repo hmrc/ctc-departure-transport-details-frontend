@@ -14,62 +14,58 @@
  * limitations under the License.
  */
 
-package controllers.additionalReference.index
+package controllers.additionalInformation.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
-import models.reference.additionalReference.AdditionalReferenceType
-import models.removable.AdditionalReference
+import models.reference.additionalInformation.AdditionalInformationCode
+import models.removable.AdditionalInformation
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
 import org.scalatestplus.mockito.MockitoSugar
-import pages.additionalReference.index.{AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
-import pages.sections.additionalReference.AdditionalReferenceSection
+import pages.additionalInformation.index.AdditionalInformationTypePage
+import pages.sections.additionalInformation.AdditionalInformationSection
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.additionalReference.index.RemoveAdditionalReferenceYesNoView
+import views.html.additionalInformation.RemoveAdditionalInformationYesNoView
 
 import scala.concurrent.Future
 
-class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
+class RemoveAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
   private val formProvider = new YesNoFormProvider()
 
   private def form: Form[Boolean] =
-    formProvider("additionalReference.index.removeAdditionalReference")
+    formProvider("additionalInformation.index.removeAdditionalInformationYesNo")
 
-  private val mode                                = NormalMode
-  private lazy val removeAdditionalReferenceRoute = routes.RemoveAdditionalReferenceYesNoController.onPageLoad(lrn, mode, additionalReferenceIndex).url
+  private val mode                                  = NormalMode
+  private lazy val removeAdditionalInformationRoute = routes.RemoveAdditionalInformationYesNoController.onPageLoad(lrn, additionalInformationIndex, mode).url
 
-  val additionalReferenceType: AdditionalReferenceType = arbitrary[AdditionalReferenceType].sample.value
-  val additionalReferenceNumber: String                = Gen.alphaStr.sample.value
+  val additionalInformationCode: AdditionalInformationCode = arbitrary[AdditionalInformationCode].sample.value
+  val additionalInformation: AdditionalInformation         = AdditionalInformation(additionalInformationCode)
 
-  val additionalReference: AdditionalReference = AdditionalReference(additionalReferenceType, Some(additionalReferenceNumber))
-
-  "RemoveAdditionalReferenceYesNoControllerSpec" - {
+  "RemoveAdditionalInformationYesNoControllerSpec" - {
 
     "must return OK and the correct view for a GET" in {
       val userAnswers = emptyUserAnswers
-        .setValue(AdditionalReferenceTypePage(additionalReferenceIndex), additionalReferenceType)
-        .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex), additionalReferenceNumber)
+        .setValue(AdditionalInformationTypePage(additionalInformationIndex), additionalInformationCode)
 
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, removeAdditionalReferenceRoute)
+      val request = FakeRequest(GET, removeAdditionalInformationRoute)
       val result  = route(app, request).value
 
-      val view = injector.instanceOf[RemoveAdditionalReferenceYesNoView]
+      val view = injector.instanceOf[RemoveAdditionalInformationYesNoView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, additionalReferenceIndex, Some(additionalReference.forRemoveDisplay))(request, messages).toString
+        view(form, lrn, additionalInformationIndex, Some(additionalInformationCode.toString), mode)(request, messages).toString
     }
 
     "when yes submitted must redirect to add another additional reference and remove additional reference at specified index" in {
@@ -77,12 +73,11 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val userAnswers = emptyUserAnswers
-        .setValue(AdditionalReferenceTypePage(additionalReferenceIndex), additionalReferenceType)
-        .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex), additionalReferenceNumber)
+        .setValue(AdditionalInformationTypePage(additionalInformationIndex), additionalInformationCode)
 
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(POST, removeAdditionalReferenceRoute)
+      val request = FakeRequest(POST, removeAdditionalInformationRoute)
         .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(app, request).value
@@ -90,11 +85,11 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode).url
+        controllers.additionalInformation.routes.AddAdditionalInformationYesNoController.onPageLoad(lrn, mode).url
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.get(AdditionalReferenceSection(index)) mustNot be(defined)
+      userAnswersCaptor.getValue.get(AdditionalInformationSection(index)) mustNot be(defined)
     }
 
     "when no submitted must redirect to add another additional reference and not remove the additional reference at specified index" in {
@@ -102,12 +97,11 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       val userAnswers = emptyUserAnswers
-        .setValue(AdditionalReferenceTypePage(additionalReferenceIndex), additionalReferenceType)
-        .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex), additionalReferenceNumber)
+        .setValue(AdditionalInformationTypePage(additionalInformationIndex), additionalInformationCode)
 
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(POST, removeAdditionalReferenceRoute)
+      val request = FakeRequest(POST, removeAdditionalInformationRoute)
         .withFormUrlEncodedBody(("value", "false"))
 
       val result = route(app, request).value
@@ -115,7 +109,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode).url
+        controllers.additionalInformation.routes.AddAdditionalInformationYesNoController.onPageLoad(lrn, mode).url
 
       verify(mockSessionRepository, never()).set(any())(any())
     }
@@ -123,48 +117,34 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .setValue(AdditionalReferenceTypePage(additionalReferenceIndex), additionalReferenceType)
-        .setValue(AdditionalReferenceNumberPage(additionalReferenceIndex), additionalReferenceNumber)
+        .setValue(AdditionalInformationTypePage(additionalInformationIndex), additionalInformationCode)
 
       setExistingUserAnswers(userAnswers)
 
-      val request   = FakeRequest(POST, removeAdditionalReferenceRoute).withFormUrlEncodedBody(("value", "invalid value"))
+      val request   = FakeRequest(POST, removeAdditionalInformationRoute).withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[RemoveAdditionalReferenceYesNoView]
+      val view = injector.instanceOf[RemoveAdditionalInformationYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, additionalReferenceIndex, Some(additionalReference.forRemoveDisplay))(request, messages).toString
+        view(boundForm, lrn, additionalInformationIndex, Some(additionalInformationCode.toString), mode)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET" - {
       "if no existing data found" in {
         setNoExistingUserAnswers()
 
-        val request = FakeRequest(GET, removeAdditionalReferenceRoute)
+        val request = FakeRequest(GET, removeAdditionalInformationRoute)
 
         val result = route(app, request).value
 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
-      }
-
-      "if no additional reference is found" in {
-        setExistingUserAnswers(emptyUserAnswers)
-
-        val request = FakeRequest(GET, removeAdditionalReferenceRoute)
-
-        val result = route(app, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual
-          controllers.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode).url
       }
     }
 
@@ -173,7 +153,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
         setNoExistingUserAnswers()
 
-        val request = FakeRequest(POST, removeAdditionalReferenceRoute)
+        val request = FakeRequest(POST, removeAdditionalInformationRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(app, request).value
@@ -187,7 +167,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
         setExistingUserAnswers(emptyUserAnswers)
 
-        val request = FakeRequest(POST, removeAdditionalReferenceRoute)
+        val request = FakeRequest(POST, removeAdditionalInformationRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(app, request).value
@@ -195,7 +175,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode).url
+          controllers.additionalInformation.routes.AddAdditionalInformationYesNoController.onPageLoad(lrn, mode).url
       }
     }
   }

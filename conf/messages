@@ -635,7 +635,7 @@ additionalInformation.addCommentsYesNo.error.required = Select yes if you want t
 
 additionalInformation.index.removeAdditionalInformationYesNo.title = Are you sure you want to remove this additional information from all items?
 additionalInformation.index.removeAdditionalInformationYesNo.heading = Are you sure you want to remove this additional information from all items?
-additionalInformation.index.removeAdditionalInformationYesNo.error.required = Are you sure you want to remove this additional information from all items?
+additionalInformation.index.removeAdditionalInformationYesNo.error.required = Select yes if you want to remove this additional information from all items
 
 additionalInformation.index.additionalInformationText.title = Enter your comments for the additional information
 additionalInformation.index.additionalInformationText.heading = Enter your comments for the additional information

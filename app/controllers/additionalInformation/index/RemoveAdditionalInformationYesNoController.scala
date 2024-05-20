@@ -52,7 +52,7 @@ class RemoveAdditionalInformationYesNoController @Inject() (
       .onPageLoad(lrn, mode) //todo this will be add another page once implemented
 
   def additionalInformation(userAnswers: UserAnswers, additionalInformationIndex: Index): Option[String] =
-    userAnswers.get(AdditionalInformationTypePage(additionalInformationIndex)).map(_.code)
+    userAnswers.get(AdditionalInformationTypePage(additionalInformationIndex)).map(_.toString)
 
   def onPageLoad(lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode): Action[AnyContent] =
     actions.requireData(lrn) {
