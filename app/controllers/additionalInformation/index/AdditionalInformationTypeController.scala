@@ -49,6 +49,16 @@ class AdditionalInformationTypeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
+  private def getFormAndUpdatedCodeList(request: DataRequest[AnyContent], additionalInformationList: SelectableList[AdditionalInformationCode]) =
+    request.userAnswers.get(ItemsDestinationCountryInCL009Page) match {
+      case Some(true) =>
+        val updatedList = SelectableList.apply(additionalInformationList.values.filterNot(_.value.equals("30600")))
+        (formProvider("additionalInformation.index.additionalInformationType", updatedList), updatedList)
+
+      case _ =>
+        (formProvider("additionalInformation.index.additionalInformationType", additionalInformationList), additionalInformationList)
+    }
+
   def onPageLoad(additionalInformationIndex: Index, lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       service.getAdditionalInformationCodes().map {
@@ -62,20 +72,6 @@ class AdditionalInformationTypeController @Inject() (
           Ok(view(preparedForm, lrn, list.values, mode, additionalInformationIndex))
       }
   }
-
-  private def getFormAndUpdatedCodeList(request: DataRequest[AnyContent], additionalInformationList: SelectableList[AdditionalInformationCode]) =
-    request.userAnswers.get(ItemsDestinationCountryInCL009Page) match {
-      case Some(true) =>
-        val updatedList = SelectableList.apply(
-          additionalInformationList.values.filter(
-            code => !code.value.equals("30600")
-          )
-        )
-        (formProvider("additionalInformation.index.additionalInformationType", updatedList), updatedList)
-
-      case _ =>
-        (formProvider("additionalInformation.index.additionalInformationType", additionalInformationList), additionalInformationList)
-    }
 
   def onSubmit(additionalInformationIndex: Index, lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
