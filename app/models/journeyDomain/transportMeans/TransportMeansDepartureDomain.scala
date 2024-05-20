@@ -18,7 +18,6 @@ package models.journeyDomain.transportMeans
 
 import config.Constants.ModeOfTransport.Rail
 import config.PhaseConfig
-import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, _}
 import models.reference.transportMeans.departure.Identification
 import models.reference.{InlandMode, Nationality}
@@ -51,7 +50,10 @@ object TransportMeansDepartureDomain {
   implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): Read[TransportMeansDepartureDomain] =
     phaseConfig.phase match {
       case Phase.Transition =>
-        TransitionTransportMeansDepartureDomain.userAnswersReader(index)
+        if (phaseConfig.areB1892AndB1897Disabled) {
+          TransitionTransportMeansDepartureRulesDisabledDomain.userAnswersReader(index)
+        } else
+          TransitionTransportMeansDepartureDomain.userAnswersReader(index)
       case Phase.PostTransition =>
         PostTransitionTransportMeansDepartureDomain.userAnswersReader(index)
     }
@@ -143,4 +145,28 @@ object TransitionTransportMeansDepartureDomain {
       nationalityReader
     ).map(TransitionTransportMeansDepartureDomain.apply(_, _, _)(index))
   }
+}
+
+case class TransitionTransportMeansDepartureRulesDisabledDomain(
+  identification: Identification,
+  identificationNumber: String,
+  nationality: Nationality
+)(override val index: Index)
+    extends TransportMeansDepartureDomain {
+
+  override def asString(implicit messages: Messages): String =
+    TransitionTransportMeansDepartureRulesDisabledDomain.asString(identification, identificationNumber, index)
+}
+
+object TransitionTransportMeansDepartureRulesDisabledDomain {
+
+  def asString(identification: Identification, identificationNumber: String, index: Index)(implicit messages: Messages): String =
+    messages("departureTransportMeans.label.bothArgs", index.display, identification.asString, identificationNumber)
+
+  implicit def userAnswersReader(index: Index): Read[TransportMeansDepartureDomain] =
+    (
+      IdentificationPage(index).reader,
+      MeansIdentificationNumberPage(index).reader,
+      VehicleCountryPage(index).reader
+    ).map(TransitionTransportMeansDepartureRulesDisabledDomain.apply(_, _, _)(index))
 }

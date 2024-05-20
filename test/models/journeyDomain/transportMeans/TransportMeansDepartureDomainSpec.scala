@@ -41,16 +41,76 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
     "can be parsed from user answers" - {
 
+      "when transition" - {
+        val mockPhaseConfig = mock[PhaseConfig]
+        when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+
+        "when all questions are answered" - {
+          "and rules B1892 and B1897 is disabled" in {
+            when(mockPhaseConfig.areB1892AndB1897Disabled).thenReturn(true)
+
+            val userAnswers = emptyUserAnswers
+              .setValue(IdentificationPage(departureIndex), identification)
+              .setValue(MeansIdentificationNumberPage(departureIndex), identificationNumber)
+              .setValue(VehicleCountryPage(departureIndex), nationality)
+
+            val expectedResult = TransitionTransportMeansDepartureRulesDisabledDomain(
+              identification = identification,
+              identificationNumber = identificationNumber,
+              nationality = nationality
+            )(departureIndex)
+
+            val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+            result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              IdentificationPage(departureIndex),
+              MeansIdentificationNumberPage(departureIndex),
+              VehicleCountryPage(departureIndex),
+              DepartureSection(departureIndex)
+            )
+          }
+
+          "and rules B1892 and B1897 is not disabled" in {
+            when(mockPhaseConfig.areB1892AndB1897Disabled).thenReturn(false)
+
+            val userAnswers = emptyUserAnswers
+              .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
+              .setValue(IdentificationPage(departureIndex), identification)
+              .setValue(AddIdentificationNumberYesNoPage(departureIndex), true)
+              .setValue(MeansIdentificationNumberPage(departureIndex), identificationNumber)
+              .setValue(AddVehicleCountryYesNoPage(departureIndex), true)
+              .setValue(VehicleCountryPage(departureIndex), nationality)
+
+            val expectedResult = TransitionTransportMeansDepartureDomain(
+              identification = Some(identification),
+              identificationNumber = Some(identificationNumber),
+              nationality = Some(nationality)
+            )(departureIndex)
+
+            val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+            result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              IdentificationPage(departureIndex),
+              AddIdentificationNumberYesNoPage(departureIndex),
+              MeansIdentificationNumberPage(departureIndex),
+              VehicleCountryPage(departureIndex),
+              DepartureSection(departureIndex)
+            )
+          }
+
+        }
+      }
+
       "when post-transition" - {
         val mockPhaseConfig = mock[PhaseConfig]
         when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
         "when all questions are answered" in {
           val userAnswers = emptyUserAnswers
-            .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
             .setValue(IdentificationPage(departureIndex), identification)
             .setValue(MeansIdentificationNumberPage(departureIndex), identificationNumber)
-            .setValue(AddVehicleCountryYesNoPage(departureIndex), true)
             .setValue(VehicleCountryPage(departureIndex), nationality)
 
           val expectedResult = PostTransitionTransportMeansDepartureDomain(
@@ -79,10 +139,8 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
         when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
 
         "when identification page is missing" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
 
-          val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+          val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(emptyUserAnswers)
 
           result.left.value.page mustBe IdentificationPage(departureIndex)
           result.left.value.pages mustBe Seq(
@@ -92,7 +150,6 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
         "when identification number page is missing" in {
           val userAnswers = emptyUserAnswers
-            .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
             .setValue(IdentificationPage(departureIndex), identification)
 
           val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
@@ -106,10 +163,8 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
         "when vehicle country page is missing" in {
           val userAnswers = emptyUserAnswers
-            .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
             .setValue(IdentificationPage(departureIndex), identification)
             .setValue(MeansIdentificationNumberPage(departureIndex), identificationNumber)
-            .setValue(AddVehicleCountryYesNoPage(departureIndex), true)
 
           val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
@@ -123,207 +178,254 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
       }
 
       "when during transition" - {
-        val mockPhaseConfig = mock[PhaseConfig]
-        when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+        "when rules B1892 and B1897 are not disabled" - {
+          val mockPhaseConfig = mock[PhaseConfig]
+          when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+          when(mockPhaseConfig.areB1892AndB1897Disabled).thenReturn(false)
 
-        "and container indicator is 1" - {
-          "and add identification type yes/no page is missing" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
+          "and container indicator is 1" - {
+            "and add identification type yes/no page is missing" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
 
-            val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+              val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe AddIdentificationTypeYesNoPage(departureIndex)
-            result.left.value.pages mustBe Seq(
-              AddIdentificationTypeYesNoPage(departureIndex)
-            )
+              result.left.value.page mustBe AddIdentificationTypeYesNoPage(departureIndex)
+              result.left.value.pages mustBe Seq(
+                AddIdentificationTypeYesNoPage(departureIndex)
+              )
+            }
+
+            "and identification page is missing" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
+                .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
+
+              val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+              result.left.value.page mustBe IdentificationPage(departureIndex)
+              result.left.value.pages mustBe Seq(
+                AddIdentificationTypeYesNoPage(departureIndex),
+                IdentificationPage(departureIndex)
+              )
+            }
+
+            "and add identification yes/no page is missing" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
+                .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
+
+              val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+              result.left.value.page mustBe AddIdentificationNumberYesNoPage(departureIndex)
+              result.left.value.pages mustBe Seq(
+                AddIdentificationTypeYesNoPage(departureIndex),
+                AddIdentificationNumberYesNoPage(departureIndex)
+              )
+            }
+
+            "and identification number page is missing" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
+                .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
+                .setValue(AddIdentificationNumberYesNoPage(departureIndex), true)
+
+              val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+              result.left.value.page mustBe MeansIdentificationNumberPage(departureIndex)
+              result.left.value.pages mustBe Seq(
+                AddIdentificationTypeYesNoPage(departureIndex),
+                AddIdentificationNumberYesNoPage(departureIndex),
+                MeansIdentificationNumberPage(departureIndex)
+              )
+            }
+
+            "and add nationality yes/no page is missing" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
+                .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
+                .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
+                .setValue(AddIdentificationNumberYesNoPage(departureIndex), false)
+
+              val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+              result.left.value.page mustBe AddVehicleCountryYesNoPage(departureIndex)
+              result.left.value.pages mustBe Seq(
+                AddIdentificationTypeYesNoPage(departureIndex),
+                AddIdentificationNumberYesNoPage(departureIndex),
+                AddVehicleCountryYesNoPage(departureIndex)
+              )
+            }
+
+            "and nationality page is missing" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
+                .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
+                .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
+                .setValue(AddIdentificationNumberYesNoPage(departureIndex), false)
+                .setValue(AddVehicleCountryYesNoPage(departureIndex), true)
+
+              val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+              result.left.value.page mustBe VehicleCountryPage(departureIndex)
+              result.left.value.pages mustBe Seq(
+                AddIdentificationTypeYesNoPage(departureIndex),
+                AddIdentificationNumberYesNoPage(departureIndex),
+                AddVehicleCountryYesNoPage(departureIndex),
+                VehicleCountryPage(departureIndex)
+              )
+            }
           }
 
-          "and identification page is missing" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
-              .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
+          "and container indicator is 0" - {
+            val containerIndicator = OptionalBoolean.no
+            "and identification type page is missing" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, containerIndicator)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
 
-            val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+              val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+              result.left.value.page mustBe IdentificationPage(departureIndex)
+              result.left.value.pages mustBe Seq(
+                IdentificationPage(departureIndex)
+              )
+            }
+
+            "and identification page is missing" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, containerIndicator)
+                .setValue(IdentificationPage(departureIndex), arbitrary[Identification].sample.value)
+
+              val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+              result.left.value.page mustBe MeansIdentificationNumberPage(departureIndex)
+              result.left.value.pages mustBe Seq(
+                IdentificationPage(departureIndex),
+                MeansIdentificationNumberPage(departureIndex)
+              )
+            }
+          }
+
+          "and container indicator is 'not sure'" - {
+            val containerIndicator = OptionalBoolean.maybe
+            "and identification type page is missing" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, containerIndicator)
+                .setValue(AddDepartureTransportMeansYesNoPage, true)
+                .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
+
+              val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+              result.left.value.page mustBe IdentificationPage(departureIndex)
+              result.left.value.pages mustBe Seq(
+                AddIdentificationTypeYesNoPage(departureIndex),
+                IdentificationPage(departureIndex)
+              )
+            }
+
+            "and identification number page is missing" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, containerIndicator)
+                .setValue(IdentificationPage(departureIndex), arbitrary[Identification].sample.value)
+                .setValue(AddIdentificationNumberYesNoPage(departureIndex), true)
+
+              val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+              result.left.value.page mustBe MeansIdentificationNumberPage(departureIndex)
+              result.left.value.pages mustBe Seq(
+                IdentificationPage(departureIndex),
+                AddIdentificationNumberYesNoPage(departureIndex),
+                MeansIdentificationNumberPage(departureIndex)
+              )
+            }
+          }
+
+          "and container indicator is 0" - {
+            "and nationality page is missing" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, OptionalBoolean.no)
+                .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
+                .setValue(IdentificationPage(departureIndex), arbitrary[Identification].sample.value)
+                .setValue(MeansIdentificationNumberPage(departureIndex), Gen.alphaNumStr.sample.value)
+
+              val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+              result.left.value.page mustBe VehicleCountryPage(departureIndex)
+              result.left.value.pages mustBe Seq(
+                IdentificationPage(departureIndex),
+                MeansIdentificationNumberPage(departureIndex),
+                VehicleCountryPage(departureIndex)
+              )
+            }
+          }
+
+          "and container indicator is not sure" - {
+            "and nationality page is missing" in {
+              val userAnswers = emptyUserAnswers
+                .setValue(ContainerIndicatorPage, OptionalBoolean.maybe)
+                .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
+                .setValue(IdentificationPage(departureIndex), arbitrary[Identification].sample.value)
+                .setValue(AddIdentificationNumberYesNoPage(departureIndex), true)
+                .setValue(MeansIdentificationNumberPage(departureIndex), Gen.alphaNumStr.sample.value)
+
+              val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
+
+              result.left.value.page mustBe VehicleCountryPage(departureIndex)
+              result.left.value.pages mustBe Seq(
+                IdentificationPage(departureIndex),
+                AddIdentificationNumberYesNoPage(departureIndex),
+                MeansIdentificationNumberPage(departureIndex),
+                VehicleCountryPage(departureIndex)
+              )
+            }
+          }
+        }
+
+        "when rules B1892 and B1897 are disabled" - {
+          val mockPhaseConfig = mock[PhaseConfig]
+          when(mockPhaseConfig.phase).thenReturn(Phase.Transition)
+          when(mockPhaseConfig.areB1892AndB1897Disabled).thenReturn(true)
+
+          "when identification page is missing" in {
+
+            val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(emptyUserAnswers)
 
             result.left.value.page mustBe IdentificationPage(departureIndex)
             result.left.value.pages mustBe Seq(
-              AddIdentificationTypeYesNoPage(departureIndex),
               IdentificationPage(departureIndex)
             )
           }
 
-          "and add identification yes/no page is missing" in {
+          "when identification number page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
-              .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
-
-            val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
-
-            result.left.value.page mustBe AddIdentificationNumberYesNoPage(departureIndex)
-            result.left.value.pages mustBe Seq(
-              AddIdentificationTypeYesNoPage(departureIndex),
-              AddIdentificationNumberYesNoPage(departureIndex)
-            )
-          }
-
-          "and identification number page is missing" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
-              .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
-              .setValue(AddIdentificationNumberYesNoPage(departureIndex), true)
+              .setValue(IdentificationPage(departureIndex), identification)
 
             val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe MeansIdentificationNumberPage(departureIndex)
             result.left.value.pages mustBe Seq(
-              AddIdentificationTypeYesNoPage(departureIndex),
-              AddIdentificationNumberYesNoPage(departureIndex),
-              MeansIdentificationNumberPage(departureIndex)
-            )
-          }
-
-          "and add nationality yes/no page is missing" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
-              .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
-              .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
-              .setValue(AddIdentificationNumberYesNoPage(departureIndex), false)
-
-            val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
-
-            result.left.value.page mustBe AddVehicleCountryYesNoPage(departureIndex)
-            result.left.value.pages mustBe Seq(
-              AddIdentificationTypeYesNoPage(departureIndex),
-              AddIdentificationNumberYesNoPage(departureIndex),
-              AddVehicleCountryYesNoPage(departureIndex)
-            )
-          }
-
-          "and nationality page is missing" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
-              .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
-              .setValue(AddIdentificationTypeYesNoPage(departureIndex), false)
-              .setValue(AddIdentificationNumberYesNoPage(departureIndex), false)
-              .setValue(AddVehicleCountryYesNoPage(departureIndex), true)
-
-            val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
-
-            result.left.value.page mustBe VehicleCountryPage(departureIndex)
-            result.left.value.pages mustBe Seq(
-              AddIdentificationTypeYesNoPage(departureIndex),
-              AddIdentificationNumberYesNoPage(departureIndex),
-              AddVehicleCountryYesNoPage(departureIndex),
-              VehicleCountryPage(departureIndex)
-            )
-          }
-        }
-
-        "and container indicator is 0" - {
-          val containerIndicator = OptionalBoolean.no
-          "and identification type page is missing" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, containerIndicator)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
-
-            val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
-
-            result.left.value.page mustBe IdentificationPage(departureIndex)
-            result.left.value.pages mustBe Seq(
-              IdentificationPage(departureIndex)
-            )
-          }
-
-          "and identification page is missing" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, containerIndicator)
-              .setValue(IdentificationPage(departureIndex), arbitrary[Identification].sample.value)
-
-            val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
-
-            result.left.value.page mustBe MeansIdentificationNumberPage(departureIndex)
-            result.left.value.pages mustBe Seq(
               IdentificationPage(departureIndex),
               MeansIdentificationNumberPage(departureIndex)
             )
           }
-        }
 
-        "and container indicator is 'not sure'" - {
-          val containerIndicator = OptionalBoolean.maybe
-          "and identification type page is missing" in {
+          "when vehicle country page is missing" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, containerIndicator)
-              .setValue(AddDepartureTransportMeansYesNoPage, true)
-              .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
-
-            val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
-
-            result.left.value.page mustBe IdentificationPage(departureIndex)
-            result.left.value.pages mustBe Seq(
-              AddIdentificationTypeYesNoPage(departureIndex),
-              IdentificationPage(departureIndex)
-            )
-          }
-
-          "and identification number page is missing" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, containerIndicator)
-              .setValue(IdentificationPage(departureIndex), arbitrary[Identification].sample.value)
-              .setValue(AddIdentificationNumberYesNoPage(departureIndex), true)
-
-            val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
-
-            result.left.value.page mustBe MeansIdentificationNumberPage(departureIndex)
-            result.left.value.pages mustBe Seq(
-              IdentificationPage(departureIndex),
-              AddIdentificationNumberYesNoPage(departureIndex),
-              MeansIdentificationNumberPage(departureIndex)
-            )
-          }
-        }
-
-        "and container indicator is 0" - {
-          "and nationality page is missing" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, OptionalBoolean.no)
-              .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
-              .setValue(IdentificationPage(departureIndex), arbitrary[Identification].sample.value)
-              .setValue(MeansIdentificationNumberPage(departureIndex), Gen.alphaNumStr.sample.value)
+              .setValue(IdentificationPage(departureIndex), identification)
+              .setValue(MeansIdentificationNumberPage(departureIndex), identificationNumber)
 
             val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
 
             result.left.value.page mustBe VehicleCountryPage(departureIndex)
             result.left.value.pages mustBe Seq(
               IdentificationPage(departureIndex),
-              MeansIdentificationNumberPage(departureIndex),
-              VehicleCountryPage(departureIndex)
-            )
-          }
-        }
-
-        "and container indicator is not sure" - {
-          "and nationality page is missing" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, OptionalBoolean.maybe)
-              .setValue(InlandModePage, arbitrary[InlandMode](arbitraryNonRailInlandMode).sample.value)
-              .setValue(IdentificationPage(departureIndex), arbitrary[Identification].sample.value)
-              .setValue(AddIdentificationNumberYesNoPage(departureIndex), true)
-              .setValue(MeansIdentificationNumberPage(departureIndex), Gen.alphaNumStr.sample.value)
-
-            val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex)(mockPhaseConfig).apply(Nil).run(userAnswers)
-
-            result.left.value.page mustBe VehicleCountryPage(departureIndex)
-            result.left.value.pages mustBe Seq(
-              IdentificationPage(departureIndex),
-              AddIdentificationNumberYesNoPage(departureIndex),
               MeansIdentificationNumberPage(departureIndex),
               VehicleCountryPage(departureIndex)
             )
