@@ -30,16 +30,13 @@ class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceD
   def getAdditionalInformationCodes(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalInformationCode]] =
     referenceDataConnector
       .getAdditionalInformationCodes()
-      .map(
-        nonEmptySet => SelectableList(nonEmptySet)
-      )
       .map {
         additionalInformationList =>
           userAnswers.get(ItemsDestinationCountryInCL009Page) match {
             case Some(true) =>
-              SelectableList(additionalInformationList.values.filterNot(_.value.equals("30600")))
+              SelectableList(SelectableList(additionalInformationList).values.filterNot(_.value.equals("30600")))
             case _ =>
-              additionalInformationList
+              SelectableList(additionalInformationList)
           }
       }
 }
