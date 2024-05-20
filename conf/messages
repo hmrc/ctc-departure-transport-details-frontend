@@ -639,3 +639,9 @@ additionalInformation.index.additionalInformationText.heading = Enter your comme
 additionalInformation.index.additionalInformationText.error.required = Enter your comments for the additional information
 additionalInformation.index.additionalInformationText.error.length = Your comments must be 512 characters or less
 additionalInformation.index.additionalInformationText.error.invalidCharacters = Your comments must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces
+
+additionalInformation.index.additionalInformationType.title = What type of additional information do you want to add?
+additionalInformation.index.additionalInformationType.heading = What type of additional information do you want to add?
+additionalInformation.index.additionalInformationType.hint = Enter the information name or code, like Export or 20300.
+additionalInformation.index.additionalInformationType.placeholder = Select an additional reference
+additionalInformation.index.additionalInformationType.error.required = Select the type of additional information
