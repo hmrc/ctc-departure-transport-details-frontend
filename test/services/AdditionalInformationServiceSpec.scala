@@ -25,6 +25,7 @@ import models.reference.additionalInformation.AdditionalInformationCode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
+import pages.preRequisites.ItemsDestinationCountryInCL009Page
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -34,10 +35,17 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new AdditionalInformationService(mockRefDataConnector)
 
-  private val informationCode1: AdditionalInformationCode =
+  private val additionalInformationCode1: AdditionalInformationCode =
     AdditionalInformationCode("20100", "Export from one EFTA country subject to restriction or export from the Union subject to restriction")
-  private val informationCode2: AdditionalInformationCode                        = AdditionalInformationCode("20300", "Export")
-  private val additionalInformationCodes: NonEmptySet[AdditionalInformationCode] = NonEmptySet.of(informationCode1, informationCode2)
+  private val additionalInformationCode2: AdditionalInformationCode = AdditionalInformationCode("20300", "Export")
+
+  val additionalInformationCode3 = AdditionalInformationCode(
+    "30600",
+    "In EXS, where negotiable bills of lading 'to order blank endorsed' are concerned and the consignee particulars are unknown."
+  )
+
+  private val additionalInformationCodes: NonEmptySet[AdditionalInformationCode] =
+    NonEmptySet.of(additionalInformationCode1, additionalInformationCode2, additionalInformationCode3)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)
@@ -52,10 +60,24 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
         when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
           .thenReturn(Future.successful(additionalInformationCodes))
 
-        service.getAdditionalInformationCodes().futureValue mustBe
-          SelectableList(Seq(informationCode1, informationCode2))
+        service.getAdditionalInformationCodes(emptyUserAnswers).futureValue mustBe
+          SelectableList(Seq(additionalInformationCode1, additionalInformationCode2, additionalInformationCode3))
 
         verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+      }
+
+      "must return a list of additional information codes with filtered additionalInformationCode 30600" in {
+
+        when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
+          .thenReturn(Future.successful(additionalInformationCodes))
+
+        val userAnswers = emptyUserAnswers.setValue(ItemsDestinationCountryInCL009Page, true)
+
+        service.getAdditionalInformationCodes(userAnswers).futureValue mustBe
+          SelectableList(Seq(additionalInformationCode1, additionalInformationCode2))
+
+        verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+
       }
     }
   }

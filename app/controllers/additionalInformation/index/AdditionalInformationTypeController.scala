@@ -61,21 +61,20 @@ class AdditionalInformationTypeController @Inject() (
 
   def onPageLoad(additionalInformationIndex: Index, lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getAdditionalInformationCodes().map {
+      service.getAdditionalInformationCodes(request.userAnswers).map {
         additionalInformationList =>
-          val (form, list) = getFormAndUpdatedCodeList(request, additionalInformationList)
+          val form = formProvider("additionalInformation.index.additionalInformationType", additionalInformationList)
           val preparedForm = request.userAnswers.get(AdditionalInformationTypePage(additionalInformationIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
-
-          Ok(view(preparedForm, lrn, list.values, mode, additionalInformationIndex))
+          Ok(view(preparedForm, lrn, additionalInformationList.values, mode, additionalInformationIndex))
       }
   }
 
   def onSubmit(additionalInformationIndex: Index, lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getAdditionalInformationCodes().flatMap {
+      service.getAdditionalInformationCodes(request.userAnswers).flatMap {
         additionalInformationList =>
           val form = formProvider("additionalInformation.index.additionalInformationType", additionalInformationList)
           form
