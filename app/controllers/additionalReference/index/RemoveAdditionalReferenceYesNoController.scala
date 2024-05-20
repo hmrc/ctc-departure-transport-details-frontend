@@ -50,7 +50,7 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
     AdditionalReference(userAnswers, additionalReferenceIndex).map(_.forRemoveDisplay)
 
   private def form: Form[Boolean] =
-    formProvider("additionalReference.index.additionalReferenceNumber")
+    formProvider("additionalReference.index.removeAdditionalReference")
 
   private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
     controllers.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode)

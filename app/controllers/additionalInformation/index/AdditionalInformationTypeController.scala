@@ -20,12 +20,9 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
-import models.reference.additionalInformation.AdditionalInformationCode
-import models.requests.DataRequest
-import models.{Index, LocalReferenceNumber, Mode, SelectableList}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.additionalInformation.index.AdditionalInformationTypePage
-import pages.preRequisites.ItemsDestinationCountryInCL009Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.additionalInformation
+package controllers.additionalInformation.index
 
 import config.PhaseConfig
 import controllers.actions._

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.additionalInformation
+package controllers.additionalInformation.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider

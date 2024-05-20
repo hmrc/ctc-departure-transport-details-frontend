@@ -16,34 +16,38 @@
 
 @import controllers.additionalInformation.index.routes
 @import models.LocalReferenceNumber
+@import viewModels.components.InputYesNoViewModel
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
+    insetText:InsetText,
     errorSummary: ErrorSummary,
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, additionalInformationIndex: Index, additionalInformation: Option[String], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("additionalInformation.addCommentsYesNo.title"),
+    title = messages("additionalInformation.index.removeAdditionalInformationYesNo.title"),
     showBackLink = true,
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.AddCommentsYesNoController.onSubmit(lrn, additionalInformationIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.RemoveAdditionalInformationYesNoController.onSubmit(lrn, additionalInformationIndex, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("additionalInformation.addCommentsYesNo.heading"),
-                caption = Some(messages("additionalInformation.caption"))
+            yesNoType = InputYesNoViewModel(
+                heading = messages("additionalInformation.index.removeAdditionalInformationYesNo.heading"),
+                caption = Some(messages("additionalInformation.caption")),
+                additionalHtml = additionalInformation.map(insetText(_))
+
             )
         )
 
