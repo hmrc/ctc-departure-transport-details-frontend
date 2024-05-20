@@ -14,80 +14,81 @@
  * limitations under the License.
  */
 
-package controllers.additionalInformation
+package controllers.additionalInformation.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.YesNoFormProvider
+import forms.AdditionalInformationFormProvider
+import generators.Generators
 import models.NormalMode
 import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar
-import pages.additionalInformation.AddCommentsYesNoPage
+import pages.additionalInformation.index.AdditionalInformationTextPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.additionalInformation.AddCommentsYesNoView
+import views.html.additionalInformation.index.AdditionalInformationTextView
 
 import scala.concurrent.Future
 
-class AddCommentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AdditionalInformationCodeTextControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider               = new YesNoFormProvider()
-  private val form                       = formProvider("additionalInformation.addCommentsYesNo")
-  private val mode                       = NormalMode
-  private lazy val addCommentsYesNoRoute = routes.AddCommentsYesNoController.onPageLoad(lrn, index, mode).url
+  private lazy val formProvider                   = new AdditionalInformationFormProvider()
+  private lazy val form                           = formProvider("additionalInformation.index.additionalInformationText")
+  private val mode                                = NormalMode
+  private lazy val additionalInformationTextRoute = routes.AdditionalInformationTextController.onPageLoad(lrn, additionalInformationIndex, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
       .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
 
-  "AddCommentsYesNoController" - {
+  "AdditionalInformationText Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(GET, addCommentsYesNoRoute)
-      val result  = route(app, request).value
+      val request = FakeRequest(GET, additionalInformationTextRoute)
 
-      val view = injector.instanceOf[AddCommentsYesNoView]
+      val result = route(app, request).value
+
+      val view = injector.instanceOf[AdditionalInformationTextView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, index, mode)(request, messages).toString
+        view(form, lrn, mode, additionalInformationIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddCommentsYesNoPage(index), true)
+      val userAnswers = emptyUserAnswers.setValue(AdditionalInformationTextPage(additionalInformationIndex), "test string")
       setExistingUserAnswers(userAnswers)
 
-      val request = FakeRequest(GET, addCommentsYesNoRoute)
+      val request = FakeRequest(GET, additionalInformationTextRoute)
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> "true"))
+      val filledForm = form.bind(Map("value" -> "test string"))
 
-      val view = injector.instanceOf[AddCommentsYesNoView]
+      val view = injector.instanceOf[AdditionalInformationTextView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, index, mode)(request, messages).toString
+        view(filledForm, lrn, mode, additionalInformationIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
-
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request = FakeRequest(POST, addCommentsYesNoRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+      val request = FakeRequest(POST, additionalInformationTextRoute)
+        .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value
 
@@ -100,24 +101,26 @@ class AddCommentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, addCommentsYesNoRoute).withFormUrlEncodedBody(("value", ""))
-      val boundForm = form.bind(Map("value" -> ""))
+      val invalidAnswer = ""
+
+      val request    = FakeRequest(POST, additionalInformationTextRoute).withFormUrlEncodedBody(("value", ""))
+      val filledForm = form.bind(Map("value" -> invalidAnswer))
 
       val result = route(app, request).value
 
       status(result) mustEqual BAD_REQUEST
 
-      val view = injector.instanceOf[AddCommentsYesNoView]
+      val view = injector.instanceOf[AdditionalInformationTextView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, index, mode)(request, messages).toString
+        view(filledForm, lrn, mode, additionalInformationIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(GET, addCommentsYesNoRoute)
+      val request = FakeRequest(GET, additionalInformationTextRoute)
 
       val result = route(app, request).value
 
@@ -130,8 +133,8 @@ class AddCommentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
 
       setNoExistingUserAnswers()
 
-      val request = FakeRequest(POST, addCommentsYesNoRoute)
-        .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, additionalInformationTextRoute)
+        .withFormUrlEncodedBody(("value", "test string"))
 
       val result = route(app, request).value
 

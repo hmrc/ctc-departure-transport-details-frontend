@@ -32,7 +32,7 @@ import views.html.additionalInformation.AddAdditionalInformationYesNoView
 
 import scala.concurrent.Future
 
-class AddAdditionalInformationYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AddAdditionalInformationCodeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
 
   private val formProvider                            = new YesNoFormProvider()
   private val form                                    = formProvider("additionalInformation.addAdditionalInformationYesNo")

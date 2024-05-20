@@ -1,11 +1,17 @@
 ->         /                                                                                app.additionalInformation.index.Routes
 
+GET        /additional-information/add/:lrn                                             controllers.additionalInformation.AddAdditionalInformationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /additional-information/add/:lrn                                             controllers.additionalInformation.AddAdditionalInformationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /additional-information/change-add/:lrn                                      controllers.additionalInformation.AddAdditionalInformationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /additional-information/change-add/:lrn                                      controllers.additionalInformation.AddAdditionalInformationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
+GET        /additional-information/add-another/:lrn                                     controllers.additionalInformation.AddAnotherAdditionalInformationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+POST       /additional-information/add-another/:lrn                                     controllers.additionalInformation.AddAnotherAdditionalInformationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
+GET        /additional-information/change-add-another/:lrn                              controllers.additionalInformation.AddAnotherAdditionalInformationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+POST       /additional-information/change-add-another/:lrn                              controllers.additionalInformation.AddAnotherAdditionalInformationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
+
 GET        /additional-information/add/:lrn                                                 controllers.additionalInformation.AddAdditionalInformationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /additional-information/add/:lrn                                                 controllers.additionalInformation.AddAdditionalInformationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /additional-information/change-add/:lrn                                          controllers.additionalInformation.AddAdditionalInformationYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /additional-information/change-add/:lrn                                          controllers.additionalInformation.AddAdditionalInformationYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /additional-information/:additionalInformationIndex/add-comments/:lrn            controllers.additionalInformation.AddCommentsYesNoController.onPageLoad(lrn: LocalReferenceNumber, additionalInformationIndex:Index, mode: Mode = NormalMode)
-POST       /additional-information/:additionalInformationIndex/add-comments/:lrn            controllers.additionalInformation.AddCommentsYesNoController.onSubmit(lrn: LocalReferenceNumber, additionalInformationIndex:Index, mode: Mode = NormalMode)
-GET        /additional-information/:additionalInformationIndex/change-add-comments/:lrn     controllers.additionalInformation.AddCommentsYesNoController.onPageLoad(lrn: LocalReferenceNumber, additionalInformationIndex:Index, mode: Mode = CheckMode)
-POST       /additional-information/:additionalInformationIndex/change-add-comments/:lrn     controllers.additionalInformation.AddCommentsYesNoController.onSubmit(lrn: LocalReferenceNumber, additionalInformationIndex:Index, mode: Mode = CheckMode)

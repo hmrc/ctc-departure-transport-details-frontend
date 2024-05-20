@@ -22,6 +22,7 @@ import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import itbase.{ItSpecBase, WireMockServerHandler}
 import models.reference._
 import models.reference.additionalReference.AdditionalReferenceType
+import models.reference.additionalInformation.AdditionalInformationCode
 import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
 import models.reference.supplyChainActors.SupplyChainActorType
@@ -585,6 +586,60 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         checkErrorResponse(url, connector.getAdditionalReferences())
       }
     }
+
+    "getAdditionalInformationCodes" - {
+      val url = s"/$baseUrl/lists/AdditionalInformation"
+
+      "must return Seq of AdditionalInformation when successful" in {
+
+        val additionalInformationJson: String =
+          """
+            |{
+            |  "_links": {
+            |    "self": {
+            |      "href": "/customs-reference-data/lists/AdditionalInformation"
+            |    }
+            |  },
+            |  "meta": {
+            |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+            |    "snapshotDate": "2023-01-01"
+            |  },
+            |  "id": "AdditionalInformation",
+            |  "data": [
+            | {
+            |    "code": "20100",
+            |    "description": "Export from one EFTA country subject to restriction or export from the Union subject to restriction"
+            |  },
+            |  {
+            |    "code": "20300",
+            |    "description": "Export"
+            |  }
+            |]
+            |}
+            |""".stripMargin
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(okJson(additionalInformationJson))
+        )
+
+        val expectedResult: NonEmptySet[AdditionalInformationCode] = NonEmptySet.of(
+          AdditionalInformationCode("20100", "Export from one EFTA country subject to restriction or export from the Union subject to restriction"),
+          AdditionalInformationCode("20300", "Export")
+        )
+
+        connector.getAdditionalInformationCodes().futureValue mustEqual expectedResult
+      }
+
+      "must throw a NoReferenceDataFoundException for an empty response" in {
+        checkNoReferenceDataFoundResponse(url, connector.getAdditionalInformationCodes())
+      }
+
+      "must return an exception when an error response is returned" in {
+        checkErrorResponse(url, connector.getAdditionalInformationCodes())
+      }
+    }
+
   }
 
   private def checkNoReferenceDataFoundResponse(url: String, result: => Future[_]): Assertion = {

@@ -19,6 +19,7 @@ package generators
 import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
+import models.reference.additionalInformation.AdditionalInformationCode
 import models.reference.additionalReference.AdditionalReferenceType
 import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
@@ -302,4 +303,12 @@ trait ModelGenerators {
       values <- listWithMaxLength[T]()
     } yield values.distinctBy(_.code)
   }
+
+  implicit lazy val arbitraryAdditionalInformationCode: Arbitrary[AdditionalInformationCode] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield AdditionalInformationCode(code, desc)
+    }
 }

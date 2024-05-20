@@ -42,7 +42,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
   private val formProvider = new YesNoFormProvider()
 
   private def form: Form[Boolean] =
-    formProvider("additionalReference.index.additionalReferenceNumber")
+    formProvider("additionalReference.index.removeAdditionalReference")
 
   private val mode                                = NormalMode
   private lazy val removeAdditionalReferenceRoute = routes.RemoveAdditionalReferenceYesNoController.onPageLoad(lrn, mode, additionalReferenceIndex).url

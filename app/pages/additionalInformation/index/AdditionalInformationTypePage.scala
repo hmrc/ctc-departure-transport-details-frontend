@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package pages.additionalInformation
+package pages.additionalInformation.index
 
 import controllers.additionalInformation.index.routes
+import models.reference.additionalInformation.AdditionalInformationCode
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.additionalInformation.AdditionalInformationSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AddCommentsYesNoPage(additionalInformationIndex: Index) extends QuestionPage[Boolean] {
+case class AdditionalInformationTypePage(additionalInformationIndex: Index) extends QuestionPage[AdditionalInformationCode] {
 
   override def path: JsPath = AdditionalInformationSection(additionalInformationIndex).path \ toString
 
-  override def toString: String = "addCommentsYesNo"
+  override def toString: String = "type"
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddCommentsYesNoController.onPageLoad(userAnswers.lrn, additionalInformationIndex, mode))
-
+    Some(routes.AdditionalInformationTypeController.onPageLoad(additionalInformationIndex, userAnswers.lrn, mode))
 }
