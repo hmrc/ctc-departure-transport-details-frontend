@@ -18,7 +18,7 @@ package pages.additionalInformation.index
 
 import pages.behaviours.PageBehaviours
 
-class AdditionalInformationTextPageSpec extends PageBehaviours {
+class AdditionalInformationCodeTextPageSpec extends PageBehaviours {
 
   "AdditionalInformationTextPage" - {
 

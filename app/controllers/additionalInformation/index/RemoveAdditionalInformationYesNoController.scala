@@ -47,9 +47,9 @@ class RemoveAdditionalInformationYesNoController @Inject() (
   private def form(): Form[Boolean] =
     formProvider("additionalInformation.index.removeAdditionalInformationYesNo")
 
-  private def addAnother(lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode): Call =
-    controllers.additionalInformation.routes.AddAdditionalInformationYesNoController
-      .onPageLoad(lrn, mode) //todo this will be add another page once implemented
+  private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
+    controllers.additionalInformation.routes.AddAnotherAdditionalInformationController
+      .onPageLoad(lrn, mode)
 
   def additionalInformation(userAnswers: UserAnswers, additionalInformationIndex: Index): Option[String] =
     userAnswers.get(AdditionalInformationTypePage(additionalInformationIndex)).map(_.toString)
@@ -63,7 +63,7 @@ class RemoveAdditionalInformationYesNoController @Inject() (
     }
 
   def onSubmit(lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode): Action[AnyContent] = actions
-    .requireIndex(lrn, AdditionalInformationSection(additionalInformationIndex), addAnother(lrn, additionalInformationIndex, mode))
+    .requireIndex(lrn, AdditionalInformationSection(additionalInformationIndex), addAnother(lrn, mode))
     .async {
       implicit request =>
         form()
@@ -82,9 +82,9 @@ class RemoveAdditionalInformationYesNoController @Inject() (
                   .removeFromUserAnswers()
                   .updateTask()
                   .writeToSession()
-                  .navigateTo(addAnother(lrn, additionalInformationIndex, mode))
+                  .navigateTo(addAnother(lrn, mode))
               case false =>
-                Future.successful(Redirect(addAnother(lrn, additionalInformationIndex, mode)))
+                Future.successful(Redirect(addAnother(lrn, mode)))
             }
           )
 

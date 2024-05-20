@@ -19,6 +19,7 @@ package generators
 import config.PhaseConfig
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.OpsError.ReaderError
+import models.journeyDomain.additionalInformation.AdditionalInformationDomain
 import models.journeyDomain.additionalReferences.AdditionalReferenceDomain
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.journeyDomain.authorisationsAndLimit.limit.LimitDomain
@@ -122,6 +123,11 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   def arbitraryAdditionalReferenceAnswers(userAnswers: UserAnswers, additionalReferenceIndex: Index): Gen[UserAnswers] =
     buildUserAnswers[AdditionalReferenceDomain](userAnswers)(
       AdditionalReferenceDomain.userAnswersReader(additionalReferenceIndex).apply(Nil)
+    )
+
+  def arbitraryAdditionalInformationAnswers(userAnswers: UserAnswers, additionalInformationIndex: Index): Gen[UserAnswers] =
+    buildUserAnswers[AdditionalInformationDomain](userAnswers)(
+      AdditionalInformationDomain.userAnswersReader(additionalInformationIndex).apply(Nil)
     )
 
 }

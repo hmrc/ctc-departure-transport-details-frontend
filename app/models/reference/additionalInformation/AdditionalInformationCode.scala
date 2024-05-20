@@ -18,6 +18,7 @@ package models.reference.additionalInformation
 
 import cats.Order
 import models.Selectable
+
 import play.api.libs.json.{Format, Json}
 
 case class AdditionalInformationCode(code: String, description: String) extends Selectable {

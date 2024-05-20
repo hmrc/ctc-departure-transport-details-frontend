@@ -23,7 +23,7 @@ import models.domain.StringFieldRegex.stringFieldRegexComma
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class AdditionalInformationFormProviderSpec extends StringFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
+class AdditionalInformationCodeFormProviderSpec extends StringFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
 
   private val prefix      = Gen.alphaNumStr.sample.value
   private val requiredKey = s"$prefix.error.required"

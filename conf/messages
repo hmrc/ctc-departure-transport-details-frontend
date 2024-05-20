@@ -629,6 +629,14 @@ additionalInformation.addAdditionalInformationYesNo.heading = Do you want to add
 additionalInformation.addAdditionalInformationYesNo.paragraph = This can be any other information you want to declare, such as a contact, any safety risks or further descriptions.
 additionalInformation.addAdditionalInformationYesNo.error.required = Select yes if you want to add any additional information for all items
 
+additionalInformation.addAnotherAdditionalInformation.singular.title = You have added 1 additional information for all items
+additionalInformation.addAnotherAdditionalInformation.singular.heading = You have added 1 additional information for all items
+additionalInformation.addAnotherAdditionalInformation.plural.title = You have added {0} additional information for all items
+additionalInformation.addAnotherAdditionalInformation.plural.heading = You have added {0} additional information for all items
+additionalInformation.addAnotherAdditionalInformation.maxLimit.label = You cannot add any more additional information for all items. To add another, you need to remove one first.
+additionalInformation.addAnotherAdditionalInformation.label = Do you want to add any more additional information for all items?
+additionalInformation.addAnotherAdditionalInformation.error.required = Select yes if you want to add any more additional information for all items
+
 additionalInformation.addCommentsYesNo.title = Do you want to add any comments for the additional information?
 additionalInformation.addCommentsYesNo.heading = Do you want to add any comments for the additional information?
 additionalInformation.addCommentsYesNo.error.required = Select yes if you want to add any comments for the additional information
@@ -648,3 +656,4 @@ additionalInformation.index.additionalInformationType.heading = What type of add
 additionalInformation.index.additionalInformationType.hint = Enter the information name or code, like Export or 20300.
 additionalInformation.index.additionalInformationType.placeholder = Select an additional reference
 additionalInformation.index.additionalInformationType.error.required = Select the type of additional information
+

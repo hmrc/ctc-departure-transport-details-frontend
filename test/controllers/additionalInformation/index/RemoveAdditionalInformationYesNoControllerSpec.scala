@@ -68,7 +68,7 @@ class RemoveAdditionalInformationYesNoControllerSpec extends SpecBase with AppWi
         view(form, lrn, additionalInformationIndex, Some(additionalInformationCode.toString), mode)(request, messages).toString
     }
 
-    "when yes submitted must redirect to add another additional reference and remove additional reference at specified index" in {
+    "when yes submitted must redirect to add another additional information and remove additional information at specified index" in {
       reset(mockSessionRepository)
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -85,14 +85,14 @@ class RemoveAdditionalInformationYesNoControllerSpec extends SpecBase with AppWi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.additionalInformation.routes.AddAdditionalInformationYesNoController.onPageLoad(lrn, mode).url
+        controllers.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode).url
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
       userAnswersCaptor.getValue.get(AdditionalInformationSection(index)) mustNot be(defined)
     }
 
-    "when no submitted must redirect to add another additional reference and not remove the additional reference at specified index" in {
+    "when no submitted must redirect to add another additional information and not remove the additional information at specified index" in {
       reset(mockSessionRepository)
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -109,7 +109,7 @@ class RemoveAdditionalInformationYesNoControllerSpec extends SpecBase with AppWi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.additionalInformation.routes.AddAdditionalInformationYesNoController.onPageLoad(lrn, mode).url
+        controllers.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode).url
 
       verify(mockSessionRepository, never()).set(any())(any())
     }
@@ -163,7 +163,7 @@ class RemoveAdditionalInformationYesNoControllerSpec extends SpecBase with AppWi
         redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
-      "if no additional reference is found" in {
+      "if no additional information is found" in {
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -175,7 +175,7 @@ class RemoveAdditionalInformationYesNoControllerSpec extends SpecBase with AppWi
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.additionalInformation.routes.AddAdditionalInformationYesNoController.onPageLoad(lrn, mode).url
+          controllers.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode).url
       }
     }
   }
