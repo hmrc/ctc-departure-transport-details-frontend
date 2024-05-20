@@ -19,8 +19,10 @@ package controllers.transportMeans.departure
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import forms.AddAnotherFormProvider
+import models.journeyDomain.UserAnswersReader
+import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
 import models.{LocalReferenceNumber, Mode}
-import navigation.TransportMeansNavigatorProvider
+import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.sections.transportMeans.DeparturesSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -60,14 +62,18 @@ class AddAnotherDepartureTransportMeansController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      lazy val viewModel = viewModelProvider(request.userAnswers, mode)
+      lazy val currentPage = DeparturesSection
+      lazy val viewModel   = viewModelProvider(request.userAnswers, mode)
       form(viewModel)
         .bindFromRequest()
         .fold(
           formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
           {
-            case true  => Redirect(routes.IdentificationController.onPageLoad(lrn, mode, viewModel.nextIndex))
-            case false => Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(DeparturesSection)))
+            case true =>
+              implicit val reader: UserAnswersReader[TransportMeansDepartureDomain] =
+                TransportMeansDepartureDomain.userAnswersReader(viewModel.nextIndex).apply(Nil)
+              Redirect(UserAnswersNavigator.nextPage[TransportMeansDepartureDomain](request.userAnswers, Some(currentPage), mode))
+            case false => Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(currentPage)))
           }
         )
   }

@@ -18,6 +18,9 @@ package config
 
 import models.Phase
 import models.Phase.{PostTransition, Transition}
+import play.api.Configuration
+
+import javax.inject.Inject
 
 trait PhaseConfig {
   val phase: Phase
@@ -26,18 +29,23 @@ trait PhaseConfig {
 
   val maxIdentificationNumberLength: Int
 
+  val areB1892AndB1897Disabled: Boolean
+
   def lengthError(prefix: String): String = amendMessageKey(s"$prefix.error.length")
 
   def activeIdentificationNumberHint: String    = amendMessageKey("transportMeans.active.identificationNumber.hint")
   def departureIdentificationNumberHint: String = amendMessageKey("transportMeans.departure.meansIdentificationNumber.hint")
 }
 
-class TransitionConfig() extends PhaseConfig {
+class TransitionConfig @Inject() (configuration: Configuration) extends PhaseConfig {
   override val phase: Phase = Transition
 
   override def amendMessageKey(key: String): String = s"$key.transition"
 
   override val maxIdentificationNumberLength: Int = 27
+
+  override val areB1892AndB1897Disabled: Boolean = configuration.get[Boolean]("flag.areB1892AndB1897Disabled")
+
 }
 
 class PostTransitionConfig() extends PhaseConfig {
@@ -46,4 +54,6 @@ class PostTransitionConfig() extends PhaseConfig {
   override def amendMessageKey(key: String): String = s"$key.postTransition"
 
   override val maxIdentificationNumberLength: Int = 35
+
+  override val areB1892AndB1897Disabled: Boolean = false
 }
