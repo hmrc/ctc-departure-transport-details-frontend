@@ -68,8 +68,7 @@ class AddAnotherAdditionalInformationController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
           {
             case true =>
-              // TODO: update later to AdditionalReferenceCodeController
-              Redirect(controllers.additionalReference.index.routes.AdditionalReferenceTypeController.onPageLoad(lrn, mode, viewModel.nextIndex))
+              Redirect(controllers.additionalInformation.index.routes.AdditionalInformationTypeController.onPageLoad(viewModel.nextIndex, lrn, mode))
             case false =>
               Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(AdditionalReferencesSection)))
           }

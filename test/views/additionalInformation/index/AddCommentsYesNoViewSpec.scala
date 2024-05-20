@@ -16,24 +16,18 @@
 
 package views.additionalInformation.index
 
-import forms.AdditionalInformationFormProvider
-import forms.Constants.maxAdditionalInfoTextLength
-import generators.Generators
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.CharacterCountViewBehaviours
-import views.html.additionalInformation.index.AdditionalInformationTextView
+import views.behaviours.YesNoViewBehaviours
+import views.html.additionalInformation.AddCommentsYesNoView
 
-class AdditionalInformationCodeTextViewSpec extends CharacterCountViewBehaviours with Generators {
+class AddCommentsYesNoViewSpec extends YesNoViewBehaviours {
 
-  override def form: Form[String] = new AdditionalInformationFormProvider()(prefix)
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector.instanceOf[AddCommentsYesNoView].apply(form, lrn, index, NormalMode)(fakeRequest, messages)
 
-  override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[AdditionalInformationTextView].apply(form, lrn, NormalMode, additionalInformationIndex)(fakeRequest, messages)
-
-  override val prefix: String =
-    "additionalInformation.index.additionalInformationText"
+  override val prefix: String = "additionalInformation.addCommentsYesNo"
 
   behave like pageWithTitle()
 
@@ -43,7 +37,7 @@ class AdditionalInformationCodeTextViewSpec extends CharacterCountViewBehaviours
 
   behave like pageWithHeading()
 
-  behave like pageWithCharacterCount(maxAdditionalInfoTextLength)
+  behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
 }

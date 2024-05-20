@@ -19,13 +19,11 @@ package controllers.additionalInformation.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
-import models.reference.additionalInformation.AdditionalInformationCode
 import models.{NormalMode, SelectableList}
 import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.additionalInformation.index.AdditionalInformationTypePage
-import pages.preRequisites.ItemsDestinationCountryInCL009Page
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -58,7 +56,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
 
     "must return OK and the correct view for a GET" in {
 
-      when(mockAdditionalInformationService.getAdditionalInformationCodes()(any())).thenReturn(Future.successful(additionalInformationCodeList))
+      when(mockAdditionalInformationService.getAdditionalInformationCodes(any())(any())).thenReturn(Future.successful(additionalInformationCodeList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(GET, additionalInformationTypeRoute)
@@ -73,37 +71,9 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
         view(form, lrn, additionalInformationCodeList.values, mode, additionalInformationIndex)(request, messages).toString
     }
 
-    "must return OK and filter 30600 AdditionalInformationCodes for a GET" in {
-      val additionalInformationCode1 =
-        AdditionalInformationCode("20100", "Export from one EFTA country subject to restriction or export from the Union subject to restriction")
-      val additionalInformationCode2 = AdditionalInformationCode("20300", "Export")
-      val additionalInformationCode3 =
-        AdditionalInformationCode("30600",
-                                  "In EXS, where negotiable bills of lading 'to order blank endorsed' are concerned and the consignee particulars are unknown."
-        )
-
-      val additionalInformationCodeList = SelectableList(Seq(additionalInformationCode1, additionalInformationCode2, additionalInformationCode3))
-      val expectedList                  = SelectableList(Seq(additionalInformationCode1, additionalInformationCode2))
-
-      when(mockAdditionalInformationService.getAdditionalInformationCodes()(any())).thenReturn(Future.successful(additionalInformationCodeList))
-      val userAnswers = emptyUserAnswers.setValue(ItemsDestinationCountryInCL009Page, true)
-      setExistingUserAnswers(userAnswers)
-
-      val request = FakeRequest(GET, additionalInformationTypeRoute)
-
-      val result = route(app, request).value
-
-      val view = injector.instanceOf[AdditionalInformationTypeView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(form, lrn, expectedList.values, mode, additionalInformationIndex)(request, messages).toString
-    }
-
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      when(mockAdditionalInformationService.getAdditionalInformationCodes()(any())).thenReturn(Future.successful(additionalInformationCodeList))
+      when(mockAdditionalInformationService.getAdditionalInformationCodes(any())(any())).thenReturn(Future.successful(additionalInformationCodeList))
       val userAnswers = emptyUserAnswers.setValue(AdditionalInformationTypePage(additionalInformationIndex), additionalInformationCode1)
       setExistingUserAnswers(userAnswers)
 
@@ -123,7 +93,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockAdditionalInformationService.getAdditionalInformationCodes()(any())).thenReturn(Future.successful(additionalInformationCodeList))
+      when(mockAdditionalInformationService.getAdditionalInformationCodes(any())(any())).thenReturn(Future.successful(additionalInformationCodeList))
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
       setExistingUserAnswers(emptyUserAnswers)
@@ -140,7 +110,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      when(mockAdditionalInformationService.getAdditionalInformationCodes()(any())).thenReturn(Future.successful(additionalInformationCodeList))
+      when(mockAdditionalInformationService.getAdditionalInformationCodes(any())(any())).thenReturn(Future.successful(additionalInformationCodeList))
       setExistingUserAnswers(emptyUserAnswers)
 
       val request   = FakeRequest(POST, additionalInformationTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))

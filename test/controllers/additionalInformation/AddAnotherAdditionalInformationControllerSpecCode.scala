@@ -142,7 +142,7 @@ class AddAnotherAdditionalInformationControllerSpecCode extends SpecBase with Ap
           status(result) mustEqual SEE_OTHER
 
           redirectLocation(result).value mustEqual
-            controllers.additionalReference.index.routes.AdditionalReferenceTypeController.onPageLoad(lrn, mode, Index(listItems.length)).url
+            controllers.additionalInformation.index.routes.AdditionalInformationTypeController.onPageLoad(Index(listItems.length), lrn, mode).url
         }
       }
 

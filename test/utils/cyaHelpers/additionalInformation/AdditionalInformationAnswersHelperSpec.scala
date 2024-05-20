@@ -25,7 +25,6 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.additionalInformation.{AddAdditionalInformationYesNoPage, AddCommentsYesNoPage}
 import pages.additionalInformation.index.{AdditionalInformationTextPage, AdditionalInformationTypePage}
-import play.api.mvc.Call
 import viewModels.ListItem
 
 class AdditionalInformationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -62,9 +61,9 @@ class AdditionalInformationAnswersHelperSpec extends SpecBase with ScalaCheckPro
                   name = s"${refType.toString} - $additionalInformation",
                   changeUrl =
                     controllers.additionalInformation.index.routes.AdditionalInformationTypeController.onPageLoad(Index(0), userAnswers.lrn, mode).url,
-                  removeUrl = //TODO: update when remove route ready
-                    Some(Call("GET", "#").url)
-                  //Some(controllers.additionalInformation.index.routes.RemoveAdditionalInformationYesNoController.onPageLoad(userAnswers.lrn, mode, Index(0)).url)
+                  removeUrl = Some(
+                    controllers.additionalInformation.index.routes.RemoveAdditionalInformationYesNoController.onPageLoad(userAnswers.lrn, Index(0), mode).url
+                  )
                 )
               )
             )

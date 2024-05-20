@@ -22,7 +22,6 @@ import models.{Mode, UserAnswers}
 import pages.additionalInformation.index.AdditionalInformationTypePage
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import play.api.i18n.Messages
-import play.api.mvc.Call
 import utils.cyaHelpers.AnswersHelper
 import viewModels.ListItem
 
@@ -38,7 +37,8 @@ class AdditionalInformationAnswersHelper(userAnswers: UserAnswers, mode: Mode)(i
         buildListItem[AdditionalInformationDomain](
           nameWhenComplete = _.toString,
           nameWhenInProgress = userAnswers.get(AdditionalInformationTypePage(additionalInformationIndex)).map(_.toString),
-          removeRoute = Some(Call("GET", "#")) // TODO change when remove page done
+          removeRoute =
+            Some(controllers.additionalInformation.index.routes.RemoveAdditionalInformationYesNoController.onPageLoad(lrn, additionalInformationIndex, mode))
         )(AdditionalInformationDomain.userAnswersReader(additionalInformationIndex).apply(Nil))
     }
 

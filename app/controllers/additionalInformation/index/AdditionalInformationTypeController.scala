@@ -20,12 +20,9 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
-import models.reference.additionalInformation.AdditionalInformationCode
-import models.requests.DataRequest
-import models.{Index, LocalReferenceNumber, Mode, SelectableList}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.additionalInformation.index.AdditionalInformationTypePage
-import pages.preRequisites.ItemsDestinationCountryInCL009Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -49,33 +46,22 @@ class AdditionalInformationTypeController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def getFormAndUpdatedCodeList(request: DataRequest[AnyContent], additionalInformationList: SelectableList[AdditionalInformationCode]) =
-    request.userAnswers.get(ItemsDestinationCountryInCL009Page) match {
-      case Some(true) =>
-        val updatedList = SelectableList.apply(additionalInformationList.values.filterNot(_.value.equals("30600")))
-        (formProvider("additionalInformation.index.additionalInformationType", updatedList), updatedList)
-
-      case _ =>
-        (formProvider("additionalInformation.index.additionalInformationType", additionalInformationList), additionalInformationList)
-    }
-
   def onPageLoad(additionalInformationIndex: Index, lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getAdditionalInformationCodes().map {
+      service.getAdditionalInformationCodes(request.userAnswers).map {
         additionalInformationList =>
-          val (form, list) = getFormAndUpdatedCodeList(request, additionalInformationList)
+          val form = formProvider("additionalInformation.index.additionalInformationType", additionalInformationList)
           val preparedForm = request.userAnswers.get(AdditionalInformationTypePage(additionalInformationIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
-
-          Ok(view(preparedForm, lrn, list.values, mode, additionalInformationIndex))
+          Ok(view(preparedForm, lrn, additionalInformationList.values, mode, additionalInformationIndex))
       }
   }
 
   def onSubmit(additionalInformationIndex: Index, lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      service.getAdditionalInformationCodes().flatMap {
+      service.getAdditionalInformationCodes(request.userAnswers).flatMap {
         additionalInformationList =>
           val form = formProvider("additionalInformation.index.additionalInformationType", additionalInformationList)
           form

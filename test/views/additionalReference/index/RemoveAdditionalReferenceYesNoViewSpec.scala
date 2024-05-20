@@ -16,7 +16,6 @@
 
 package views.additionalReference.index
 
-import forms.YesNoFormProvider
 import generators.Generators
 import models.NormalMode
 import org.scalacheck.Gen

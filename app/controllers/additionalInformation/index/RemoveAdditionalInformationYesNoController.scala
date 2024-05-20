@@ -14,68 +14,71 @@
  * limitations under the License.
  */
 
-package controllers.additionalReference.index
+package controllers.additionalInformation.index
 
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.removable.AdditionalReference
 import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
-import pages.additionalReference.index.AdditionalReferenceTypePage
-import pages.sections.additionalReference.AdditionalReferenceSection
+import pages.additionalInformation.index.AdditionalInformationTypePage
+import pages.sections.additionalInformation.AdditionalInformationSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.additionalReference.index.RemoveAdditionalReferenceYesNoView
+import views.html.additionalInformation.RemoveAdditionalInformationYesNoView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveAdditionalReferenceYesNoController @Inject() (
+class RemoveAdditionalInformationYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   actions: Actions,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: RemoveAdditionalReferenceYesNoView
+  view: RemoveAdditionalInformationYesNoView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  def insetText(userAnswers: UserAnswers, additionalReferenceIndex: Index): Option[String] =
-    AdditionalReference(userAnswers, additionalReferenceIndex).map(_.forRemoveDisplay)
-
-  private def form: Form[Boolean] =
-    formProvider("additionalReference.index.removeAdditionalReference")
+  private def form(): Form[Boolean] =
+    formProvider("additionalInformation.index.removeAdditionalInformationYesNo")
 
   private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
-    controllers.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(lrn, mode)
+    controllers.additionalInformation.routes.AddAnotherAdditionalInformationController
+      .onPageLoad(lrn, mode)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, additionalReferenceIndex: Index): Action[AnyContent] = actions
-    .requireIndex(lrn, AdditionalReferenceSection(additionalReferenceIndex), addAnother(lrn, mode))
-    .andThen(getMandatoryPage.getFirst(AdditionalReferenceTypePage(additionalReferenceIndex))) {
+  def additionalInformation(userAnswers: UserAnswers, additionalInformationIndex: Index): Option[String] =
+    userAnswers.get(AdditionalInformationTypePage(additionalInformationIndex)).map(_.toString)
+
+  def onPageLoad(lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode): Action[AnyContent] =
+    actions.requireData(lrn) {
       implicit request =>
-        Ok(view(form, lrn, mode, additionalReferenceIndex, insetText(request.userAnswers, additionalReferenceIndex)))
+        Ok(
+          view(form(), lrn, additionalInformationIndex, additionalInformation(request.userAnswers, additionalInformationIndex), mode)
+        )
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, additionalReferenceIndex: Index): Action[AnyContent] = actions
-    .requireIndex(lrn, AdditionalReferenceSection(additionalReferenceIndex), addAnother(lrn, mode))
-    .andThen(getMandatoryPage.getFirst(AdditionalReferenceTypePage(additionalReferenceIndex)))
+  def onSubmit(lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode): Action[AnyContent] = actions
+    .requireIndex(lrn, AdditionalInformationSection(additionalInformationIndex), addAnother(lrn, mode))
     .async {
       implicit request =>
-        form
+        form()
           .bindFromRequest()
           .fold(
             formWithErrors =>
               Future
-                .successful(BadRequest(view(formWithErrors, lrn, mode, additionalReferenceIndex, insetText(request.userAnswers, additionalReferenceIndex)))),
+                .successful(
+                  BadRequest(
+                    view(formWithErrors, lrn, additionalInformationIndex, additionalInformation(request.userAnswers, additionalInformationIndex), mode)
+                  )
+                ),
             {
               case true =>
-                AdditionalReferenceSection(additionalReferenceIndex)
+                AdditionalInformationSection(additionalInformationIndex)
                   .removeFromUserAnswers()
                   .updateTask()
                   .writeToSession()
@@ -84,5 +87,6 @@ class RemoveAdditionalReferenceYesNoController @Inject() (
                 Future.successful(Redirect(addAnother(lrn, mode)))
             }
           )
+
     }
 }

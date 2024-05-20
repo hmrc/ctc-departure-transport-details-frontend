@@ -35,8 +35,6 @@ import viewModels.DepartureTransportAnswersViewModel.DepartureTransportAnswersVi
 
 class DepartureTransportAnswersViewModelProviderSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  private val mode = arbitrary[Mode].sample.value
-
   "MiniTransportAnswersViewModelProviderSpec" - {
 
     "must generate a MiniTransportAnswersViewModel" in {

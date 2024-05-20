@@ -614,7 +614,6 @@ additionalReference.index.removeAdditionalReference.insetText = {0} - {1}
 additionalReference.index.removeAdditionalReference.insetTextTypeOnly = {0}
 additionalReference.index.removeAdditionalReference.error.required = Select yes if you want to remove this additional reference from all items
 
-
 additionalReference.addAnotherAdditionalReference.singular.title = You have added 1 additional reference for all items
 additionalReference.addAnotherAdditionalReference.singular.heading = You have added 1 additional reference for all items
 additionalReference.addAnotherAdditionalReference.plural.title = You have added {0} additional references for all items
@@ -641,6 +640,10 @@ additionalInformation.addAnotherAdditionalInformation.error.required = Select ye
 additionalInformation.addCommentsYesNo.title = Do you want to add any comments for the additional information?
 additionalInformation.addCommentsYesNo.heading = Do you want to add any comments for the additional information?
 additionalInformation.addCommentsYesNo.error.required = Select yes if you want to add any comments for the additional information
+
+additionalInformation.index.removeAdditionalInformationYesNo.title = Are you sure you want to remove this additional information from all items?
+additionalInformation.index.removeAdditionalInformationYesNo.heading = Are you sure you want to remove this additional information from all items?
+additionalInformation.index.removeAdditionalInformationYesNo.error.required = Select yes if you want to remove this additional information from all items
 
 additionalInformation.index.additionalInformationText.title = Enter your comments for the additional information
 additionalInformation.index.additionalInformationText.heading = Enter your comments for the additional information

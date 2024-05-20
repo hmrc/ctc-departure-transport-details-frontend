@@ -16,12 +16,12 @@
 
 package pages.additionalInformation.index
 
-import controllers.additionalInformation.index.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.additionalInformation.AdditionalInformationSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+import controllers.additionalInformation.index.routes
 
 case class AdditionalInformationTextPage(additionalInformationIndex: Index) extends QuestionPage[String] {
 
