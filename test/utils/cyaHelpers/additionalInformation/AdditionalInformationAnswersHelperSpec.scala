@@ -55,7 +55,6 @@ class AdditionalInformationAnswersHelperSpec extends SpecBase with ScalaCheckPro
               .setValue(AddCommentsYesNoPage(Index(0)), true)
               .setValue(AdditionalInformationTextPage(Index(0)), additionalInformation)
 
-
             val helper = new AdditionalInformationAnswersHelper(userAnswers, mode)
             helper.listItems mustBe Seq(
               Right(

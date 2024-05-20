@@ -18,7 +18,6 @@ package utils.cyaHelpers.additionalInformation
 
 import config.{FrontendAppConfig, PhaseConfig}
 import models.journeyDomain.additionalInformation.AdditionalInformationDomain
-import models.journeyDomain.additionalReferences.AdditionalReferenceDomain
 import models.{Mode, UserAnswers}
 import pages.additionalInformation.index.AdditionalInformationTypePage
 import pages.sections.additionalInformation.AdditionalInformationListSection

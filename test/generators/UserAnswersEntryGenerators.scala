@@ -62,7 +62,6 @@ trait UserAnswersEntryGenerators {
       generateAdditionalReferencesAnswers orElse
       generateAdditionalInformationAnswers
 
-
   private def generatePreRequisitesAnswer: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.preRequisites._
     {
@@ -233,22 +232,24 @@ trait UserAnswersEntryGenerators {
       case AdditionalReferenceNumberPage(_)         => Gen.alphaNumStr.map(JsString)
     }
   }
+
   private def generateAdditionalInformationAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.additionalInformation._
 
     val pf: PartialFunction[Gettable[_], Gen[JsValue]] = {
       case AddAdditionalInformationYesNoPage => arbitrary[Boolean].map(JsBoolean)
+      case AddCommentsYesNoPage(_)           => arbitrary[Boolean].map(JsBoolean)
     }
 
     pf orElse
-      generateAdditionalInformationIndexAnswers
+      generateAdditionalInformationListAnswers
   }
 
-  private def generateAdditionalInformationIndexAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
+  private def generateAdditionalInformationListAnswers: PartialFunction[Gettable[_], Gen[JsValue]] = {
     import pages.additionalInformation.index._
     {
-      case AdditionalInformationTypePage(_)           => arbitrary[AdditionalInformationCode].map(Json.toJson(_))
-      case AdditionalInformationTextPage(_)         =>   Gen.alphaNumStr.map(JsString)
+      case AdditionalInformationTypePage(_) => arbitrary[AdditionalInformationCode].map(Json.toJson(_))
+      case AdditionalInformationTextPage(_) => Gen.alphaNumStr.map(JsString)
     }
   }
 }

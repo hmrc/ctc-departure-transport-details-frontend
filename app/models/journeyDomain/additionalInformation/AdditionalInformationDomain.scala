@@ -17,19 +17,20 @@
 package models.journeyDomain.additionalInformation
 
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsReaderOps, JourneyDomainModel, Read, Stage}
+import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Read, Stage}
 import models.reference.additionalInformation.AdditionalInformationCode
 import models.{Index, Mode, Phase, UserAnswers}
+import pages.additionalInformation.AddCommentsYesNoPage
 import pages.additionalInformation.index.{AdditionalInformationTextPage, AdditionalInformationTypePage}
 import play.api.mvc.Call
 
 case class AdditionalInformationDomain(
   `type`: AdditionalInformationCode,
-  value: String
+  value: Option[String]
 )(additionalInformationIndex: Index)
     extends JourneyDomainModel {
 
-  override def toString: String = s"${`type`} - $value"
+  override def toString: String = AdditionalInformationDomain.asString(`type`, value)
 
   override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
     stage match {
@@ -43,8 +44,14 @@ case class AdditionalInformationDomain(
 
 object AdditionalInformationDomain {
 
+  def asString(`type`: AdditionalInformationCode, text: Option[String]): String = `type`.toString + text.fold("") {
+    value => s" - $value"
+  }
+
   def userAnswersReader(additionalInformationIndex: Index): Read[AdditionalInformationDomain] = (
     AdditionalInformationTypePage(additionalInformationIndex).reader,
-    AdditionalInformationTextPage(additionalInformationIndex).reader
+    AddCommentsYesNoPage(additionalInformationIndex).filterOptionalDependent(identity) {
+      AdditionalInformationTextPage(additionalInformationIndex).reader
+    }
   ).map(AdditionalInformationDomain.apply(_, _)(additionalInformationIndex))
 }
