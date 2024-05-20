@@ -25,7 +25,7 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.CharacterCountViewBehaviours
 import views.html.additionalInformation.index.AdditionalInformationTextView
 
-class AdditionalInformationCodeTextViewSpec extends CharacterCountViewBehaviours with Generators {
+class AdditionalInformationTextViewSpec extends CharacterCountViewBehaviours with Generators {
 
   override def form: Form[String] = new AdditionalInformationFormProvider()(prefix)
 

@@ -22,7 +22,7 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.additionalInformation.AddAdditionalInformationYesNoView
 
-class AddAdditionalInformationCodeYesNoViewSpec extends YesNoViewBehaviours {
+class AddAdditionalInformationYesNoViewSpec extends YesNoViewBehaviours {
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
     injector.instanceOf[AddAdditionalInformationYesNoView].apply(form, lrn, NormalMode)(fakeRequest, messages)
