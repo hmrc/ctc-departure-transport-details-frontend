@@ -21,13 +21,30 @@ import models.journeyDomain._
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.Stage.CompletingJourney
 import models.journeyDomain.{JourneyDomainModel, ReaderSuccess, Stage}
-import models.{CheckMode, Mode, Phase, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, Phase, UserAnswers}
 import pages.Page
 import play.api.Logging
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
 
 import scala.annotation.tailrec
+
+trait CustomNavigator { self: UserAnswersNavigator =>
+
+  def navigateToNextPage(page: Page, userAnswers: UserAnswers, mode: Mode): Call =
+    mode match {
+      case NormalMode =>
+        normalRoutes(mode).lift(page) match {
+          case None       => page.route(userAnswers, mode).getOrElse(Call(GET, "#"))
+          case Some(call) => handleCall(userAnswers, call)
+        }
+      case CheckMode =>
+        checkRoutes(mode).lift(page) match {
+          case None       => page.route(userAnswers, mode).getOrElse(Call(GET, "#"))
+          case Some(call) => handleCall(userAnswers, call)
+        }
+    }
+}
 
 trait UserAnswersNavigator extends Navigator {
 
@@ -39,6 +56,22 @@ trait UserAnswersNavigator extends Navigator {
   implicit val reader: UserAnswersReader[T]
 
   val mode: Mode
+
+  private type RouteMapping = PartialFunction[Page, UserAnswers => Option[Call]]
+
+  protected def normalRoutes(mode: Mode): RouteMapping = {
+    case _ => ua => Some(Call(GET, appConfig.sessionExpiredUrl(ua.lrn)))
+  }
+
+  protected def checkRoutes(mode: Mode): RouteMapping = {
+    case _ => ua => Some(Call(GET, appConfig.sessionExpiredUrl(ua.lrn)))
+  }
+
+  protected def handleCall(userAnswers: UserAnswers, call: UserAnswers => Option[Call]) =
+    call(userAnswers) match {
+      case Some(onwardRoute) => onwardRoute
+      case None              => Call(GET, appConfig.sessionExpiredUrl(userAnswers.lrn))
+    }
 
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call =
     UserAnswersNavigator.nextPage[T](userAnswers, currentPage, mode)

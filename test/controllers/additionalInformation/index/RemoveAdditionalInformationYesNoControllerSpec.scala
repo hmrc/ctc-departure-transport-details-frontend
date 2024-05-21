@@ -21,7 +21,7 @@ import forms.YesNoFormProvider
 import generators.Generators
 import models.reference.additionalInformation.AdditionalInformationCode
 import models.removable.AdditionalInformation
-import models.{NormalMode, UserAnswers}
+import models.{Index, NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
@@ -68,7 +68,32 @@ class RemoveAdditionalInformationYesNoControllerSpec extends SpecBase with AppWi
         view(form, lrn, additionalInformationIndex, Some(additionalInformationCode.toString), mode)(request, messages).toString
     }
 
-    "when yes submitted must redirect to add another additional information and remove additional information at specified index" in {
+    "when yes submitted and at least 1 item remains must redirect to add another additional information and remove additional information at specified index" in {
+      reset(mockSessionRepository)
+      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+
+      val userAnswers = emptyUserAnswers
+        .setValue(AdditionalInformationTypePage(additionalInformationIndex), additionalInformationCode)
+        .setValue(AdditionalInformationTypePage(Index(1)), additionalInformationCode)
+
+      setExistingUserAnswers(userAnswers)
+
+      val request = FakeRequest(POST, removeAdditionalInformationRoute)
+        .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(app, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        controllers.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode).url
+
+      val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
+      userAnswersCaptor.getValue.get(AdditionalInformationSection(index)) must be(defined)
+    }
+
+    "when yes submitted and no items left must redirect to do you want to add additional information and remove additional information at specified index" in {
       reset(mockSessionRepository)
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
@@ -85,7 +110,7 @@ class RemoveAdditionalInformationYesNoControllerSpec extends SpecBase with AppWi
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(lrn, mode).url
+        controllers.additionalInformation.routes.AddAdditionalInformationYesNoController.onPageLoad(lrn, mode).url
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())

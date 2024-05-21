@@ -22,9 +22,10 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
 import pages.additionalInformation.index.AdditionalInformationTypePage
-import pages.sections.additionalInformation.AdditionalInformationSection
+import pages.sections.additionalInformation.{AdditionalInformationListSection, AdditionalInformationSection}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.libs.json.JsArray
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -50,6 +51,15 @@ class RemoveAdditionalInformationYesNoController @Inject() (
   private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
     controllers.additionalInformation.routes.AddAnotherAdditionalInformationController
       .onPageLoad(lrn, mode)
+
+  private def addRoute(itemsCount: Int, lrn: LocalReferenceNumber, mode: Mode): Call =
+    if (itemsCount > 0) {
+      controllers.additionalInformation.routes.AddAnotherAdditionalInformationController
+        .onPageLoad(lrn, mode)
+    } else {
+      controllers.additionalInformation.routes.AddAdditionalInformationYesNoController
+        .onPageLoad(lrn, mode)
+    }
 
   def additionalInformation(userAnswers: UserAnswers, additionalInformationIndex: Index): Option[String] =
     userAnswers.get(AdditionalInformationTypePage(additionalInformationIndex)).map(_.toString)
@@ -78,11 +88,12 @@ class RemoveAdditionalInformationYesNoController @Inject() (
                 ),
             {
               case true =>
+                val itemsCount = request.userAnswers.get(AdditionalInformationListSection).map(_.value.size).getOrElse(0)
                 AdditionalInformationSection(additionalInformationIndex)
                   .removeFromUserAnswers()
                   .updateTask()
                   .writeToSession()
-                  .navigateTo(addAnother(lrn, mode))
+                  .navigateTo(addRoute(itemsCount - 1, lrn, mode))
               case false =>
                 Future.successful(Redirect(addAnother(lrn, mode)))
             }
