@@ -24,14 +24,18 @@ import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationD
 import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
+import models.reference.additionalInformation.AdditionalInformationCode
 import models.reference.equipment.PaymentMethod
 import models.{Index, Mode, OptionalBoolean, UserAnswers}
+import pages.additionalInformation.AddAdditionalInformationYesNoPage
+import pages.additionalInformation.index.AdditionalInformationTypePage
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
 import pages.authorisationsAndLimit.limit.{AddLimitDateYesNoPage, LimitDatePage}
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
 import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
 import pages.equipment.{AddPaymentMethodYesNoPage, AddTransportEquipmentYesNoPage, PaymentMethodPage}
 import pages.preRequisites._
+import pages.sections.additionalInformation.{AdditionalInformationListSection, AdditionalInformationSection}
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import pages.sections.equipment.EquipmentsSection
 import pages.sections.supplyChainActors.SupplyChainActorsSection
@@ -235,5 +239,24 @@ class TransportAnswersHelper(
     prefix = "equipment.paymentMethod",
     id = Some("change-payment-method")
   )
+
+  def additionalInformationList: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(AdditionalInformationListSection)(additionalInformation)
+
+  def additionalInformation(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalInformationCode](
+    page = AdditionalInformationTypePage(index),
+    formatAnswer = formatAsText,
+    prefix = s"additionalInformation.additionalInformation",
+    id = Some(s"change-add-additional-information-${index.display}"),
+    args = index.display
+  )
+
+  def addOrRemoveAdditionalInformation(mode: Mode): Option[Link] = buildLink(AdditionalInformationListSection) {
+    Link(
+      id = "add-or-remove-additional-information",
+      text = messages("checkYourAnswers.additionalInformation.addOrRemove"),
+      href = controllers.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode).url
+    )
+  }
 
 }
