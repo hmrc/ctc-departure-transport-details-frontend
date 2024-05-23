@@ -19,7 +19,7 @@ package controllers.additionalReference.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.TransportNavigatorProvider
+import navigation.AdditionalReferenceNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -44,7 +44,7 @@ class AddAdditionalReferenceNumberYesNoControllerSpec extends SpecBase with AppW
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
+      .overrides(bind(classOf[AdditionalReferenceNavigatorProvider]).toInstance(fakeAdditionalReferenceNavigatorProvider))
 
   "AddAdditionalReferenceNumberYesNo Controller" - {
 

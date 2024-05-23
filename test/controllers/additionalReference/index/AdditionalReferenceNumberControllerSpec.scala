@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AdditionalReferenceNumberFormProvider
 import generators.Generators
 import models.NormalMode
-import navigation.TransportNavigatorProvider
+import navigation.AdditionalReferenceNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.additionalReference.index.AdditionalReferenceNumberPage
@@ -42,7 +42,7 @@ class AdditionalReferenceNumberControllerSpec extends SpecBase with AppWithDefau
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
+      .overrides(bind(classOf[AdditionalReferenceNavigatorProvider]).toInstance(fakeAdditionalReferenceNavigatorProvider))
 
   "AdditionalReferenceNumber Controller" - {
 

@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AdditionalInformationFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
+import navigation.{AdditionalInformationNavigatorProvider, UserAnswersNavigator}
 import pages.additionalInformation.index.AdditionalInformationTextPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalInformationTextController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: TransportNavigatorProvider,
+  navigatorProvider: AdditionalInformationNavigatorProvider,
   formProvider: AdditionalInformationFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -64,7 +64,7 @@ class AdditionalInformationTextController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, additionalInformationIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, additionalInformationIndex)
             AdditionalInformationTextPage(additionalInformationIndex)
               .writeToUserAnswers(value)
               .updateTask()

@@ -24,21 +24,21 @@ import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationD
 import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
+import models.reference.additionalInformation.AdditionalInformationCode
 import models.reference.additionalReference.AdditionalReferenceType
 import models.reference.equipment.PaymentMethod
 import models.{Index, Mode, OptionalBoolean, UserAnswers}
+import pages.additionalInformation.index.AdditionalInformationTypePage
 import pages.additionalReference.AddAdditionalReferenceYesNoPage
 import pages.additionalReference.index.AdditionalReferenceTypePage
-import models.reference.additionalInformation.AdditionalInformationCode
-import pages.additionalInformation.index.AdditionalInformationTypePage
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
 import pages.authorisationsAndLimit.limit.{AddLimitDateYesNoPage, LimitDatePage}
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
 import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
 import pages.equipment.{AddPaymentMethodYesNoPage, AddTransportEquipmentYesNoPage, PaymentMethodPage}
 import pages.preRequisites._
-import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.additionalInformation.AdditionalInformationListSection
+import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import pages.sections.equipment.EquipmentsSection
 import pages.sections.supplyChainActors.SupplyChainActorsSection
