@@ -70,13 +70,3 @@ class FakeSealNavigator(desiredRoute: Call, equipmentIndex: Index, sealIndex: In
 ) extends SealNavigator(mode, equipmentIndex, sealIndex) {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
-
-class FakeAdditionalReferenceNavigator(desiredRoute: Call, index: Index, mode: Mode)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
-    extends AdditionalReferenceNavigator(mode, index) {
-  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
-}
-
-class FakeAdditionalInformationNavigator(desiredRoute: Call, index: Index, mode: Mode)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
-    extends AdditionalInformationNavigator(mode, index) {
-  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
-}

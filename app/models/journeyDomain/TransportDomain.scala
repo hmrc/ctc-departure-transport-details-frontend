@@ -20,16 +20,13 @@ import config.Constants.ModeOfTransport.Mail
 import config.PhaseConfig
 import models.ProcedureType.Normal
 import models.UserAnswers
-import models.journeyDomain.additionalInformation.AdditionalInformationsDomain
-import models.journeyDomain.additionalReferences.AdditionalReferencesDomain
+import models.journeyDomain._
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
 import models.journeyDomain.carrierDetails.CarrierDetailsDomain
 import models.journeyDomain.equipment.EquipmentsAndChargesDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
 import models.reference.InlandMode
-import pages.additionalInformation.AddAdditionalInformationYesNoPage
-import pages.additionalReference.AddAdditionalReferenceYesNoPage
 import pages.authorisationsAndLimit.{AddAuthorisationsYesNoPage, AuthorisationsInferredPage}
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
@@ -44,9 +41,7 @@ case class TransportDomain(
   supplyChainActors: Option[SupplyChainActorsDomain],
   authorisationsAndLimit: Option[AuthorisationsAndLimitDomain],
   carrierDetails: Option[CarrierDetailsDomain],
-  equipmentsAndCharges: EquipmentsAndChargesDomain,
-  additionalReferencesDomain: Option[AdditionalReferencesDomain],
-  additionalInformationsDomain: Option[AdditionalInformationsDomain]
+  equipmentsAndCharges: EquipmentsAndChargesDomain
 ) extends JourneyDomainModel {
 
   override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(TransportSection)
@@ -69,9 +64,7 @@ object TransportDomain {
       SupplyChainActorYesNoPage.filterOptionalDependent(identity)(SupplyChainActorsDomain.userAnswersReader),
       authorisationsAndLimitReads,
       CarrierDetailYesNoPage.filterOptionalDependent(identity)(CarrierDetailsDomain.userAnswersReader),
-      EquipmentsAndChargesDomain.userAnswersReader,
-      AddAdditionalReferenceYesNoPage.filterOptionalDependent(identity)(AdditionalReferencesDomain.userAnswersReader),
-      AddAdditionalInformationYesNoPage.filterOptionalDependent(identity)(AdditionalInformationsDomain.userAnswersReader)
+      EquipmentsAndChargesDomain.userAnswersReader
     ).map(TransportDomain.apply).apply(Nil)
   }
 

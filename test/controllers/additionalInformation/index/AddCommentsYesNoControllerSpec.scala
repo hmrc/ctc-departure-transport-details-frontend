@@ -19,7 +19,7 @@ package controllers.additionalInformation.index
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.AdditionalInformationNavigatorProvider
+import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -42,7 +42,7 @@ class AddCommentsYesNoControllerSpec extends SpecBase with AppWithDefaultMockFix
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AdditionalInformationNavigatorProvider]).toInstance(fakeAdditionalInformationNavigatorProvider))
+      .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
 
   "AddCommentsYesNoController" - {
 

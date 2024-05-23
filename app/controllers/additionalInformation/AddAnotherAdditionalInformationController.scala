@@ -21,7 +21,7 @@ import controllers.actions._
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.TransportNavigatorProvider
-import pages.sections.additionalInformation.AdditionalInformationListSection
+import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -70,7 +70,7 @@ class AddAnotherAdditionalInformationController @Inject() (
             case true =>
               Redirect(controllers.additionalInformation.index.routes.AdditionalInformationTypeController.onPageLoad(viewModel.nextIndex, lrn, mode))
             case false =>
-              Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(AdditionalInformationListSection)))
+              Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(AdditionalReferencesSection)))
           }
         )
   }

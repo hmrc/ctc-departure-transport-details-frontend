@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
-import navigation.AdditionalInformationNavigatorProvider
+import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.additionalInformation.index.AdditionalInformationTypePage
@@ -49,7 +49,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AdditionalInformationNavigatorProvider]).toInstance(fakeAdditionalInformationNavigatorProvider))
+      .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
       .overrides(bind(classOf[AdditionalInformationService]).toInstance(mockAdditionalInformationService))
 
   "AdditionalInformationType Controller" - {

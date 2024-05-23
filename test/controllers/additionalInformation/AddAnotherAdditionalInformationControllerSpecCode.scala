@@ -60,8 +60,8 @@ class AddAnotherAdditionalInformationControllerSpecCode extends SpecBase with Ap
   }
 
   private val listItem          = arbitrary[ListItem].sample.value
-  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxAdditionalInformation - 1).sample.value)(listItem)
-  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxAdditionalInformation)(listItem)
+  private val listItems         = Seq.fill(Gen.choose(1, frontendAppConfig.maxAdditionalReferences - 1).sample.value)(listItem)
+  private val maxedOutListItems = Seq.fill(frontendAppConfig.maxAdditionalReferences)(listItem)
 
   private val viewModel = arbitrary[AddAnotherAdditionalInformationViewModel].sample.value
 
