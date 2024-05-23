@@ -23,6 +23,8 @@ import models.ProcedureType.{Normal, Simplified}
 import models.reference.InlandMode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.additionalInformation.AddAdditionalInformationYesNoPage
+import pages.additionalReference.AddAdditionalReferenceYesNoPage
 import pages.authorisationsAndLimit.{AddAuthorisationsYesNoPage, AuthorisationsInferredPage}
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
@@ -231,6 +233,46 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
           userAnswers =>
             val result = TransportDomain.userAnswersReader.run(userAnswers)
             result.value.value.carrierDetails must not be defined
+            result.value.pages.last mustBe TransportSection
+        }
+      }
+
+      "when adding additional references" in {
+        val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage, true)
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+          userAnswers =>
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
+            result.value.value.additionalReferencesDomain must be(defined)
+            result.value.pages.last mustBe TransportSection
+        }
+      }
+
+      "when not adding additional references" in {
+        val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage, false)
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+          userAnswers =>
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
+            result.value.value.additionalReferencesDomain must not be defined
+            result.value.pages.last mustBe TransportSection
+        }
+      }
+
+      "when adding additional informations" in {
+        val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage, true)
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+          userAnswers =>
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
+            result.value.value.additionalInformationsDomain must be(defined)
+            result.value.pages.last mustBe TransportSection
+        }
+      }
+
+      "when not adding additional informations" in {
+        val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage, false)
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+          userAnswers =>
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
+            result.value.value.additionalInformationsDomain must not be defined
             result.value.pages.last mustBe TransportSection
         }
       }
