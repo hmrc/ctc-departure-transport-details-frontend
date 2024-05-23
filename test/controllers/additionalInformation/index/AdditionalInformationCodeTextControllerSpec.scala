@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AdditionalInformationFormProvider
 import generators.Generators
 import models.NormalMode
-import navigation.AdditionalInformationNavigatorProvider
+import navigation.TransportNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.additionalInformation.index.AdditionalInformationTextPage
@@ -42,7 +42,7 @@ class AdditionalInformationCodeTextControllerSpec extends SpecBase with AppWithD
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[AdditionalInformationNavigatorProvider]).toInstance(fakeAdditionalInformationNavigatorProvider))
+      .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
 
   "AdditionalInformationText Controller" - {
 

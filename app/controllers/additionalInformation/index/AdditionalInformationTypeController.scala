@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{AdditionalInformationNavigatorProvider, UserAnswersNavigator}
+import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.additionalInformation.index.AdditionalInformationTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AdditionalInformationTypeController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: AdditionalInformationNavigatorProvider,
+  navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,
   service: AdditionalInformationService,
@@ -69,7 +69,7 @@ class AdditionalInformationTypeController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, additionalInformationList.values, mode, additionalInformationIndex))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, additionalInformationIndex)
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 AdditionalInformationTypePage(additionalInformationIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
               }
             )

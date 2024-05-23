@@ -25,6 +25,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.additionalReference.AddAdditionalReferenceYesNoPage
 import pages.additionalReference.index.{AddAdditionalReferenceNumberYesNoPage, AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
+import play.api.mvc.Call
 import viewModels.ListItem
 
 class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

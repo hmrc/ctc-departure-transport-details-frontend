@@ -43,8 +43,6 @@ class Module extends AbstractModule {
     bind(classOf[EquipmentsNavigatorProvider]).to(classOf[EquipmentsNavigatorProviderImpl])
     bind(classOf[EquipmentNavigatorProvider]).to(classOf[EquipmentNavigatorProviderImpl])
     bind(classOf[SealNavigatorProvider]).to(classOf[SealNavigatorProviderImpl])
-    bind(classOf[AdditionalInformationNavigatorProvider]).to(classOf[AdditionalInformationNavigatorProviderImpl])
-    bind(classOf[AdditionalReferenceNavigatorProvider]).to(classOf[AdditionalReferenceNavigatorProviderImpl])
 
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
   }
