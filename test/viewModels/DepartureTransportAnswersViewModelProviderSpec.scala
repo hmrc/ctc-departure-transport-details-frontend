@@ -20,8 +20,6 @@ import base.SpecBase
 import generators.Generators
 import models.reference.transportMeans.departure.Identification
 import models.reference.Nationality
-import models.Mode
-import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.departure.{
   AddIdentificationNumberYesNoPage,
