@@ -46,6 +46,8 @@ checkYourAnswers.carrierDetails = Carrier details
 checkYourAnswers.transportEquipment = Transport equipment
 checkYourAnswers.transportEquipment.addOrRemove = Add or remove transport equipment
 checkYourAnswers.transportCharges = Transport charges
+checkYourAnswers.additionalInformation = Additional information
+checkYourAnswers.additionalInformation.addOrRemove = Add or remove additional information for all items
 
 # Transport details - Pre-requisites
 
@@ -677,3 +679,4 @@ additionalInformation.index.additionalInformationType.hint = Enter the informati
 additionalInformation.index.additionalInformationType.placeholder = Select an additional reference
 additionalInformation.index.additionalInformationType.error.required = Select the type of additional information
 
+additionalInformation.additionalInformation.checkYourAnswersLabel = Additional information {0}

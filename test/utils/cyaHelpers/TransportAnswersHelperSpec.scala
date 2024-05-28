@@ -28,21 +28,25 @@ import controllers.equipment.{routes => equipmentsRoutes}
 import controllers.preRequisites.{routes => preRequisitesRoutes}
 import controllers.supplyChainActors.index.{routes => supplyChainActorRoutes}
 import controllers.supplyChainActors.{routes => supplyChainActorsRoutes}
+import controllers.additionalInformation.{routes => additionalInformationRoutes}
 import generators.Generators
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
+import models.reference.additionalInformation.AdditionalInformationCode
 import models.reference.equipment.PaymentMethod
 import models.{Index, Mode, OptionalBoolean}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.additionalInformation.index.AdditionalInformationTypePage
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
 import pages.authorisationsAndLimit.limit.{AddLimitDateYesNoPage, LimitDatePage}
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
 import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
 import pages.equipment.{AddPaymentMethodYesNoPage, AddTransportEquipmentYesNoPage, PaymentMethodPage}
 import pages.preRequisites._
+import pages.sections.additionalInformation.AdditionalInformationSection
 import pages.sections.authorisationsAndLimit.AuthorisationSection
 import pages.sections.equipment.EquipmentSection
 import pages.sections.supplyChainActors.SupplyChainActorSection
@@ -967,6 +971,69 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               action.href mustBe equipmentsRoutes.PaymentMethodController.onPageLoad(answers.lrn, mode).url
               action.visuallyHiddenText.get mustBe "payment method for transport charges"
               action.id mustBe "change-payment-method"
+          }
+        }
+      }
+    }
+
+    "additionalInformation" - {
+      "must return None" - {
+        s"when $AdditionalInformationTypePage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.additionalInformationList
+              result mustBe Seq.empty
+          }
+        }
+      }
+      "must return Some(Row)" - {
+        s"when $AdditionalInformationTypePage defined" in {
+          forAll(arbitrary[Mode], arbitrary[AdditionalInformationCode]) {
+            (mode, additionalInformationCode) =>
+              val answers = emptyUserAnswers.setValue(AdditionalInformationTypePage(additionalInformationIndex), additionalInformationCode)
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.additionalInformationList
+
+              result.head.key.value mustBe "Additional information 1"
+              result.head.value.value mustBe additionalInformationCode.toString
+              val actions = result.head.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.additionalInformation.index.routes.AdditionalInformationTypeController
+                .onPageLoad(additionalInformationIndex, answers.lrn, mode)
+                .url
+              action.id mustBe s"change-add-additional-information-${additionalInformationIndex.display}"
+          }
+        }
+      }
+
+    }
+
+    "addOrRemoveAdditionalInformation" - {
+      "must return None" - {
+        "when additionalInformation array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addOrRemoveAdditionalInformation(mode)
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when additionalInformation array is non-empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AdditionalInformationSection(Index(0)), Json.obj("foo" -> "bar"))
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.addOrRemoveAdditionalInformation(mode).get
+
+              result.id mustBe "add-or-remove-additional-information"
+              result.text mustBe "Add or remove additional information for all items"
+              result.href mustBe additionalInformationRoutes.AddAnotherAdditionalInformationController.onPageLoad(answers.lrn, mode).url
           }
         }
       }

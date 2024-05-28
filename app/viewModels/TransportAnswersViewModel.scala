@@ -94,13 +94,23 @@ object TransportAnswersViewModel {
         ).flatten
       )
 
+      val additionalInformationSection =
+        Section(
+          sectionTitle = messages("checkYourAnswers.additionalInformation"),
+          rows = Seq(
+            helper.additionalInformationList
+          ).flatten,
+          addAnotherLink = helper.addOrRemoveAdditionalInformation(mode)
+        )
+
       val sections = preRequisitesSection.toSeq ++
         transportMeansSections ++
         supplyChainActorsSection.toSeq ++
         authorisationsSection.toSeq ++
         carrierDetailsSection.toSeq ++
         transportEquipmentSection.toSeq ++
-        transportChargesSection.toSeq
+        transportChargesSection.toSeq ++
+        additionalInformationSection.toSeq
 
       new TransportAnswersViewModel(sections)
     }
