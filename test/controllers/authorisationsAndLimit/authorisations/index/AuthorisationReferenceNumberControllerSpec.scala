@@ -79,7 +79,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form(authorisationType), lrn, authorisationType.forDisplay, mode, index, isReducedDataset)(request, messages).toString
+            view(form(authorisationType), lrn, authorisationType, mode, index, isReducedDataset)(request, messages).toString
       }
     }
 
@@ -103,7 +103,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(filledForm, lrn, authorisationType.forDisplay, mode, index, isReducedDataset)(request, messages).toString
+            view(filledForm, lrn, authorisationType, mode, index, isReducedDataset)(request, messages).toString
       }
     }
 
@@ -148,7 +148,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
           val view = injector.instanceOf[AuthorisationReferenceNumberView]
 
           contentAsString(result) mustEqual
-            view(filledForm, lrn, authorisationType.forDisplay, mode, authorisationIndex, isReducedDataset)(request, messages).toString
+            view(filledForm, lrn, authorisationType, mode, authorisationIndex, isReducedDataset)(request, messages).toString
       }
     }
 

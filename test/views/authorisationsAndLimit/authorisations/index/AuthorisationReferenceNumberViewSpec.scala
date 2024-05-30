@@ -35,26 +35,28 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
 
   private val authorisationType = arbitrary[AuthorisationType].sample.value
 
-  private val dynamicText = s"$prefix.${authorisationType.toString}"
-
   private val approvedOperator: Boolean = arbitrary[Boolean].sample.value
 
-  override def form: Form[String] = new AuthorisationReferenceNumberFormProvider()(prefix, dynamicText)
+  override def form: Form[String] = new AuthorisationReferenceNumberFormProvider()(prefix, authorisationType.forDisplay)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
-    injector.instanceOf[AuthorisationReferenceNumberView].apply(form, lrn, dynamicText, NormalMode, authorisationIndex, approvedOperator)(fakeRequest, messages)
+    injector
+      .instanceOf[AuthorisationReferenceNumberView]
+      .apply(form, lrn, authorisationType, NormalMode, authorisationIndex, approvedOperator)(fakeRequest, messages)
 
   implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
 
-  private val paragraph: String = "You need to enter this as you’re using a reduced data set."
+  private val paragraphACR: String = "This authorisation is for the status of authorised consignor for Union transit."
 
-  behave like pageWithTitle(messages(dynamicText))
+  private val paragraphReducedDataSet: String = "You need to enter this as you are using a reduced data set."
+
+  behave like pageWithTitle(authorisationType.forDisplay)
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Transport details - Authorisations")
 
-  behave like pageWithHeading(messages(dynamicText))
+  behave like pageWithHeading(authorisationType.forDisplay)
 
   behave like pageWithHint("This can be up to 35 characters long and include both letters and numbers.")
 
@@ -62,21 +64,47 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
 
   behave like pageWithSubmitButton("Save and continue")
 
-  "when using a reduced data set" - {
-    val view = injector.instanceOf[AuthorisationReferenceNumberView]
+  "when auth type is ACR and using a reduced data set" - {
+    val authorisationType = arbitrary[AuthorisationType].retryUntil(_.isACR).sample.value
+    val view              = injector.instanceOf[AuthorisationReferenceNumberView]
     val doc = parseView(
-      view.apply(form, lrn, dynamicText, NormalMode, authorisationIndex, isApprovedOperator = true)(fakeRequest, messages)
+      view.apply(form, lrn, authorisationType, NormalMode, authorisationIndex, isApprovedOperator = true)(fakeRequest, messages)
     )
 
-    behave like pageWithContent(doc, "p", paragraph)
+    behave like pageWithContent(doc, "p", paragraphACR)
+    behave like pageWithContent(doc, "p", paragraphReducedDataSet)
   }
 
-  "when not using a reduced data set" - {
-    val view = injector.instanceOf[AuthorisationReferenceNumberView]
+  "when auth type is ACR and not using a reduced data set" - {
+    val authorisationType = arbitrary[AuthorisationType].retryUntil(_.isACR).sample.value
+    val view              = injector.instanceOf[AuthorisationReferenceNumberView]
     val doc = parseView(
-      view.apply(form, lrn, dynamicText, NormalMode, authorisationIndex, isApprovedOperator = false)(fakeRequest, messages)
+      view.apply(form, lrn, authorisationType, NormalMode, authorisationIndex, isApprovedOperator = false)(fakeRequest, messages)
     )
 
-    behave like pageWithoutContent(doc, "p", paragraph)
+    behave like pageWithContent(doc, "p", paragraphACR)
+    behave like pageWithoutContent(doc, "p", paragraphReducedDataSet)
+  }
+
+  "when auth type is not ACR and using a reduced data set" - {
+    val authorisationType = arbitrary[AuthorisationType].retryUntil(!_.isACR).sample.value
+    val view              = injector.instanceOf[AuthorisationReferenceNumberView]
+    val doc = parseView(
+      view.apply(form, lrn, authorisationType, NormalMode, authorisationIndex, isApprovedOperator = true)(fakeRequest, messages)
+    )
+
+    behave like pageWithoutContent(doc, "p", paragraphACR)
+    behave like pageWithContent(doc, "p", paragraphReducedDataSet)
+  }
+
+  "when auth type is not ACR and not using a reduced data set" - {
+    val authorisationType = arbitrary[AuthorisationType].retryUntil(!_.isACR).sample.value
+    val view              = injector.instanceOf[AuthorisationReferenceNumberView]
+    val doc = parseView(
+      view.apply(form, lrn, authorisationType, NormalMode, authorisationIndex, isApprovedOperator = false)(fakeRequest, messages)
+    )
+
+    behave like pageWithoutContent(doc, "p", paragraphACR)
+    behave like pageWithoutContent(doc, "p", paragraphReducedDataSet)
   }
 }
