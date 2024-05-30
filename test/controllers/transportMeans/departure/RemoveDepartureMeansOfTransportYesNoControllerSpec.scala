@@ -72,7 +72,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, lrn, mode, index, Some(insetText))(request, messages).toString
+            view(form, lrn, mode, index, insetText)(request, messages).toString
       }
     }
 
@@ -161,7 +161,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
           val view = injector.instanceOf[RemoveDepartureMeansOfTransportYesNoView]
 
           contentAsString(result) mustEqual
-            view(filledForm, lrn, mode, index, Some(insetText))(request, messages).toString
+            view(filledForm, lrn, mode, index, insetText)(request, messages).toString
       }
     }
 

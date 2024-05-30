@@ -24,19 +24,22 @@ import play.api.libs.json.Reads
 
 case class TransportMeans(index: Index, identificationType: Option[Identification], identificationNumber: Option[String]) {
 
-  def forRemoveDisplay: String = (identificationType, identificationNumber) match {
-    case (Some(a), Some(b)) => s"$a - $b"
-    case (Some(a), None)    => a.toString
-    case (None, Some(b))    => b
-    case (None, None)       => ""
+  def forRemoveDisplay: Option[String] = (identificationType, identificationNumber) match {
+    case (Some(a), Some(b)) => Some(s"$a - $b")
+    case (Some(a), None)    => Some(a.toString)
+    case (None, Some(b))    => Some(b)
+    case (None, None)       => None
   }
 
-  def forAddAnotherDisplay(implicit messages: Messages): Option[String] = (identificationType, identificationNumber) match {
+  def forAddAnotherDisplay(implicit messages: Messages): String = (identificationType, identificationNumber) match {
     case (Some(identification), Some(identificationNumber)) =>
-      Some(messages("departureTransportMeans.label.bothArgs", index.display, identification.asString, identificationNumber))
-    case (Some(identification), None)       => Some(messages("departureTransportMeans.label.oneArg", index.display, identification.asString))
-    case (None, Some(identificationNumber)) => Some(messages("departureTransportMeans.label.oneArg", index.display, identificationNumber))
-    case _                                  => Some(messages("departureTransportMeans.label.noArgs", index.display))
+      messages("departureTransportMeans.label.bothArgs", index.display, identification.asString, identificationNumber)
+    case (Some(identification), None) =>
+      messages("departureTransportMeans.label.oneArg", index.display, identification.asString)
+    case (None, Some(identificationNumber)) =>
+      messages("departureTransportMeans.label.oneArg", index.display, identificationNumber)
+    case _ =>
+      messages("departureTransportMeans.label.noArgs", index.display)
   }
 }
 

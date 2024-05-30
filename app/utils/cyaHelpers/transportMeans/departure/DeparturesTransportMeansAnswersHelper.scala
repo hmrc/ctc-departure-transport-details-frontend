@@ -17,6 +17,7 @@
 package utils.cyaHelpers.transportMeans.departure
 
 import config.{FrontendAppConfig, PhaseConfig}
+import controllers.transportMeans.departure.routes
 import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
 import models.{Index, Mode, TransportMeans, UserAnswers}
 import pages.sections.transportMeans.DeparturesSection
@@ -33,16 +34,19 @@ class DeparturesTransportMeansAnswersHelper(userAnswers: UserAnswers, mode: Mode
 ) extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] = {
-    def nameWhenInProgress(index: Index): Option[String] =
-      TransportMeans(index, userAnswers.get(IdentificationPage(index)), userAnswers.get(MeansIdentificationNumberPage(index))).forAddAnotherDisplay
+    def nameWhenInProgress(index: Index): String =
+      TransportMeans(
+        index,
+        userAnswers.get(IdentificationPage(index)),
+        userAnswers.get(MeansIdentificationNumberPage(index))
+      ).forAddAnotherDisplay
 
     buildListItems(DeparturesSection) {
       index =>
         buildListItem[TransportMeansDepartureDomain](
           nameWhenComplete = _.asString,
-          nameWhenInProgress = nameWhenInProgress(index),
-          removeRoute =
-            Some(controllers.transportMeans.departure.routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(userAnswers.lrn, mode, index))
+          nameWhenInProgress = Some(nameWhenInProgress(index)),
+          removeRoute = Some(routes.RemoveDepartureMeansOfTransportYesNoController.onPageLoad(userAnswers.lrn, mode, index))
         )(TransportMeansDepartureDomain.userAnswersReader(index).apply(Nil))
     }.checkRemoveLinks(userAnswers.get(AddDepartureTransportMeansYesNoPage).isEmpty)
   }
