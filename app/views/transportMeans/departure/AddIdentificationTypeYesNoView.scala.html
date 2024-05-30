@@ -18,19 +18,21 @@
 @import models.LocalReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.transportMeans.departure.AddIdentificationTypeViewModel
+@import viewModels.components.InputYesNoViewModel
 
 @this(
-    mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF,
-    inputYesNo: InputYesNo,
-    errorSummary: ErrorSummary,
-    button: Button
+mainTemplate: MainTemplate,
+formHelper: FormWithCSRF,
+inputYesNo: InputYesNo,
+errorSummary: ErrorSummary,
+button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index, viewModel: AddIdentificationTypeViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportMeans.departure.addIdentificationTypeYesNo.title"),
+    title = viewModel.title,
     showBackLink = true,
     lrn = lrn
 ) {
@@ -41,9 +43,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
-                heading = messages("transportMeans.departure.addIdentificationTypeYesNo.heading"),
-                caption = Some(messages("departureMeansOfTransport.caption"))
+            yesNoType = InputYesNoViewModel(
+                heading = viewModel.heading,
+                caption = Some(messages("departureMeansOfTransport.caption")),
+                additionalHtml = viewModel.paragraph.map(_.toParagraph)
             )
         )
 

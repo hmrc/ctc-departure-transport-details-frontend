@@ -61,22 +61,13 @@ class DepartureTransportMeansAnswersHelper(
     id = Some("change-transport-means-departure-vehicle-nationality")
   )
 
-  def departureAddTypeYesNo(suffix: Option[String] = None): Option[SummaryListRow] = suffix.fold(
+  def departureAddTypeYesNo(prefix: String): Option[SummaryListRow] =
     getAnswerAndBuildRow[Boolean](
       page = AddIdentificationTypeYesNoPage(departureIndex),
       formatAnswer = formatAsYesOrNo,
-      prefix = "transportMeans.departure.addIdentificationTypeYesNo",
+      prefix = prefix,
       id = Some("change-transport-means-departure-add-identification-type")
     )
-  ) {
-    s =>
-      getAnswerAndBuildRow[Boolean](
-        page = AddIdentificationTypeYesNoPage(departureIndex),
-        formatAnswer = formatAsYesOrNo,
-        prefix = s"transportMeans.departure.$s.addIdentificationTypeYesNo",
-        id = Some("change-transport-means-departure-add-identification-type")
-      )
-  }
 
   def departureAddIdentificationNumber: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddIdentificationNumberYesNoPage(departureIndex),

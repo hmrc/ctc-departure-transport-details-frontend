@@ -22,11 +22,14 @@ import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
+import pages.transportMeans.AddInlandModeYesNoPage
 import pages.transportMeans.departure.AddIdentificationTypeYesNoPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.transportMeans.departure.AddIdentificationTypeViewModel.AddIdentificationTypeViewModelProvider
 import views.html.transportMeans.departure.AddIdentificationTypeYesNoView
 
 import javax.inject.Inject
@@ -37,6 +40,8 @@ class AddIdentificationTypeYesNoController @Inject() (
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
   actions: Actions,
+  viewModel: AddIdentificationTypeViewModelProvider,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddIdentificationTypeYesNoView
@@ -44,28 +49,33 @@ class AddIdentificationTypeYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transportMeans.departure.addIdentificationTypeYesNo")
+  private val form: Form[Boolean] = formProvider("transportMeans.departure.addIdentificationTypeYesNo")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AddIdentificationTypeYesNoPage(departureIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(AddInlandModeYesNoPage)) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(AddIdentificationTypeYesNoPage(departureIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, lrn, mode, departureIndex))
-  }
+        Ok(view(preparedForm, lrn, mode, departureIndex, viewModel(request.arg)))
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, departureIndex))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            AddIdentificationTypeYesNoPage(departureIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .andThen(getMandatoryPage(AddInlandModeYesNoPage))
+    .async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, departureIndex, viewModel(request.arg)))),
+            value => {
+              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+              AddIdentificationTypeYesNoPage(departureIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            }
+          )
+    }
 }
