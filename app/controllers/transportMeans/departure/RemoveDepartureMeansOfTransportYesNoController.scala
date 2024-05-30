@@ -21,8 +21,8 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode, TransportMeans, UserAnswers}
-import navigation.TransportMeansNavigatorProvider
 import pages.sections.transportMeans.{DepartureSection, TransportMeansSection}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -35,7 +35,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class RemoveDepartureMeansOfTransportYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: TransportMeansNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -44,7 +43,8 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(departureIndex: Index) = formProvider("transportMeans.departure.removeTransportMeansOfDepartureYesNo", departureIndex.display)
+  private def form(departureIndex: Index): Form[Boolean] =
+    formProvider("transportMeans.departure.removeTransportMeansOfDepartureYesNo", departureIndex.display)
 
   private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
     controllers.transportMeans.departure.routes.AddAnotherDepartureTransportMeansController.onPageLoad(lrn, mode)
@@ -57,7 +57,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     }
 
   private def formatInsetText(userAnswers: UserAnswers, departureIndex: Index): Option[String] =
-    TransportMeans(userAnswers, departureIndex).map(_.forRemoveDisplay)
+    TransportMeans(userAnswers, departureIndex).flatMap(_.forRemoveDisplay)
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, TransportMeansSection, addAnother(lrn, mode))

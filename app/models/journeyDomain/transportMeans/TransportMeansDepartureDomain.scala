@@ -21,7 +21,7 @@ import config.PhaseConfig
 import models.journeyDomain.{JourneyDomainModel, _}
 import models.reference.transportMeans.departure.Identification
 import models.reference.{InlandMode, Nationality}
-import models.{Index, Mode, OptionalBoolean, Phase, UserAnswers}
+import models.{Index, Mode, OptionalBoolean, Phase, TransportMeans, UserAnswers}
 import pages.preRequisites.ContainerIndicatorPage
 import pages.sections.Section
 import pages.sections.transportMeans.{DepartureSection, TransportMeansSection}
@@ -73,7 +73,7 @@ case class PostTransitionTransportMeansDepartureDomain(
 object PostTransitionTransportMeansDepartureDomain {
 
   def asString(identification: Identification, identificationNumber: String, index: Index)(implicit messages: Messages): String =
-    messages("departureTransportMeans.label.bothArgs", index.display, identification.asString, identificationNumber)
+    TransportMeans(index, Some(identification), Some(identificationNumber)).forAddAnotherDisplay
 
   implicit def userAnswersReader(index: Index): Read[TransportMeansDepartureDomain] =
     (
@@ -97,12 +97,7 @@ case class TransitionTransportMeansDepartureDomain(
 object TransitionTransportMeansDepartureDomain {
 
   def asString(identification: Option[Identification], identificationNumber: Option[String], index: Index)(implicit messages: Messages): String =
-    (identification, identificationNumber) match {
-      case (Some(id), Some(idNumber)) => messages("departureTransportMeans.label.bothArgs", index.display, id.asString, idNumber)
-      case (Some(id), None)           => messages("departureTransportMeans.label.oneArg", index.display, id.asString)
-      case (None, Some(idNumber))     => messages("departureTransportMeans.label.oneArg", index.display, idNumber)
-      case _                          => messages("departureTransportMeans.label.noArgs", index.display)
-    }
+    TransportMeans(index, identification, identificationNumber).forAddAnotherDisplay
 
   implicit def userAnswersReader(index: Index): Read[TransportMeansDepartureDomain] = {
     lazy val identificationReader: Read[Option[Identification]] =
