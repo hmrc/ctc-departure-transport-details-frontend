@@ -65,7 +65,7 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
   behave like pageWithSubmitButton("Save and continue")
 
   "when auth type is ACR and using a reduced data set" - {
-    val authorisationType = arbitrary[AuthorisationType].retryUntil(_.isACR).sample.value
+    val authorisationType = arbitrary[AuthorisationType](arbitraryACRAuthorisationType).sample.value
     val view              = injector.instanceOf[AuthorisationReferenceNumberView]
     val doc = parseView(
       view.apply(form, lrn, authorisationType, NormalMode, authorisationIndex, isApprovedOperator = true)(fakeRequest, messages)
@@ -76,7 +76,7 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
   }
 
   "when auth type is ACR and not using a reduced data set" - {
-    val authorisationType = arbitrary[AuthorisationType].retryUntil(_.isACR).sample.value
+    val authorisationType = arbitrary[AuthorisationType](arbitraryACRAuthorisationType).sample.value
     val view              = injector.instanceOf[AuthorisationReferenceNumberView]
     val doc = parseView(
       view.apply(form, lrn, authorisationType, NormalMode, authorisationIndex, isApprovedOperator = false)(fakeRequest, messages)
@@ -87,7 +87,7 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
   }
 
   "when auth type is not ACR and using a reduced data set" - {
-    val authorisationType = arbitrary[AuthorisationType].retryUntil(!_.isACR).sample.value
+    val authorisationType = arbitrary[AuthorisationType](arbitraryNonACRAuthorisationType).sample.value
     val view              = injector.instanceOf[AuthorisationReferenceNumberView]
     val doc = parseView(
       view.apply(form, lrn, authorisationType, NormalMode, authorisationIndex, isApprovedOperator = true)(fakeRequest, messages)
@@ -98,7 +98,7 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
   }
 
   "when auth type is not ACR and not using a reduced data set" - {
-    val authorisationType = arbitrary[AuthorisationType].retryUntil(!_.isACR).sample.value
+    val authorisationType = arbitrary[AuthorisationType](arbitraryNonACRAuthorisationType).sample.value
     val view              = injector.instanceOf[AuthorisationReferenceNumberView]
     val doc = parseView(
       view.apply(form, lrn, authorisationType, NormalMode, authorisationIndex, isApprovedOperator = false)(fakeRequest, messages)
