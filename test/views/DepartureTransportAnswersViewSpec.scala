@@ -16,6 +16,7 @@
 
 package views
 
+import models.NormalMode
 import play.twirl.api.HtmlFormat
 import viewModels.Section
 import views.behaviours.CheckYourAnswersViewBehaviours
@@ -23,12 +24,14 @@ import views.html.transportMeans.DepartureTransportAnswersView
 
 class DepartureTransportAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
+  val mode = NormalMode
+
   override val prefix: String = "transportMeans.departure.checkYourAnswers"
 
   override def view: HtmlFormat.Appendable = viewWithSections(sections)
 
   override def viewWithSections(sections: Seq[Section]): HtmlFormat.Appendable =
-    injector.instanceOf[DepartureTransportAnswersView].apply(lrn, index, sections)(fakeRequest, messages)
+    injector.instanceOf[DepartureTransportAnswersView].apply(lrn, mode, index, sections)(fakeRequest, messages)
 
   behave like pageWithTitle()
 
@@ -40,7 +43,7 @@ class DepartureTransportAnswersViewSpec extends CheckYourAnswersViewBehaviours {
 
   behave like pageWithCheckYourAnswers()
 
-  behave like pageWithFormAction(controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onSubmit(lrn, index).url)
+  behave like pageWithFormAction(controllers.transportMeans.departure.routes.DepartureTransportAnswersController.onSubmit(lrn, mode, index).url)
 
   behave like pageWithSubmitButton("Save and continue")
 

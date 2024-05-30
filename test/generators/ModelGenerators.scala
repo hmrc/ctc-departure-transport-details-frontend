@@ -222,6 +222,14 @@ trait ModelGenerators {
       } yield InlandMode(code, description)
     }
 
+  val arbitraryNonRoadInlandMode: Arbitrary[InlandMode] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("1", "2", "4", "5", "7", "8")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
+    }
+
   val arbitraryOptionalNonMaritimeRailAirInlandMode: Arbitrary[Option[InlandMode]] =
     Arbitrary {
       for {
