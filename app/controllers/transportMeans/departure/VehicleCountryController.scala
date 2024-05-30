@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
+import navigation.{TransportMeansDepartureNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.departure.VehicleCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class VehicleCountryController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: TransportMeansNavigatorProvider,
+  navigatorProvider: TransportMeansDepartureNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,
   service: NationalitiesService,
@@ -70,7 +70,7 @@ class VehicleCountryController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, nationalityList.values, mode, departureIndex))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, departureIndex)
                 VehicleCountryPage(departureIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
               }
             )

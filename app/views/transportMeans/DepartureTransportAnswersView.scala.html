@@ -27,7 +27,7 @@
     formHelper: FormWithCSRF
 )
 
-@(lrn: LocalReferenceNumber, index:Index, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(lrn: LocalReferenceNumber, mode:Mode, index:Index, sections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("transportMeans.departure.checkYourAnswers.title"),
@@ -42,7 +42,7 @@
 
     @answerSections(sections)
 
-    @formHelper(action = routes.DepartureTransportAnswersController.onSubmit(lrn, index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.DepartureTransportAnswersController.onSubmit(lrn,mode, index), Symbol("autoComplete") -> "off") {
         @button(attributes = Map("id" -> "submit"))
     }
 }

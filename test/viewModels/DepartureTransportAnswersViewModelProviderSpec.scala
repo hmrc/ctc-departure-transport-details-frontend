@@ -18,17 +18,10 @@ package viewModels
 
 import base.SpecBase
 import generators.Generators
-import models.reference.transportMeans.departure.Identification
 import models.reference.Nationality
+import models.reference.transportMeans.departure.Identification
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.transportMeans.departure.{
-  AddIdentificationNumberYesNoPage,
-  AddIdentificationTypeYesNoPage,
-  AddVehicleCountryYesNoPage,
-  IdentificationPage,
-  MeansIdentificationNumberPage,
-  VehicleCountryPage
-}
+import pages.transportMeans.departure._
 import viewModels.DepartureTransportAnswersViewModel.DepartureTransportAnswersViewModelProvider
 
 class DepartureTransportAnswersViewModelProviderSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
