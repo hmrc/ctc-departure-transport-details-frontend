@@ -34,7 +34,6 @@ class TransportMeansActiveNavigatorSpec extends SpecBase with ScalaCheckProperty
       val mode = NormalMode
 
       "when answers complete" - {
-
         "during transition" - {
 
           val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
