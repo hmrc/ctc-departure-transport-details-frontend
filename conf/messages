@@ -567,6 +567,9 @@ equipment.addAnotherEquipment.label = Do you want to add any other transport equ
 equipment.addAnotherEquipment.maxLimit.label = You cannot add any more transport equipment. To add another, you need to remove one first.
 equipment.addAnotherEquipment.error.required = Select yes if you want to add any other transport equipment
 
+transportEquipment.prefix = Transport Equipment {0}
+transportEquipment.containerId = Container {0}
+
 equipment.index.removeTransportEquipment.title = Are you sure you want to remove transport equipment {0}?
 equipment.index.removeTransportEquipment.heading = Are you sure you want to remove transport equipment {0}?
 equipment.index.removeTransportEquipment.error.required = Select yes if you want to remove transport equipment {0}
