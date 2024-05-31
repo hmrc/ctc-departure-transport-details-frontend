@@ -16,11 +16,16 @@
 
 package pages.sections.transportMeans
 
-import models.Index
+import models.{Index, Mode, UserAnswers}
 import pages.sections.Section
 import play.api.libs.json.{JsObject, JsPath}
+import play.api.mvc.Call
+import controllers.transportMeans.departure.routes
 
 case class DepartureSection(departureIndex: Index) extends Section[JsObject] {
 
   override def path: JsPath = DeparturesSection.path \ departureIndex.position
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.DepartureTransportAnswersController.onPageLoad(userAnswers.lrn, mode, departureIndex))
 }

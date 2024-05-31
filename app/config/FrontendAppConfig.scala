@@ -56,13 +56,15 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   def signOutUrl(lrn: LocalReferenceNumber): String        = s"$departureHubUrl/$lrn/delete-lock"
   def sessionExpiredUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/this-service-has-been-reset/$lrn"
 
-  lazy val maxSeals: Int                   = configuration.get[Int]("limits.maxSeals")
-  lazy val maxAuthorisations: Int          = configuration.get[Int]("limits.maxAuthorisations")
-  lazy val maxActiveBorderTransports: Int  = configuration.get[Int]("limits.maxActiveBorderTransports")
-  lazy val maxDepartureTransportMeans: Int = configuration.get[Int]("limits.maxDepartureTransportMeans")
-  lazy val maxSupplyChainActors: Int       = configuration.get[Int]("limits.maxSupplyChainActors")
-  lazy val maxEquipmentNumbers: Int        = configuration.get[Int]("limits.maxEquipmentNumbers")
-  lazy val maxAdditionalReferences: Int    = configuration.get[Int]("limits.maxAdditionalReferences")
+  lazy val maxSeals: Int                                 = configuration.get[Int]("limits.maxSeals")
+  lazy val maxAuthorisations: Int                        = configuration.get[Int]("limits.maxAuthorisations")
+  lazy val maxActiveBorderTransports: Int                = configuration.get[Int]("limits.maxActiveBorderTransports")
+  lazy val maxDepartureTransportMeans: Int               = configuration.get[Int]("limits.departure.maxDepartureTransportMeans")
+  lazy val maxRoadInlandModeDepartureTransportMeans: Int = configuration.get[Int]("limits.departure.maxRoadInlandModeDepartureTransportMeans")
+  lazy val maxSupplyChainActors: Int                     = configuration.get[Int]("limits.maxSupplyChainActors")
+  lazy val maxEquipmentNumbers: Int                      = configuration.get[Int]("limits.maxEquipmentNumbers")
+  lazy val maxAdditionalReferences: Int                  = configuration.get[Int]("limits.maxAdditionalReferences")
+  lazy val maxAdditionalInformation: Int                 = configuration.get[Int]("limits.maxAdditionalInformation")
 
   def taskListUrl(lrn: LocalReferenceNumber): String = s"$departureHubUrl/$lrn/declaration-summary"
 
