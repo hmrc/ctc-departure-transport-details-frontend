@@ -246,4 +246,11 @@ trait ViewModelGenerators {
       onSubmitCall <- arbitrary[Call]
     } yield AddAnotherAdditionalInformationViewModel(listItems, onSubmitCall)
   }
+
+  implicit lazy val arbitraryListItems: Arbitrary[Seq[ListItem]] =
+    Arbitrary {
+      for {
+        listItems <- nonEmptyListOf[ListItem](10)
+      } yield listItems.toList
+    }
 }
