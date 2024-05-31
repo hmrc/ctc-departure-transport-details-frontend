@@ -544,9 +544,9 @@ equipment.index.addAnotherSeal.error.required = Select yes if you want to add an
 equipment.index.addAnotherSeal.label = Do you want to add another seal?
 equipment.index.addAnotherSeal.maxLimit.label = You cannot add any more seals. To add another, you need to remove one first.
 
-equipment.index.seals.removeSealYesNo.title = Are you sure you want to remove seal {0}?
-equipment.index.seals.removeSealYesNo.heading = Are you sure you want to remove seal {0}?
-equipment.index.seals.removeSealYesNo.error.required = Select yes if you want to remove seal {0}
+equipment.index.seals.removeSealYesNo.title = Are you sure you want to remove this seal?
+equipment.index.seals.removeSealYesNo.heading = Are you sure you want to remove this seal?
+equipment.index.seals.removeSealYesNo.error.required = Select yes if you want to remove this seal
 
 equipment.index.checkYourAnswers.title = Check your answers - Transport equipment
 equipment.index.checkYourAnswers.heading = Check your answers
