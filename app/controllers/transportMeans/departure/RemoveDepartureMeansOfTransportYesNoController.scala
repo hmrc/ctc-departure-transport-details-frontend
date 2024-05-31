@@ -44,7 +44,7 @@ class RemoveDepartureMeansOfTransportYesNoController @Inject() (
     with I18nSupport {
 
   private def form(departureIndex: Index): Form[Boolean] =
-    formProvider("transportMeans.departure.removeTransportMeansOfDepartureYesNo", departureIndex)
+    formProvider("transportMeans.departure.removeTransportMeansOfDepartureYesNo", departureIndex.display)
 
   private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
     controllers.transportMeans.departure.routes.AddAnotherDepartureTransportMeansController.onPageLoad(lrn, mode)

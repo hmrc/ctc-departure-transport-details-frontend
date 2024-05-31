@@ -39,7 +39,7 @@ import scala.concurrent.Future
 class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   private val formProvider = new YesNoFormProvider()
-  private val form         = formProvider("transportMeans.departure.removeTransportMeansOfDepartureYesNo", index)
+  private val form         = formProvider("transportMeans.departure.removeTransportMeansOfDepartureYesNo", index.display)
   private val mode         = NormalMode
 
   private lazy val removeDepartureTransportMeansRoute =
