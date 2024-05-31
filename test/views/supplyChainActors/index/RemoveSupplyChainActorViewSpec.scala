@@ -17,6 +17,7 @@
 package views.supplyChainActors.index
 
 import models.NormalMode
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -24,8 +25,10 @@ import views.html.supplyChainActors.index.RemoveSupplyChainActorView
 
 class RemoveSupplyChainActorViewSpec extends YesNoViewBehaviours {
 
+  private val insetText = Gen.alphaNumStr.sample.value
+
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[RemoveSupplyChainActorView].apply(form, lrn, NormalMode, index)(fakeRequest, messages)
+    injector.instanceOf[RemoveSupplyChainActorView].apply(form, lrn, NormalMode, index, Some(insetText))(fakeRequest, messages)
 
   override val prefix: String = "supplyChainActors.index.removeSupplyChainActor"
 
@@ -39,5 +42,16 @@ class RemoveSupplyChainActorViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithRadioItems()
 
+  behave like pageWithInsetText(insetText)
+
   behave like pageWithSubmitButton("Save and continue")
+
+  "when inset text undefined" - {
+    val view = injector
+      .instanceOf[RemoveSupplyChainActorView]
+      .apply(form, lrn, NormalMode, activeIndex, None)(fakeRequest, messages)
+    val doc = parseView(view)
+
+    behave like pageWithoutInsetText(doc)
+  }
 }

@@ -21,8 +21,9 @@ import controllers.actions._
 import controllers.supplyChainActors.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
 import pages.sections.supplyChainActors.SupplyChainActorSection
+import pages.supplyChainActors.index.SupplyChainActorTypePage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -45,13 +46,16 @@ class RemoveSupplyChainActorController @Inject() (
 
   private val form = formProvider("supplyChainActors.index.removeSupplyChainActor")
 
+  def insetText(userAnswers: UserAnswers, actorIndex: Index): Option[String] =
+    userAnswers.get(SupplyChainActorTypePage(actorIndex)).map(_.toString)
+
   private def addAnother(lrn: LocalReferenceNumber, mode: Mode): Call =
     routes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode)
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions
     .requireIndex(lrn, SupplyChainActorSection(index), addAnother(lrn, mode)) {
       implicit request =>
-        Ok(view(form, lrn, mode, index))
+        Ok(view(form, lrn, mode, index, insetText(request.userAnswers, index)))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions
@@ -61,7 +65,7 @@ class RemoveSupplyChainActorController @Inject() (
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, index, insetText(request.userAnswers, index)))),
             {
               case true =>
                 SupplyChainActorSection(index)
