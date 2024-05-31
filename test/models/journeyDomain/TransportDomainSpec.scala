@@ -268,7 +268,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
       }
 
       "when in Transition and therefore not requiring an additional reference" in {
-        forAll(arbitraryTransportAnswers(emptyUserAnswers)) {
+        forAll(arbitraryTransportAnswers(emptyUserAnswers)(mockTransitionPhaseConfig)) {
           userAnswers =>
             val result = TransportDomain.userAnswersReader(mockTransitionPhaseConfig).run(userAnswers)
             result.value.value.additionalReferences must not be defined
