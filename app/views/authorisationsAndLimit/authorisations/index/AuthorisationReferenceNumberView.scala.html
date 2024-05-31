@@ -46,12 +46,12 @@
                 heading = messages("authorisations.authorisationReferenceNumber.heading", messages(authType.forDisplay)),
                 caption = Some(messages("authorisations.caption")),
                 additionalHtml = Some(
-                                   HtmlFormat.fill(
-                                     Seq(
-                                       if (authType.isACR) Some(messages("authorisations.authorisationReferenceNumber.paragraph.ACR").toParagraph) else None,
-                                       if (isApprovedOperator) Some(messages("authorisations.authorisationReferenceNumber.paragraph.reducedDataSet").toParagraph) else None
-                                     ).flatten
-                                   )
+                    HtmlFormat.fill(
+                        Seq(
+                            if (authType.isACR) Some(messages("authorisations.authorisationReferenceNumber.paragraph.ACR").toParagraph) else None,
+                            if (isApprovedOperator) Some(messages("authorisations.authorisationReferenceNumber.paragraph.reducedDataSet").toParagraph) else None
+                        ).flatten
+                    )
                 )
             ),
             hint = Some(messages("authorisations.authorisationReferenceNumber.hint")),
