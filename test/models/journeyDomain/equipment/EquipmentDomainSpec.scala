@@ -22,6 +22,7 @@ import models.journeyDomain.equipment.seal.{SealDomain, SealsDomain}
 import models.reference.authorisations.AuthorisationType
 import models.{Index, OptionalBoolean, ProcedureType}
 import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
+import pages.equipment.AddTransportEquipmentYesNoPage
 import pages.equipment.index._
 import pages.equipment.index.seals.IdentificationNumberPage
 import pages.external.ProcedureTypePage
@@ -93,20 +94,49 @@ class EquipmentDomainSpec extends SpecBase with Generators {
             EquipmentSection(equipmentIndex)
           )
         }
+
+        "when container indicator is set to no" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ContainerIndicatorPage, OptionalBoolean.no)
+            .setValue(AddTransportEquipmentYesNoPage, true)
+            .setValue(IdentificationNumberPage(equipmentIndex, sealIndex), sealId)
+
+          val expectedResult = EquipmentDomain(
+            containerId = None,
+            seals = Some(
+              SealsDomain(
+                Seq(
+                  SealDomain(sealId)(equipmentIndex, sealIndex)
+                )
+              )(equipmentIndex)
+            )
+          )(equipmentIndex)
+
+          val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
+
+          result.value.value mustBe expectedResult
+          result.value.pages mustBe Seq(
+            AddTransportEquipmentYesNoPage,
+            IdentificationNumberPage(equipmentIndex, sealIndex),
+            SealsSection(equipmentIndex),
+            EquipmentSection(equipmentIndex)
+          )
+        }
       }
 
       "cannot be parsed from user answers" - {
         "when adding transport equipment" - {
-          "and normal procedure type" in {
+          "and container indicator is set to no" in {
             val userAnswers = emptyUserAnswers
-              .setValue(ProcedureTypePage, ProcedureType.Normal)
               .setValue(ContainerIndicatorPage, OptionalBoolean.no)
+              .setValue(AddTransportEquipmentYesNoPage, true)
 
             val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe AddSealYesNoPage(equipmentIndex)
+            result.left.value.page mustBe IdentificationNumberPage(equipmentIndex, sealIndex)
             result.left.value.pages mustBe Seq(
-              AddSealYesNoPage(equipmentIndex)
+              AddTransportEquipmentYesNoPage,
+              IdentificationNumberPage(equipmentIndex, sealIndex)
             )
           }
         }
@@ -241,6 +271,47 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
     "sealsReads" - {
       "can be read from user answers" - {
+        "when container indicator is 0" - {
+          "and add transport equipment is false" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(ContainerIndicatorPage, OptionalBoolean.no)
+              .setValue(AddTransportEquipmentYesNoPage, false)
+
+            val expectedResult = None
+
+            val result = EquipmentDomain.sealsReads(equipmentIndex).apply(Nil).run(userAnswers)
+
+            result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              AddTransportEquipmentYesNoPage
+            )
+          }
+
+          "and add transport equipment is true" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(ContainerIndicatorPage, OptionalBoolean.no)
+              .setValue(AddTransportEquipmentYesNoPage, true)
+              .setValue(IdentificationNumberPage(equipmentIndex, sealIndex), sealId)
+
+            val expectedResult = Some(
+              SealsDomain(
+                Seq(
+                  SealDomain(sealId)(equipmentIndex, sealIndex)
+                )
+              )(equipmentIndex)
+            )
+
+            val result = EquipmentDomain.sealsReads(equipmentIndex).apply(Nil).run(userAnswers)
+
+            result.value.value mustBe expectedResult
+            result.value.pages mustBe Seq(
+              AddTransportEquipmentYesNoPage,
+              IdentificationNumberPage(equipmentIndex, sealIndex),
+              SealsSection(equipmentIndex)
+            )
+          }
+        }
+
         "when add seals yes/no is no" in {
           val userAnswers = emptyUserAnswers
             .setValue(ProcedureTypePage, ProcedureType.Normal)
@@ -282,6 +353,22 @@ class EquipmentDomainSpec extends SpecBase with Generators {
       }
 
       "cannot be read from user answers" - {
+        "when container indicator is 0 and add transport equipment is true" - {
+          "and seal identification number unanswered" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(ContainerIndicatorPage, OptionalBoolean.no)
+              .setValue(AddTransportEquipmentYesNoPage, true)
+
+            val result = EquipmentDomain.sealsReads(equipmentIndex).apply(Nil).run(userAnswers)
+
+            result.left.value.page mustBe IdentificationNumberPage(equipmentIndex, Index(0))
+            result.left.value.pages mustBe Seq(
+              AddTransportEquipmentYesNoPage,
+              IdentificationNumberPage(equipmentIndex, sealIndex)
+            )
+          }
+        }
+
         "when simplified procedure type and any authorisation has SSE type" - {
           "and seal identification number unanswered" in {
             val userAnswers = emptyUserAnswers
