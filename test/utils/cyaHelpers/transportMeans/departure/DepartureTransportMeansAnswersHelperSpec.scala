@@ -70,7 +70,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("if you want to add the type of identification for this vehicle".toText),
+                  key = Key("Do you want to add the type of identification for this vehicle?".toText),
                   value = Value("Yes".toText),
                   actions = Some(
                     Actions(
