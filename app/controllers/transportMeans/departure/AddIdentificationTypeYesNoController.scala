@@ -40,7 +40,6 @@ class AddIdentificationTypeYesNoController @Inject() (
   navigatorProvider: TransportMeansNavigatorProvider,
   actions: Actions,
   viewModel: AddIdentificationTypeViewModelProvider,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddIdentificationTypeYesNoView

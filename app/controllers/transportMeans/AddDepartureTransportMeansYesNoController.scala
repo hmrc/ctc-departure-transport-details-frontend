@@ -37,7 +37,6 @@ class AddDepartureTransportMeansYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
-  getMandatoryPage: SpecificDataRequiredActionProvider,
   viewModel: AddDepartureTransportMeansYesNoViewModelProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
