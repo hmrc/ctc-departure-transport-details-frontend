@@ -116,7 +116,6 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
           result.value.value mustBe expectedResult
           result.value.pages mustBe Seq(
-            AddTransportEquipmentYesNoPage,
             IdentificationNumberPage(equipmentIndex, sealIndex),
             SealsSection(equipmentIndex),
             EquipmentSection(equipmentIndex)
@@ -135,7 +134,6 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
             result.left.value.page mustBe IdentificationNumberPage(equipmentIndex, sealIndex)
             result.left.value.pages mustBe Seq(
-              AddTransportEquipmentYesNoPage,
               IdentificationNumberPage(equipmentIndex, sealIndex)
             )
           }
@@ -272,21 +270,6 @@ class EquipmentDomainSpec extends SpecBase with Generators {
     "sealsReads" - {
       "can be read from user answers" - {
         "when container indicator is 0" - {
-          "and add transport equipment is false" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(ContainerIndicatorPage, OptionalBoolean.no)
-              .setValue(AddTransportEquipmentYesNoPage, false)
-
-            val expectedResult = None
-
-            val result = EquipmentDomain.sealsReads(equipmentIndex).apply(Nil).run(userAnswers)
-
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
-              AddTransportEquipmentYesNoPage
-            )
-          }
-
           "and add transport equipment is true" in {
             val userAnswers = emptyUserAnswers
               .setValue(ContainerIndicatorPage, OptionalBoolean.no)
@@ -305,7 +288,6 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
             result.value.value mustBe expectedResult
             result.value.pages mustBe Seq(
-              AddTransportEquipmentYesNoPage,
               IdentificationNumberPage(equipmentIndex, sealIndex),
               SealsSection(equipmentIndex)
             )
@@ -363,7 +345,6 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
             result.left.value.page mustBe IdentificationNumberPage(equipmentIndex, Index(0))
             result.left.value.pages mustBe Seq(
-              AddTransportEquipmentYesNoPage,
               IdentificationNumberPage(equipmentIndex, sealIndex)
             )
           }

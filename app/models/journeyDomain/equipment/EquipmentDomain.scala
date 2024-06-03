@@ -80,10 +80,7 @@ object EquipmentDomain {
   def sealsReads(equipmentIndex: Index): Read[Option[SealsDomain]] =
     ContainerIndicatorPage.optionalReader.to {
       case Some(OptionalBoolean.no) =>
-        AddTransportEquipmentYesNoPage
-          .filterOptionalDependent(identity) {
-            SealsDomain.userAnswersReader(equipmentIndex)
-          }
+        SealsDomain.userAnswersReader(equipmentIndex).toOption
       case _ =>
         (
           ProcedureTypePage.reader,
