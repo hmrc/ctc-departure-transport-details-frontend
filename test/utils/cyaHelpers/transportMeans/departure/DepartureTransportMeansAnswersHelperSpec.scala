@@ -55,18 +55,6 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
 
       "must return Some(Row)" - {
 
-        def key(addInlandModeYesNo: Boolean) = if (addInlandModeYesNo) {
-          "Do you want to add the type of identification for this vehicle?".toText
-        } else {
-          "Do you want to add the type of identification for the departure means of transport?".toText
-        }
-
-        def visuallyHiddenText(addInlandModeYesNo: Boolean) = if (addInlandModeYesNo) {
-          "if you want to add the type of identification for this vehicle"
-        } else {
-          "if you want to add the type of identification for the departure means of transport"
-        }
-
         "when AddIdentificationTypeYesNoPage defined and AddInlandModeYesNo is true" in {
 
           val addInlandModeYesNo = true
@@ -82,7 +70,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key(key(addInlandModeYesNo)),
+                  key = Key("if you want to add the type of identification for this vehicle".toText),
                   value = Value("Yes".toText),
                   actions = Some(
                     Actions(
@@ -90,7 +78,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                         ActionItem(
                           content = "Change".toText,
                           href = routes.AddIdentificationTypeYesNoController.onPageLoad(answers.lrn, mode, departureIndex).url,
-                          visuallyHiddenText = Some(visuallyHiddenText(addInlandModeYesNo)),
+                          visuallyHiddenText = Some("if you want to add the type of identification for this vehicle"),
                           attributes = Map("id" -> "change-transport-means-departure-add-identification-type")
                         )
                       )
@@ -116,7 +104,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key(key(addInlandModeYesNo)),
+                  key = Key("Do you want to add the type of identification for the departure means of transport?".toText),
                   value = Value("Yes".toText),
                   actions = Some(
                     Actions(
@@ -124,7 +112,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                         ActionItem(
                           content = "Change".toText,
                           href = routes.AddIdentificationTypeYesNoController.onPageLoad(answers.lrn, mode, departureIndex).url,
-                          visuallyHiddenText = Some(visuallyHiddenText(addInlandModeYesNo)),
+                          visuallyHiddenText = Some("if you want to add the type of identification for the departure means of transport"),
                           attributes = Map("id" -> "change-transport-means-departure-add-identification-type")
                         )
                       )
