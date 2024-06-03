@@ -17,8 +17,8 @@
 package models.journeyDomain
 
 import config.Constants.DeclarationType._
-import models.OptionalBoolean
-import models.journeyDomain._
+import config.PhaseConfig
+import models.{OptionalBoolean, Phase}
 import models.reference.Country
 import pages.external.DeclarationTypePage
 import pages.preRequisites._
@@ -32,18 +32,23 @@ case class PreRequisitesDomain(
 
 object PreRequisitesDomain {
 
-  implicit val countryOfDispatchReader: Read[Option[Country]] =
-    DeclarationTypePage.reader.to {
-      case TIR =>
-        SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
-      case _ =>
-        UserAnswersReader.none
+  implicit def countryOfDispatchReader(implicit phaseConfig: PhaseConfig): Read[Option[Country]] =
+    phaseConfig.phase match {
+      case Phase.Transition =>
+        DeclarationTypePage.reader.to {
+          case TIR =>
+            SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
+          case _ =>
+            UserAnswersReader.none
+        }
+      case Phase.PostTransition => SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
+
     }
 
-  implicit val userAnswersReader: Read[PreRequisitesDomain] =
+  implicit def userAnswersReader(phaseConfig: PhaseConfig): Read[PreRequisitesDomain] =
     (
       SameUcrYesNoPage.filterOptionalDependent(identity)(UniqueConsignmentReferencePage.reader),
-      countryOfDispatchReader,
+      countryOfDispatchReader(phaseConfig),
       TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader),
       ContainerIndicatorPage.reader
     ).map(PreRequisitesDomain.apply)
