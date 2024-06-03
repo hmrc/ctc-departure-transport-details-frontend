@@ -78,7 +78,6 @@ object TransportMeansAnswersViewModel {
       }
 
       new TransportMeansAnswersViewModel(Seq(inlandModeSection, departureMeansSection, borderModeSection, borderMeansSection))
-
     }
   }
 }

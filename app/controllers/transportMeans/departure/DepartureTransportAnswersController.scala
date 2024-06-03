@@ -18,8 +18,9 @@ package controllers.transportMeans.departure
 
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.Actions
-import models.{Index, LocalReferenceNumber}
-import navigation.TransportNavigatorProvider
+import models.{Index, LocalReferenceNumber, Mode}
+import navigation.TransportMeansDepartureListNavigatorProvider
+import pages.sections.transportMeans.DepartureSection
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -33,22 +34,22 @@ class DepartureTransportAnswersController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: DepartureTransportAnswersView,
-  navigatorProvider: TransportNavigatorProvider,
+  navigatorProvider: TransportMeansDepartureListNavigatorProvider,
   viewModelProvider: DepartureTransportAnswersViewModelProvider,
   config: FrontendAppConfig
 )(implicit phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
       val sections = viewModelProvider(request.userAnswers, index).sections
-      Ok(view(lrn, index, sections))
+      Ok(view(lrn, mode, index, sections))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, index: Index): Action[AnyContent] = actions.requireData(lrn) {
-//    implicit request =>
-    Redirect(config.sessionExpiredUrl(lrn)) //TODO change to redirect correctly
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn) {
+    implicit request =>
+      Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(DepartureSection(index))))
   }
 
 }

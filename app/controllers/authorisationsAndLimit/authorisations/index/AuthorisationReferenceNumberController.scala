@@ -71,7 +71,7 @@ class AuthorisationReferenceNumberController @Inject() (
               case Some(value) => form.fill(value)
             }
 
-            Ok(view(preparedForm, lrn, request.arg.forDisplay, mode, authorisationIndex, approvedOperator))
+            Ok(view(preparedForm, lrn, request.arg, mode, authorisationIndex, approvedOperator))
           case _ =>
             logger.error("Approved operator value could not be determined")
             Redirect(config.technicalDifficultiesUrl)
@@ -89,7 +89,7 @@ class AuthorisationReferenceNumberController @Inject() (
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, request.arg.forDisplay, mode, authorisationIndex, approvedOperator))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, request.arg, mode, authorisationIndex, approvedOperator))),
                 value => {
                   implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, authorisationIndex)
                   AuthorisationReferenceNumberPage(authorisationIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()

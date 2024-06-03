@@ -16,21 +16,28 @@
 
 package views.transportMeans.departure
 
+import config.Constants.ModeOfTransport.{Air, Road}
 import forms.EnumerableFormProvider
-import models.NormalMode
+import models.reference.InlandMode
 import models.reference.transportMeans.departure.Identification
+import models.{Index, NormalMode}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import viewModels.transportMeans.departure.IdentificationViewModel
 import views.behaviours.EnumerableViewBehaviours
 import views.html.transportMeans.departure.IdentificationView
 
-class IdentificationViewSpec extends EnumerableViewBehaviours[Identification] {
+// when inland mode is 3(road) and there is one departure means of transport:
+class IdentificationViewSingularSpec extends EnumerableViewBehaviours[Identification] {
 
   override def form: Form[Identification] = new EnumerableFormProvider()(prefix, values)
+  private val identificationViewModel     = new IdentificationViewModel(Some(Identification(Road, "test")), departureIndex, Some(InlandMode(Road, "desc")))
 
   override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
-    injector.instanceOf[IdentificationView].apply(form, lrn, values, NormalMode, departureIndex)(fakeRequest, messages)
+    injector
+      .instanceOf[IdentificationView]
+      .apply(form, lrn, values, NormalMode, departureIndex, identificationViewModel)(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.departure.identification"
 
@@ -38,8 +45,77 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[Identification] {
     values.toRadioItems(fieldId, checkedValue)
 
   override def values: Seq[Identification] = Seq(
-    Identification("11", "Name of a sea-going vessel"),
-    Identification("20", "Wagon number")
+    Identification("11", "Name of a sea-going vessel")
+  )
+
+  behave like pageWithTitle()
+
+  behave like pageWithBackLink()
+
+  behave like pageWithSectionCaption("Transport details - Departure means of transport")
+
+  behave like pageWithHeading()
+
+  behave like pageWithRadioItems()
+
+  behave like pageWithContent("p", "You must add the registration number of the road vehicle for your inland mode.")
+
+  behave like pageWithSubmitButton("Save and continue")
+}
+
+// when inland mode is 3(road) and there is more than one departure means of transport:
+class IdentificationViewMultipleSpec extends EnumerableViewBehaviours[Identification] {
+
+  override def form: Form[Identification] = new EnumerableFormProvider()(prefix, values)
+  private val identificationViewModel     = new IdentificationViewModel(Some(Identification(Road, "test")), Index(1), Some(InlandMode(Road, "desc")))
+
+  override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
+    injector
+      .instanceOf[IdentificationView]
+      .apply(form, lrn, values, NormalMode, Index(1), identificationViewModel)(fakeRequest, messages)
+
+  override val prefix: String = "transportMeans.departure.identification"
+
+  override def radioItems(fieldId: String, checkedValue: Option[Identification] = None): Seq[RadioItem] =
+    values.toRadioItems(fieldId, checkedValue)
+
+  override def values: Seq[Identification] = Seq(
+    Identification("11", "Name of a sea-going vessel")
+  )
+
+  behave like pageWithTitle()
+
+  behave like pageWithBackLink()
+
+  behave like pageWithSectionCaption("Transport details - Departure means of transport")
+
+  behave like pageWithHeading()
+
+  behave like pageWithRadioItems()
+
+  behave like pageWithContent("p", "You must add the registration number of the road trailer for your inland mode.")
+
+  behave like pageWithSubmitButton("Save and continue")
+}
+
+// when inland mode is not 3(road)
+class IdentificationViewNotRoadSpec extends EnumerableViewBehaviours[Identification] {
+
+  override def form: Form[Identification] = new EnumerableFormProvider()(prefix, values)
+  private val identificationViewModel     = new IdentificationViewModel(Some(Identification(Air, "test")), departureIndex, Some(InlandMode(Air, "desc")))
+
+  override def applyView(form: Form[Identification]): HtmlFormat.Appendable =
+    injector
+      .instanceOf[IdentificationView]
+      .apply(form, lrn, values, NormalMode, departureIndex, identificationViewModel)(fakeRequest, messages)
+
+  override val prefix: String = "transportMeans.departure.identification"
+
+  override def radioItems(fieldId: String, checkedValue: Option[Identification] = None): Seq[RadioItem] =
+    values.toRadioItems(fieldId, checkedValue)
+
+  override def values: Seq[Identification] = Seq(
+    Identification("11", "Name of a sea-going vessel")
   )
 
   behave like pageWithTitle()
@@ -53,4 +129,7 @@ class IdentificationViewSpec extends EnumerableViewBehaviours[Identification] {
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
+
+  behave like pageWithoutContent(doc, "p", identificationViewModel.paragraph1)
+  behave like pageWithoutContent(doc, "p", identificationViewModel.paragraph2)
 }

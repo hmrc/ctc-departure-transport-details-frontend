@@ -222,6 +222,14 @@ trait ModelGenerators {
       } yield InlandMode(code, description)
     }
 
+  val arbitraryNonRoadInlandMode: Arbitrary[InlandMode] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("1", "2", "4", "5", "7", "8")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
+    }
+
   val arbitraryOptionalNonMaritimeRailAirInlandMode: Arbitrary[Option[InlandMode]] =
     Arbitrary {
       for {
@@ -243,6 +251,21 @@ trait ModelGenerators {
     Arbitrary {
       for {
         code        <- Gen.oneOf("C521", "C523", "C524")
+        description <- nonEmptyString
+      } yield AuthorisationType(code, description)
+    }
+
+  lazy val arbitraryACRAuthorisationType: Arbitrary[AuthorisationType] =
+    Arbitrary {
+      for {
+        description <- nonEmptyString
+      } yield AuthorisationType("C521", description)
+    }
+
+  lazy val arbitraryNonACRAuthorisationType: Arbitrary[AuthorisationType] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("C523", "C524")
         description <- nonEmptyString
       } yield AuthorisationType(code, description)
     }

@@ -50,7 +50,7 @@ class TransportMeansCheckYourAnswersHelper(
     getAnswersAndBuildSectionRows(DeparturesSection)(departureTransportMeans)
 
   def departureTransportMeans(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[TransportMeansDepartureDomain](
-    formatAnswer = formatAsText,
+    formatAnswer = _.asString.toText,
     prefix = "transportMeans.departure",
     id = Some(s"change-departure-means-of-transport-${index.display}"),
     args = index.display
