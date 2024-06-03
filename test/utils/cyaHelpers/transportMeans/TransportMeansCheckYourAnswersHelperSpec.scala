@@ -270,46 +270,88 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
     }
 
     "addDepartureTransportMeans" - {
+
+      def prefix(addInlandModeYesNo: Boolean): String =
+        if (addInlandModeYesNo) "transportMeans.addDepartureTransportMeansYesNo.inlandModeYes"
+        else "transportMeans.addDepartureTransportMeansYesNo.inlandModeNo"
+
       "must return None" - {
         "when AddDepartureTransportMeansYesNoPage undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
               val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
-              val result = helper.addDepartureTransportMeans
+              val result = helper.addDepartureTransportMeans(prefix(false))
               result mustBe None
           }
         }
       }
 
       "must return Some(Row)" - {
-        "when AddDepartureTransportMeansYesNoPage defined" in {
-          forAll(arbitrary[Mode]) {
-            mode =>
-              val answers = emptyUserAnswers
-                .setValue(AddDepartureTransportMeansYesNoPage, true)
 
-              val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
-              val result = helper.addDepartureTransportMeans
+        "when AddInlandModeYesNo is true" - {
+          "and AddDepartureTransportMeansYesNoPage defined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val answers = emptyUserAnswers
+                  .setValue(AddInlandModeYesNoPage, true)
+                  .setValue(AddDepartureTransportMeansYesNoPage, true)
 
-              result mustBe Some(
-                SummaryListRow(
-                  key = Key("Do you want to add identification for this vehicle?".toText),
-                  value = Value("Yes".toText),
-                  actions = Some(
-                    Actions(
-                      items = List(
-                        ActionItem(
-                          content = "Change".toText,
-                          href = controllers.transportMeans.routes.AddDepartureTransportMeansYesNoController.onPageLoad(answers.lrn, mode).url,
-                          visuallyHiddenText = Some("if you want to add identification for the departure means of transport"),
-                          attributes = Map("id" -> "change-add-departure-transport-means")
+                val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
+                val result = helper.addDepartureTransportMeans(prefix(true))
+
+                result mustBe Some(
+                  SummaryListRow(
+                    key = Key("Do you want to add identification for this vehicle?".toText),
+                    value = Value("Yes".toText),
+                    actions = Some(
+                      Actions(
+                        items = List(
+                          ActionItem(
+                            content = "Change".toText,
+                            href = controllers.transportMeans.routes.AddDepartureTransportMeansYesNoController.onPageLoad(answers.lrn, mode).url,
+                            visuallyHiddenText = Some("if you want to add identification for this vehicle"),
+                            attributes = Map("id" -> "change-add-departure-transport-means")
+                          )
                         )
                       )
                     )
                   )
                 )
-              )
+            }
           }
+        }
+        "when AddInlandModeYesNo is false" - {
+          "and AddDepartureTransportMeansYesNoPage defined" in {
+            forAll(arbitrary[Mode]) {
+              mode =>
+                val answers = emptyUserAnswers
+                  .setValue(AddInlandModeYesNoPage, false)
+                  .setValue(AddDepartureTransportMeansYesNoPage, true)
+
+                val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
+                val result = helper.addDepartureTransportMeans(prefix(false))
+
+                result mustBe Some(
+                  SummaryListRow(
+                    key = Key("Do you want to add identification for the departure means of transport?".toText),
+                    value = Value("Yes".toText),
+                    actions = Some(
+                      Actions(
+                        items = List(
+                          ActionItem(
+                            content = "Change".toText,
+                            href = controllers.transportMeans.routes.AddDepartureTransportMeansYesNoController.onPageLoad(answers.lrn, mode).url,
+                            visuallyHiddenText = Some("if you want to add identification for the departure means of transport"),
+                            attributes = Map("id" -> "change-add-departure-transport-means")
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
+            }
+          }
+
         }
       }
     }

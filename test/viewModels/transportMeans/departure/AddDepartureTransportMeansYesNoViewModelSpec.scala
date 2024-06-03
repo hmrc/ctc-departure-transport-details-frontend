@@ -20,21 +20,21 @@ import base.SpecBase
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.AddInlandModeYesNoPage
-import viewModels.transportMeans.departure.AddIdentificationTypeViewModel.AddIdentificationTypeViewModelProvider
+import viewModels.transportMeans.departure.AddDepartureTransportMeansYesNoViewModel.AddDepartureTransportMeansYesNoViewModelProvider
 
-class AddIdentificationTypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class AddDepartureTransportMeansYesNoViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   "must create view model" - {
     "when addInlandModeYesNo is true" in {
       val userAnswers = emptyUserAnswers
         .setValue(AddInlandModeYesNoPage, true)
 
-      val viewModelProvider = new AddIdentificationTypeViewModelProvider()
+      val viewModelProvider = new AddDepartureTransportMeansYesNoViewModelProvider()
       val result            = viewModelProvider.apply(userAnswers)
 
-      result.prefix mustBe "transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes"
-      result.title mustBe "Do you want to add the type of identification for this vehicle?"
-      result.heading mustBe "Do you want to add the type of identification for this vehicle?"
+      result.prefix mustBe "transportMeans.addDepartureTransportMeansYesNo.inlandModeYes"
+      result.title mustBe "Do you want to add identification for this vehicle?"
+      result.heading mustBe "Do you want to add identification for this vehicle?"
       result.paragraph mustBe None
     }
 
@@ -42,12 +42,12 @@ class AddIdentificationTypeViewModelSpec extends SpecBase with ScalaCheckPropert
       val userAnswers = emptyUserAnswers
         .setValue(AddInlandModeYesNoPage, false)
 
-      val viewModelProvider = new AddIdentificationTypeViewModelProvider()
+      val viewModelProvider = new AddDepartureTransportMeansYesNoViewModelProvider()
       val result            = viewModelProvider.apply(userAnswers)
 
-      result.prefix mustBe "transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo"
-      result.title mustBe "Do you want to add the type of identification for the departure means of transport?"
-      result.heading mustBe "Do you want to add the type of identification for the departure means of transport?"
+      result.prefix mustBe "transportMeans.addDepartureTransportMeansYesNo.inlandModeNo"
+      result.title mustBe "Do you want to add identification for the departure means of transport?"
+      result.heading mustBe "Do you want to add identification for the departure means of transport?"
       result.paragraph.value mustBe "This is the means of transport used from the UK office of departure to a UK port or airport."
     }
 

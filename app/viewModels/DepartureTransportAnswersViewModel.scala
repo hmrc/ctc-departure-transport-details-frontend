@@ -18,9 +18,9 @@ package viewModels
 
 import config.{FrontendAppConfig, PhaseConfig}
 import models.{CheckMode, Index, UserAnswers}
-import pages.transportMeans.AddInlandModeYesNoPage
 import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.departure.DepartureTransportMeansAnswersHelper
+import viewModels.transportMeans.departure.AddDepartureTransportMeansYesNoViewModel.AddDepartureTransportMeansYesNoViewModelProvider
 
 import javax.inject.Inject
 
@@ -38,14 +38,9 @@ object DepartureTransportAnswersViewModel {
 
       val helper = new DepartureTransportMeansAnswersHelper(userAnswers, mode, index)
 
-      val departureAddTypeYesNoRow = userAnswers.get(AddInlandModeYesNoPage) match {
-        case Some(value) =>
-          val prefix =
-            if (value) "transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes"
-            else "transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo"
-          helper.departureAddTypeYesNo(prefix)
-
-        case _ => None
+      val departureAddTypeYesNoRow = {
+        val prefix = new AddDepartureTransportMeansYesNoViewModelProvider().apply(userAnswers).prefix
+        helper.departureAddTypeYesNo(prefix)
       }
 
       val preRequisitesSection = Section(

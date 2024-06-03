@@ -95,10 +95,10 @@ class TransportMeansCheckYourAnswersHelper(
     id = Some("change-transport-means-inland-mode")
   )
 
-  def addDepartureTransportMeans: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def addDepartureTransportMeans(prefix: String): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddDepartureTransportMeansYesNoPage,
     formatAnswer = formatAsYesOrNo,
-    prefix = "transportMeans.addDepartureTransportMeansYesNo",
+    prefix = prefix,
     id = Some("change-add-departure-transport-means")
   )
 

@@ -26,7 +26,7 @@ import views.html.transportMeans.departure.AddIdentificationTypeYesNoView
 
 class AddIdentificationTypeYesNoViewSpec extends YesNoViewBehaviours {
 
-  private val addInlandModeYesNo = false
+  private val addInlandModeYesNo = arbitrary[Boolean].sample.value
 
   private def viewModel(addInlandModeYesNo: Boolean) = AddIdentificationTypeViewModel(addInlandModeYesNo)
 

@@ -22,12 +22,12 @@ import play.api.i18n.Messages
 
 import javax.inject.Inject
 
-case class AddIdentificationTypeViewModel(addInlandModeYesNo: Boolean) {
+case class AddDepartureTransportMeansYesNoViewModel(addInlandModeYesNo: Boolean) {
 
   val prefix: String = if (addInlandModeYesNo) {
-    "transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes"
+    "transportMeans.addDepartureTransportMeansYesNo.inlandModeYes"
   } else {
-    "transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo"
+    "transportMeans.addDepartureTransportMeansYesNo.inlandModeNo"
   }
 
   def title(implicit messages: Messages): String   = messages(s"$prefix.title")
@@ -40,13 +40,13 @@ case class AddIdentificationTypeViewModel(addInlandModeYesNo: Boolean) {
   }
 }
 
-object AddIdentificationTypeViewModel {
+object AddDepartureTransportMeansYesNoViewModel {
 
-  class AddIdentificationTypeViewModelProvider @Inject() () {
+  class AddDepartureTransportMeansYesNoViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers): AddIdentificationTypeViewModel = {
+    def apply(userAnswers: UserAnswers): AddDepartureTransportMeansYesNoViewModel = {
       val addInlandModeYesNo = userAnswers.get(AddInlandModeYesNoPage).getOrElse(false)
-      new AddIdentificationTypeViewModel(addInlandModeYesNo)
+      new AddDepartureTransportMeansYesNoViewModel(addInlandModeYesNo)
     }
   }
 }
