@@ -20,6 +20,7 @@ import cats.Order
 import cats.data.NonEmptySet
 import config.FrontendAppConfig
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
+import models.reference.additionalInformation.AdditionalInformationCode
 import models.reference.additionalReference.AdditionalReferenceType
 import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
@@ -121,6 +122,15 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
       .get(url)
       .setHeader(version2Header: _*)
       .execute[NonEmptySet[AdditionalReferenceType]]
+  }
+
+  def getAdditionalInformationCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[AdditionalInformationCode]] = {
+    val url = url"${config.referenceDataUrl}/lists/AdditionalInformation"
+
+    http
+      .get(url)
+      .setHeader(version2Header: _*)
+      .execute[NonEmptySet[AdditionalInformationCode]]
   }
 
   private def version2Header: Seq[(String, String)] = Seq(

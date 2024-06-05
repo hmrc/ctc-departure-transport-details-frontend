@@ -25,7 +25,6 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.additionalReference.AddAdditionalReferenceYesNoPage
 import pages.additionalReference.index.{AddAdditionalReferenceNumberYesNoPage, AdditionalReferenceNumberPage, AdditionalReferenceTypePage}
-import play.api.mvc.Call
 import viewModels.ListItem
 
 class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -63,14 +62,16 @@ class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPrope
                 ListItem(
                   name = s"${refType.toString} - $additionalReferenceNumber",
                   changeUrl = controllers.additionalReference.index.routes.AdditionalReferenceTypeController.onPageLoad(userAnswers.lrn, mode, Index(0)).url,
-                  removeUrl = Some(Call("GET", "#").url) // TODO update when Remove Controller added
+                  removeUrl =
+                    Some(controllers.additionalReference.index.routes.RemoveAdditionalReferenceYesNoController.onPageLoad(userAnswers.lrn, mode, Index(0)).url)
                 )
               ),
               Right(
                 ListItem(
                   name = refType.toString,
                   changeUrl = controllers.additionalReference.index.routes.AdditionalReferenceTypeController.onPageLoad(userAnswers.lrn, mode, Index(1)).url,
-                  removeUrl = Some(Call("GET", "#").url) // TODO update when Remove Controller added
+                  removeUrl =
+                    Some(controllers.additionalReference.index.routes.RemoveAdditionalReferenceYesNoController.onPageLoad(userAnswers.lrn, mode, Index(1)).url)
                 )
               )
             )

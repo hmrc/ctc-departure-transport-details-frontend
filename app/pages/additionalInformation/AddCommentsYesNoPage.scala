@@ -16,7 +16,7 @@
 
 package pages.additionalInformation
 
-import controllers.additionalInformation.routes
+import controllers.additionalInformation.index.routes
 import models.{Index, Mode, UserAnswers}
 import pages.QuestionPage
 import pages.sections.additionalInformation.AdditionalInformationSection

@@ -23,12 +23,13 @@ import play.api.mvc.Call
 import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import viewModels.additionalInformation.AddAnotherAdditionalInformationViewModel
 import viewModels.additionalReference.AddAnotherAdditionalReferenceViewModel
 import viewModels.authorisations.AddAnotherAuthorisationViewModel
 import viewModels.equipment.{AddAnotherEquipmentViewModel, AddAnotherSealViewModel}
 import viewModels.supplyChainActors.AddAnotherSupplyChainActorViewModel
 import viewModels.transportMeans.active.AddAnotherBorderTransportViewModel
-import viewModels.transportMeans.departure.MeansIdentificationNumberViewModel
+import viewModels.transportMeans.departure.{AddAnotherDepartureTransportMeansViewModel, MeansIdentificationNumberViewModel}
 import viewModels.{Link, ListItem, Section}
 
 trait ViewModelGenerators {
@@ -211,6 +212,21 @@ trait ViewModelGenerators {
     } yield AddAnotherBorderTransportViewModel(listItems, onSubmitCall)
   }
 
+  implicit lazy val arbitraryAddAnotherDepartureTransportMeansViewModel: Arbitrary[AddAnotherDepartureTransportMeansViewModel] = Arbitrary {
+    for {
+      listItems        <- arbitrary[Seq[ListItem]]
+      isRoadInlandMode <- arbitrary[Boolean]
+      onSubmitCall     <- arbitrary[Call]
+    } yield AddAnotherDepartureTransportMeansViewModel(listItems, isRoadInlandMode, onSubmitCall)
+  }
+
+  lazy val arbitraryAddAnotherDepartureTransportMeansViewModelNonRoadInlandMode: Arbitrary[AddAnotherDepartureTransportMeansViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherDepartureTransportMeansViewModel(listItems, isRoadInlandMode = false, onSubmitCall)
+  }
+
   implicit lazy val arbitraryMeansIdentificationNumberViewModel: Arbitrary[MeansIdentificationNumberViewModel] = Arbitrary {
     for {
       identification <- Gen.option(arbitrary[models.reference.transportMeans.departure.Identification])
@@ -223,4 +239,18 @@ trait ViewModelGenerators {
       onSubmitCall <- arbitrary[Call]
     } yield AddAnotherAdditionalReferenceViewModel(listItems, onSubmitCall)
   }
+
+  implicit lazy val arbitraryAddAnotherAdditionalInformationViewModel: Arbitrary[AddAnotherAdditionalInformationViewModel] = Arbitrary {
+    for {
+      listItems    <- arbitrary[Seq[ListItem]]
+      onSubmitCall <- arbitrary[Call]
+    } yield AddAnotherAdditionalInformationViewModel(listItems, onSubmitCall)
+  }
+
+  implicit lazy val arbitraryListItems: Arbitrary[Seq[ListItem]] =
+    Arbitrary {
+      for {
+        listItems <- nonEmptyListOf[ListItem](10)
+      } yield listItems.toList
+    }
 }

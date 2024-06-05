@@ -20,6 +20,8 @@
 @import views.html.components.{Button, ErrorSummary, InputRadio}
 @import viewModels.components.InputRadioViewModel
 @import viewModels.components.InputRadioViewModel._
+@import viewModels.transportMeans.departure.IdentificationViewModel
+@import models.reference.InlandMode
 
 @this(
     mainTemplate: MainTemplate,
@@ -29,10 +31,10 @@
     button: Button
 )
 
-@(form: Form[Identification], lrn: LocalReferenceNumber, identifiers: Seq[Identification], mode: Mode, departureIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Identification], lrn: LocalReferenceNumber, identifiers: Seq[Identification], mode: Mode, departureIndex: Index, identificationViewModel: IdentificationViewModel)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("transportMeans.departure.identification.title"),
+    title = identificationViewModel.title,
     showBackLink = true,
     lrn = lrn
 ) {
@@ -43,9 +45,10 @@
 
         @inputRadio(
             field = form("value"),
-            radioType = Radio(
+            radioType = InputRadioViewModel(
+                heading = identificationViewModel.heading,
                 caption = Some(messages("departureMeansOfTransport.caption")),
-                heading = messages("transportMeans.departure.identification.heading")
+                additionalHtml = identificationViewModel.para.map(_.toParagraph)
             ),
             radioItems = fieldId => identifiers.toRadioItems(fieldId, form.value)
         )

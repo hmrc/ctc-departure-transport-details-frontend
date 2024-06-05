@@ -14,46 +14,47 @@
  * limitations under the License.
  */
 
-package controllers.additionalInformation
+package controllers.additionalInformation.index
 
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.YesNoFormProvider
+import forms.AdditionalInformationFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
-import pages.additionalInformation.AddCommentsYesNoPage
+import pages.additionalInformation.index.AdditionalInformationTextPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.additionalInformation.AddCommentsYesNoView
+import views.html.additionalInformation.index.AdditionalInformationTextView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddCommentsYesNoController @Inject() (
+class AdditionalInformationTextController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
+  formProvider: AdditionalInformationFormProvider,
   actions: Actions,
-  formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AddCommentsYesNoView
+  view: AdditionalInformationTextView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("additionalInformation.addCommentsYesNo")
+  private val form: Form[String] =
+    formProvider("additionalInformation.index.additionalInformationText")
 
   def onPageLoad(lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddCommentsYesNoPage(additionalInformationIndex)) match {
+      val preparedForm = request.userAnswers.get(AdditionalInformationTextPage(additionalInformationIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, lrn, additionalInformationIndex, mode))
+      Ok(view(preparedForm, lrn, mode, additionalInformationIndex))
   }
 
   def onSubmit(lrn: LocalReferenceNumber, additionalInformationIndex: Index, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
@@ -61,10 +62,14 @@ class AddCommentsYesNoController @Inject() (
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, additionalInformationIndex, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, additionalInformationIndex))),
           value => {
             implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            AddCommentsYesNoPage(additionalInformationIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            AdditionalInformationTextPage(additionalInformationIndex)
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession()
+              .navigate()
           }
         )
   }

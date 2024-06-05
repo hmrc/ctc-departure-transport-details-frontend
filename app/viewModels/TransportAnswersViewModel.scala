@@ -104,6 +104,15 @@ object TransportAnswersViewModel {
           addAnotherLink = helper.addOrRemoveAdditionalReferences(mode)
         )
 
+      val additionalInformationSection =
+        Section(
+          sectionTitle = messages("checkYourAnswers.additionalInformation"),
+          rows = Seq(
+            helper.additionalInformationList
+          ).flatten,
+          addAnotherLink = helper.addOrRemoveAdditionalInformation(mode)
+        )
+
       val sections = preRequisitesSection.toSeq ++
         transportMeansSections ++
         supplyChainActorsSection.toSeq ++
@@ -111,7 +120,8 @@ object TransportAnswersViewModel {
         carrierDetailsSection.toSeq ++
         transportEquipmentSection.toSeq ++
         transportChargesSection.toSeq ++
-        additionalReferenceSection.toSeq
+        additionalReferenceSection.toSeq ++
+        additionalInformationSection.toSeq
 
       new TransportAnswersViewModel(sections)
     }

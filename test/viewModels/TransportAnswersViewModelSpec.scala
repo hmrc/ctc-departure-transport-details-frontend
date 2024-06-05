@@ -60,6 +60,8 @@ class TransportAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           sections(5: Int).addAnotherLink must not be defined
 
           sections(6: Int).sectionTitle.get mustBe "Additional references"
+          
+          sections(7: Int).sectionTitle.get mustBe "Additional information"
 
           verify(mockTransportMeansAnswersViewModelProvider).apply(eqTo(answers), eqTo(mode))(any(), any())
       }

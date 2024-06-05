@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.IdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
-import navigation.TransportMeansNavigatorProvider
+import navigation.TransportMeansDepartureNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -51,7 +51,7 @@ class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefau
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[TransportMeansNavigatorProvider]).toInstance(fakeTransportMeansNavigatorProvider))
+      .overrides(bind(classOf[TransportMeansDepartureNavigatorProvider]).toInstance(fakeTransportMeansDepartureNavigatorProvider))
       .overrides(bind(classOf[MeansIdentificationNumberViewModelProvider]).toInstance(mockViewModelProvider))
 
   private val viewModel = arbitrary[MeansIdentificationNumberViewModel].sample.value
