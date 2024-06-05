@@ -268,6 +268,7 @@ class TransportAnswersHelper(
       href = controllers.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode).url
     )
   }
+
   def additionalInformationList: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(AdditionalInformationListSection)(additionalInformation)
 
