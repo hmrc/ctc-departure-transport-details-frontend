@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, authType: AuthorisationType, mode: Mode, authorisationIndex: Index, isApprovedOperator: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, authType: AuthorisationType, mode: Mode, authorisationIndex: Index)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("authorisations.authorisationReferenceNumber.title", messages(authType.forDisplay)),
@@ -49,7 +49,7 @@
                     HtmlFormat.fill(
                         Seq(
                             if (authType.isACR) Some(messages("authorisations.authorisationReferenceNumber.paragraph.ACR").toParagraph) else None,
-                            if (isApprovedOperator) Some(messages("authorisations.authorisationReferenceNumber.paragraph.reducedDataSet").toParagraph) else None
+                            if (authType.isTRD) Some(messages("authorisations.authorisationReferenceNumber.paragraph.TRD").toParagraph) else None
                         ).flatten
                     )
                 )
