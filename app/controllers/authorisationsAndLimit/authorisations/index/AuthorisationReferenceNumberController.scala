@@ -16,14 +16,13 @@
 
 package controllers.authorisationsAndLimit.authorisations.index
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AuthorisationReferenceNumberFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{AuthorisationNavigatorProvider, UserAnswersNavigator}
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
-import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
@@ -33,20 +32,18 @@ import views.html.authorisationsAndLimit.authorisations.index.AuthorisationRefer
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthorisationReferenceNumberController @Inject()(
-                                                        override val messagesApi: MessagesApi,
-                                                        implicit val sessionRepository: SessionRepository,
-                                                        navigatorProvider: AuthorisationNavigatorProvider,
-                                                        formProvider: AuthorisationReferenceNumberFormProvider,
-                                                        actions: Actions,
-                                                        getMandatoryPage: SpecificDataRequiredActionProvider,
-                                                        val controllerComponents: MessagesControllerComponents,
-                                                        view: AuthorisationReferenceNumberView,
-                                                        config: FrontendAppConfig
-                                                      )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
-  extends FrontendBaseController
-    with I18nSupport
-    with Logging {
+class AuthorisationReferenceNumberController @Inject() (
+  override val messagesApi: MessagesApi,
+  implicit val sessionRepository: SessionRepository,
+  navigatorProvider: AuthorisationNavigatorProvider,
+  formProvider: AuthorisationReferenceNumberFormProvider,
+  actions: Actions,
+  getMandatoryPage: SpecificDataRequiredActionProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: AuthorisationReferenceNumberView
+)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+    extends FrontendBaseController
+    with I18nSupport {
 
   private val prefix = "authorisations.authorisationReferenceNumber"
 
@@ -57,7 +54,7 @@ class AuthorisationReferenceNumberController @Inject()(
         val form = formProvider(prefix, request.arg.forDisplay)
 
         val preparedForm = request.userAnswers.get(AuthorisationReferenceNumberPage(authorisationIndex)) match {
-          case None => form
+          case None        => form
           case Some(value) => form.fill(value)
         }
 
