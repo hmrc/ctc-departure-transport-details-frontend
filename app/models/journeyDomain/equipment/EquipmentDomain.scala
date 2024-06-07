@@ -21,6 +21,7 @@ import models.journeyDomain.JourneyDomainModel
 import models.journeyDomain.equipment.seal.SealsDomain
 import models.{Index, OptionalBoolean, ProcedureType, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
+import pages.equipment.AddTransportEquipmentYesNoPage
 import pages.equipment.index._
 import pages.external.ProcedureTypePage
 import pages.preRequisites.ContainerIndicatorPage
@@ -77,16 +78,21 @@ object EquipmentDomain {
     }
 
   def sealsReads(equipmentIndex: Index): Read[Option[SealsDomain]] =
-    (
-      ProcedureTypePage.reader,
-      AuthorisationsSection.fieldReader(AuthorisationTypePage)
-    ).to {
-      case (ProcedureType.Simplified, authorisationTypes) if authorisationTypes.exists(_.isSSE) =>
+    ContainerIndicatorPage.optionalReader.to {
+      case Some(OptionalBoolean.no) =>
         SealsDomain.userAnswersReader(equipmentIndex).toOption
       case _ =>
-        AddSealYesNoPage(equipmentIndex).filterOptionalDependent(identity) {
-          SealsDomain.userAnswersReader(equipmentIndex)
+        (
+          ProcedureTypePage.reader,
+          AuthorisationsSection.fieldReader(AuthorisationTypePage)
+        ).to {
+          case (ProcedureType.Simplified, authorisationTypes) if authorisationTypes.exists(_.isSSE) =>
+            SealsDomain.userAnswersReader(equipmentIndex).toOption
+          case _ =>
+            AddSealYesNoPage(equipmentIndex).filterOptionalDependent(identity) {
+              SealsDomain.userAnswersReader(equipmentIndex)
+            }
         }
-    }
 
+    }
 }
