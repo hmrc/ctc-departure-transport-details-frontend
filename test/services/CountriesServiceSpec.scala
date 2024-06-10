@@ -65,8 +65,8 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
     "isInCL009" - {
       "must return true" - {
         "when connector call returns the country" in {
-          forAll(nonEmptyString, arbitrary[Country]) {
-            (countryId, country) =>
+          forAll(arbitrary[Country]) {
+            country =>
               beforeEach()
 
               when(mockRefDataConnector.getCountryCodesCommonTransitCountry(any())(any(), any()))
@@ -76,7 +76,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
 
               result mustBe true
 
-              verify(mockRefDataConnector).getCountryCodesCommonTransitCountry(eqTo(countryId))(any(), any())
+              verify(mockRefDataConnector).getCountryCodesCommonTransitCountry(eqTo(country.code.code))(any(), any())
           }
         }
       }
