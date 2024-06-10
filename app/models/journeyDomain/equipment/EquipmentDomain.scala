@@ -16,12 +16,10 @@
 
 package models.journeyDomain.equipment
 
-import models.journeyDomain._
-import models.journeyDomain.JourneyDomainModel
+import models.journeyDomain.{JourneyDomainModel, _}
 import models.journeyDomain.equipment.seal.SealsDomain
 import models.{Index, OptionalBoolean, ProcedureType, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
-import pages.equipment.AddTransportEquipmentYesNoPage
 import pages.equipment.index._
 import pages.external.ProcedureTypePage
 import pages.preRequisites.ContainerIndicatorPage

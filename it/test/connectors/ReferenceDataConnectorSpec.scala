@@ -21,8 +21,8 @@ import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, 
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import itbase.{ItSpecBase, WireMockServerHandler}
 import models.reference._
-import models.reference.additionalReference.AdditionalReferenceType
 import models.reference.additionalInformation.AdditionalInformationCode
+import models.reference.additionalReference.AdditionalReferenceType
 import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
 import models.reference.supplyChainActors.SupplyChainActorType
@@ -56,43 +56,43 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
   "Reference Data" - {
 
-    def countriesResponseJson(listName: String): String =
-      s"""
-         |{
-         |  "_links": {
-         |    "self": {
-         |      "href": "/customs-reference-data/lists/$listName"
-         |    }
-         |  },
-         |  "meta": {
-         |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
-         |    "snapshotDate": "2023-01-01"
-         |  },
-         |  "id": "$listName",
-         |  "data": [
-         |    {
-         |      "activeFrom": "2023-01-23",
-         |      "code": "GB",
-         |      "state": "valid",
-         |      "description": "United Kingdom"
-         |    },
-         |    {
-         |      "activeFrom": "2023-01-23",
-         |      "code": "AD",
-         |      "state": "valid",
-         |      "description": "Andorra"
-         |    }
-         |  ]
-         |}
-         |""".stripMargin
-
     "getCountries" - {
       def url: String = s"/$baseUrl/lists/CountryCodesFullList"
 
       "must return Seq of Country when successful" in {
+        val countriesResponseJson: String =
+          s"""
+             |{
+             |  "_links": {
+             |    "self": {
+             |      "href": "/customs-reference-data/lists/CountryCodesFullList"
+             |    }
+             |  },
+             |  "meta": {
+             |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+             |    "snapshotDate": "2023-01-01"
+             |  },
+             |  "id": "CountryCodesFullList",
+             |  "data": [
+             |    {
+             |      "activeFrom": "2023-01-23",
+             |      "code": "GB",
+             |      "state": "valid",
+             |      "description": "United Kingdom"
+             |    },
+             |    {
+             |      "activeFrom": "2023-01-23",
+             |      "code": "AD",
+             |      "state": "valid",
+             |      "description": "Andorra"
+             |    }
+             |  ]
+             |}
+             |""".stripMargin
+
         server.stubFor(
           get(urlEqualTo(url))
-            .willReturn(okJson(countriesResponseJson("CountryCodesFullList")))
+            .willReturn(okJson(countriesResponseJson))
         )
 
         val expectedResult = NonEmptySet.of(
@@ -164,29 +164,54 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       }
     }
 
-    "getCountryCodesCommonTransit" - {
-      val url: String = s"/$baseUrl/lists/CountryCodesCommonTransit"
+    "getCountryCodesCommonTransitCountry" - {
+      def url(countryId: String): String = s"/$baseUrl/lists/CountryCodesCommonTransit?data.code=$countryId"
 
       "must return Seq of Country when successful" in {
+        val countryResponseJson: String =
+          s"""
+             |{
+             |  "_links": {
+             |    "self": {
+             |      "href": "/customs-reference-data/lists/CountryCodesCommonTransit"
+             |    }
+             |  },
+             |  "meta": {
+             |    "version": "fb16648c-ea06-431e-bbf6-483dc9ebed6e",
+             |    "snapshotDate": "2023-01-01"
+             |  },
+             |  "id": "CountryCodesCommonTransit",
+             |  "data": [
+             |    {
+             |      "activeFrom": "2023-01-23",
+             |      "code": "GB",
+             |      "state": "valid",
+             |      "description": "United Kingdom"
+             |    }
+             |  ]
+             |}
+             |""".stripMargin
+
+        val countryId = "GB"
+
         server.stubFor(
-          get(urlEqualTo(url))
-            .willReturn(okJson(countriesResponseJson("CountryCodesCommonTransit")))
+          get(urlEqualTo(url(countryId)))
+            .willReturn(okJson(countryResponseJson))
         )
 
-        val expectedResult = NonEmptySet.of(
-          Country(CountryCode("GB"), "United Kingdom"),
-          Country(CountryCode("AD"), "Andorra")
-        )
+        val expectedResult = Country(CountryCode(countryId), "United Kingdom")
 
-        connector.getCountryCodesCommonTransit().futureValue mustEqual expectedResult
+        connector.getCountryCodesCommonTransitCountry(countryId).futureValue mustEqual expectedResult
       }
 
       "must throw a NoReferenceDataFoundException for an empty response" in {
-        checkNoReferenceDataFoundResponse(url, connector.getCountryCodesCommonTransit())
+        val countryId = "AD"
+        checkNoReferenceDataFoundResponse(url(countryId), connector.getCountryCodesCommonTransitCountry(countryId))
       }
 
       "must return an exception when an error response is returned" in {
-        checkErrorResponse(url, connector.getCountryCodesCommonTransit())
+        val countryId = "AD"
+        checkErrorResponse(url(countryId), connector.getCountryCodesCommonTransitCountry(countryId))
       }
     }
 
