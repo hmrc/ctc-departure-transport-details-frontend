@@ -17,7 +17,7 @@
 package controllers.supplyChainActors.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.EoriTCUINNumberFormProvider
+import forms.EoriTcuinFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.supplyChainActors.SupplyChainActorType
@@ -36,7 +36,7 @@ import scala.concurrent.Future
 
 class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
-  private val formProvider                   = new EoriTCUINNumberFormProvider()
+  private val formProvider                   = new EoriTcuinFormProvider()
   private val validAnswer                    = "testString"
   private val form                           = formProvider("supplyChainActors.index.identificationNumber")
   private val mode                           = NormalMode
