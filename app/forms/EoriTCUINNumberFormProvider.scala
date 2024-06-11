@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.Constants.{maxEoriNumberLength, minLengthCarrierEori}
+import forms.Constants.maxEoriNumberLength
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex._
 import play.api.data.Form

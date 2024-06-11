@@ -17,7 +17,7 @@
 package controllers.supplyChainActors.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.{CarrierEoriNumberFormProvider, EoriTCUINNumberFormProvider}
+import forms.EoriTCUINNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import models.reference.supplyChainActors.SupplyChainActorType

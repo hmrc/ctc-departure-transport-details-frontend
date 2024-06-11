@@ -20,19 +20,19 @@ import forms.Constants._
 import forms.behaviours.{FieldBehaviours, StringFieldBehaviours}
 import models.domain.StringFieldRegex._
 import org.scalacheck.Gen
-import play.api.data.{Field, FormError}
+import play.api.data.FormError
 
 class EoriTCUINNumberFormProviderSpec extends StringFieldBehaviours with FieldBehaviours { // TODO: Merge CarrierEoriNumberFormProvider with EoriTCUINNumberFormProvider and add back minlength and regexp once CTCP-5502 is in play
 
   private val prefix = Gen.alphaNumStr.sample.value
 
-  private val requiredKey          = s"$prefix.error.required"
-  private val maxLengthKey         = s"$prefix.error.maxLength"
-  private val minLengthKey         = s"$prefix.error.minLength"
+  private val requiredKey  = s"$prefix.error.required"
+  private val maxLengthKey = s"$prefix.error.maxLength"
+  //   private val minLengthKey         = s"$prefix.error.minLength"
   private val invalidCharactersKey = s"$prefix.error.invalidCharacters"
-  private val invalidFormatKey     = s"$prefix.error.invalidFormat"
+  // private val invalidFormatKey     = s"$prefix.error.invalidFormat"
 
-  private val form = new CarrierEoriNumberFormProvider()(prefix)
+  private val form = new EoriTCUINNumberFormProvider()(prefix)
 
   ".value" - {
 
