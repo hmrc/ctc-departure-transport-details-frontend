@@ -22,7 +22,7 @@ import models.domain.StringFieldRegex._
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 
-class EoriTCUINNumberFormProviderSpec extends StringFieldBehaviours with FieldBehaviours { // TODO: Merge CarrierEoriNumberFormProvider with EoriTCUINNumberFormProvider and add back minlength and regexp once CTCP-5502 is in play
+class CarrierEoriNumberFormProviderSpec extends StringFieldBehaviours with FieldBehaviours {
 
   private val prefix = Gen.alphaNumStr.sample.value
 
@@ -64,12 +64,12 @@ class EoriTCUINNumberFormProviderSpec extends StringFieldBehaviours with FieldBe
       lengthError = FormError(fieldName, maxLengthKey, Seq(maxEoriNumberLength))
     )
 
-//    behave like fieldWithMinLength(
-//      form = form,
-//      fieldName = fieldName,
-//      minLength = minLengthCarrierEori,
-//      lengthError = FormError(fieldName, minLengthKey, Seq(minLengthCarrierEori))
-//    )
+    behave like fieldWithMinLength(
+      form = form,
+      fieldName = fieldName,
+      minLength = minLengthCarrierEori,
+      lengthError = FormError(fieldName, minLengthKey, Seq(minLengthCarrierEori))
+    )
 
     "must remove spaces on bound strings" in {
       val result = form.bind(Map(fieldName -> " GB 123 456 789 123 "))
@@ -77,11 +77,11 @@ class EoriTCUINNumberFormProviderSpec extends StringFieldBehaviours with FieldBe
       result.get mustEqual "GB123456789123"
     }
 
-//    "must not bind strings that do not match format regex" in {
-//      val expectedError = FormError("value", invalidFormatKey, Seq(eoriTCUINRegex.toString))
-//      val result: Field = form.bind(Map(fieldName -> "123456")).apply(fieldName)
-//      result.errors must contain(expectedError)
-//    }
+    "must not bind strings that do not match format regex" in {
+      val expectedError = FormError("value", invalidFormatKey, Seq(eoriTCUINRegex.toString))
+      val result: Field = form.bind(Map(fieldName -> "123456")).apply(fieldName)
+      result.errors must contain(expectedError)
+    }
 
     "must capitalise first 2 letters on bound strings" in {
       val result = form.bind(Map(fieldName -> "gb12345"))

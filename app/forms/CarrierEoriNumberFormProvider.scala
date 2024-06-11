@@ -23,7 +23,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class EoriTCUINNumberFormProvider @Inject() extends Mappings {
+class CarrierEoriNumberFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
@@ -31,9 +31,9 @@ class EoriTCUINNumberFormProvider @Inject() extends Mappings {
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxEoriNumberLength, s"$prefix.error.maxLength")
-            // minLength(minLengthCarrierEori, s"$prefix.error.minLength"), // TODO: Merge CarrierEoriNumberFormProvider with EoriTCUINNumberFormProvider and add back minlength and regexp once CTCP-5502 is in play
-            // regexp(eoriTCUINRegex, s"$prefix.error.invalidFormat")
+            maxLength(maxEoriNumberLength, s"$prefix.error.maxLength"),
+            minLength(minLengthCarrierEori, s"$prefix.error.minLength"),
+            regexp(eoriTCUINRegex, s"$prefix.error.invalidFormat")
           )
         )
     )
