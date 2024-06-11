@@ -46,6 +46,8 @@ checkYourAnswers.carrierDetails = Carrier details
 checkYourAnswers.transportEquipment = Transport equipment
 checkYourAnswers.transportEquipment.addOrRemove = Add or remove transport equipment
 checkYourAnswers.transportCharges = Transport charges
+checkYourAnswers.additionalReference = Additional references
+checkYourAnswers.additionalReference.addOrRemove = Add or remove additional reference for all items
 checkYourAnswers.additionalInformation = Additional information
 checkYourAnswers.additionalInformation.addOrRemove = Add or remove additional information for all items
 
@@ -614,6 +616,11 @@ additionalReference.addAdditionalReferenceYesNo.title = Do you want to add an ad
 additionalReference.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for all items?
 additionalReference.addAdditionalReferenceYesNo.paragraph = This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document.
 additionalReference.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for all items
+additionalReference.addAdditionalReferenceYesNo.checkYourAnswersLabel = Do you want to add an additional reference for all items?
+
+additionalReference.additionalReference.checkYourAnswersLabel = Additional reference {0}
+additionalReference.additionalReference.change.hidden = if you want to add any additional information for all items
+additionalReference.addAdditionalReferenceYesNo.change.hidden = if you want to add an additional reference  for all items
 
 additionalReference.index.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 additionalReference.index.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?

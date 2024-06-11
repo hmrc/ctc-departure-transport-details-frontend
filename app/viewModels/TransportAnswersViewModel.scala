@@ -94,6 +94,16 @@ object TransportAnswersViewModel {
         ).flatten
       )
 
+      val additionalReferenceSection =
+        Section(
+          sectionTitle = messages("checkYourAnswers.additionalReference"),
+          rows = Seq(
+            helper.addAdditionalReferenceYesNo,
+            helper.additionalReferences
+          ).flatten,
+          addAnotherLink = helper.addOrRemoveAdditionalReferences(mode)
+        )
+
       val additionalInformationSection =
         Section(
           sectionTitle = messages("checkYourAnswers.additionalInformation"),
@@ -110,6 +120,7 @@ object TransportAnswersViewModel {
         carrierDetailsSection.toSeq ++
         transportEquipmentSection.toSeq ++
         transportChargesSection.toSeq ++
+        additionalReferenceSection.toSeq ++
         additionalInformationSection.toSeq
 
       new TransportAnswersViewModel(sections)
