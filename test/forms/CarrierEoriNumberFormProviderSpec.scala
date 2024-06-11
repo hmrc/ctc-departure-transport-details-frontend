@@ -22,7 +22,7 @@ import models.domain.StringFieldRegex._
 import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 
-class CarrierEoriNumberFormProviderSpec extends StringFieldBehaviours with FieldBehaviours {
+class EoriTCUINNumberFormProviderSpec extends StringFieldBehaviours with FieldBehaviours {
 
   private val prefix = Gen.alphaNumStr.sample.value
 
@@ -32,7 +32,7 @@ class CarrierEoriNumberFormProviderSpec extends StringFieldBehaviours with Field
   private val invalidCharactersKey = s"$prefix.error.invalidCharacters"
   private val invalidFormatKey     = s"$prefix.error.invalidFormat"
 
-  private val form = new CarrierEoriNumberFormProvider()(prefix)
+  private val form = new EoriTCUINNumberFormProvider()(prefix)
 
   ".value" - {
 
@@ -78,7 +78,7 @@ class CarrierEoriNumberFormProviderSpec extends StringFieldBehaviours with Field
     }
 
     "must not bind strings that do not match format regex" in {
-      val expectedError = FormError("value", invalidFormatKey, Seq(carrierEoriRegex.toString))
+      val expectedError = FormError("value", invalidFormatKey, Seq(eoriTCUINRegex.toString))
       val result: Field = form.bind(Map(fieldName -> "123456")).apply(fieldName)
       result.errors must contain(expectedError)
     }

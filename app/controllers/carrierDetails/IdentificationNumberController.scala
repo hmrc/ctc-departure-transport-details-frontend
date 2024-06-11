@@ -19,7 +19,7 @@ package controllers.carrierDetails
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.CarrierEoriNumberFormProvider
+import forms.EoriTCUINNumberFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.carrierDetails.IdentificationNumberPage
@@ -36,7 +36,7 @@ class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
-  formProvider: CarrierEoriNumberFormProvider,
+  formProvider: EoriTCUINNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationNumberView

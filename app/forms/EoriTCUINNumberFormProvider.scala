@@ -23,7 +23,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class CarrierEoriNumberFormProvider @Inject() extends Mappings {
+class EoriTCUINNumberFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
@@ -33,7 +33,7 @@ class CarrierEoriNumberFormProvider @Inject() extends Mappings {
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
             maxLength(maxEoriNumberLength, s"$prefix.error.maxLength"),
             minLength(minLengthCarrierEori, s"$prefix.error.minLength"),
-            regexp(carrierEoriRegex, s"$prefix.error.invalidFormat")
+            regexp(eoriTCUINRegex, s"$prefix.error.invalidFormat")
           )
         )
     )
