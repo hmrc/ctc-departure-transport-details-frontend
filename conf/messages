@@ -634,6 +634,7 @@ additionalReference.index.additionalReferenceType.error.required = Select the ty
 
 additionalReference.index.additionalReferenceNumber.title = Enter the additional reference number
 additionalReference.index.additionalReferenceNumber.heading = Enter the additional reference number
+additionalReference.index.additionalReferenceNumber.hint = This can be up to 70 characters long.
 additionalReference.index.additionalReferenceNumber.error.required = Enter the additional reference number
 additionalReference.index.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
 additionalReference.index.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces

@@ -16,17 +16,15 @@
 
 package views.additionalReference.index
 
-import base.SpecBase
 import forms.AdditionalReferenceNumberFormProvider
-import forms.Constants.maxAdditionalReferenceNumLength
-import generators.Generators
 import models.NormalMode
+import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.CharacterCountViewBehaviours
+import views.behaviours.InputTextViewBehaviours
 import views.html.additionalReference.index.AdditionalReferenceNumberView
 
-class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountViewBehaviours with Generators {
+class AdditionalReferenceNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override def form: Form[String] = new AdditionalReferenceNumberFormProvider()(prefix)
 
@@ -38,6 +36,8 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
   override val prefix: String =
     "additionalReference.index.additionalReferenceNumber"
 
+  implicit override val arbitraryT: Arbitrary[String] = Arbitrary(Gen.alphaStr)
+
   behave like pageWithTitle()
 
   behave like pageWithBackLink()
@@ -46,7 +46,7 @@ class AdditionalReferenceNumberViewSpec extends SpecBase with CharacterCountView
 
   behave like pageWithHeading()
 
-  behave like pageWithCharacterCount(maxAdditionalReferenceNumLength)
+  behave like pageWithHint("This can be up to 70 characters long.")
 
   behave like pageWithSubmitButton("Save and continue")
 
