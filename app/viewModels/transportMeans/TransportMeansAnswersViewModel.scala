@@ -47,7 +47,8 @@ object TransportMeansAnswersViewModel {
         val row = helper.addDepartureTransportMeans().toSeq
         Section(
           sectionTitle = messages("transportMeans.departureMeans.subheading"),
-          rows = row ++ helper.departureTransportsMeans
+          rows = row ++ helper.departureTransportsMeans,
+          addAnotherLink = helper.addOrRemoveDepartureTransportsMeans()
         )
       }
 
