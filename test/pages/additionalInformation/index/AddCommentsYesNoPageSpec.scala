@@ -47,7 +47,7 @@ class AddCommentsYesNoPageSpec extends PageBehaviours {
       }
 
       "when yes selected" - {
-        "must not remove border mode of transport" in {
+        "must not remove additional information text" in {
           forAll(Gen.alphaNumStr) {
             text =>
               val userAnswers = emptyUserAnswers
