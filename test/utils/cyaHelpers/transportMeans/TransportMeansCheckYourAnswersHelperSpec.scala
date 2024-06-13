@@ -27,7 +27,7 @@ import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
-import pages.sections.transportMeans.ActiveSection
+import pages.sections.transportMeans.{ActiveSection, DepartureSection}
 import pages.transportMeans._
 import pages.transportMeans.active.NationalityPage
 import play.api.libs.json.{JsArray, Json}
@@ -164,9 +164,9 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
-              //              action.href mustBe routes.CheckYourAnswersController
-              //                .onPageLoad(userAnswers.lrn, mode, departureIndex)
-              //                .url //TODO update when Add DTM page is built
+              action.href mustBe controllers.transportMeans.departure.routes.DepartureTransportAnswersController
+                .onPageLoad(userAnswers.lrn, mode, departureIndex)
+                .url
               action.visuallyHiddenText.get mustBe "departure means of transport 1"
               action.id mustBe "change-departure-means-of-transport-1"
           }
@@ -197,6 +197,34 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               result.id mustBe "add-or-remove-border-means-of-transport"
               result.text mustBe "Add or remove border means of transport"
               result.href mustBe routes.AddAnotherBorderTransportController.onPageLoad(answers.lrn, mode).url
+          }
+        }
+      }
+    }
+
+    "addOrRemoveDepartureTransportsMeans" - {
+      "must return None" - {
+        "when departure transports means array is empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addOrRemoveDepartureTransportsMeans()
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Link)" - {
+        "when departure transports means array is non-empty" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(DepartureSection(Index(0)), Json.obj("foo" -> "bar"))
+              val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
+              val result  = helper.addOrRemoveDepartureTransportsMeans().get
+
+              result.id mustBe "add-or-remove-departure-means-of-transport"
+              result.text mustBe "Add or remove departure means of transport"
+              result.href mustBe controllers.transportMeans.departure.routes.AddAnotherDepartureTransportMeansController.onPageLoad(answers.lrn, mode).url
           }
         }
       }

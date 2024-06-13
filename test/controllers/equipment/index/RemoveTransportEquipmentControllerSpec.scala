@@ -74,7 +74,8 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
             status(result) mustEqual SEE_OTHER
 
             redirectLocation(result).value mustEqual
-              controllers.equipment.routes.AddAnotherEquipmentController.onPageLoad(lrn, mode).url
+              s"http://localhost:10127/manage-transit-movements/departures/items/$lrn/update-task?" +
+              s"continue=http://localhost:10131${controllers.equipment.routes.AddAnotherEquipmentController.onPageLoad(lrn, mode).url}"
 
             val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
             verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
