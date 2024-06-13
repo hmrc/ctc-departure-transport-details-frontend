@@ -23,8 +23,8 @@ import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.additionalInformation.{AddAdditionalInformationYesNoPage, AddCommentsYesNoPage}
-import pages.additionalInformation.index.{AdditionalInformationTextPage, AdditionalInformationTypePage}
+import pages.additionalInformation.AddAdditionalInformationYesNoPage
+import pages.additionalInformation.index.{AddCommentsYesNoPage, AdditionalInformationTextPage, AdditionalInformationTypePage}
 import viewModels.ListItem
 
 class AdditionalInformationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

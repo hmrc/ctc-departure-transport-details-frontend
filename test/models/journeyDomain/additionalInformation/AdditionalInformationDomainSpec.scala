@@ -22,8 +22,7 @@ import models.Index
 import models.reference.additionalInformation.AdditionalInformationCode
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.additionalInformation.AddCommentsYesNoPage
-import pages.additionalInformation.index.{AdditionalInformationTextPage, AdditionalInformationTypePage}
+import pages.additionalInformation.index.{AddCommentsYesNoPage, AdditionalInformationTextPage, AdditionalInformationTypePage}
 
 class AdditionalInformationDomainSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
