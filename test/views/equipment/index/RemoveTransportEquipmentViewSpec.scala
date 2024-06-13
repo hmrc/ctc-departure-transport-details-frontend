@@ -17,6 +17,7 @@
 package views.equipment.index
 
 import models.NormalMode
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -24,10 +25,12 @@ import views.html.equipment.index.RemoveTransportEquipmentView
 
 class RemoveTransportEquipmentViewSpec extends YesNoViewBehaviours {
 
+  private val insetText = Gen.alphaNumStr.sample.value
+
   private val equipmentIdNumber = equipmentIndex.display
 
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[RemoveTransportEquipmentView].apply(form, lrn, NormalMode, equipmentIndex)(fakeRequest, messages)
+    injector.instanceOf[RemoveTransportEquipmentView].apply(form, lrn, NormalMode, equipmentIndex, Some(insetText))(fakeRequest, messages)
 
   override val prefix: String = "equipment.index.removeTransportEquipment"
 
@@ -40,6 +43,8 @@ class RemoveTransportEquipmentViewSpec extends YesNoViewBehaviours {
   behave like pageWithHeading(equipmentIdNumber)
 
   behave like pageWithRadioItems(args = Seq(equipmentIdNumber))
+
+  behave like pageWithInsetText(insetText)
 
   behave like pageWithSubmitButton("Save and continue")
 }
