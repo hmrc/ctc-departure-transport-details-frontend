@@ -21,11 +21,12 @@ import controllers.actions._
 import controllers.equipment.routes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{Index, LocalReferenceNumber, Mode}
+import models.removable.TransportEquipment
+import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
 import pages.equipment.index.UuidPage
 import pages.sections.equipment.EquipmentSection
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -51,10 +52,13 @@ class RemoveTransportEquipmentController @Inject() (
   private def form(equipmentIndex: Index): Form[Boolean] =
     formProvider("equipment.index.removeTransportEquipment", equipmentIndex.display)
 
+  private def formatInsetText(userAnswers: UserAnswers, transportEquipmentIndex: Index)(implicit messages: Messages): Option[String] =
+    TransportEquipment(userAnswers, transportEquipmentIndex).flatMap(_.forRemoveDisplay)
+
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions
     .requireIndex(lrn, EquipmentSection(equipmentIndex), addAnother(lrn, mode)) {
       implicit request =>
-        Ok(view(form(equipmentIndex), lrn, mode, equipmentIndex))
+        Ok(view(form(equipmentIndex), lrn, mode, equipmentIndex, formatInsetText(request.userAnswers, equipmentIndex)))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions
@@ -64,7 +68,8 @@ class RemoveTransportEquipmentController @Inject() (
         form(equipmentIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, equipmentIndex))),
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, lrn, mode, equipmentIndex, formatInsetText(request.userAnswers, equipmentIndex)))),
             {
               case true =>
                 // TODO - update items task status
