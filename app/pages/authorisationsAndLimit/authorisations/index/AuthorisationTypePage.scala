@@ -36,7 +36,6 @@ abstract class BaseAuthorisationTypePage(authorisationIndex: Index) extends Ques
 
   def cleanup(userAnswers: UserAnswers): Try[UserAnswers]
 
-  // TODO - if user adds or removes a SSE type authorisation this affects the transport equipment seals and goods item numbers nav.
   override def cleanup(value: Option[AuthorisationType], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(_) =>

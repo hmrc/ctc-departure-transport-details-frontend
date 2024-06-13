@@ -16,10 +16,10 @@
 
 package controllers.equipment.index
 
-import config.PhaseConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions._
 import controllers.equipment.routes
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.YesNoFormProvider
 import models.removable.TransportEquipment
 import models.{Index, LocalReferenceNumber, Mode, UserAnswers}
@@ -42,7 +42,7 @@ class RemoveTransportEquipmentController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveTransportEquipmentView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -72,13 +72,14 @@ class RemoveTransportEquipmentController @Inject() (
               Future.successful(BadRequest(view(formWithErrors, lrn, mode, equipmentIndex, formatInsetText(request.userAnswers, equipmentIndex)))),
             {
               case true =>
-                // TODO - update items task status
                 EquipmentSection(equipmentIndex)
                   .removeFromUserAnswers()
                   .removeTransportEquipmentFromItems(request.userAnswers.get(UuidPage(equipmentIndex)))
                   .updateTask()
                   .writeToSession()
-                  .navigateTo(addAnother(lrn, mode))
+                  .getNextPage(addAnother(lrn, mode))
+                  .updateItems(lrn)
+                  .navigate()
               case false =>
                 Future.successful(Redirect(addAnother(lrn, mode)))
             }

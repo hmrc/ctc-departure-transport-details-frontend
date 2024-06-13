@@ -80,7 +80,7 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
                 val section           = result.sections(1)
                 section.sectionTitle.get mustBe sectionTitle
                 section.rows.size mustBe amount + 1
-//                section.addAnotherLink must be(defined) // TODO Update when Add/Remove page is built for DTM
+                section.addAnotherLink must be(defined)
             }
         }
       }

@@ -187,6 +187,13 @@ package object controllers {
           call.copy(url = url)
       }
 
+    def getNextPage(call: Call)(implicit executionContext: ExecutionContext, frontendAppConfig: FrontendAppConfig): Future[Call] =
+      write.map {
+        _ =>
+          val url = frontendAppConfig.absoluteURL(call.url)
+          call.copy(url = url)
+      }
+
     private def navigate(result: Write[A] => Call)(implicit executionContext: ExecutionContext): Future[Result] =
       write.map {
         w => Redirect(result(w))

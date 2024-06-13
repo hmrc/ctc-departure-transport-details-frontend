@@ -333,6 +333,7 @@ transportMeans.transportMeansCheckYourAnswers.title = Check your answers - Modes
 transportMeans.transportMeansCheckYourAnswers.heading = Check your answers
 transportMeans.inlandMode.subheading = Inland mode of transport
 transportMeans.departureMeans.subheading = Departure means of transport
+transportMeans.departureMeans.addOrRemove = Add or remove departure means of transport
 transportMeans.borderMode.subheading = Border mode of transport
 transportMeans.borderMeans.subheading = Border means of transport
 transportMeans.borderMeans.addOrRemove = Add or remove border means of transport
