@@ -359,10 +359,10 @@ supplyChainActors.index.identificationNumber.title = What is the EORI number or 
 supplyChainActors.index.identificationNumber.heading = What is the EORI number or Third Country Unique Identification Number (TCUIN) for the {0}?
 supplyChainActors.index.identificationNumber.hint = This will start with 2 letters, such as GB or XI, followed by up to 15 letters or numbers. For example, GB123456789000.
 supplyChainActors.index.identificationNumber.error.required = Enter the EORI number or Third Country Unique Identification Number for the supply chain actor
+supplyChainActors.index.identificationNumber.error.invalidCharacters = The EORI number or Third Country Unique Identification Number must only include letters a to z and numbers 0 to 9
 supplyChainActors.index.identificationNumber.error.maxLength = The EORI number or Third Country Unique Identification Number must be 17 characters or less
 supplyChainActors.index.identificationNumber.error.minLength = The EORI number or Third Country Unique Identification Number must be 3 characters or more
 supplyChainActors.index.identificationNumber.error.invalidFormat = The EORI number or Third Country Unique Identification Number must start with 2 letters, such as GB or XI, followed by up to 15 letters or numbers
-supplyChainActors.index.identificationNumber.error.invalidCharacters = The EORI number or Third Country Unique Identification Number must only include letters a to z and numbers 0 to 9
 
 supplyChainActors.index.removeSupplyChainActor.title = Are you sure you want to remove this supply chain actor?
 supplyChainActors.index.removeSupplyChainActor.heading = Are you sure you want to remove this supply chain actor?
