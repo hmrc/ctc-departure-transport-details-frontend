@@ -20,7 +20,7 @@ import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import viewModels.transportMeans.departure.{AddDepartureTransportMeansYesNoViewModel, AddIdentificationTypeViewModel}
+import viewModels.transportMeans.departure.AddDepartureTransportMeansYesNoViewModel
 import views.behaviours.YesNoViewBehaviours
 import views.html.transportMeans.AddDepartureTransportMeansYesNoView
 

@@ -27,6 +27,7 @@ import models.reference.additionalInformation.AdditionalInformationCode
 import models.reference.additionalReference.AdditionalReferenceType
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
+import pages.additionalInformation.index.AddCommentsYesNoPage
 import play.api.libs.json._
 import queries.Gettable
 

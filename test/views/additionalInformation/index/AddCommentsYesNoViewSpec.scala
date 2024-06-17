@@ -20,7 +20,7 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.additionalInformation.AddCommentsYesNoView
+import views.html.additionalInformation.index.AddCommentsYesNoView
 
 class AddCommentsYesNoViewSpec extends YesNoViewBehaviours {
 
