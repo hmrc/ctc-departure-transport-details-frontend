@@ -29,9 +29,6 @@ checkYourAnswers.title = Check your answers - Transport details
 transportMeans.departure.checkYourAnswers.heading = Check your answers
 transportMeans.departure.checkYourAnswers.title = Check your answers - Departure means of transport
 
-transportMeans.departure.checkYourAnswers.addIdentificationTypeYesNo.checkYourAnswersLabel = Do you want to add the type of identification for the departure means of transport?
-transportMeans.departure.checkYourAnswers.addIdentificationTypeYesNo.change.hidden = if you want to add the type of identification for the departure means of transport
-
 checkYourAnswers.equipment.label = Transport equipment {0}
 checkYourAnswers.equipment.change.hidden = transport equipment {0}
 checkYourAnswers.supplyChainActor.label = Supply chain actor {0}
@@ -147,17 +144,30 @@ transportMeans.inlandMode.checkYourAnswersLabel = Mode
 transportMeans.inlandMode.error.required = Select which inland mode of transport you’re using
 transportMeans.inlandMode.change.hidden = inland mode of transport
 
-transportMeans.addDepartureTransportMeansYesNo.title = Do you want to add identification for this vehicle?
-transportMeans.addDepartureTransportMeansYesNo.heading = Do you want to add identification for this vehicle?
-transportMeans.addDepartureTransportMeansYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
-transportMeans.addDepartureTransportMeansYesNo.change.hidden = if you want to add identification for the departure means of transport
+transportMeans.addDepartureTransportMeansYesNo.inlandModeYes.title = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.inlandModeYes.heading = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.inlandModeYes.checkYourAnswersLabel = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.inlandModeYes.change.hidden = if you want to add identification for this vehicle
+
+transportMeans.addDepartureTransportMeansYesNo.inlandModeNo.title = Do you want to add identification for the departure means of transport?
+transportMeans.addDepartureTransportMeansYesNo.inlandModeNo.heading = Do you want to add identification for the departure means of transport?
+transportMeans.addDepartureTransportMeansYesNo.inlandModeNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+transportMeans.addDepartureTransportMeansYesNo.inlandModeNo.checkYourAnswersLabel = Do you want to add identification for the departure means of transport?
+transportMeans.addDepartureTransportMeansYesNo.inlandModeNo.change.hidden = if you want to add identification for the departure means of transport
+
 transportMeans.addDepartureTransportMeansYesNo.error.required = Select yes if you want to add identification for this vehicle
 
-transportMeans.departure.addIdentificationTypeYesNo.title = Do you want to add the type of identification?
-transportMeans.departure.addIdentificationTypeYesNo.heading = Do you want to add the type of identification?
-transportMeans.departure.addIdentificationTypeYesNo.checkYourAnswersLabel = Do you want to add the type of identification?
-transportMeans.departure.addIdentificationTypeYesNo.change.hidden = if you want to add the type of identification for the departure means of transport
-transportMeans.departure.addIdentificationTypeYesNo.error.required = Select yes if you want to add a type of identification
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo.title = Do you want to add the type of identification for the departure means of transport?
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo.heading = Do you want to add the type of identification for the departure means of transport?
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo.checkYourAnswersLabel = Do you want to add the type of identification for the departure means of transport?
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo.change.hidden = if you want to add the type of identification for the departure means of transport
+
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes.title = Do you want to add the type of identification for this vehicle?
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes.heading = Do you want to add the type of identification for this vehicle?
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes.checkYourAnswersLabel = Do you want to add the type of identification for this vehicle?
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes.change.hidden = if you want to add the type of identification for this vehicle
+transportMeans.departure.addIdentificationTypeYesNo.error.required = Select yes if you want to add the type of identification
 
 transportMeans.departure.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.departure.identification.heading = Which identification do you want to use for this vehicle?
@@ -325,14 +335,15 @@ transportMeans.active.addAnotherBorderTransport.hidden = Do you want to add anot
 transportMeans.active.addAnotherBorderTransport.hint = Only include vehicles that cross into another CTC country. As the EU is one CTC country, you don’t need to provide vehicle changes that stay within the EU.
 transportMeans.active.addAnotherBorderTransport.maxLimit.label = You cannot add any more border means of transport. To add another, you need to remove one first.
 
-transportMeans.active.confirmRemoveBorderTransport.title = Are you sure you want to remove this border means of transport?
-transportMeans.active.confirmRemoveBorderTransport.heading = Are you sure you want to remove this border means of transport?
-transportMeans.active.confirmRemoveBorderTransport.error.required = Select yes if you want to remove this border means of transport
+transportMeans.active.confirmRemoveBorderTransport.title = Are you sure you want to remove border means of transport {0}
+transportMeans.active.confirmRemoveBorderTransport.heading = Are you sure you want to remove border means of transport {0}
+transportMeans.active.confirmRemoveBorderTransport.error.required = Select yes if you want to remove border means of transport {0}
 
 transportMeans.transportMeansCheckYourAnswers.title = Check your answers - Modes and means of transport
 transportMeans.transportMeansCheckYourAnswers.heading = Check your answers
 transportMeans.inlandMode.subheading = Inland mode of transport
 transportMeans.departureMeans.subheading = Departure means of transport
+transportMeans.departureMeans.addOrRemove = Add or remove departure means of transport
 transportMeans.borderMode.subheading = Border mode of transport
 transportMeans.borderMeans.subheading = Border means of transport
 transportMeans.borderMeans.addOrRemove = Add or remove border means of transport
@@ -547,9 +558,9 @@ equipment.index.addAnotherSeal.error.required = Select yes if you want to add an
 equipment.index.addAnotherSeal.label = Do you want to add another seal?
 equipment.index.addAnotherSeal.maxLimit.label = You cannot add any more seals. To add another, you need to remove one first.
 
-equipment.index.seals.removeSealYesNo.title = Are you sure you want to remove seal {0}?
-equipment.index.seals.removeSealYesNo.heading = Are you sure you want to remove seal {0}?
-equipment.index.seals.removeSealYesNo.error.required = Select yes if you want to remove seal {0}
+equipment.index.seals.removeSealYesNo.title = Are you sure you want to remove this seal?
+equipment.index.seals.removeSealYesNo.heading = Are you sure you want to remove this seal?
+equipment.index.seals.removeSealYesNo.error.required = Select yes if you want to remove this seal
 
 equipment.index.checkYourAnswers.title = Check your answers - Transport equipment
 equipment.index.checkYourAnswers.heading = Check your answers
@@ -569,6 +580,9 @@ equipment.addAnotherEquipment.plural.heading = You have added {0} transport equi
 equipment.addAnotherEquipment.label = Do you want to add any other transport equipment?
 equipment.addAnotherEquipment.maxLimit.label = You cannot add any more transport equipment. To add another, you need to remove one first.
 equipment.addAnotherEquipment.error.required = Select yes if you want to add any other transport equipment
+
+transportEquipment.prefix = Transport Equipment {0}
+transportEquipment.containerId = Container {0}
 
 equipment.index.removeTransportEquipment.title = Are you sure you want to remove transport equipment {0}?
 equipment.index.removeTransportEquipment.heading = Are you sure you want to remove transport equipment {0}?
@@ -603,9 +617,9 @@ transportMeans.departure.addAnotherDepartureTransportMeans.maxLimit.label = You 
 transportMeans.departure.addAnotherDepartureTransportMeans.roadInlandMode.maxLimit.label = You can only add up to 3 departure means of transport when using road as your mode. To add another, you need to remove one first.
 transportMeans.departure.addAnotherDepartureTransportMeans.error.required = Select yes if you want to add another departure means of transport
 
-transportMeans.departure.removeTransportMeansOfDepartureYesNo.title = Are you sure you want to remove this departure means of transport?
-transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading = Are you sure you want to remove this departure means of transport?
-transportMeans.departure.removeTransportMeansOfDepartureYesNo.error.required = Select yes if you want to remove this departure means of transport
+transportMeans.departure.removeTransportMeansOfDepartureYesNo.title = Are you sure you want to remove departure means of transport {0}?
+transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading = Are you sure you want to remove departure means of transport {0}?
+transportMeans.departure.removeTransportMeansOfDepartureYesNo.error.required = Select yes if you want to remove departure means of transport {0}
 
 transportMeans.departure.identification.paragraph1 = You must add the registration number of the road vehicle for your inland mode.
 transportMeans.departure.identification.paragraph2 = You must add the registration number of the road trailer for your inland mode.

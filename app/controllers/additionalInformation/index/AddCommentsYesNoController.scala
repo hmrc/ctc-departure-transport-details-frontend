@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
+import navigation.{AdditionalInformationNavigatorProvider, UserAnswersNavigator}
 import pages.additionalInformation.index.AddCommentsYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AddCommentsYesNoController @Inject() (
   override val messagesApi: MessagesApi,
   implicit val sessionRepository: SessionRepository,
-  navigatorProvider: TransportNavigatorProvider,
+  navigatorProvider: AdditionalInformationNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -63,7 +63,7 @@ class AddCommentsYesNoController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, additionalInformationIndex, mode))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, additionalInformationIndex)
             AddCommentsYesNoPage(additionalInformationIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
           }
         )

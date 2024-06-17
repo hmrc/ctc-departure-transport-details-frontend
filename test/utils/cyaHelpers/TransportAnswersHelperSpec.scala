@@ -17,6 +17,7 @@
 package utils.cyaHelpers
 
 import base.SpecBase
+import controllers.additionalInformation.{routes => additionalInformationRoutes}
 import controllers.authorisationsAndLimit.authorisations.index.{routes => authorisationRoutes}
 import controllers.authorisationsAndLimit.authorisations.{routes => authorisationsRoutes}
 import controllers.authorisationsAndLimit.limit.{routes => limitRoutes}
@@ -28,7 +29,6 @@ import controllers.equipment.{routes => equipmentsRoutes}
 import controllers.preRequisites.{routes => preRequisitesRoutes}
 import controllers.supplyChainActors.index.{routes => supplyChainActorRoutes}
 import controllers.supplyChainActors.{routes => supplyChainActorsRoutes}
-import controllers.additionalInformation.{routes => additionalInformationRoutes}
 import generators.Generators
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.journeyDomain.equipment.EquipmentDomain

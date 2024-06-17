@@ -27,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.supplyChainActors.SupplyChainActorSection
+import pages.supplyChainActors.index.SupplyChainActorTypePage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.supplyChainActors.index.RemoveSupplyChainActorView
@@ -48,15 +49,16 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
         userAnswers =>
           setExistingUserAnswers(userAnswers)
 
-          val request = FakeRequest(GET, removeSupplyChainActorRoute)
-          val result  = route(app, request).value
+          val request   = FakeRequest(GET, removeSupplyChainActorRoute)
+          val result    = route(app, request).value
+          val insetText = userAnswers.get(SupplyChainActorTypePage(actorIndex)).map(_.toString)
 
           val view = injector.instanceOf[RemoveSupplyChainActorView]
 
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, lrn, mode, index)(request, messages).toString
+            view(form, lrn, mode, index, insetText)(request, messages).toString
       }
     }
 
@@ -118,14 +120,15 @@ class RemoveSupplyChainActorControllerSpec extends SpecBase with AppWithDefaultM
           val request   = FakeRequest(POST, removeSupplyChainActorRoute).withFormUrlEncodedBody(("value", ""))
           val boundForm = form.bind(Map("value" -> ""))
 
-          val result = route(app, request).value
+          val result    = route(app, request).value
+          val insetText = userAnswers.get(SupplyChainActorTypePage(actorIndex)).map(_.toString)
 
           status(result) mustEqual BAD_REQUEST
 
           val view = injector.instanceOf[RemoveSupplyChainActorView]
 
           contentAsString(result) mustEqual
-            view(boundForm, lrn, mode, index)(request, messages).toString
+            view(boundForm, lrn, mode, index, insetText)(request, messages).toString
       }
     }
 

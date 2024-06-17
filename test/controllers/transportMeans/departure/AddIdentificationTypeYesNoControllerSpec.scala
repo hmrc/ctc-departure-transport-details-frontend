@@ -18,26 +18,33 @@ package controllers.transportMeans.departure
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
+import generators.Generators
 import models.NormalMode
 import navigation.TransportMeansNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
+import pages.transportMeans.AddInlandModeYesNoPage
 import pages.transportMeans.departure.AddIdentificationTypeYesNoPage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewModels.transportMeans.departure.AddIdentificationTypeViewModel
 import views.html.transportMeans.departure.AddIdentificationTypeYesNoView
 
 import scala.concurrent.Future
 
-class AddIdentificationTypeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar {
+class AddIdentificationTypeYesNoControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
   private val formProvider                         = new YesNoFormProvider()
   private val form                                 = formProvider("transportMeans.departure.addIdentificationTypeYesNo")
   private val mode                                 = NormalMode
   private lazy val addIdentificationTypeYesNoRoute = routes.AddIdentificationTypeYesNoController.onPageLoad(lrn, mode, departureIndex).url
+  private val addInlandModeYesNo                   = arbitrary[Boolean].sample.value
+
+  private val viewModel = AddIdentificationTypeViewModel(addInlandModeYesNo)
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
@@ -48,7 +55,10 @@ class AddIdentificationTypeYesNoControllerSpec extends SpecBase with AppWithDefa
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(AddInlandModeYesNoPage, addInlandModeYesNo)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addIdentificationTypeYesNoRoute)
       val result  = route(app, request).value
@@ -58,12 +68,15 @@ class AddIdentificationTypeYesNoControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, departureIndex)(request, messages).toString
+        view(form, lrn, mode, departureIndex, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
+      val userAnswers = emptyUserAnswers
+        .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
+        .setValue(AddInlandModeYesNoPage, addInlandModeYesNo)
+
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addIdentificationTypeYesNoRoute)
@@ -77,14 +90,17 @@ class AddIdentificationTypeYesNoControllerSpec extends SpecBase with AppWithDefa
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, departureIndex)(request, messages).toString
+        view(filledForm, lrn, mode, departureIndex, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(AddInlandModeYesNoPage, addInlandModeYesNo)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, addIdentificationTypeYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
@@ -98,7 +114,10 @@ class AddIdentificationTypeYesNoControllerSpec extends SpecBase with AppWithDefa
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(AddInlandModeYesNoPage, addInlandModeYesNo)
+
+      setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, addIdentificationTypeYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
@@ -110,7 +129,7 @@ class AddIdentificationTypeYesNoControllerSpec extends SpecBase with AppWithDefa
       val view = injector.instanceOf[AddIdentificationTypeYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode, departureIndex)(request, messages).toString
+        view(boundForm, lrn, mode, departureIndex, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

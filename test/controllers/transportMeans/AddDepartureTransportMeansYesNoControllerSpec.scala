@@ -22,12 +22,14 @@ import models.NormalMode
 import navigation.TransportMeansNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.mockito.MockitoSugar
-import pages.transportMeans.AddDepartureTransportMeansYesNoPage
+import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, AddInlandModeYesNoPage}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import viewModels.transportMeans.departure.AddDepartureTransportMeansYesNoViewModel
 import views.html.transportMeans.AddDepartureTransportMeansYesNoView
 
 import scala.concurrent.Future
@@ -39,6 +41,9 @@ class AddDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWit
   private val mode                                    = NormalMode
   private lazy val addVehicleIdentificationYesNoRoute = routes.AddDepartureTransportMeansYesNoController.onPageLoad(lrn, mode).url
 
+  private val addInlandModeYesNo = arbitrary[Boolean].sample.value
+  private val viewModel          = AddDepartureTransportMeansYesNoViewModel(addInlandModeYesNo)
+
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
@@ -48,7 +53,10 @@ class AddDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWit
 
     "must return OK and the correct view for a GET" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(AddInlandModeYesNoPage, addInlandModeYesNo)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addVehicleIdentificationYesNoRoute)
       val result  = route(app, request).value
@@ -58,12 +66,15 @@ class AddDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode)(request, messages).toString
+        view(form, lrn, mode, viewModel)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(AddDepartureTransportMeansYesNoPage, true)
+      val userAnswers = emptyUserAnswers
+        .setValue(AddInlandModeYesNoPage, addInlandModeYesNo)
+        .setValue(AddDepartureTransportMeansYesNoPage, true)
+
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, addVehicleIdentificationYesNoRoute)
@@ -77,14 +88,17 @@ class AddDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode)(request, messages).toString
+        view(filledForm, lrn, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(AddInlandModeYesNoPage, addInlandModeYesNo)
+
+      setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(POST, addVehicleIdentificationYesNoRoute)
         .withFormUrlEncodedBody(("value", "true"))
@@ -98,7 +112,10 @@ class AddDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWit
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      setExistingUserAnswers(emptyUserAnswers)
+      val userAnswers = emptyUserAnswers
+        .setValue(AddInlandModeYesNoPage, addInlandModeYesNo)
+
+      setExistingUserAnswers(userAnswers)
 
       val request   = FakeRequest(POST, addVehicleIdentificationYesNoRoute).withFormUrlEncodedBody(("value", ""))
       val boundForm = form.bind(Map("value" -> ""))
@@ -110,7 +127,7 @@ class AddDepartureTransportMeansYesNoControllerSpec extends SpecBase with AppWit
       val view = injector.instanceOf[AddDepartureTransportMeansYesNoView]
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, mode)(request, messages).toString
+        view(boundForm, lrn, mode, viewModel)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
