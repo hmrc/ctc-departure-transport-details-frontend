@@ -40,22 +40,6 @@ trait Formatters {
       Map(key -> value)
   }
 
-  private[mappings] def eoriFormatter(errorKey: String): Formatter[String] = new Formatter[String] {
-
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
-      val n = CountryCode.Constants.countryCodeLength
-      stringFormatter(errorKey)(_.removeSpaces())
-        .bind(key, data)
-        .flatMap {
-          eori =>
-            Right(eori.take(n).toUpperCase + eori.drop(n))
-        }
-    }
-
-    override def unbind(key: String, value: String): Map[String, String] =
-      Map(key -> value)
-  }
-
   private[mappings] def booleanFormatter(requiredKey: String, invalidKey: String, args: Seq[Any] = Seq.empty): Formatter[Boolean] =
     new Formatter[Boolean] {
 

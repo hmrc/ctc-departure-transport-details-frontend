@@ -210,5 +210,7 @@ package object models {
       (acc, c) =>
         acc + c.toString.trim
     }
+
+    def capitalise(n: Int): String = string.take(n).toUpperCase + string.drop(n)
   }
 }

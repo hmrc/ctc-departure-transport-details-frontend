@@ -20,17 +20,19 @@ import forms.Constants._
 import forms.behaviours.{FieldBehaviours, StringFieldBehaviours}
 import models.domain.StringFieldRegex._
 import org.scalacheck.Gen
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
 
-class EoriNumberFormProviderSpec extends StringFieldBehaviours with FieldBehaviours {
+class EoriTcuinFormProviderSpec extends StringFieldBehaviours with FieldBehaviours {
 
   private val prefix = Gen.alphaNumStr.sample.value
 
   private val requiredKey          = s"$prefix.error.required"
-  private val maxLengthKey         = s"$prefix.error.length"
-  private val invalidCharactersKey = s"$prefix.error.invalid"
+  private val maxLengthKey         = s"$prefix.error.maxLength"
+  private val minLengthKey         = s"$prefix.error.minLength"
+  private val invalidCharactersKey = s"$prefix.error.invalidCharacters"
+  private val invalidFormatKey     = s"$prefix.error.invalidFormat"
 
-  private val form = new EoriNumberFormProvider()(prefix)
+  private val form = new EoriTcuinFormProvider()(prefix)
 
   ".value" - {
 
@@ -62,10 +64,29 @@ class EoriNumberFormProviderSpec extends StringFieldBehaviours with FieldBehavio
       lengthError = FormError(fieldName, maxLengthKey, Seq(maxEoriNumberLength))
     )
 
+    behave like fieldWithMinLength(
+      form = form,
+      fieldName = fieldName,
+      minLength = minLengthCarrierEori,
+      lengthError = FormError(fieldName, minLengthKey, Seq(minLengthCarrierEori))
+    )
+
     "must remove spaces on bound strings" in {
       val result = form.bind(Map(fieldName -> " GB 123 456 789 123 "))
       result.errors mustEqual Nil
       result.get mustEqual "GB123456789123"
+    }
+
+    "must not bind strings that do not match format regex" in {
+      val expectedError = FormError("value", invalidFormatKey, Seq(eoriTcuinRegex.toString))
+      val result: Field = form.bind(Map(fieldName -> "123456")).apply(fieldName)
+      result.errors must contain(expectedError)
+    }
+
+    "must capitalise first 2 letters on bound strings" in {
+      val result = form.bind(Map(fieldName -> "gb12345"))
+      result.errors mustEqual Nil
+      result.get mustEqual "GB12345"
     }
   }
 }
