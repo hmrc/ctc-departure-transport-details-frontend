@@ -56,4 +56,8 @@ object Constants {
     val SSE = "C523"
     val TRD = "C524"
   }
+
+  object AdditionalInformation {
+    val `30600` = "30600"
+  }
 }
