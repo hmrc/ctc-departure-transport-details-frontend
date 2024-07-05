@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveTransportEquipmentController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
@@ -76,7 +76,7 @@ class RemoveTransportEquipmentController @Inject() (
                   .removeFromUserAnswers()
                   .removeTransportEquipmentFromItems(request.userAnswers.get(UuidPage(equipmentIndex)))
                   .updateTask()
-                  .writeToSession()
+                  .writeToSession(sessionRepository)
                   .getNextPage(addAnother(lrn, mode))
                   .updateItems(lrn)
                   .navigate()

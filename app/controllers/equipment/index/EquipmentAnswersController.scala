@@ -45,7 +45,7 @@ class EquipmentAnswersController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+      val navigator: UserAnswersNavigator = navigatorProvider(mode)
       Redirect(navigator.nextPage(request.userAnswers, Some(EquipmentSection(equipmentIndex))))
   }
 

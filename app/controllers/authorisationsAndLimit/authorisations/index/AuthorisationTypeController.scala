@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisationTypeController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: AuthorisationNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
@@ -87,7 +87,7 @@ class AuthorisationTypeController @Inject() (
     page: Index => QuestionPage[AuthorisationType],
     value: AuthorisationType
   )(implicit request: DataRequest[_]): Future[Result] = {
-    implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-    page(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+    val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+    page(index).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
   }
 }
