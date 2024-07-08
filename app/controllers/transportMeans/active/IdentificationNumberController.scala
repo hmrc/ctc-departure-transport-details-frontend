@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   formProvider: IdentificationNumberFormProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,
@@ -74,8 +74,8 @@ class IdentificationNumberController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, activeIndex, identificationType.asString))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
-                IdentificationNumberPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, activeIndex)
+                IdentificationNumberPage(activeIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
               }
             )
       }

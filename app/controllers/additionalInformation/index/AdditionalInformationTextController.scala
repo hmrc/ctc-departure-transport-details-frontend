@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalInformationTextController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: AdditionalInformationNavigatorProvider,
   formProvider: AdditionalInformationFormProvider,
   actions: Actions,
@@ -64,12 +64,12 @@ class AdditionalInformationTextController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, additionalInformationIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, additionalInformationIndex)
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, additionalInformationIndex)
             AdditionalInformationTextPage(additionalInformationIndex)
               .writeToUserAnswers(value)
               .updateTask()
-              .writeToSession()
-              .navigate()
+              .writeToSession(sessionRepository)
+              .navigateWith(navigator)
           }
         )
   }

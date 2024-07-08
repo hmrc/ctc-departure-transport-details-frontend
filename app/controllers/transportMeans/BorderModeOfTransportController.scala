@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class BorderModeOfTransportController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
@@ -72,8 +72,8 @@ class BorderModeOfTransportController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, borderModeCodes, mode))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                BorderModeOfTransportPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                BorderModeOfTransportPage.writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
               }
             )
       }

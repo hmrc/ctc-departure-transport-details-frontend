@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisationReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: AuthorisationNavigatorProvider,
   formProvider: AuthorisationReferenceNumberFormProvider,
   actions: Actions,
@@ -72,8 +72,12 @@ class AuthorisationReferenceNumberController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, request.arg, mode, authorisationIndex))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, authorisationIndex)
-              AuthorisationReferenceNumberPage(authorisationIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              val navigator: UserAnswersNavigator = navigatorProvider(mode, authorisationIndex)
+              AuthorisationReferenceNumberPage(authorisationIndex)
+                .writeToUserAnswers(value)
+                .updateTask()
+                .writeToSession(sessionRepository)
+                .navigateWith(navigator)
             }
           )
     }

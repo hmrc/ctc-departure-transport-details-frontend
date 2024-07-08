@@ -37,7 +37,7 @@ import javax.inject.Inject
 
 class AddAnotherDepartureTransportMeansController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   viewModelProvider: AddAnotherDepartureTransportMeansViewModelProvider,
