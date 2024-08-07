@@ -23,6 +23,7 @@ import models.reference.Nationality
 import models.reference.transportMeans.departure.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transportMeans.AddInlandModeYesNoPage
 import pages.transportMeans.departure._
 import viewModels.transportMeans.departure.DepartureTransportMeansAnswersViewModel.DepartureTransportMeansAnswersViewModelProvider
 
@@ -37,6 +38,7 @@ class DepartureTransportMeansAnswersViewModelSpec extends SpecBase with ScalaChe
     "must return row for each answer" in {
 
       val userAnswers = emptyUserAnswers
+        .setValue(AddInlandModeYesNoPage, true)
         .setValue(IdentificationPage(departureIndex), arbitrary[Identification].sample.value)
         .setValue(MeansIdentificationNumberPage(departureIndex), nonEmptyString.sample.value)
         .setValue(VehicleCountryPage(departureIndex), arbitrary[Nationality].sample.value)

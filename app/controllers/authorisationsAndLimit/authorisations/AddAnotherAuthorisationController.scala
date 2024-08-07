@@ -39,7 +39,7 @@ import scala.concurrent.ExecutionContext
 
 class AddAnotherAuthorisationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   formProvider: AddAnotherFormProvider,

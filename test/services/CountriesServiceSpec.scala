@@ -19,17 +19,20 @@ package services
 import base.SpecBase
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import generators.Generators
 import models.SelectableList
 import models.reference.{Country, CountryCode}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generators {
+class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generators with ScalaCheckPropertyChecks {
 
   private val mockRefDataConnector: ReferenceDataConnector = mock[ReferenceDataConnector]
   private val service                                      = new CountriesService(mockRefDataConnector)
@@ -59,16 +62,51 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
       }
     }
 
-    "getCountryCodesCommonTransit" - {
-      "must return a list of sorted countries" in {
+    "isInCL009" - {
+      "must return true" - {
+        "when connector call returns the country" in {
+          forAll(arbitrary[Country]) {
+            country =>
+              beforeEach()
 
-        when(mockRefDataConnector.getCountryCodesCommonTransit()(any(), any()))
-          .thenReturn(Future.successful(countries))
+              when(mockRefDataConnector.getCountryCodesCommonTransitCountry(any())(any(), any()))
+                .thenReturn(Future.successful(country))
 
-        service.getCountryCodesCommonTransit().futureValue mustBe
-          Seq(country2, country3, country1)
+              val result = service.isInCL009(country).futureValue
 
-        verify(mockRefDataConnector).getCountryCodesCommonTransit()(any(), any())
+              result mustBe true
+
+              verify(mockRefDataConnector).getCountryCodesCommonTransitCountry(eqTo(country.code.code))(any(), any())
+          }
+        }
+      }
+
+      "must return false" - {
+        "when connector call returns NoReferenceDataFoundException" in {
+          forAll(arbitrary[Country]) {
+            country =>
+              when(mockRefDataConnector.getCountryCodesCommonTransitCountry(any())(any(), any()))
+                .thenReturn(Future.failed(new NoReferenceDataFoundException("")))
+
+              val result = service.isInCL009(country).futureValue
+
+              result mustBe false
+          }
+        }
+      }
+
+      "must fail" - {
+        "when connector call otherwise fails" in {
+          forAll(arbitrary[Country]) {
+            country =>
+              when(mockRefDataConnector.getCountryCodesCommonTransitCountry(any())(any(), any()))
+                .thenReturn(Future.failed(new Throwable("")))
+
+              val result = service.isInCL009(country)
+
+              result.failed.futureValue mustBe a[Throwable]
+          }
+        }
       }
     }
   }

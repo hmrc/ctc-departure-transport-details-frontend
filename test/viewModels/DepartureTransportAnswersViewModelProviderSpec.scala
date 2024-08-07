@@ -21,6 +21,7 @@ import generators.Generators
 import models.reference.Nationality
 import models.reference.transportMeans.departure.Identification
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transportMeans.AddInlandModeYesNoPage
 import pages.transportMeans.departure._
 import viewModels.DepartureTransportAnswersViewModel.DepartureTransportAnswersViewModelProvider
 
@@ -30,6 +31,7 @@ class DepartureTransportAnswersViewModelProviderSpec extends SpecBase with Scala
 
     "must generate a MiniTransportAnswersViewModel" in {
       val userAnswers = emptyUserAnswers
+        .setValue(AddInlandModeYesNoPage, true)
         .setValue(AddIdentificationTypeYesNoPage(index), true)
         .setValue(IdentificationPage(index), Identification("type", "desc"))
         .setValue(AddIdentificationNumberYesNoPage(index), true)

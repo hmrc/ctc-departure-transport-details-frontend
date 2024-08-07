@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ItemsDestinationCountryController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,
@@ -70,16 +70,15 @@ class ItemsDestinationCountryController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, countryList.values, mode))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                val navigator: UserAnswersNavigator = navigatorProvider(mode)
                 for {
-                  countryCodesCommonTransit <- service.getCountryCodesCommonTransit()
-                  isInCL009 = countryCodesCommonTransit.map(_.code).contains(value.code)
+                  isInCL009 <- service.isInCL009(value)
                   result <- ItemsDestinationCountryPage
                     .writeToUserAnswers(value)
                     .appendValue(ItemsDestinationCountryInCL009Page, isInCL009)
                     .updateTask()
-                    .writeToSession()
-                    .navigate()
+                    .writeToSession(sessionRepository)
+                    .navigateWith(navigator)
                 } yield result
               }
             )

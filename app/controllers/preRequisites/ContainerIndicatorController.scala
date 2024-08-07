@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ContainerIndicatorController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
@@ -70,8 +70,8 @@ class ContainerIndicatorController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, request.arg))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-              ContainerIndicatorPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              val navigator: UserAnswersNavigator = navigatorProvider(mode)
+              ContainerIndicatorPage.writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
             }
           )
     }

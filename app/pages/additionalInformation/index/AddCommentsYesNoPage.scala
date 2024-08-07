@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.additionalInformation
+package pages.additionalInformation.index
 
 import controllers.additionalInformation.index.routes
 import models.{Index, Mode, UserAnswers}
@@ -22,6 +22,8 @@ import pages.QuestionPage
 import pages.sections.additionalInformation.AdditionalInformationSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case class AddCommentsYesNoPage(additionalInformationIndex: Index) extends QuestionPage[Boolean] {
 
@@ -32,4 +34,9 @@ case class AddCommentsYesNoPage(additionalInformationIndex: Index) extends Quest
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddCommentsYesNoController.onPageLoad(userAnswers.lrn, additionalInformationIndex, mode))
 
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => userAnswers.remove(AdditionalInformationTextPage(additionalInformationIndex))
+      case _           => super.cleanup(value, userAnswers)
+    }
 }

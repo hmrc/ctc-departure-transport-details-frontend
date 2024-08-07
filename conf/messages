@@ -30,9 +30,6 @@ checkYourAnswers.title = Check your answers - Transport details
 transportMeans.departure.checkYourAnswers.heading = Check your answers
 transportMeans.departure.checkYourAnswers.title = Check your answers - Departure means of transport
 
-transportMeans.departure.checkYourAnswers.addIdentificationTypeYesNo.checkYourAnswersLabel = Do you want to add the type of identification for the departure means of transport?
-transportMeans.departure.checkYourAnswers.addIdentificationTypeYesNo.change.hidden = if you want to add the type of identification for the departure means of transport
-
 checkYourAnswers.equipment.label = Transport equipment {0}
 checkYourAnswers.equipment.change.hidden = transport equipment {0}
 checkYourAnswers.supplyChainActor.label = Supply chain actor {0}
@@ -47,6 +44,8 @@ checkYourAnswers.carrierDetails = Carrier details
 checkYourAnswers.transportEquipment = Transport equipment
 checkYourAnswers.transportEquipment.addOrRemove = Add or remove transport equipment
 checkYourAnswers.transportCharges = Transport charges
+checkYourAnswers.additionalReference = Additional references
+checkYourAnswers.additionalReference.addOrRemove = Add or remove additional reference for all items
 checkYourAnswers.additionalInformation = Additional information
 checkYourAnswers.additionalInformation.addOrRemove = Add or remove additional information for all items
 
@@ -146,17 +145,30 @@ transportMeans.inlandMode.checkYourAnswersLabel = Mode
 transportMeans.inlandMode.error.required = Select which inland mode of transport you’re using
 transportMeans.inlandMode.change.hidden = inland mode of transport
 
-transportMeans.addDepartureTransportMeansYesNo.title = Do you want to add identification for this vehicle?
-transportMeans.addDepartureTransportMeansYesNo.heading = Do you want to add identification for this vehicle?
-transportMeans.addDepartureTransportMeansYesNo.checkYourAnswersLabel = Do you want to add identification for this vehicle?
-transportMeans.addDepartureTransportMeansYesNo.change.hidden = if you want to add identification for the departure means of transport
+transportMeans.addDepartureTransportMeansYesNo.inlandModeYes.title = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.inlandModeYes.heading = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.inlandModeYes.checkYourAnswersLabel = Do you want to add identification for this vehicle?
+transportMeans.addDepartureTransportMeansYesNo.inlandModeYes.change.hidden = if you want to add identification for this vehicle
+
+transportMeans.addDepartureTransportMeansYesNo.inlandModeNo.title = Do you want to add identification for the departure means of transport?
+transportMeans.addDepartureTransportMeansYesNo.inlandModeNo.heading = Do you want to add identification for the departure means of transport?
+transportMeans.addDepartureTransportMeansYesNo.inlandModeNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+transportMeans.addDepartureTransportMeansYesNo.inlandModeNo.checkYourAnswersLabel = Do you want to add identification for the departure means of transport?
+transportMeans.addDepartureTransportMeansYesNo.inlandModeNo.change.hidden = if you want to add identification for the departure means of transport
+
 transportMeans.addDepartureTransportMeansYesNo.error.required = Select yes if you want to add identification for this vehicle
 
-transportMeans.departure.addIdentificationTypeYesNo.title = Do you want to add the type of identification?
-transportMeans.departure.addIdentificationTypeYesNo.heading = Do you want to add the type of identification?
-transportMeans.departure.addIdentificationTypeYesNo.checkYourAnswersLabel = Do you want to add the type of identification?
-transportMeans.departure.addIdentificationTypeYesNo.change.hidden = if you want to add the type of identification for the departure means of transport
-transportMeans.departure.addIdentificationTypeYesNo.error.required = Select yes if you want to add a type of identification
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo.title = Do you want to add the type of identification for the departure means of transport?
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo.heading = Do you want to add the type of identification for the departure means of transport?
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo.paragraph = This is the means of transport used from the UK office of departure to a UK port or airport.
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo.checkYourAnswersLabel = Do you want to add the type of identification for the departure means of transport?
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo.change.hidden = if you want to add the type of identification for the departure means of transport
+
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes.title = Do you want to add the type of identification for this vehicle?
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes.heading = Do you want to add the type of identification for this vehicle?
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes.checkYourAnswersLabel = Do you want to add the type of identification for this vehicle?
+transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes.change.hidden = if you want to add the type of identification for this vehicle
+transportMeans.departure.addIdentificationTypeYesNo.error.required = Select yes if you want to add the type of identification
 
 transportMeans.departure.identification.title = Which identification do you want to use for this vehicle?
 transportMeans.departure.identification.heading = Which identification do you want to use for this vehicle?
@@ -324,14 +336,15 @@ transportMeans.active.addAnotherBorderTransport.hidden = Do you want to add anot
 transportMeans.active.addAnotherBorderTransport.hint = Only include vehicles that cross into another CTC country. As the EU is one CTC country, you don’t need to provide vehicle changes that stay within the EU.
 transportMeans.active.addAnotherBorderTransport.maxLimit.label = You cannot add any more border means of transport. To add another, you need to remove one first.
 
-transportMeans.active.confirmRemoveBorderTransport.title = Are you sure you want to remove this border means of transport?
-transportMeans.active.confirmRemoveBorderTransport.heading = Are you sure you want to remove this border means of transport?
-transportMeans.active.confirmRemoveBorderTransport.error.required = Select yes if you want to remove this border means of transport
+transportMeans.active.confirmRemoveBorderTransport.title = Are you sure you want to remove border means of transport {0}
+transportMeans.active.confirmRemoveBorderTransport.heading = Are you sure you want to remove border means of transport {0}
+transportMeans.active.confirmRemoveBorderTransport.error.required = Select yes if you want to remove border means of transport {0}
 
 transportMeans.transportMeansCheckYourAnswers.title = Check your answers - Modes and means of transport
 transportMeans.transportMeansCheckYourAnswers.heading = Check your answers
 transportMeans.inlandMode.subheading = Inland mode of transport
 transportMeans.departureMeans.subheading = Departure means of transport
+transportMeans.departureMeans.addOrRemove = Add or remove departure means of transport
 transportMeans.borderMode.subheading = Border mode of transport
 transportMeans.borderMeans.subheading = Border means of transport
 transportMeans.borderMeans.addOrRemove = Add or remove border means of transport
@@ -358,10 +371,12 @@ supplyChainActors.index.supplyChainActorType.error.required = Select which type 
 
 supplyChainActors.index.identificationNumber.title = What is the EORI number or Third Country Unique Identification Number (TCUIN) for the {0}?
 supplyChainActors.index.identificationNumber.heading = What is the EORI number or Third Country Unique Identification Number (TCUIN) for the {0}?
-supplyChainActors.index.identificationNumber.hint = This can be up to 17 characters long and include both letters and numbers. For example, GB123456789000.
+supplyChainActors.index.identificationNumber.hint = This will start with 2 letters, such as GB or XI, followed by up to 15 letters or numbers. For example, GB123456789000.
 supplyChainActors.index.identificationNumber.error.required = Enter the EORI number or Third Country Unique Identification Number for the supply chain actor
-supplyChainActors.index.identificationNumber.error.length = The EORI number or Third Country Unique Identification Number must be 17 characters or less
-supplyChainActors.index.identificationNumber.error.invalid = The EORI number or Third Country Unique Identification Number must only include letters a to z and numbers 0 to 9
+supplyChainActors.index.identificationNumber.error.invalidCharacters = The EORI number or Third Country Unique Identification Number must only include letters a to z and numbers 0 to 9
+supplyChainActors.index.identificationNumber.error.maxLength = The EORI number or Third Country Unique Identification Number must be 17 characters or less
+supplyChainActors.index.identificationNumber.error.minLength = The EORI number or Third Country Unique Identification Number must be 3 characters or more
+supplyChainActors.index.identificationNumber.error.invalidFormat = The EORI number or Third Country Unique Identification Number must start with 2 letters, such as GB or XI, followed by up to 15 letters or numbers
 
 supplyChainActors.index.removeSupplyChainActor.title = Are you sure you want to remove this supply chain actor?
 supplyChainActors.index.removeSupplyChainActor.heading = Are you sure you want to remove this supply chain actor?
@@ -395,7 +410,8 @@ authorisations.authorisationType.error.required = Select which type of authorisa
 authorisations.authorisationReferenceNumber.title = What is the reference number for the {0} authorisation?
 authorisations.authorisationReferenceNumber.heading = What is the reference number for the {0} authorisation?
 authorisations.authorisationReferenceNumber.hint = This can be up to 35 characters long and include both letters and numbers.
-authorisations.authorisationReferenceNumber.paragraph = You need to enter this as you’re using a reduced data set.
+authorisations.authorisationReferenceNumber.paragraph.ACR = This authorisation is for the status of authorised consignor for Union transit.
+authorisations.authorisationReferenceNumber.paragraph.TRD = You need to enter this as you are using a reduced data set.
 authorisations.authorisationReferenceNumber.error.required = Enter the reference number for the {0} authorisation
 authorisations.authorisationReferenceNumber.error.length = The reference number must be 35 characters or less
 authorisations.authorisationReferenceNumber.error.invalidCharacters = The reference number must only include letters a to z and numbers 0 to 9
@@ -545,9 +561,9 @@ equipment.index.addAnotherSeal.error.required = Select yes if you want to add an
 equipment.index.addAnotherSeal.label = Do you want to add another seal?
 equipment.index.addAnotherSeal.maxLimit.label = You cannot add any more seals. To add another, you need to remove one first.
 
-equipment.index.seals.removeSealYesNo.title = Are you sure you want to remove seal {0}?
-equipment.index.seals.removeSealYesNo.heading = Are you sure you want to remove seal {0}?
-equipment.index.seals.removeSealYesNo.error.required = Select yes if you want to remove seal {0}
+equipment.index.seals.removeSealYesNo.title = Are you sure you want to remove this seal?
+equipment.index.seals.removeSealYesNo.heading = Are you sure you want to remove this seal?
+equipment.index.seals.removeSealYesNo.error.required = Select yes if you want to remove this seal
 
 equipment.index.checkYourAnswers.title = Check your answers - Transport equipment
 equipment.index.checkYourAnswers.heading = Check your answers
@@ -567,6 +583,9 @@ equipment.addAnotherEquipment.plural.heading = You have added {0} transport equi
 equipment.addAnotherEquipment.label = Do you want to add any other transport equipment?
 equipment.addAnotherEquipment.maxLimit.label = You cannot add any more transport equipment. To add another, you need to remove one first.
 equipment.addAnotherEquipment.error.required = Select yes if you want to add any other transport equipment
+
+transportEquipment.prefix = Transport Equipment {0}
+transportEquipment.containerId = Container {0}
 
 equipment.index.removeTransportEquipment.title = Are you sure you want to remove transport equipment {0}?
 equipment.index.removeTransportEquipment.heading = Are you sure you want to remove transport equipment {0}?
@@ -601,9 +620,9 @@ transportMeans.departure.addAnotherDepartureTransportMeans.maxLimit.label = You 
 transportMeans.departure.addAnotherDepartureTransportMeans.roadInlandMode.maxLimit.label = You can only add up to 3 departure means of transport when using road as your mode. To add another, you need to remove one first.
 transportMeans.departure.addAnotherDepartureTransportMeans.error.required = Select yes if you want to add another departure means of transport
 
-transportMeans.departure.removeTransportMeansOfDepartureYesNo.title = Are you sure you want to remove this departure means of transport?
-transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading = Are you sure you want to remove this departure means of transport?
-transportMeans.departure.removeTransportMeansOfDepartureYesNo.error.required = Select yes if you want to remove this departure means of transport
+transportMeans.departure.removeTransportMeansOfDepartureYesNo.title = Are you sure you want to remove departure means of transport {0}?
+transportMeans.departure.removeTransportMeansOfDepartureYesNo.heading = Are you sure you want to remove departure means of transport {0}?
+transportMeans.departure.removeTransportMeansOfDepartureYesNo.error.required = Select yes if you want to remove departure means of transport {0}
 
 transportMeans.departure.identification.paragraph1 = You must add the registration number of the road vehicle for your inland mode.
 transportMeans.departure.identification.paragraph2 = You must add the registration number of the road trailer for your inland mode.
@@ -614,6 +633,11 @@ additionalReference.addAdditionalReferenceYesNo.title = Do you want to add an ad
 additionalReference.addAdditionalReferenceYesNo.heading = Do you want to add an additional reference for all items?
 additionalReference.addAdditionalReferenceYesNo.paragraph = This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document.
 additionalReference.addAdditionalReferenceYesNo.error.required = Select yes if you want to add an additional reference for all items
+additionalReference.addAdditionalReferenceYesNo.checkYourAnswersLabel = Do you want to add an additional reference for all items?
+
+additionalReference.additionalReference.checkYourAnswersLabel = Additional reference {0}
+additionalReference.additionalReference.change.hidden = if you want to add any additional information for all items
+additionalReference.addAdditionalReferenceYesNo.change.hidden = if you want to add an additional reference  for all items
 
 additionalReference.index.addAdditionalReferenceNumberYesNo.title = Do you want to add an additional reference number?
 additionalReference.index.addAdditionalReferenceNumberYesNo.heading = Do you want to add an additional reference number?
@@ -627,6 +651,7 @@ additionalReference.index.additionalReferenceType.error.required = Select the ty
 
 additionalReference.index.additionalReferenceNumber.title = Enter the additional reference number
 additionalReference.index.additionalReferenceNumber.heading = Enter the additional reference number
+additionalReference.index.additionalReferenceNumber.hint = This can be up to 70 characters long.
 additionalReference.index.additionalReferenceNumber.error.required = Enter the additional reference number
 additionalReference.index.additionalReferenceNumber.error.length = The additional reference number must be 70 characters or less
 additionalReference.index.additionalReferenceNumber.error.invalidCharacters = The additional reference number must only include letters a to z without accents, numbers 0 to 9, ampersands (&), apostrophes, at signs (@), commas, forward slashes, full stops, hyphens, question marks and spaces

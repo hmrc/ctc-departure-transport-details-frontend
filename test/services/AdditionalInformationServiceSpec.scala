@@ -20,11 +20,12 @@ import base.SpecBase
 import cats.data.NonEmptySet
 import connectors.ReferenceDataConnector
 import generators.Generators
-import models.SelectableList
 import models.reference.additionalInformation.AdditionalInformationCode
+import models.{Index, SelectableList}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
+import pages.external.ItemCountryOfDestinationInCL009Page
 import pages.preRequisites.ItemsDestinationCountryInCL009Page
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -36,13 +37,13 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
   private val service                                      = new AdditionalInformationService(mockRefDataConnector)
 
   private val additionalInformationCode1: AdditionalInformationCode =
-    AdditionalInformationCode("20100", "Export from one EFTA country subject to restriction or export from the Union subject to restriction")
-  private val additionalInformationCode2: AdditionalInformationCode = AdditionalInformationCode("20300", "Export")
+    AdditionalInformationCode("20100", "EFTA")
 
-  val additionalInformationCode3 = AdditionalInformationCode(
-    "30600",
-    "In EXS, where negotiable bills of lading 'to order blank endorsed' are concerned and the consignee particulars are unknown."
-  )
+  private val additionalInformationCode2: AdditionalInformationCode =
+    AdditionalInformationCode("20300", "Export")
+
+  private val additionalInformationCode3: AdditionalInformationCode =
+    AdditionalInformationCode("30600", "EXS")
 
   private val additionalInformationCodes: NonEmptySet[AdditionalInformationCode] =
     NonEmptySet.of(additionalInformationCode1, additionalInformationCode2, additionalInformationCode3)
@@ -55,29 +56,85 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
   "AdditionalInformationService" - {
 
     "getAdditionalInformationCodes" - {
-      "must return a list of additional information codes" in {
+      "must return a list of additional information codes" - {
+        val expectedResult = SelectableList(Seq(additionalInformationCode1, additionalInformationCode2, additionalInformationCode3))
 
-        when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
-          .thenReturn(Future.successful(additionalInformationCodes))
+        "when user answers contains no information about consignment or item countries of destination" in {
+          when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
+            .thenReturn(Future.successful(additionalInformationCodes))
 
-        service.getAdditionalInformationCodes(emptyUserAnswers).futureValue mustBe
-          SelectableList(Seq(additionalInformationCode1, additionalInformationCode2, additionalInformationCode3))
+          service.getAdditionalInformationCodes(emptyUserAnswers).futureValue mustBe expectedResult
 
-        verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+          verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+        }
+
+        "when consignment country of destination is not in CL009" in {
+          when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
+            .thenReturn(Future.successful(additionalInformationCodes))
+
+          val userAnswers = emptyUserAnswers.setValue(ItemsDestinationCountryInCL009Page, false)
+
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustBe expectedResult
+
+          verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+        }
+
+        "when no item countries of destination are in CL009" in {
+          when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
+            .thenReturn(Future.successful(additionalInformationCodes))
+
+          val userAnswers = emptyUserAnswers
+            .setValue(ItemCountryOfDestinationInCL009Page(Index(0)), false)
+            .setValue(ItemCountryOfDestinationInCL009Page(Index(1)), false)
+            .setValue(ItemCountryOfDestinationInCL009Page(Index(2)), false)
+
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustBe expectedResult
+
+          verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+        }
       }
 
-      "must return a list of additional information codes with filtered additionalInformationCode 30600" in {
+      "must return a list of additional information codes with 30600 filtered out" - {
+        val expectedResult = SelectableList(Seq(additionalInformationCode1, additionalInformationCode2))
 
-        when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
-          .thenReturn(Future.successful(additionalInformationCodes))
+        "when consignment country of destination is in CL009" in {
+          when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
+            .thenReturn(Future.successful(additionalInformationCodes))
 
-        val userAnswers = emptyUserAnswers.setValue(ItemsDestinationCountryInCL009Page, true)
+          val userAnswers = emptyUserAnswers.setValue(ItemsDestinationCountryInCL009Page, true)
 
-        service.getAdditionalInformationCodes(userAnswers).futureValue mustBe
-          SelectableList(Seq(additionalInformationCode1, additionalInformationCode2))
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustBe expectedResult
 
-        verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+          verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+        }
 
+        "when one item country of destination is in CL009" in {
+          when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
+            .thenReturn(Future.successful(additionalInformationCodes))
+
+          val userAnswers = emptyUserAnswers
+            .setValue(ItemCountryOfDestinationInCL009Page(Index(0)), true)
+            .setValue(ItemCountryOfDestinationInCL009Page(Index(1)), false)
+            .setValue(ItemCountryOfDestinationInCL009Page(Index(2)), false)
+
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustBe expectedResult
+
+          verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+        }
+
+        "when all item countries of destination are in CL009" in {
+          when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
+            .thenReturn(Future.successful(additionalInformationCodes))
+
+          val userAnswers = emptyUserAnswers
+            .setValue(ItemCountryOfDestinationInCL009Page(Index(0)), true)
+            .setValue(ItemCountryOfDestinationInCL009Page(Index(1)), true)
+            .setValue(ItemCountryOfDestinationInCL009Page(Index(2)), true)
+
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustBe expectedResult
+
+          verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+        }
       }
     }
   }

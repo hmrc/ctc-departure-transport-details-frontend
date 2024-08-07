@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package pages.additionalInformation
+package pages.external
 
-import org.scalacheck.Arbitrary._
-import pages.behaviours.PageBehaviours
+import models.Index
+import pages.ReadOnlyPage
+import pages.sections.external.ItemSection
+import play.api.libs.json.JsPath
 
-class AddCommentsYesNoPageSpec extends PageBehaviours {
+case class ItemCountryOfDestinationInCL009Page(index: Index) extends ReadOnlyPage[Boolean] {
 
-  "AddAdditionalReferenceYesNoPage" - {
-
-    beRetrievable[Boolean](AddCommentsYesNoPage(index))
-
-    beSettable[Boolean](AddCommentsYesNoPage(index))
-
-    beRemovable[Boolean](AddCommentsYesNoPage(index))
-  }
-
+  override def path: JsPath = ItemSection(index).path \ "countryOfDestination" \ "isInCL009"
 }

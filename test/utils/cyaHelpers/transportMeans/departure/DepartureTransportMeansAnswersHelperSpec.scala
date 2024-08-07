@@ -24,6 +24,7 @@ import models.reference.Nationality
 import models.reference.transportMeans.departure.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.transportMeans.AddInlandModeYesNoPage
 import pages.transportMeans.departure._
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryListRow, Value}
 import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
@@ -34,30 +35,42 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
   "DepartureTransportMeansAnswersHelper" - {
 
     "departureAddTypeYesNo" - {
+
+      def prefix(addInlandModeYesNo: Boolean) = if (addInlandModeYesNo) {
+        "transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes"
+      } else {
+        "transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo"
+      }
+
       "must return None" - {
         "when departureAddTypeYesNo undefined" in {
           forAll(arbitrary[Mode]) {
             mode =>
               val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, mode, departureIndex)
-              val result = helper.departureAddTypeYesNo()
+              val result = helper.departureAddTypeYesNo(prefix(false))
               result mustBe None
           }
         }
       }
 
       "must return Some(Row)" - {
-        "when AddIdentificationTypeYesNoPage defined" in {
+
+        "when AddIdentificationTypeYesNoPage defined and AddInlandModeYesNo is true" in {
+
+          val addInlandModeYesNo = true
+
           forAll(arbitrary[Mode]) {
             mode =>
               val answers = emptyUserAnswers
                 .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
+                .setValue(AddInlandModeYesNoPage, addInlandModeYesNo)
 
               val helper = new DepartureTransportMeansAnswersHelper(answers, mode, departureIndex)
-              val result = helper.departureAddTypeYesNo()
+              val result = helper.departureAddTypeYesNo(prefix(addInlandModeYesNo))
 
               result mustBe Some(
                 SummaryListRow(
-                  key = Key("Do you want to add the type of identification?".toText),
+                  key = Key("Do you want to add the type of identification for this vehicle?".toText),
                   value = Value("Yes".toText),
                   actions = Some(
                     Actions(
@@ -65,7 +78,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                         ActionItem(
                           content = "Change".toText,
                           href = routes.AddIdentificationTypeYesNoController.onPageLoad(answers.lrn, mode, departureIndex).url,
-                          visuallyHiddenText = Some("if you want to add the type of identification for the departure means of transport"),
+                          visuallyHiddenText = Some("if you want to add the type of identification for this vehicle"),
                           attributes = Map("id" -> "change-transport-means-departure-add-identification-type")
                         )
                       )
@@ -76,14 +89,18 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
           }
         }
 
-        "when AddIdentificationTypeYesNoPage defined and suffix is 'checkYourAnswers'" in {
+        "when AddIdentificationTypeYesNoPage defined and AddInlandModeYesNo is false" in {
+
+          val addInlandModeYesNo = false
+
           forAll(arbitrary[Mode]) {
             mode =>
               val answers = emptyUserAnswers
                 .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
+                .setValue(AddInlandModeYesNoPage, addInlandModeYesNo)
 
               val helper = new DepartureTransportMeansAnswersHelper(answers, mode, departureIndex)
-              val result = helper.departureAddTypeYesNo(Some("checkYourAnswers"))
+              val result = helper.departureAddTypeYesNo(prefix(addInlandModeYesNo))
 
               result mustBe Some(
                 SummaryListRow(

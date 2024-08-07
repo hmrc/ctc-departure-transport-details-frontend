@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AdditionalReferenceNumberFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
+import navigation.{AdditionalReferenceNavigatorProvider, UserAnswersNavigator}
 import pages.additionalReference.index.AdditionalReferenceNumberPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -35,8 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
-  navigatorProvider: TransportNavigatorProvider,
+  sessionRepository: SessionRepository,
+  navigatorProvider: AdditionalReferenceNavigatorProvider,
   formProvider: AdditionalReferenceNumberFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -64,12 +64,12 @@ class AdditionalReferenceNumberController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, additionalReferenceIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, additionalReferenceIndex)
             AdditionalReferenceNumberPage(additionalReferenceIndex)
               .writeToUserAnswers(value)
               .updateTask()
-              .writeToSession()
-              .navigate()
+              .writeToSession(sessionRepository)
+              .navigateWith(navigator)
           }
         )
   }

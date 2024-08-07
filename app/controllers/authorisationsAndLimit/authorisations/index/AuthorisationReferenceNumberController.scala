@@ -16,66 +16,49 @@
 
 package controllers.authorisationsAndLimit.authorisations.index
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AuthorisationReferenceNumberFormProvider
-import models.reference.authorisations.AuthorisationType
-import models.requests.SpecificDataRequestProvider1
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{AuthorisationNavigatorProvider, UserAnswersNavigator}
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
-import pages.external.ApprovedOperatorPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.authorisationsAndLimit.authorisations.index.AuthorisationReferenceNumberView
-import play.api.Logging
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AuthorisationReferenceNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: AuthorisationNavigatorProvider,
   formProvider: AuthorisationReferenceNumberFormProvider,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AuthorisationReferenceNumberView,
-  config: FrontendAppConfig
+  view: AuthorisationReferenceNumberView
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
-    with I18nSupport
-    with Logging {
-
-  private type Request = SpecificDataRequestProvider1[AuthorisationType]#SpecificDataRequest[_]
+    with I18nSupport {
 
   private val prefix = "authorisations.authorisationReferenceNumber"
-
-  private def approvedOperator(implicit request: Request): Option[Boolean] =
-    ApprovedOperatorPage.inferredReader.apply(Nil).map(_.value).run(request.userAnswers).toOption
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
     .andThen(getMandatoryPage(AuthorisationTypePage(authorisationIndex), InferredAuthorisationTypePage(authorisationIndex))) {
       implicit request =>
-        approvedOperator match {
-          case Some(approvedOperator) =>
-            val form = formProvider(prefix, request.arg.forDisplay)
+        val form = formProvider(prefix, request.arg.forDisplay)
 
-            val preparedForm = request.userAnswers.get(AuthorisationReferenceNumberPage(authorisationIndex)) match {
-              case None        => form
-              case Some(value) => form.fill(value)
-            }
-
-            Ok(view(preparedForm, lrn, request.arg.forDisplay, mode, authorisationIndex, approvedOperator))
-          case _ =>
-            logger.error("Approved operator value could not be determined")
-            Redirect(config.technicalDifficultiesUrl)
+        val preparedForm = request.userAnswers.get(AuthorisationReferenceNumberPage(authorisationIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
         }
+
+        Ok(view(preparedForm, lrn, request.arg, mode, authorisationIndex))
     }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode, authorisationIndex: Index): Action[AnyContent] = actions
@@ -83,21 +66,19 @@ class AuthorisationReferenceNumberController @Inject() (
     .andThen(getMandatoryPage(AuthorisationTypePage(authorisationIndex), InferredAuthorisationTypePage(authorisationIndex)))
     .async {
       implicit request =>
-        approvedOperator match {
-          case Some(approvedOperator) =>
-            val form = formProvider(prefix, request.arg.forDisplay)
-            form
-              .bindFromRequest()
-              .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, request.arg.forDisplay, mode, authorisationIndex, approvedOperator))),
-                value => {
-                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, authorisationIndex)
-                  AuthorisationReferenceNumberPage(authorisationIndex).writeToUserAnswers(value).updateTask().writeToSession().navigate()
-                }
-              )
-          case _ =>
-            logger.error("Approved operator value could not be determined")
-            Future.successful(Redirect(config.technicalDifficultiesUrl))
-        }
+        val form = formProvider(prefix, request.arg.forDisplay)
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, request.arg, mode, authorisationIndex))),
+            value => {
+              val navigator: UserAnswersNavigator = navigatorProvider(mode, authorisationIndex)
+              AuthorisationReferenceNumberPage(authorisationIndex)
+                .writeToUserAnswers(value)
+                .updateTask()
+                .writeToSession(sessionRepository)
+                .navigateWith(navigator)
+            }
+          )
     }
 }

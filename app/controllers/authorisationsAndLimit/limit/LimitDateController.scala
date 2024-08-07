@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class LimitDateController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   formProvider: DateFormProvider,
   actions: Actions,
@@ -81,8 +81,8 @@ class LimitDateController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, maxDateArg, request.arg.toString))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-              LimitDatePage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              val navigator: UserAnswersNavigator = navigatorProvider(mode)
+              LimitDatePage.writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
             }
           )
     }
