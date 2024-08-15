@@ -57,7 +57,7 @@ class AuthorisationTypeController @Inject() (
     implicit request =>
       service.getAuthorisationTypes(request.userAnswers, Some(authorisationIndex)).flatMap {
         case authorisationType :: Nil =>
-          redirect(mode, authorisationIndex, InferredAuthorisationTypePage, authorisationType)
+          redirect(mode, authorisationIndex, InferredAuthorisationTypePage.apply, authorisationType)
         case authorisationTypes =>
           val preparedForm = request.userAnswers.get(AuthorisationTypePage(authorisationIndex)) match {
             case None        => form(authorisationTypes)
@@ -76,7 +76,7 @@ class AuthorisationTypeController @Inject() (
             .bindFromRequest()
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, authorisationTypesList, mode, authorisationIndex))),
-              value => redirect(mode, authorisationIndex, AuthorisationTypePage, value)
+              value => redirect(mode, authorisationIndex, AuthorisationTypePage.apply, value)
             )
       }
   }
@@ -86,7 +86,7 @@ class AuthorisationTypeController @Inject() (
     index: Index,
     page: Index => QuestionPage[AuthorisationType],
     value: AuthorisationType
-  )(implicit request: DataRequest[_]): Future[Result] = {
+  )(implicit request: DataRequest[?]): Future[Result] = {
     val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
     page(index).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
   }

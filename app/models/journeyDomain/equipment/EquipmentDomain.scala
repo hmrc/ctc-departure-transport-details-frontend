@@ -44,7 +44,7 @@ case class EquipmentDomain(
       messages("equipment.value.withoutIndex.withContainer", _)
     )
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(EquipmentSection(index))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(EquipmentSection(index))
 }
 
 object EquipmentDomain {
@@ -82,7 +82,7 @@ object EquipmentDomain {
       case _ =>
         (
           ProcedureTypePage.reader,
-          AuthorisationsSection.fieldReader(AuthorisationTypePage)
+          AuthorisationsSection.fieldReader(AuthorisationTypePage.apply)
         ).to {
           case (ProcedureType.Simplified, authorisationTypes) if authorisationTypes.exists(_.isSSE) =>
             SealsDomain.userAnswersReader(equipmentIndex).toOption

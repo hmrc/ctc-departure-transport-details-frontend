@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[PaymentMethod], lrn: LocalReferenceNumber, paymentMethods: Seq[PaymentMethod], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[PaymentMethod], lrn: LocalReferenceNumber, paymentMethods: Seq[PaymentMethod], mode: Mode)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("equipment.paymentMethod.title"),

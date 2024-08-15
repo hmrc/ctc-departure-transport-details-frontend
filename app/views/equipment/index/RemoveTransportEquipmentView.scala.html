@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index, containerIdentification : Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index, containerIdentification : Option[String])(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("equipment.index.removeTransportEquipment.title", equipmentIndex.display),

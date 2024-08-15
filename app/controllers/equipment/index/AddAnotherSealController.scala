@@ -17,7 +17,7 @@
 package controllers.equipment.index
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.EquipmentNavigatorProvider
@@ -25,7 +25,6 @@ import pages.sections.equipment.SealsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.equipment.AddAnotherSealViewModel
 import viewModels.equipment.AddAnotherSealViewModel.AddAnotherSealViewModelProvider
@@ -35,7 +34,6 @@ import javax.inject.Inject
 
 class AddAnotherSealController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
   navigatorProvider: EquipmentNavigatorProvider,
   actions: Actions,
   formProvider: AddAnotherFormProvider,

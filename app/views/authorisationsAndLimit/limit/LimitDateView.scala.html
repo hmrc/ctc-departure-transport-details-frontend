@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[LocalDate], lrn: LocalReferenceNumber, mode: Mode, maxDate: String, officeOfDestination: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[LocalDate], lrn: LocalReferenceNumber, mode: Mode, maxDate: String, officeOfDestination: String)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("authorisationsAndLimit.limit.limitDate.title", officeOfDestination),

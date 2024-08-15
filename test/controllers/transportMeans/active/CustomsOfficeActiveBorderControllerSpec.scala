@@ -109,7 +109,7 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
         mockCustomsOfficesService.getCustomsOffices(any())
       ).thenReturn(allCustomOfficesList)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 

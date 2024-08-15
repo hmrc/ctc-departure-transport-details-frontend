@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[AuthorisationType], lrn: LocalReferenceNumber, authorisationTypes: Seq[AuthorisationType], mode: Mode, authorisationIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[AuthorisationType], lrn: LocalReferenceNumber, authorisationTypes: Seq[AuthorisationType], mode: Mode, authorisationIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("authorisations.authorisationType.title"),

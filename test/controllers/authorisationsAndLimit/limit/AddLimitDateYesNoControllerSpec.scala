@@ -17,7 +17,6 @@
 package controllers.authorisationsAndLimit.limit
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.authorisationsAndLimit.limit.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import navigation.TransportNavigatorProvider
@@ -83,7 +82,7 @@ class AddLimitDateYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 

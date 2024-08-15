@@ -72,7 +72,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
         forAll(arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex)) {
           userAnswers =>
             reset(mockSessionRepository)
-            when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+            when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
             setExistingUserAnswers(userAnswers)
 
@@ -97,7 +97,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
         forAll(arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex)) {
           userAnswers =>
             reset(mockSessionRepository)
-            when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+            when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
             setExistingUserAnswers(userAnswers)
 

@@ -16,7 +16,7 @@
 
 package controllers.transportMeans.departure
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.PhaseConfig
 import controllers.actions.Actions
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.TransportMeansDepartureListNavigatorProvider
@@ -35,8 +35,7 @@ class DepartureTransportAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: DepartureTransportAnswersView,
   navigatorProvider: TransportMeansDepartureListNavigatorProvider,
-  viewModelProvider: DepartureTransportAnswersViewModelProvider,
-  config: FrontendAppConfig
+  viewModelProvider: DepartureTransportAnswersViewModelProvider
 )(implicit phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {

@@ -17,7 +17,7 @@
 package controllers.additionalInformation
 
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.TransportNavigatorProvider
@@ -25,7 +25,6 @@ import pages.sections.additionalInformation.AdditionalInformationListSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.additionalInformation.AddAnotherAdditionalInformationViewModel
 import viewModels.additionalInformation.AddAnotherAdditionalInformationViewModel.AddAnotherAdditionalInformationViewModelProvider
@@ -35,7 +34,6 @@ import javax.inject.Inject
 
 class AddAnotherAdditionalInformationController @Inject() (
   override val messagesApi: MessagesApi,
-  sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   formProvider: AddAnotherFormProvider,

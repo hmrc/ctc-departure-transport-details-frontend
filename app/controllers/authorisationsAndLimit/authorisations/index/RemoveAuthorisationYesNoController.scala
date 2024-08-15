@@ -48,7 +48,7 @@ class RemoveAuthorisationYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[AuthorisationType]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[AuthorisationType]#SpecificDataRequest[?]
 
   private def authType(implicit request: Request): AuthorisationType = request.arg
 

@@ -30,7 +30,7 @@
         button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, additionalReferenceIndex: Index, additionalReference: Option[String])(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, additionalReferenceIndex: Index, additionalReference: Option[String])(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("additionalReference.index.removeAdditionalReference.title"),

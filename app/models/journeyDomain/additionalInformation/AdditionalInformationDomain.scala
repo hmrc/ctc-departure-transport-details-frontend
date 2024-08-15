@@ -17,9 +17,9 @@
 package models.journeyDomain.additionalInformation
 
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
-import models.journeyDomain.{GettableAsFilterForNextReaderOps, GettableAsReaderOps, JourneyDomainModel, Read, Stage}
+import models.journeyDomain.*
 import models.reference.additionalInformation.AdditionalInformationCode
-import models.{Index, Mode, Phase, UserAnswers}
+import models.*
 import pages.additionalInformation.index.{AddCommentsYesNoPage, AdditionalInformationTextPage, AdditionalInformationTypePage}
 import play.api.mvc.Call
 
