@@ -74,7 +74,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
     "when yes submitted must redirect to add another additional reference and remove additional reference at specified index" in {
       reset(mockSessionRepository)
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val userAnswers = emptyUserAnswers
         .setValue(AdditionalReferenceTypePage(additionalReferenceIndex), additionalReferenceType)
@@ -99,7 +99,7 @@ class RemoveAdditionalReferenceYesNoControllerSpec extends SpecBase with AppWith
 
     "when no submitted must redirect to add another additional reference and not remove the additional reference at specified index" in {
       reset(mockSessionRepository)
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val userAnswers = emptyUserAnswers
         .setValue(AdditionalReferenceTypePage(additionalReferenceIndex), additionalReferenceType)

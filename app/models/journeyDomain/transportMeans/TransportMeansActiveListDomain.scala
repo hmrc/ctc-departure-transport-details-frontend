@@ -27,7 +27,7 @@ case class TransportMeansActiveListDomain(
   transportMeansActiveListDomain: Seq[TransportMeansActiveDomain]
 ) extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(ActivesSection)
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(ActivesSection)
 }
 
 object TransportMeansActiveListDomain {

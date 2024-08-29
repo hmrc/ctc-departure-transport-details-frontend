@@ -19,6 +19,7 @@ package models.reference.additionalReference
 import cats.Order
 import models.Selectable
 import play.api.libs.json.{Format, Json}
+import models.reference.RichComparison
 
 case class AdditionalReferenceType(documentType: String, description: String) extends Selectable {
 

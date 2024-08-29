@@ -100,7 +100,7 @@ class ItemsDestinationCountryControllerSpec extends SpecBase with AppWithDefault
 
           when(mockCountriesService.getCountries()(any())).thenReturn(Future.successful(countryList))
           when(mockCountriesService.isInCL009(any())(any())).thenReturn(Future.successful(isInCL009))
-          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
           setExistingUserAnswers(emptyUserAnswers)
 

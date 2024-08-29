@@ -24,7 +24,7 @@ import pages.sections.authorisationsAndLimit.AuthorisationsSection
 
 case class AuthorisationsDomain(authorisations: Seq[AuthorisationDomain]) extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(AuthorisationsSection)
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(AuthorisationsSection)
 }
 
 object AuthorisationsDomain {

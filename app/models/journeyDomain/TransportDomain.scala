@@ -50,7 +50,7 @@ case class TransportDomain(
   additionalInformations: Option[AdditionalInformationsDomain]
 ) extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(TransportSection)
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(TransportSection)
 }
 
 object TransportDomain {

@@ -85,7 +85,7 @@ class AdditionalInformationCodeTextControllerSpec extends SpecBase with AppWithD
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, additionalInformationTextRoute)
         .withFormUrlEncodedBody(("value", "test string"))

@@ -20,12 +20,13 @@ import models.journeyDomain.{JourneyDomainModel, JsArrayGettableAsReaderOps, Rea
 import models.{Index, RichJsArray, UserAnswers}
 import pages.sections.Section
 import pages.sections.additionalInformation.AdditionalInformationListSection
+import models.journeyDomain.RichRead
 
 case class AdditionalInformationsDomain(
   value: Seq[AdditionalInformationDomain]
 ) extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(AdditionalInformationListSection)
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(AdditionalInformationListSection)
 }
 
 object AdditionalInformationsDomain {

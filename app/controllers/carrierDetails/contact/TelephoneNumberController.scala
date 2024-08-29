@@ -50,7 +50,7 @@ class TelephoneNumberController @Inject() (
   private def form(implicit request: Request): Form[String] =
     formProvider("carrierDetails.contact.telephoneNumber", contactName)
 
-  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[?]
 
   private def contactName(implicit request: Request): String = request.arg
 

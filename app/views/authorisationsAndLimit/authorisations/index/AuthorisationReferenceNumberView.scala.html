@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, authType: AuthorisationType, mode: Mode, authorisationIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, authType: AuthorisationType, mode: Mode, authorisationIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("authorisations.authorisationReferenceNumber.title", messages(authType.forDisplay)),

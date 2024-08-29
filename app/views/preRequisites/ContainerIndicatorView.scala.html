@@ -28,7 +28,7 @@
     button: Button
 )
 
-@(form: Form[OptionalBoolean], lrn: LocalReferenceNumber, mode: Mode, additionalDeclarationType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[OptionalBoolean], lrn: LocalReferenceNumber, mode: Mode, additionalDeclarationType: String)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("preRequisites.containerIndicator.title"),

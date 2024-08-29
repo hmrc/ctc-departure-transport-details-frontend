@@ -46,7 +46,7 @@ class IdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def otherIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+  private def otherIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[?]): Seq[String] = {
     val numberOfSeals = request.userAnswers.get(SealsSection(equipmentIndex)).length
     (0 until numberOfSeals)
       .map(Index(_))

@@ -79,7 +79,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
     "when yes submitted" - {
       "must redirect to add another departureTransportMeans and remove departureTransportMeans at specified index" in {
         reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
         val userAnswers = emptyUserAnswers.setValue(DepartureSection(departureIndex), Json.obj())
 
         setExistingUserAnswers(userAnswers)
@@ -102,7 +102,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
     "when no submitted" - {
       "must redirect to add another departureTransportMeans and not remove departureTransportMeans at specified index" in {
         reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
         val userAnswers = emptyUserAnswers.setValue(DepartureSection(departureIndex), Json.obj())
 
         setExistingUserAnswers(userAnswers)
@@ -125,7 +125,7 @@ class RemoveDepartureMeansOfTransportYesNoControllerSpec extends SpecBase with A
 
       setExistingUserAnswers(emptyUserAnswers.setValue(DepartureSection(departureIndex), Json.obj()))
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, removeDepartureTransportMeansRoute)
         .withFormUrlEncodedBody(("value", "true"))

@@ -29,7 +29,7 @@
         button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, viewModel: AddDepartureTransportMeansYesNoViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, viewModel: AddDepartureTransportMeansYesNoViewModel)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = viewModel.title,

@@ -112,7 +112,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
             .setValue(page, authorisationType)
           setExistingUserAnswers(userAnswers)
 
-          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
           val request = FakeRequest(POST, authorisationReferenceNumberRoute)
             .withFormUrlEncodedBody(("value", validAnswer))

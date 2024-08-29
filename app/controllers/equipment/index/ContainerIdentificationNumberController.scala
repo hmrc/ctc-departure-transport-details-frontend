@@ -48,15 +48,15 @@ class ContainerIdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(equipmentIndex: Index)(implicit request: DataRequest[_]): Form[String] =
+  private def form(equipmentIndex: Index)(implicit request: DataRequest[?]): Form[String] =
     formProvider("equipment.index.containerIdentificationNumber", otherContainerIdentificationNumbers(equipmentIndex))
 
-  private def otherContainerIdentificationNumbers(equipmentIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+  private def otherContainerIdentificationNumbers(equipmentIndex: Index)(implicit request: DataRequest[?]): Seq[String] = {
     val numberOfEquipments = request.userAnswers.get(EquipmentsSection).length
     (0 until numberOfEquipments)
       .map(Index(_))
       .filterNot(_ == equipmentIndex)
-      .map(ContainerIdentificationNumberPage)
+      .map(ContainerIdentificationNumberPage.apply)
       .flatMap(request.userAnswers.get(_))
   }
 

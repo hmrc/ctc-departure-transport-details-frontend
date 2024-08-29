@@ -64,7 +64,7 @@ class ConfirmRemoveBorderTransportControllerSpec extends SpecBase with AppWithDe
         forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex)) {
           userAnswers =>
             reset(mockSessionRepository)
-            when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+            when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
             setExistingUserAnswers(userAnswers)
 

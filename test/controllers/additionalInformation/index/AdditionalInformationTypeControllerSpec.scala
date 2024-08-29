@@ -94,7 +94,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockAdditionalInformationService.getAdditionalInformationCodes(any())(any())).thenReturn(Future.successful(additionalInformationCodeList))
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 

@@ -147,7 +147,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       val userAnswers = emptyUserAnswers
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(userAnswers)
 
