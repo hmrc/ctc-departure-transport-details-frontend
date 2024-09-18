@@ -87,7 +87,7 @@ class DepartureTransportMeansIdentificationNumberFormProviderSpec extends String
 
       running(app) {
 
-        val form      = app.injector.instanceOf[DepartureTransportMeansIdentificationNumberFormProviderSpec].apply(prefix)
+        val form      = app.injector.instanceOf[DepartureTransportMeansIdentificationNumberFormProvider].apply(prefix)
         val fieldName = "value"
 
         behave like fieldThatBindsValidData(
