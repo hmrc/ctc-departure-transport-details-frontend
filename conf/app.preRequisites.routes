@@ -24,7 +24,6 @@ POST       /add-country-of-destination/:lrn               controllers.preRequisi
 GET        /change-add-country-of-destination/:lrn        controllers.preRequisites.AddCountryOfDestinationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /change-add-country-of-destination/:lrn        controllers.preRequisites.AddCountryOfDestinationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-
 GET        /items-same-destination-country/:lrn           controllers.preRequisites.TransportedToSameCountryYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /items-same-destination-country/:lrn           controllers.preRequisites.TransportedToSameCountryYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /change-items-same-destination-country/:lrn    controllers.preRequisites.TransportedToSameCountryYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
