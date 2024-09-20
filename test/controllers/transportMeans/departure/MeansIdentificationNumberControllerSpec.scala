@@ -17,7 +17,7 @@
 package controllers.transportMeans.departure
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.IdentificationNumberFormProvider
+import forms.DepartureTransportMeansIdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
 import navigation.TransportMeansDepartureNavigatorProvider
@@ -39,7 +39,7 @@ class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefau
 
   private val prefix: String = "transportMeans.departure.meansIdentificationNumber"
 
-  private def form: Form[String] = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
+  private def form: Form[String] = app.injector.instanceOf[DepartureTransportMeansIdentificationNumberFormProvider].apply(prefix)
 
   private val mode                                = NormalMode
   private lazy val meansIdentificationNumberRoute = routes.MeansIdentificationNumberController.onPageLoad(lrn, mode, departureIndex).url
