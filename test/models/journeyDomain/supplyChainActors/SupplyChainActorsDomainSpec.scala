@@ -31,10 +31,10 @@ class SupplyChainActorsDomainSpec extends SpecBase with Generators {
 
       val numberOfSupplyChainActors = Gen.choose(1, frontendAppConfig.maxSupplyChainActors).sample.value
 
-      val userAnswers = (0 until numberOfSupplyChainActors).foldLeft(emptyUserAnswers)({
+      val userAnswers = (0 until numberOfSupplyChainActors).foldLeft(emptyUserAnswers) {
         case (updatedUserAnswers, index) =>
           arbitrarySupplyChainActorAnswers(updatedUserAnswers, Index(index)).sample.value
-      })
+      }
 
       val result = SupplyChainActorsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 

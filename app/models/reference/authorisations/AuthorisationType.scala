@@ -46,7 +46,5 @@ case class AuthorisationType(code: String, description: String) extends Radioabl
 object AuthorisationType extends DynamicEnumerableType[AuthorisationType] {
   implicit val format: Format[AuthorisationType] = Json.format[AuthorisationType]
 
-  implicit val order: Order[AuthorisationType] = (x: AuthorisationType, y: AuthorisationType) => {
-    (x, y).compareBy(_.code)
-  }
+  implicit val order: Order[AuthorisationType] = (x: AuthorisationType, y: AuthorisationType) => (x, y).compareBy(_.code)
 }

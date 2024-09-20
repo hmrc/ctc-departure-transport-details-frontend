@@ -43,7 +43,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/CountryCodesFullList"
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[Country]]
   }
 
@@ -51,7 +51,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/Nationality"
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[Nationality]]
   }
 
@@ -60,7 +60,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     http
       .get(url)
       .transform(_.withQueryStringParameters("data.code" -> code))
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[Country]]
       .map(_.head)
   }
@@ -74,7 +74,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/TransportModeCode"
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[T]]
   }
 
@@ -82,7 +82,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[departure.Identification]]
   }
 
@@ -90,7 +90,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[active.Identification]]
   }
 
@@ -98,7 +98,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/AdditionalSupplyChainActorRoleCode"
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[SupplyChainActorType]]
   }
 
@@ -106,7 +106,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/AuthorisationTypeDeparture"
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[AuthorisationType]]
   }
 
@@ -114,7 +114,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[PaymentMethod]]
   }
 
@@ -122,7 +122,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     val url = url"${config.referenceDataUrl}/lists/AdditionalReference"
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[AdditionalReferenceType]]
   }
 
@@ -131,7 +131,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
 
     http
       .get(url)
-      .setHeader(version2Header *)
+      .setHeader(version2Header*)
       .execute[NonEmptySet[AdditionalInformationCode]]
   }
 
@@ -140,14 +140,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   )
 
   implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[NonEmptySet[A]] =
-    (_: String, url: String, response: HttpResponse) => {
+    (_: String, url: String, response: HttpResponse) =>
       response.status match {
         case OK =>
           (response.json \ "data").validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               throw new NoReferenceDataFoundException(url)
             case JsSuccess(head :: tail, _) =>
-              NonEmptySet.of(head, tail *)
+              NonEmptySet.of(head, tail*)
             case JsError(errors) =>
               throw JsResultException(errors)
           }
@@ -155,7 +155,6 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
           logger.warn(s"[ReferenceDataConnector][responseHandlerGeneric] Reference data call returned $e")
           throw new Exception(s"[ReferenceDataConnector][responseHandlerGeneric] $e - ${response.body}")
       }
-    }
 }
 
 object ReferenceDataConnector {

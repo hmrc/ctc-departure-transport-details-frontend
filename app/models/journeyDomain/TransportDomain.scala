@@ -19,7 +19,7 @@ package models.journeyDomain
 import config.Constants.ModeOfTransport.Mail
 import config.PhaseConfig
 import models.Phase.{PostTransition, Transition}
-import models.ProcedureType.Normal
+import models.ProcedureType.{Normal, Simplified}
 import models.UserAnswers
 import models.journeyDomain.additionalInformation.AdditionalInformationsDomain
 import models.journeyDomain.additionalReferences.AdditionalReferencesDomain
@@ -31,9 +31,9 @@ import models.journeyDomain.transportMeans.TransportMeansDomain
 import models.reference.InlandMode
 import pages.additionalInformation.AddAdditionalInformationYesNoPage
 import pages.additionalReference.AddAdditionalReferenceYesNoPage
-import pages.authorisationsAndLimit.{AddAuthorisationsYesNoPage, AuthorisationsInferredPage}
+import pages.authorisationsAndLimit.AuthorisationsInferredPage
 import pages.carrierDetails.CarrierDetailYesNoPage
-import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
+import pages.external.ProcedureTypePage
 import pages.sections.{Section, TransportSection}
 import pages.supplyChainActors.SupplyChainActorYesNoPage
 import pages.transportMeans.{AddInlandModeYesNoPage, InlandModePage}
@@ -89,13 +89,10 @@ object TransportDomain {
   }
 
   implicit lazy val authorisationsAndLimitReads: Read[Option[AuthorisationsAndLimitDomain]] =
-    (
-      ApprovedOperatorPage.inferredReader,
-      ProcedureTypePage.reader
-    ).to {
-      case (false, Normal) =>
-        AddAuthorisationsYesNoPage.filterOptionalDependent(identity)(AuthorisationsAndLimitDomain.userAnswersReader)
-      case _ =>
+    ProcedureTypePage.reader.to {
+      case Normal =>
+        UserAnswersReader.none
+      case Simplified =>
         AuthorisationsInferredPage.reader.to {
           _ => AuthorisationsAndLimitDomain.userAnswersReader.toOption
         }

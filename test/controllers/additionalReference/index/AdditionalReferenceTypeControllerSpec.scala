@@ -44,7 +44,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
   private val mode         = NormalMode
 
   private val mockAdditionalReferencesService: AdditionalReferencesService = mock[AdditionalReferencesService]
-  private lazy val additionalReferenceTypeRoute                            = routes.AdditionalReferenceTypeController.onPageLoad(lrn, mode, additionalReferenceIndex).url
+  private lazy val additionalReferenceTypeRoute = routes.AdditionalReferenceTypeController.onPageLoad(lrn, mode, additionalReferenceIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

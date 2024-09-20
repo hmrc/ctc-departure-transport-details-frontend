@@ -17,7 +17,7 @@
 package services
 
 import cats.data.NonEmptySet
-import models.ProcedureType.{Normal, Simplified}
+import models.ProcedureType._
 import models.journeyDomain.{ReaderSuccess, _}
 import models.reference.authorisations.AuthorisationType
 import models.{Index, UserAnswers}
@@ -51,8 +51,6 @@ class AuthorisationInferenceService @Inject() () {
             (procedureType, reducedDataset) match {
               case (Simplified, false) =>
                 updateUserAnswers(authTypeACR)
-              case (Normal, true) =>
-                updateUserAnswers(authTypeTRD)
               case (Simplified, true) =>
                 updateUserAnswers(authTypeACR, authTypeTRD)
               case _ =>

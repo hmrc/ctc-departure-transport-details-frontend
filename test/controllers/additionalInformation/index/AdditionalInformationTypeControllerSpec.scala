@@ -44,7 +44,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
   private val mode         = NormalMode
 
   private val mockAdditionalInformationService: AdditionalInformationService = mock[AdditionalInformationService]
-  private lazy val additionalInformationTypeRoute                            = routes.AdditionalInformationTypeController.onPageLoad(additionalInformationIndex, lrn, mode).url
+  private lazy val additionalInformationTypeRoute = routes.AdditionalInformationTypeController.onPageLoad(additionalInformationIndex, lrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super

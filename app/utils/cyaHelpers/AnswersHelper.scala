@@ -53,7 +53,7 @@ class AnswersHelper(
       answer = formatAnswer(answer),
       id = id,
       call = call,
-      args = args *
+      args = args*
     )
 
   def getAnswersAndBuildSectionRows(section: Section[JsArray])(f: Index => Option[SummaryListRow]): Seq[SummaryListRow] =
@@ -75,11 +75,11 @@ class AnswersHelper(
         x =>
           buildSimpleRow(
             prefix = prefix,
-            label = messages(s"$prefix.label", args *),
+            label = messages(s"$prefix.label", args*),
             answer = formatAnswer(x.value),
             id = id,
             call = Some(UserAnswersNavigator.nextPage[A](userAnswers, None, mode, AccessingJourney)),
-            args = args *
+            args = args*
           )
       )
       .toOption

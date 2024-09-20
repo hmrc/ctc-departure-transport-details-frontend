@@ -88,7 +88,7 @@ object ViewUtils {
           val args = LocalDateFormatter.fieldKeys
           val arg  = formError.args.find(args.contains).getOrElse(args.head).toString
           val key  = s"#${formError.key}${arg.capitalize}"
-          ErrorLink(href = Some(key), content = messages(formError.message, formError.args *).toText)
+          ErrorLink(href = Some(key), content = messages(formError.message, formError.args*).toText)
       }
   }
 

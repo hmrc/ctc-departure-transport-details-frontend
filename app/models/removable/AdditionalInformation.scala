@@ -28,11 +28,12 @@ case class AdditionalInformation(`type`: AdditionalInformationCode) {
 object AdditionalInformation {
 
   def apply(userAnswers: UserAnswers, additionalInformationIndex: Index): Option[AdditionalInformation] = {
-    implicit val reads: Reads[AdditionalInformation] = (
-      AdditionalInformationTypePage(additionalInformationIndex).path.read[AdditionalInformationCode]
-    ).map {
-      additionalInformationCode => AdditionalInformation(additionalInformationCode)
-    }
+    implicit val reads: Reads[AdditionalInformation] =
+      AdditionalInformationTypePage(additionalInformationIndex).path
+        .read[AdditionalInformationCode]
+        .map {
+          additionalInformationCode => AdditionalInformation(additionalInformationCode)
+        }
     userAnswers.data.asOpt[AdditionalInformation]
   }
 

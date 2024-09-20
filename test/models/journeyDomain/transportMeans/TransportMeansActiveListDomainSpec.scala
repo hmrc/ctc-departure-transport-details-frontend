@@ -30,10 +30,10 @@ class TransportMeansActiveListDomainSpec extends SpecBase with Generators {
 
       val numberOfActiveBorderMeans = Gen.choose(1, frontendAppConfig.maxActiveBorderTransports).sample.value
 
-      val userAnswers = (0 until numberOfActiveBorderMeans).foldLeft(emptyUserAnswers)({
+      val userAnswers = (0 until numberOfActiveBorderMeans).foldLeft(emptyUserAnswers) {
         case (updatedUserAnswers, index) =>
           arbitraryTransportMeansActiveAnswers(updatedUserAnswers, Index(index)).sample.value
-      })
+      }
 
       val result = TransportMeansActiveListDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
