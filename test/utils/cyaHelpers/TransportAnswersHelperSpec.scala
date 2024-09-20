@@ -324,7 +324,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.countryOfDestination.get
 
-              result.key.value mustBe "Country items are being transported to"
+              result.key.value mustBe "Country the items are being transported to"
               result.value.value mustBe country.toString
               val actions = result.actions.get.items
               actions.size mustBe 1
