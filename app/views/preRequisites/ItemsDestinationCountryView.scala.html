@@ -45,10 +45,9 @@
 
         @inputSelect(
             field = form("value"),
-            selectType = SelectWithAdditionalHtml(
+            selectType = OrdinarySelect(
                 heading = messages("preRequisites.itemsDestinationCountry.heading"),
-                caption = Some(messages("caption")),
-                additionalHtml = messages("preRequisites.itemsDestinationCountry.paragraph").toParagraph
+                caption = Some(messages("caption"))
             ),
             hint = Some(messages("preRequisites.itemsDestinationCountry.hint")),
             selectItems = countryList.toSelectItems(form.value),
