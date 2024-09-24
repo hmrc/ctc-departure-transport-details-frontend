@@ -30,10 +30,10 @@ class TransportMeansDepartureListDomainSpec extends SpecBase with Generators {
 
       val numberOfDepartureTransportMeans = Gen.choose(1, frontendAppConfig.maxDepartureTransportMeans).sample.value
 
-      val userAnswers = (0 until numberOfDepartureTransportMeans).foldLeft(emptyUserAnswers)({
+      val userAnswers = (0 until numberOfDepartureTransportMeans).foldLeft(emptyUserAnswers) {
         case (updatedUserAnswers, index) =>
           arbitraryTransportMeansDepartureAnswers(updatedUserAnswers, Index(index)).sample.value
-      })
+      }
 
       val result = TransportMeansDepartureListDomain.userAnswersReader.apply(Nil).run(userAnswers)
 

@@ -31,10 +31,10 @@ class AdditionalInformationsDomainSpec extends SpecBase with Generators {
 
       val numberOfAdditionalInformations = Gen.choose(1, frontendAppConfig.maxAdditionalInformation).sample.value
 
-      val userAnswers = (0 until numberOfAdditionalInformations).foldLeft(emptyUserAnswers)({
+      val userAnswers = (0 until numberOfAdditionalInformations).foldLeft(emptyUserAnswers) {
         case (updatedUserAnswers, index) =>
           arbitraryAdditionalInformationAnswers(updatedUserAnswers, Index(index)).sample.value
-      })
+      }
 
       val result = AdditionalInformationsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 

@@ -30,10 +30,10 @@ class AuthorisationsDomainSpec extends SpecBase with Generators {
 
       val numberOfAuthorisations = Gen.choose(1, frontendAppConfig.maxAuthorisations).sample.value
 
-      val userAnswers = (0 until numberOfAuthorisations).foldLeft(emptyUserAnswers)({
+      val userAnswers = (0 until numberOfAuthorisations).foldLeft(emptyUserAnswers) {
         case (updatedUserAnswers, index) =>
           arbitraryAuthorisationAnswers(updatedUserAnswers, Index(index)).sample.value
-      })
+      }
 
       val result = AuthorisationsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
