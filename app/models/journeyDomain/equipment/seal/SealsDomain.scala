@@ -24,7 +24,7 @@ import pages.sections.equipment.SealsSection
 
 case class SealsDomain(value: Seq[SealDomain])(equipmentIndex: Index) extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(SealsSection(equipmentIndex))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(SealsSection(equipmentIndex))
 }
 
 object SealsDomain {

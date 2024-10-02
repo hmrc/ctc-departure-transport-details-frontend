@@ -16,7 +16,7 @@
 
 package views.carrierDetails
 
-import forms.EoriNumberFormProvider
+import forms.EoriTcuinFormProvider
 import models.NormalMode
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.data.Form
@@ -29,7 +29,7 @@ class IdentificationNumberViewSpec extends InputTextViewBehaviours[String] {
 
   override val prefix: String = "carrierDetails.identificationNumber"
 
-  override def form: Form[String] = new EoriNumberFormProvider()(prefix)
+  override def form: Form[String] = new EoriTcuinFormProvider()(prefix)
 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     injector.instanceOf[IdentificationNumberView].apply(form, lrn, NormalMode)(fakeRequest, messages)

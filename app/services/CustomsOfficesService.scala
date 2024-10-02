@@ -38,7 +38,7 @@ class CustomsOfficesService @Inject() () {
       case Nil =>
         throw new NoReferenceDataFoundException("")
       case head :: tail =>
-        SelectableList(NonEmptySet.of(head, tail: _*).toSeq)
+        SelectableList(NonEmptySet.of(head, tail*).toSeq)
     }
   }
 

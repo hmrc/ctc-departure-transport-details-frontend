@@ -16,6 +16,7 @@
 
 @import controllers.authorisationsAndLimit.authorisations.index.routes
 @import models.LocalReferenceNumber
+@import models.reference.authorisations.AuthorisationType
 @import viewModels.components.InputTextViewModel
 @import views.html.components.{Button, ErrorSummary, InputText}
 
@@ -27,10 +28,10 @@
     button: Button
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, dynamicTitle: String, mode: Mode, authorisationIndex: Index, isApprovedOperator: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, authType: AuthorisationType, mode: Mode, authorisationIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
-    title = messages("authorisations.authorisationReferenceNumber.title", messages(dynamicTitle)),
+    title = messages("authorisations.authorisationReferenceNumber.title", messages(authType.forDisplay)),
     showBackLink = true,
     lrn = lrn
 ) {
@@ -42,9 +43,16 @@
         @inputText(
             field = form("value"),
             inputTextType = InputTextViewModel(
-                heading = messages("authorisations.authorisationReferenceNumber.heading", messages(dynamicTitle)),
+                heading = messages("authorisations.authorisationReferenceNumber.heading", messages(authType.forDisplay)),
                 caption = Some(messages("authorisations.caption")),
-                additionalHtml = if (isApprovedOperator) Some(messages("authorisations.authorisationReferenceNumber.paragraph").toParagraph) else None
+                additionalHtml = Some(
+                    HtmlFormat.fill(
+                        Seq(
+                            if (authType.isACR) Some(messages("authorisations.authorisationReferenceNumber.paragraph.ACR").toParagraph) else None,
+                            if (authType.isTRD) Some(messages("authorisations.authorisationReferenceNumber.paragraph.TRD").toParagraph) else None
+                        ).flatten
+                    )
+                )
             ),
             hint = Some(messages("authorisations.authorisationReferenceNumber.hint")),
             inputClass = InputSize.Width20

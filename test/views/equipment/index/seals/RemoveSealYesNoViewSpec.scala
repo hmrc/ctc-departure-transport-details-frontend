@@ -32,15 +32,17 @@ class RemoveSealYesNoViewSpec extends YesNoViewBehaviours with Generators {
 
   override val prefix: String = "equipment.index.seals.removeSealYesNo"
 
-  behave like pageWithTitle(sealIdNumber)
+  behave like pageWithTitle()
 
   behave like pageWithBackLink()
 
   behave like pageWithSectionCaption("Transport details - Transport equipment")
 
-  behave like pageWithHeading(sealIdNumber)
+  behave like pageWithHeading()
 
   behave like pageWithRadioItems(args = Seq(sealIdNumber))
+
+  behave like pageWithInsetText(sealIdNumber)
 
   behave like pageWithSubmitButton("Save and continue")
 }

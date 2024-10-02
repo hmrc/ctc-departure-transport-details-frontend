@@ -19,6 +19,7 @@ package models.reference.additionalReference
 import cats.Order
 import models.Selectable
 import play.api.libs.json.{Format, Json}
+import models.reference.RichComparison
 
 case class AdditionalReferenceType(documentType: String, description: String) extends Selectable {
 
@@ -30,8 +31,7 @@ case class AdditionalReferenceType(documentType: String, description: String) ex
 object AdditionalReferenceType {
   implicit val format: Format[AdditionalReferenceType] = Json.format[AdditionalReferenceType]
 
-  implicit val order: Order[AdditionalReferenceType] = (x: AdditionalReferenceType, y: AdditionalReferenceType) => {
+  implicit val order: Order[AdditionalReferenceType] = (x: AdditionalReferenceType, y: AdditionalReferenceType) =>
     (x, y).compareBy(_.description, _.documentType)
-  }
 
 }

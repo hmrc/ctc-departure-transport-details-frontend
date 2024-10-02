@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ContainerIdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: EquipmentNavigatorProvider,
   formProvider: ContainerIdentificationNumberFormProvider,
   actions: Actions,
@@ -48,15 +48,15 @@ class ContainerIdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def form(equipmentIndex: Index)(implicit request: DataRequest[_]): Form[String] =
+  private def form(equipmentIndex: Index)(implicit request: DataRequest[?]): Form[String] =
     formProvider("equipment.index.containerIdentificationNumber", otherContainerIdentificationNumbers(equipmentIndex))
 
-  private def otherContainerIdentificationNumbers(equipmentIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+  private def otherContainerIdentificationNumbers(equipmentIndex: Index)(implicit request: DataRequest[?]): Seq[String] = {
     val numberOfEquipments = request.userAnswers.get(EquipmentsSection).length
     (0 until numberOfEquipments)
       .map(Index(_))
       .filterNot(_ == equipmentIndex)
-      .map(ContainerIdentificationNumberPage)
+      .map(ContainerIdentificationNumberPage.apply)
       .flatMap(request.userAnswers.get(_))
   }
 
@@ -76,13 +76,13 @@ class ContainerIdentificationNumberController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, equipmentIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, equipmentIndex)
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, equipmentIndex)
             ContainerIdentificationNumberPage(equipmentIndex)
               .writeToUserAnswers(value)
               .appendTransportEquipmentUuidIfNotPresent(equipmentIndex)
               .updateTask()
-              .writeToSession()
-              .navigate()
+              .writeToSession(sessionRepository)
+              .navigateWith(navigator)
           }
         )
   }

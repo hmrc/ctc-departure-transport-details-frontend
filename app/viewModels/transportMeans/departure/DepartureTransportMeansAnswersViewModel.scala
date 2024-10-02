@@ -18,6 +18,7 @@ package viewModels.transportMeans.departure
 
 import config.{FrontendAppConfig, PhaseConfig}
 import models.{Index, Mode, UserAnswers}
+import pages.transportMeans.AddInlandModeYesNoPage
 import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.departure.DepartureTransportMeansAnswersHelper
 import viewModels.Section
@@ -33,8 +34,18 @@ object DepartureTransportMeansAnswersViewModel {
     def apply(userAnswers: UserAnswers, mode: Mode, index: Index)(implicit messages: Messages): DepartureTransportMeansAnswersViewModel = {
       val helper = new DepartureTransportMeansAnswersHelper(userAnswers, mode, index)
 
+      val departureAddTypeYesNoRow = userAnswers.get(AddInlandModeYesNoPage) match {
+        case Some(value) =>
+          val prefix =
+            if (value) "transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes"
+            else "transportMeans.departure.addIdentificationTypeYesNo.inlandModeNo"
+          helper.departureAddTypeYesNo(prefix)
+
+        case _ => None
+      }
+
       val rows = Seq(
-        helper.departureAddTypeYesNo(),
+        departureAddTypeYesNoRow,
         helper.departureIdentificationType,
         helper.departureAddIdentificationNumber,
         helper.departureIdentificationNumber,

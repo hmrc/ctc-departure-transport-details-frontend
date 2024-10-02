@@ -17,7 +17,7 @@
 package controllers.transportMeans.departure
 
 import config.{FrontendAppConfig, PhaseConfig}
-import controllers.actions._
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
@@ -27,7 +27,6 @@ import pages.sections.transportMeans.DeparturesSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transportMeans.departure.AddAnotherDepartureTransportMeansViewModel
 import viewModels.transportMeans.departure.AddAnotherDepartureTransportMeansViewModel.AddAnotherDepartureTransportMeansViewModelProvider
@@ -37,7 +36,6 @@ import javax.inject.Inject
 
 class AddAnotherDepartureTransportMeansController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   viewModelProvider: AddAnotherDepartureTransportMeansViewModelProvider,

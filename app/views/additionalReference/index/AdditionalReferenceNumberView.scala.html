@@ -16,19 +16,18 @@
 
 @import controllers.additionalReference.index.routes
 @import models.LocalReferenceNumber
-@import viewModels.components.InputCharacterCountViewModel
-@import views.html.components.{Button, ErrorSummary, InputCharacterCount}
-@import forms.Constants.maxAdditionalReferenceNumLength
+@import viewModels.components.InputTextViewModel._
+@import views.html.components.{Button, ErrorSummary, InputText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
-    inputCharacterCount: InputCharacterCount,
+    inputText: InputText,
     button: Button,
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], lrn: LocalReferenceNumber, mode: Mode, additionalReferenceIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[?], lrn: LocalReferenceNumber, mode: Mode, additionalReferenceIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("additionalReference.index.additionalReferenceNumber.title"),
@@ -40,16 +39,13 @@
 
     @formHelper(action = routes.AdditionalReferenceNumberController.onSubmit(lrn, mode, additionalReferenceIndex), Symbol("autoComplete") -> "off") {
 
-    @inputCharacterCount(
+    @inputText(
         field = form("value"),
-        inputCharacterCountType = InputCharacterCountViewModel(
+        inputTextType = OrdinaryTextInput(
             heading = messages("additionalReference.index.additionalReferenceNumber.heading"),
-            caption = Some(messages("additionalReference.caption")),
-            additionalHtml = None
+            caption = Some(messages("additionalReference.caption"))
         ),
-        label = messages("additionalReference.index.additionalReferenceNumber.heading"),
-        maxLength = maxAdditionalReferenceNumLength,
-        rows = 2
+        hint = Some(messages("additionalReference.index.additionalReferenceNumber.hint"))
     )
 
         @button(attributes = Map("id" -> "submit"))

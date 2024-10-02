@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
-import navigation.TransportNavigatorProvider
+import navigation.AdditionalInformationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.additionalInformation.index.AdditionalInformationTypePage
@@ -44,12 +44,12 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
   private val mode         = NormalMode
 
   private val mockAdditionalInformationService: AdditionalInformationService = mock[AdditionalInformationService]
-  private lazy val additionalInformationTypeRoute                            = routes.AdditionalInformationTypeController.onPageLoad(additionalInformationIndex, lrn, mode).url
+  private lazy val additionalInformationTypeRoute = routes.AdditionalInformationTypeController.onPageLoad(additionalInformationIndex, lrn, mode).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
+      .overrides(bind(classOf[AdditionalInformationNavigatorProvider]).toInstance(fakeAdditionalInformationNavigatorProvider))
       .overrides(bind(classOf[AdditionalInformationService]).toInstance(mockAdditionalInformationService))
 
   "AdditionalInformationType Controller" - {
@@ -94,7 +94,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockAdditionalInformationService.getAdditionalInformationCodes(any())(any())).thenReturn(Future.successful(additionalInformationCodeList))
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 

@@ -70,7 +70,7 @@ class RemoveAdditionalInformationYesNoControllerSpec extends SpecBase with AppWi
 
     "when yes submitted must redirect to add another additional information and remove additional information at specified index" in {
       reset(mockSessionRepository)
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val userAnswers = emptyUserAnswers
         .setValue(AdditionalInformationTypePage(additionalInformationIndex), additionalInformationCode)
@@ -94,7 +94,7 @@ class RemoveAdditionalInformationYesNoControllerSpec extends SpecBase with AppWi
 
     "when no submitted must redirect to add another additional information and not remove the additional information at specified index" in {
       reset(mockSessionRepository)
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val userAnswers = emptyUserAnswers
         .setValue(AdditionalInformationTypePage(additionalInformationIndex), additionalInformationCode)

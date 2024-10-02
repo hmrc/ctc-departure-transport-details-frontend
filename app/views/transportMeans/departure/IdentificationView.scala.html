@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[Identification], lrn: LocalReferenceNumber, identifiers: Seq[Identification], mode: Mode, departureIndex: Index, identificationViewModel: IdentificationViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[Identification], lrn: LocalReferenceNumber, identifiers: Seq[Identification], mode: Mode, departureIndex: Index, identificationViewModel: IdentificationViewModel)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = identificationViewModel.title,

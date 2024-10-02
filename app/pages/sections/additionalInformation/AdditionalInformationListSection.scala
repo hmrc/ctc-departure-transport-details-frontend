@@ -16,12 +16,18 @@
 
 package pages.sections.additionalInformation
 
+import controllers.additionalInformation.routes
+import models.{Mode, UserAnswers}
 import pages.sections.{Section, TransportSection}
 import play.api.libs.json.{JsArray, JsPath}
+import play.api.mvc.Call
 
 case object AdditionalInformationListSection extends Section[JsArray] {
 
   override def path: JsPath = TransportSection.path \ toString
 
   override def toString: String = "additionalInformation"
+
+  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
+    Some(routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode))
 }

@@ -40,9 +40,7 @@ case class InlandMode(code: String, description: String) extends ModeOfTransport
 object InlandMode extends DynamicEnumerableType[InlandMode] {
   implicit val format: Format[InlandMode] = Json.format[InlandMode]
 
-  implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => {
-    (x, y).compareBy(_.code)
-  }
+  implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => (x, y).compareBy(_.code)
 }
 
 case class BorderMode(code: String, description: String) extends ModeOfTransport[BorderMode] {
@@ -57,7 +55,5 @@ case class BorderMode(code: String, description: String) extends ModeOfTransport
 object BorderMode extends DynamicEnumerableType[BorderMode] {
   implicit val format: Format[BorderMode] = Json.format[BorderMode]
 
-  implicit val order: Order[BorderMode] = (x: BorderMode, y: BorderMode) => {
-    x.code.compareToIgnoreCase(y.code)
-  }
+  implicit val order: Order[BorderMode] = (x: BorderMode, y: BorderMode) => x.code.compareToIgnoreCase(y.code)
 }

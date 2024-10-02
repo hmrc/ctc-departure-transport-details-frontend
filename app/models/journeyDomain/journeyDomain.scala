@@ -47,7 +47,7 @@ package object journeyDomain {
 
     def emptyList[A]: Read[Seq[A]] = pages => success[Seq[A]](Seq.empty[A]).apply(pages)
 
-    def error[A](page: Gettable[_], message: Option[String] = None): Read[A] = pages => {
+    def error[A](page: Gettable[?], message: Option[String] = None): Read[A] = pages => {
       val fn: UserAnswers => EitherType[ReaderSuccess[A]] = _ => Left(ReaderError(page, pages.append(page), message))
       apply(fn)
     }
@@ -61,11 +61,9 @@ package object journeyDomain {
 
   implicit class GettableAsFilterForNextReaderOps[A: Reads](a: Gettable[A]) {
 
-    /**
-      * Returns UserAnswersReader[B], where UserAnswersReader[B] which is run only if UserAnswerReader[A]
-      * is defined and satisfies the predicate, if it defined and does not satisfy the predicate overall reader will
-      * will fail returning a ReaderError. If the result of UserAnswerReader[A] is not defined then the overall reader will fail and
-      * `next` will not be run
+    /** Returns UserAnswersReader[B], where UserAnswersReader[B] which is run only if UserAnswerReader[A] is defined and satisfies the predicate, if it defined
+      * and does not satisfy the predicate overall reader will will fail returning a ReaderError. If the result of UserAnswerReader[A] is not defined then the
+      * overall reader will fail and `next` will not be run
       */
     def filterMandatoryDependent[B](predicate: A => Boolean)(next: => Read[B]): Read[B] = pages =>
       a.reader(s"Reader for ${a.path} failed before reaching predicate")
@@ -79,11 +77,9 @@ package object journeyDomain {
             }
         }
 
-    /**
-      * Returns UserAnswersReader[Option[B]], where UserAnswersReader[B] which is run only if UserAnswerReader[A]
-      * is defined and satisfies the predicate, if it defined and does not satisfy the predicate overall reader will
-      * will return None. If the result of UserAnswerReader[A] is not defined then the overall reader will fail and
-      * `next` will not be run
+    /** Returns UserAnswersReader[Option[B]], where UserAnswersReader[B] which is run only if UserAnswerReader[A] is defined and satisfies the predicate, if it
+      * defined and does not satisfy the predicate overall reader will will return None. If the result of UserAnswerReader[A] is not defined then the overall
+      * reader will fail and `next` will not be run
       */
     def filterOptionalDependent[B](predicate: A => Boolean)(next: => Read[B]): Read[Option[B]] = pages =>
       a.reader(s"Reader for ${a.path} failed before reaching predicate")
@@ -100,9 +96,7 @@ package object journeyDomain {
 
   implicit class GettableAsReaderOps[A](a: Gettable[A]) {
 
-    /**
-      * Returns a reader for [[Gettable]], which will succeed with an [[A]]  if the value is defined
-      * and will fail if it is not defined
+    /** Returns a reader for [[Gettable]], which will succeed with an [[A]] if the value is defined and will fail if it is not defined
       */
 
     def reader(implicit reads: Reads[A]): Read[A] = reader(None)
@@ -133,7 +127,7 @@ package object journeyDomain {
     }
 
     def fieldReader[T](page: Index => Gettable[T])(implicit rds: Reads[T]): Read[Seq[T]] = pages => {
-      val fn: UserAnswers => EitherType[ReaderSuccess[Seq[T]]] = ua => {
+      val fn: UserAnswers => EitherType[ReaderSuccess[Seq[T]]] = ua =>
         Right {
           ua.get(jsArray).getOrElse(JsArray()).value.indices.foldLeft[ReaderSuccess[Seq[T]]](ReaderSuccess(Nil, pages)) {
             case (ReaderSuccess(ts, pages), i) =>
@@ -144,7 +138,6 @@ package object journeyDomain {
               }
           }
         }
-      }
       UserAnswersReader(fn)
     }
   }
@@ -160,14 +153,14 @@ package object journeyDomain {
 
     def append(page: Page): Pages =
       page match {
-        case _: Section[_]             => pages
-        case _: InferredPage[_]        => pages
-        case _: ReadOnlyPage[_]        => pages
+        case _: Section[?]             => pages
+        case _: InferredPage[?]        => pages
+        case _: ReadOnlyPage[?]        => pages
         case _ if pages.contains(page) => pages
         case _                         => pages :+ page
       }
 
-    def append(page: Option[Section[_]]): Pages =
+    def append(page: Option[Section[?]]): Pages =
       page.fold(pages) {
         case x if pages.contains(x) => pages
         case x                      => pages :+ x
@@ -328,6 +321,59 @@ package object journeyDomain {
         f      <- value._6(e.pages)
         g      <- value._7(f.pages)
         reader <- fun(a.value, b.value, c.value, d.value, e.value, f.value, g.value)(g.pages)
+      } yield reader
+  }
+
+  implicit class RichTuple8[A, B, C, D, E, F, G, H](value: (Read[A], Read[B], Read[C], Read[D], Read[E], Read[F], Read[G], Read[H])) {
+
+    def map[T <: JourneyDomainModel](fun: (A, B, C, D, E, F, G, H) => T): Read[T] =
+      to {
+        case (a, b, c, d, e, f, g, h) =>
+          val t = fun(a, b, c, d, e, f, g, h)
+          pages =>
+            UserAnswersReader.apply {
+              ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
+            }
+      }
+
+    def to[T](fun: (A, B, C, D, E, F, G, H) => Read[T]): Read[T] = pages =>
+      for {
+        a      <- value._1(pages)
+        b      <- value._2(a.pages)
+        c      <- value._3(b.pages)
+        d      <- value._4(c.pages)
+        e      <- value._5(d.pages)
+        f      <- value._6(e.pages)
+        g      <- value._7(f.pages)
+        h      <- value._8(g.pages)
+        reader <- fun(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value)(h.pages)
+      } yield reader
+  }
+
+  implicit class RichTuple9[A, B, C, D, E, F, G, H, I](value: (Read[A], Read[B], Read[C], Read[D], Read[E], Read[F], Read[G], Read[H], Read[I])) {
+
+    def map[T <: JourneyDomainModel](fun: (A, B, C, D, E, F, G, H, I) => T): Read[T] =
+      to {
+        case (a, b, c, d, e, f, g, h, i) =>
+          val t = fun(a, b, c, d, e, f, g, h, i)
+          pages =>
+            UserAnswersReader.apply {
+              ua => Right(ReaderSuccess(t, pages.append(t.page(ua))))
+            }
+      }
+
+    def to[T](fun: (A, B, C, D, E, F, G, H, I) => Read[T]): Read[T] = pages =>
+      for {
+        a      <- value._1(pages)
+        b      <- value._2(a.pages)
+        c      <- value._3(b.pages)
+        d      <- value._4(c.pages)
+        e      <- value._5(d.pages)
+        f      <- value._6(e.pages)
+        g      <- value._7(f.pages)
+        h      <- value._8(g.pages)
+        i      <- value._9(h.pages)
+        reader <- fun(a.value, b.value, c.value, d.value, e.value, f.value, g.value, h.value, i.value)(i.pages)
       } yield reader
   }
 }

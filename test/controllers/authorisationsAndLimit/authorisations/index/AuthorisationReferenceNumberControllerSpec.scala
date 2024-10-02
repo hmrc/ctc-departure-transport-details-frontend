@@ -28,7 +28,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.authorisationsAndLimit.authorisations.index.{AuthorisationReferenceNumberPage, AuthorisationTypePage, InferredAuthorisationTypePage}
-import pages.external.{ApprovedOperatorPage, DeclarationTypePage}
+import pages.external.DeclarationTypePage
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
@@ -63,10 +63,9 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
   "AuthorisationReferenceNumber Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      forAll(arbitrary[AuthorisationType], authorisationTypePageGen, arbitrary[Boolean]) {
-        (authorisationType, page, isReducedDataset) =>
+      forAll(arbitrary[AuthorisationType], authorisationTypePageGen) {
+        (authorisationType, page) =>
           val userAnswers = baseAnswers
-            .setValue(ApprovedOperatorPage, isReducedDataset)
             .setValue(page, authorisationType)
           setExistingUserAnswers(userAnswers)
 
@@ -79,15 +78,14 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form(authorisationType), lrn, authorisationType.forDisplay, mode, index, isReducedDataset)(request, messages).toString
+            view(form(authorisationType), lrn, authorisationType, mode, index)(request, messages).toString
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-      forAll(arbitrary[AuthorisationType], authorisationTypePageGen, arbitrary[Boolean]) {
-        (authorisationType, page, isReducedDataset) =>
+      forAll(arbitrary[AuthorisationType], authorisationTypePageGen) {
+        (authorisationType, page) =>
           val userAnswers = baseAnswers
-            .setValue(ApprovedOperatorPage, isReducedDataset)
             .setValue(page, authorisationType)
             .setValue(AuthorisationReferenceNumberPage(authorisationIndex), validAnswer)
           setExistingUserAnswers(userAnswers)
@@ -103,19 +101,18 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(filledForm, lrn, authorisationType.forDisplay, mode, index, isReducedDataset)(request, messages).toString
+            view(filledForm, lrn, authorisationType, mode, index)(request, messages).toString
       }
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      forAll(arbitrary[AuthorisationType], authorisationTypePageGen, arbitrary[Boolean]) {
-        (authorisationType, page, isReducedDataset) =>
+      forAll(arbitrary[AuthorisationType], authorisationTypePageGen) {
+        (authorisationType, page) =>
           val userAnswers = baseAnswers
-            .setValue(ApprovedOperatorPage, isReducedDataset)
             .setValue(page, authorisationType)
           setExistingUserAnswers(userAnswers)
 
-          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
           val request = FakeRequest(POST, authorisationReferenceNumberRoute)
             .withFormUrlEncodedBody(("value", validAnswer))
@@ -129,10 +126,9 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      forAll(arbitrary[AuthorisationType], authorisationTypePageGen, arbitrary[Boolean]) {
-        (authorisationType, page, isReducedDataset) =>
+      forAll(arbitrary[AuthorisationType], authorisationTypePageGen) {
+        (authorisationType, page) =>
           val userAnswers = baseAnswers
-            .setValue(ApprovedOperatorPage, isReducedDataset)
             .setValue(page, authorisationType)
           setExistingUserAnswers(userAnswers)
 
@@ -148,7 +144,7 @@ class AuthorisationReferenceNumberControllerSpec extends SpecBase with AppWithDe
           val view = injector.instanceOf[AuthorisationReferenceNumberView]
 
           contentAsString(result) mustEqual
-            view(filledForm, lrn, authorisationType.forDisplay, mode, authorisationIndex, isReducedDataset)(request, messages).toString
+            view(filledForm, lrn, authorisationType, mode, authorisationIndex)(request, messages).toString
       }
     }
 

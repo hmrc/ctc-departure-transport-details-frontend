@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
-import navigation.TransportNavigatorProvider
+import navigation.AdditionalReferenceNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.additionalReference.index.AdditionalReferenceTypePage
@@ -44,12 +44,12 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
   private val mode         = NormalMode
 
   private val mockAdditionalReferencesService: AdditionalReferencesService = mock[AdditionalReferencesService]
-  private lazy val additionalReferenceTypeRoute                            = routes.AdditionalReferenceTypeController.onPageLoad(lrn, mode, additionalReferenceIndex).url
+  private lazy val additionalReferenceTypeRoute = routes.AdditionalReferenceTypeController.onPageLoad(lrn, mode, additionalReferenceIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
+      .overrides(bind(classOf[AdditionalReferenceNavigatorProvider]).toInstance(fakeAdditionalReferenceNavigatorProvider))
       .overrides(bind(classOf[AdditionalReferencesService]).toInstance(mockAdditionalReferencesService))
 
   "AdditionalReferenceType Controller" - {
@@ -94,7 +94,7 @@ class AdditionalReferenceTypeControllerSpec extends SpecBase with AppWithDefault
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockAdditionalReferencesService.getAdditionalReferences()(any())).thenReturn(Future.successful(additionalReferenceList))
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 

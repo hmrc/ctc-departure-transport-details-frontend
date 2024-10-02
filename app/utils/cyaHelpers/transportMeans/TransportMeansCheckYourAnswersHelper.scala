@@ -17,7 +17,6 @@
 package utils.cyaHelpers.transportMeans
 
 import config.{FrontendAppConfig, PhaseConfig}
-import controllers.transportMeans.active.routes
 import models.journeyDomain.transportMeans.{PostTransitionTransportMeansActiveDomain, TransportMeansActiveDomain, TransportMeansDepartureDomain}
 import models.reference.{BorderMode, InlandMode}
 import models.{Index, Mode, UserAnswers}
@@ -56,12 +55,26 @@ class TransportMeansCheckYourAnswersHelper(
     args = index.display
   )(TransportMeansDepartureDomain.userAnswersReader(index).apply(Nil))
 
-  def addOrRemoveActiveBorderTransportsMeans(): Option[Link] = buildLink(ActivesSection) {
-    Link(
-      id = "add-or-remove-border-means-of-transport",
-      text = messages("transportMeans.borderMeans.addOrRemove"),
-      href = routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode).url
-    )
+  def addOrRemoveActiveBorderTransportsMeans(): Option[Link] = {
+    import controllers.transportMeans.active.routes
+    buildLink(ActivesSection) {
+      Link(
+        id = "add-or-remove-border-means-of-transport",
+        text = messages("transportMeans.borderMeans.addOrRemove"),
+        href = routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode).url
+      )
+    }
+  }
+
+  def addOrRemoveDepartureTransportsMeans(): Option[Link] = {
+    import controllers.transportMeans.departure.routes
+    buildLink(DeparturesSection) {
+      Link(
+        id = "add-or-remove-departure-means-of-transport",
+        text = messages("transportMeans.departureMeans.addOrRemove"),
+        href = routes.AddAnotherDepartureTransportMeansController.onPageLoad(userAnswers.lrn, mode).url
+      )
+    }
   }
 
   def addModeCrossingBorder(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
@@ -95,10 +108,10 @@ class TransportMeansCheckYourAnswersHelper(
     id = Some("change-transport-means-inland-mode")
   )
 
-  def addDepartureTransportMeans(): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+  def addDepartureTransportMeans(prefix: String): Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = AddDepartureTransportMeansYesNoPage,
     formatAnswer = formatAsYesOrNo,
-    prefix = "transportMeans.addDepartureTransportMeansYesNo",
+    prefix = prefix,
     id = Some("change-add-departure-transport-means")
   )
 

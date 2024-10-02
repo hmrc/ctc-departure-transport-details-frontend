@@ -94,7 +94,7 @@ class NationalityControllerSpec extends SpecBase with AppWithDefaultMockFixtures
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 

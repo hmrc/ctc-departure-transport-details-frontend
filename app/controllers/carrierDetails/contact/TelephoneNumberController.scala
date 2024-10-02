@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TelephoneNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: TelephoneNumberFormProvider,
@@ -50,7 +50,7 @@ class TelephoneNumberController @Inject() (
   private def form(implicit request: Request): Form[String] =
     formProvider("carrierDetails.contact.telephoneNumber", contactName)
 
-  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[String]#SpecificDataRequest[?]
 
   private def contactName(implicit request: Request): String = request.arg
 
@@ -75,8 +75,8 @@ class TelephoneNumberController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, contactName))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-              TelephoneNumberPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+              val navigator: UserAnswersNavigator = navigatorProvider(mode)
+              TelephoneNumberPage.writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
             }
           )
     }

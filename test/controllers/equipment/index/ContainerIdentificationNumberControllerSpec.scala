@@ -87,7 +87,7 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
     "must redirect to the next page when valid data is submitted" - {
 
       "and UUID not populated" in {
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         setExistingUserAnswers(emptyUserAnswers)
 
@@ -107,7 +107,7 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
       }
 
       "and UUID populated" in {
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         val uuid        = arbitrary[UUID].sample.value
         val userAnswers = emptyUserAnswers.setValue(UuidPage(equipmentIndex), uuid)

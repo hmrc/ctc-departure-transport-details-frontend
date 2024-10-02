@@ -18,22 +18,23 @@ package forms
 
 import forms.Constants.{maxEoriNumberLength, minLengthCarrierEori}
 import forms.mappings.Mappings
+import models.RichString
 import models.domain.StringFieldRegex._
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class CarrierEoriNumberFormProvider @Inject() extends Mappings {
+class EoriTcuinFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
-      "value" -> eoriFormat(s"$prefix.error.required")
+      "value" -> adaptedText(s"$prefix.error.required")(_.removeSpaces().capitalise(2))
         .verifying(
           forms.StopOnFirstFail[String](
             regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
             maxLength(maxEoriNumberLength, s"$prefix.error.maxLength"),
             minLength(minLengthCarrierEori, s"$prefix.error.minLength"),
-            regexp(carrierEoriRegex, s"$prefix.error.invalidFormat")
+            regexp(eoriTcuinRegex, s"$prefix.error.invalidFormat")
           )
         )
     )

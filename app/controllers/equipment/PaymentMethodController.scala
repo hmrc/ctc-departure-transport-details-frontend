@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PaymentMethodController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
@@ -72,8 +72,8 @@ class PaymentMethodController @Inject() (
             .fold(
               formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, paymentMethods, mode))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                PaymentMethodPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                PaymentMethodPage.writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
               }
             )
       }

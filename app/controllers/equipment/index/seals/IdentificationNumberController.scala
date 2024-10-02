@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: SealNavigatorProvider,
   formProvider: SealIdentificationNumberFormProvider,
   actions: Actions,
@@ -46,7 +46,7 @@ class IdentificationNumberController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private def otherIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[_]): Seq[String] = {
+  private def otherIdentificationNumbers(equipmentIndex: Index, sealIndex: Index)(implicit request: DataRequest[?]): Seq[String] = {
     val numberOfSeals = request.userAnswers.get(SealsSection(equipmentIndex)).length
     (0 until numberOfSeals)
       .map(Index(_))
@@ -73,13 +73,13 @@ class IdentificationNumberController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, equipmentIndex, sealIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, equipmentIndex, sealIndex)
+            val navigator: UserAnswersNavigator = navigatorProvider(mode, equipmentIndex, sealIndex)
             IdentificationNumberPage(equipmentIndex: Index, sealIndex: Index)
               .writeToUserAnswers(value)
               .appendTransportEquipmentUuidIfNotPresent(equipmentIndex)
               .updateTask()
-              .writeToSession()
-              .navigate()
+              .writeToSession(sessionRepository)
+              .navigateWith(navigator)
           }
         )
   }

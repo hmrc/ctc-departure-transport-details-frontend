@@ -202,7 +202,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
 
         "when mandatory page is missing" - {
           "when TIR" in {
-            val mandatoryPages: Seq[QuestionPage[_]] = Seq(
+            val mandatoryPages: Seq[QuestionPage[?]] = Seq(
               SameUcrYesNoPage,
               UniqueConsignmentReferencePage,
               SameCountryOfDispatchYesNoPage,
@@ -233,7 +233,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           }
 
           "when non-TIR" in {
-            val mandatoryPages: Seq[QuestionPage[_]] = Seq(
+            val mandatoryPages: Seq[QuestionPage[?]] = Seq(
               SameUcrYesNoPage,
               UniqueConsignmentReferencePage,
               TransportedToSameCountryYesNoPage,

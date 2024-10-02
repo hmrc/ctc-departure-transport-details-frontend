@@ -20,6 +20,7 @@ import config.{FrontendAppConfig, PhaseConfig}
 import models.{CheckMode, Index, UserAnswers}
 import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.departure.DepartureTransportMeansAnswersHelper
+import viewModels.transportMeans.departure.AddDepartureTransportMeansYesNoViewModel.AddDepartureTransportMeansYesNoViewModelProvider
 
 import javax.inject.Inject
 
@@ -37,9 +38,14 @@ object DepartureTransportAnswersViewModel {
 
       val helper = new DepartureTransportMeansAnswersHelper(userAnswers, mode, index)
 
+      val departureAddTypeYesNoRow = {
+        val prefix = new AddDepartureTransportMeansYesNoViewModelProvider().apply(userAnswers).prefix
+        helper.departureAddTypeYesNo(prefix)
+      }
+
       val preRequisitesSection = Section(
         rows = Seq(
-          helper.departureAddTypeYesNo(Some("checkYourAnswers")),
+          departureAddTypeYesNoRow,
           helper.departureIdentificationType,
           helper.departureAddIdentificationNumber,
           helper.departureIdentificationNumber,

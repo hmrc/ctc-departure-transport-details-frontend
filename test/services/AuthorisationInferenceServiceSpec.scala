@@ -67,18 +67,14 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
         val procedureType = Normal
 
         "and authorisation types present in reference data" - {
-          "must infer index 0 as TRD" in {
+          "must not infer anything" in {
             forAll(userAnswersGen(reducedDatasetIndicator, procedureType)) {
               userAnswers =>
                 val service = new AuthorisationInferenceService()
 
                 val result = service.inferAuthorisations(userAnswers, authTypes)
 
-                val expectedResult = userAnswers
-                  .setValue(InferredAuthorisationTypePage(Index(0)), authTypeTRD)
-                  .setValue(IsMandatoryPage(Index(0)), true)
-
-                result mustBe expectedResult
+                result mustBe userAnswers
             }
           }
         }

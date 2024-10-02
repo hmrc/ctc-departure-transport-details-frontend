@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddSealYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: EquipmentNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
@@ -68,13 +68,13 @@ class AddSealYesNoController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, equipmentIndex))),
             value => {
-              implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, equipmentIndex)
+              val navigator: UserAnswersNavigator = navigatorProvider(mode, equipmentIndex)
               AddSealYesNoPage(equipmentIndex)
                 .writeToUserAnswers(value)
                 .appendTransportEquipmentUuidIfNotPresent(equipmentIndex)
                 .updateTask()
-                .writeToSession()
-                .navigate()
+                .writeToSession(sessionRepository)
+                .navigateWith(navigator)
             }
           )
     }

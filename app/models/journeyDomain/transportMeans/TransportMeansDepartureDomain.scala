@@ -41,7 +41,7 @@ sealed trait TransportMeansDepartureDomain extends JourneyDomainModel {
       case None        => TransportMeansSection.route(userAnswers, mode)
     }
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(DepartureSection(index))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(DepartureSection(index))
 
 }
 

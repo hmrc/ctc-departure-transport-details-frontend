@@ -31,7 +31,7 @@ import pages.transportMeans._
 
 sealed trait TransportMeansDomain extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(TransportMeansSection)
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(TransportMeansSection)
 }
 
 object TransportMeansDomain {

@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.AdditionalInformationFormProvider
 import generators.Generators
 import models.NormalMode
-import navigation.TransportNavigatorProvider
+import navigation.AdditionalInformationNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.additionalInformation.index.AdditionalInformationTextPage
@@ -42,7 +42,7 @@ class AdditionalInformationCodeTextControllerSpec extends SpecBase with AppWithD
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[TransportNavigatorProvider]).toInstance(fakeTransportNavigatorProvider))
+      .overrides(bind(classOf[AdditionalInformationNavigatorProvider]).toInstance(fakeAdditionalInformationNavigatorProvider))
 
   "AdditionalInformationText Controller" - {
 
@@ -85,7 +85,7 @@ class AdditionalInformationCodeTextControllerSpec extends SpecBase with AppWithD
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       val request = FakeRequest(POST, additionalInformationTextRoute)
         .withFormUrlEncodedBody(("value", "test string"))

@@ -16,10 +16,13 @@
 
 package services
 
+import config.Constants.AdditionalInformation._
 import connectors.ReferenceDataConnector
-import models.{SelectableList, UserAnswers}
 import models.reference.additionalInformation.AdditionalInformationCode
+import models.{Index, RichOptionalJsArray, SelectableList, UserAnswers}
+import pages.external.ItemCountryOfDestinationInCL009Page
 import pages.preRequisites.ItemsDestinationCountryInCL009Page
+import pages.sections.external.ItemsSection
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Inject
@@ -32,11 +35,19 @@ class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceD
       .getAdditionalInformationCodes()
       .map {
         additionalInformationList =>
-          userAnswers.get(ItemsDestinationCountryInCL009Page) match {
-            case Some(true) =>
-              SelectableList(SelectableList(additionalInformationList).values.filterNot(_.value.equals("30600")))
-            case _ =>
-              SelectableList(additionalInformationList)
+          val isConsignmentCountryOfDestinationInCL009 = userAnswers.get(ItemsDestinationCountryInCL009Page).contains(true)
+
+          val isAtLeastOneItemCountryOfDestinationInCL009 = {
+            val numberOfItems = userAnswers.get(ItemsSection).length
+            (0 until numberOfItems).map(Index(_)).exists {
+              index => userAnswers.get(ItemCountryOfDestinationInCL009Page(index)).contains(true)
+            }
+          }
+
+          if (isConsignmentCountryOfDestinationInCL009 || isAtLeastOneItemCountryOfDestinationInCL009) {
+            SelectableList(additionalInformationList.filterNot(_.code == `30600`).toSeq)
+          } else {
+            SelectableList(additionalInformationList)
           }
       }
 }
