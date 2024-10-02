@@ -24,11 +24,11 @@ class AddVehicleCountryYesNoPageSpec extends PageBehaviours {
 
   "AddVehicleCountryYesNo Page Spec" - {
 
-    beRetrievable[Boolean](AddVehicleCountryYesNoPage)
+    beRetrievable[Boolean](AddVehicleCountryYesNoPage(departureIndex))
 
-    beSettable[Boolean](AddVehicleCountryYesNoPage)
+    beSettable[Boolean](AddVehicleCountryYesNoPage(departureIndex))
 
-    beRemovable[Boolean](AddVehicleCountryYesNoPage)
+    beRemovable[Boolean](AddVehicleCountryYesNoPage(departureIndex))
 
     "cleanup" - {
       "when NO selected" - {
@@ -36,12 +36,12 @@ class AddVehicleCountryYesNoPageSpec extends PageBehaviours {
           forAll(arbitrary[Nationality]) {
             nationality =>
               val userAnswers = emptyUserAnswers
-                .setValue(AddVehicleCountryYesNoPage, true)
-                .setValue(VehicleCountryPage, nationality)
+                .setValue(AddVehicleCountryYesNoPage(departureIndex), true)
+                .setValue(VehicleCountryPage(departureIndex), nationality)
 
-              val result = userAnswers.setValue(AddVehicleCountryYesNoPage, false)
+              val result = userAnswers.setValue(AddVehicleCountryYesNoPage(departureIndex), false)
 
-              result.get(VehicleCountryPage) must not be defined
+              result.get(VehicleCountryPage(departureIndex)) must not be defined
           }
         }
       }

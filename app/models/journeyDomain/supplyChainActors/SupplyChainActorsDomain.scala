@@ -26,7 +26,7 @@ case class SupplyChainActorsDomain(
   SupplyChainActorsDomain: Seq[SupplyChainActorDomain]
 ) extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(SupplyChainActorsSection)
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(SupplyChainActorsSection)
 }
 
 object SupplyChainActorsDomain {

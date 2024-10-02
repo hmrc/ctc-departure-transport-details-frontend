@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IdentificationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
@@ -59,7 +59,7 @@ class IdentificationController @Inject() (
       implicit request =>
         service.getMeansOfTransportIdentificationTypesActive(activeIndex, request.userAnswers.get(BorderModeOfTransportPage)).flatMap {
           case identifier :: Nil =>
-            redirect(mode, activeIndex, InferredIdentificationPage, identifier)
+            redirect(mode, activeIndex, InferredIdentificationPage.apply, identifier)
           case identifiers =>
             val preparedForm = request.userAnswers.get(IdentificationPage(activeIndex)) match {
               case None        => form(identifiers)
@@ -83,7 +83,7 @@ class IdentificationController @Inject() (
                   Future.successful(
                     BadRequest(view(formWithErrors, lrn, identificationTypeList, mode, activeIndex))
                   ),
-                value => redirect(mode, activeIndex, IdentificationPage, value)
+                value => redirect(mode, activeIndex, IdentificationPage.apply, value)
               )
         }
     }
@@ -93,8 +93,8 @@ class IdentificationController @Inject() (
     index: Index,
     page: Index => BaseIdentificationPage,
     value: Identification
-  )(implicit request: DataRequest[_]): Future[Result] = {
-    implicit val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
-    page(index).writeToUserAnswers(value).updateTask().writeToSession().navigate()
+  )(implicit request: DataRequest[?]): Future[Result] = {
+    val navigator: UserAnswersNavigator = navigatorProvider(mode, index)
+    page(index).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
   }
 }

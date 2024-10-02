@@ -17,167 +17,168 @@
 package services
 
 import base.SpecBase
+import cats.data.NonEmptySet
 import generators.Generators
-import models.Index
 import models.ProcedureType.{Normal, Simplified}
-import models.reference.InlandMode
 import models.reference.authorisations.AuthorisationType
+import models.{Index, ProcedureType, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.authorisationsAndLimit.authorisations.index.InferredAuthorisationTypePage
+import pages.authorisationsAndLimit.authorisations.index.{InferredAuthorisationTypePage, IsMandatoryPage}
 import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
-import pages.transportMeans.InlandModePage
 
 class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val declarationTypeGen: Gen[String] = arbitrary[String](arbitraryNonTIRDeclarationType)
+  private val declarationTypeGen: Gen[String] = arbitrary[String](arbitraryNonTIRDeclarationType)
 
-  val authTypeACR: AuthorisationType = AuthorisationType(
+  private val authTypeACR: AuthorisationType = AuthorisationType(
     "C521",
-    "ACR - authorisation for the status of authorised consignor for Union transit"
+    "ACR"
   )
 
-  val authTypeTRD: AuthorisationType = AuthorisationType(
+  private val authTypeSSE: AuthorisationType = AuthorisationType(
+    "C523",
+    "SSE"
+  )
+
+  private val authTypeTRD: AuthorisationType = AuthorisationType(
     "C524",
-    "TRD - authorisation to use transit declaration with a reduced dataset"
+    "TRD"
   )
 
-  val authTypes: Seq[AuthorisationType] = Seq(authTypeACR, authTypeTRD)
+  private val authTypes: NonEmptySet[AuthorisationType] = NonEmptySet.of(authTypeACR, authTypeSSE, authTypeTRD)
+
+  private def userAnswersGen(reducedDatasetIndicator: Boolean, procedureType: ProcedureType.Value): Gen[UserAnswers] =
+    declarationTypeGen.map {
+      declarationType =>
+        emptyUserAnswers
+          .setValue(DeclarationTypePage, declarationType)
+          .setValue(ApprovedOperatorPage, reducedDatasetIndicator)
+          .setValue(ProcedureTypePage, procedureType)
+    }
 
   "inferAuthorisations" - {
 
-    "when reduced dataset indicator is 1 and inland mode is Maritime/Rail/Air and ProcedureType is Normal" - {
-      "must infer index 0 as TRD Authorisation Type" in {
-        forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
-          (inlandMode, declarationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, true)
-              .setValue(ProcedureTypePage, Normal)
+    "when reduced dataset indicator is 1" - {
+      val reducedDatasetIndicator = true
 
-            val service = new AuthorisationInferenceService()
+      "and ProcedureType is Normal" - {
+        val procedureType = Normal
 
-            val result = service.inferAuthorisations(userAnswers, authTypes)
+        "and authorisation types present in reference data" - {
+          "must not infer anything" in {
+            forAll(userAnswersGen(reducedDatasetIndicator, procedureType)) {
+              userAnswers =>
+                val service = new AuthorisationInferenceService()
 
-            val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), authTypeTRD)
+                val result = service.inferAuthorisations(userAnswers, authTypes)
 
-            result mustBe expectedResult
+                result mustBe userAnswers
+            }
+          }
+        }
+
+        "and authorisation type not present in reference data" - {
+          "must not infer anything" in {
+            forAll(userAnswersGen(reducedDatasetIndicator, procedureType)) {
+              userAnswers =>
+                val service = new AuthorisationInferenceService()
+
+                val result = service.inferAuthorisations(userAnswers, NonEmptySet.of(authTypeACR, authTypeSSE))
+
+                result mustBe userAnswers
+            }
+          }
         }
       }
 
-      "must not infer index 0 as TRD when TRD isn't present in reference data" in {
-        forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
-          (inlandMode, declarationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, true)
-              .setValue(ProcedureTypePage, Normal)
+      "and ProcedureType is Simplified" - {
+        val procedureType = Simplified
 
-            val service = new AuthorisationInferenceService()
+        "and authorisation types present in reference data" - {
+          "must infer index 0 as ACR and index 1 as TRD" in {
+            forAll(userAnswersGen(reducedDatasetIndicator, procedureType)) {
+              userAnswers =>
+                val service = new AuthorisationInferenceService()
 
-            val result = service.inferAuthorisations(userAnswers, Seq.empty)
+                val result = service.inferAuthorisations(userAnswers, authTypes)
 
-            result.get(InferredAuthorisationTypePage(Index(0))) must not be defined
+                val expectedResult = userAnswers
+                  .setValue(InferredAuthorisationTypePage(Index(0)), authTypeACR)
+                  .setValue(IsMandatoryPage(Index(0)), true)
+                  .setValue(InferredAuthorisationTypePage(Index(1)), authTypeTRD)
+                  .setValue(IsMandatoryPage(Index(1)), true)
+
+                result mustBe expectedResult
+            }
+          }
         }
-      }
-    }
 
-    "when ProcedureType is Simplified" - {
-      "must infer index 0 as ACR Authorisation Type" in {
-        forAll(arbitrary[Option[InlandMode]], declarationTypeGen) {
-          (inlandMode, declarationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, true)
-              .setValue(ProcedureTypePage, Simplified)
+        "and authorisation type not present in reference data" - {
+          "must not infer anything" in {
+            forAll(userAnswersGen(reducedDatasetIndicator, procedureType)) {
+              userAnswers =>
+                val service = new AuthorisationInferenceService()
 
-            val service = new AuthorisationInferenceService()
+                val result = service.inferAuthorisations(userAnswers, NonEmptySet.of(authTypeSSE))
 
-            val result = service.inferAuthorisations(userAnswers, authTypes)
-
-            val expectedResult = userAnswers
-              .setValue(InferredAuthorisationTypePage(Index(0)), authTypeACR)
-
-            result mustBe expectedResult
-        }
-      }
-
-      "must not infer index 0 as ACR when they are not present in reference data" in {
-        forAll(arbitrary[InlandMode], declarationTypeGen) {
-          (inlandMode, declarationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, true)
-              .setValue(ProcedureTypePage, Simplified)
-
-            val service = new AuthorisationInferenceService()
-
-            val result = service.inferAuthorisations(userAnswers, Seq.empty)
-
-            result.get(InferredAuthorisationTypePage(Index(0))) must not be defined
+                result mustBe userAnswers
+            }
+          }
         }
       }
     }
 
-    "when reduced dataset indicator is 0 and inland mode is Maritime/Rail/Air and ProcedureType is Normal" - {
-      "must not make any inferences" in {
-        forAll(arbitrary[InlandMode](arbitraryMaritimeRailAirInlandMode), declarationTypeGen) {
-          (inlandMode, declarationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, false)
-              .setValue(ProcedureTypePage, Normal)
+    "when reduced dataset indicator is 0" - {
+      val reducedDatasetIndicator = false
 
-            val service = new AuthorisationInferenceService()
+      "and ProcedureType is Normal" - {
+        val procedureType = Normal
 
-            val result = service.inferAuthorisations(userAnswers, authTypes)
+        "must not infer anything" in {
+          forAll(userAnswersGen(reducedDatasetIndicator, procedureType)) {
+            userAnswers =>
+              val service = new AuthorisationInferenceService()
 
-            result mustBe userAnswers
+              val result = service.inferAuthorisations(userAnswers, authTypes)
+
+              result mustBe userAnswers
+          }
         }
       }
-    }
 
-    "when reduced dataset indicator is 1 and inland mode is not Maritime/Rail/Air and ProcedureType is Normal" - {
-      "must not make any inferences" in {
-        forAll(arbitrary[Option[InlandMode]](arbitraryOptionalNonMaritimeRailAirInlandMode), declarationTypeGen) {
-          (inlandMode, declarationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, true)
-              .setValue(ProcedureTypePage, Normal)
+      "and ProcedureType is Simplified" - {
+        val procedureType = Simplified
 
-            val service = new AuthorisationInferenceService()
+        "and authorisation type present in reference data" - {
+          "must infer index 0 as ACR" in {
+            forAll(userAnswersGen(reducedDatasetIndicator, procedureType)) {
+              userAnswers =>
+                val service = new AuthorisationInferenceService()
 
-            val result = service.inferAuthorisations(userAnswers, authTypes)
+                val result = service.inferAuthorisations(userAnswers, authTypes)
 
-            result mustBe userAnswers
+                val expectedResult = userAnswers
+                  .setValue(InferredAuthorisationTypePage(Index(0)), authTypeACR)
+                  .setValue(IsMandatoryPage(Index(0)), true)
+
+                result mustBe expectedResult
+            }
+          }
         }
-      }
-    }
 
-    "when reduced dataset indicator is 0 and inland mode is not Maritime/Rail/Air and ProcedureType is Normal" - {
-      "must not make any inferences" in {
-        forAll(arbitrary[Option[InlandMode]](arbitraryOptionalNonMaritimeRailAirInlandMode), declarationTypeGen) {
-          (inlandMode, declarationType) =>
-            val userAnswers = emptyUserAnswers
-              .setValue(InlandModePage, inlandMode)
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, false)
-              .setValue(ProcedureTypePage, Normal)
+        "and authorisation type not present in reference data" - {
+          "must not infer anything" in {
+            forAll(userAnswersGen(reducedDatasetIndicator, procedureType)) {
+              userAnswers =>
+                val service = new AuthorisationInferenceService()
 
-            val service = new AuthorisationInferenceService()
+                val result = service.inferAuthorisations(userAnswers, NonEmptySet.of(authTypeSSE, authTypeTRD))
 
-            val result = service.inferAuthorisations(userAnswers, authTypes)
-
-            result mustBe userAnswers
+                result mustBe userAnswers
+            }
+          }
         }
       }
     }

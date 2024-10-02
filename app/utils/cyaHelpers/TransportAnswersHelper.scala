@@ -24,14 +24,21 @@ import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationD
 import models.journeyDomain.equipment.EquipmentDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorDomain
 import models.reference.Country
+import models.reference.additionalInformation.AdditionalInformationCode
+import models.reference.additionalReference.AdditionalReferenceType
 import models.reference.equipment.PaymentMethod
 import models.{Index, Mode, OptionalBoolean, UserAnswers}
+import pages.additionalInformation.index.AdditionalInformationTypePage
+import pages.additionalReference.AddAdditionalReferenceYesNoPage
+import pages.additionalReference.index.AdditionalReferenceTypePage
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
 import pages.authorisationsAndLimit.limit.{AddLimitDateYesNoPage, LimitDatePage}
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
 import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
 import pages.equipment.{AddPaymentMethodYesNoPage, AddTransportEquipmentYesNoPage, PaymentMethodPage}
 import pages.preRequisites._
+import pages.sections.additionalInformation.AdditionalInformationListSection
+import pages.sections.additionalReference.AdditionalReferencesSection
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import pages.sections.equipment.EquipmentsSection
 import pages.sections.supplyChainActors.SupplyChainActorsSection
@@ -235,5 +242,50 @@ class TransportAnswersHelper(
     prefix = "equipment.paymentMethod",
     id = Some("change-payment-method")
   )
+
+  def addAdditionalReferenceYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddAdditionalReferenceYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "additionalReference.addAdditionalReferenceYesNo",
+    id = Some("change-add-additional-reference")
+  )
+
+  def additionalReferences: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(AdditionalReferencesSection)(additionalReference)
+
+  def additionalReference(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalReferenceType](
+    page = AdditionalReferenceTypePage(index),
+    formatAnswer = formatAsText,
+    prefix = s"additionalReference.additionalReference",
+    id = Some(s"change-add-additional-reference-${index.display}"),
+    args = index.display
+  )
+
+  def addOrRemoveAdditionalReferences(mode: Mode): Option[Link] = buildLink(AdditionalReferencesSection) {
+    Link(
+      id = "add-or-remove-additional-references",
+      text = messages("checkYourAnswers.additionalReference.addOrRemove"),
+      href = controllers.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode).url
+    )
+  }
+
+  def additionalInformationList: Seq[SummaryListRow] =
+    getAnswersAndBuildSectionRows(AdditionalInformationListSection)(additionalInformation)
+
+  def additionalInformation(index: Index): Option[SummaryListRow] = getAnswerAndBuildRow[AdditionalInformationCode](
+    page = AdditionalInformationTypePage(index),
+    formatAnswer = formatAsText,
+    prefix = s"additionalInformation.additionalInformation",
+    id = Some(s"change-add-additional-information-${index.display}"),
+    args = index.display
+  )
+
+  def addOrRemoveAdditionalInformation(mode: Mode): Option[Link] = buildLink(AdditionalInformationListSection) {
+    Link(
+      id = "add-or-remove-additional-information",
+      text = messages("checkYourAnswers.additionalInformation.addOrRemove"),
+      href = controllers.additionalInformation.routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode).url
+    )
+  }
 
 }

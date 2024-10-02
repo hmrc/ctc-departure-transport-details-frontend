@@ -19,8 +19,7 @@ package models.journeyDomain.transportMeans
 import config.Constants.ModeOfTransport.Rail
 import config.Constants.SecurityType.NoSecurityDetails
 import config.PhaseConfig
-import models.journeyDomain._
-import models.journeyDomain.JourneyDomainModel
+import models.journeyDomain.{JourneyDomainModel, _}
 import models.journeyDomain.transportMeans.PostTransitionTransportMeansDomain.{borderModeOfTransportReader, transportMeansActiveReader}
 import models.reference.BorderMode
 import models.{Index, OptionalBoolean, Phase, UserAnswers}
@@ -32,7 +31,7 @@ import pages.transportMeans._
 
 sealed trait TransportMeansDomain extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(TransportMeansSection)
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(TransportMeansSection)
 }
 
 object TransportMeansDomain {
@@ -56,7 +55,7 @@ object TransportMeansDomain {
 }
 
 case class TransitionTransportMeansDomain(
-  transportMeansDeparture: Option[TransportMeansDepartureDomain],
+  transportMeansDepartureList: Option[TransportMeansDepartureListDomain],
   borderModeOfTransport: Option[BorderMode],
   transportMeansActiveList: Option[TransportMeansActiveDomain]
 ) extends TransportMeansDomain
@@ -65,15 +64,15 @@ object TransitionTransportMeansDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansDomain] = {
 
-    lazy val transportMeansDepartureReader: Read[Option[TransportMeansDepartureDomain]] =
+    lazy val transportMeansDepartureReader: Read[Option[TransportMeansDepartureListDomain]] =
       ContainerIndicatorPage.optionalReader.to {
         case Some(OptionalBoolean.yes) =>
           AddDepartureTransportMeansYesNoPage
             .filterOptionalDependent(identity) {
-              TransportMeansDepartureDomain.userAnswersReader
+              TransportMeansDepartureListDomain.userAnswersReader
             }
         case _ =>
-          TransportMeansDepartureDomain.userAnswersReader.toOption
+          TransportMeansDepartureListDomain.userAnswersReader.toOption
       }
 
     lazy val borderModeOfTransportReader: Read[Option[BorderMode]] = {
@@ -131,7 +130,7 @@ object PostTransitionTransportMeansDomain {
 }
 
 case class PostTransitionTransportMeansMultipleActiveDomain(
-  transportMeansDeparture: TransportMeansDepartureDomain,
+  transportMeansDepartureList: TransportMeansDepartureListDomain,
   borderModeOfTransport: Option[BorderMode],
   transportMeansActiveList: Option[TransportMeansActiveListDomain]
 ) extends PostTransitionTransportMeansDomain
@@ -140,14 +139,14 @@ object PostTransitionTransportMeansMultipleActiveDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansDomain] =
     (
-      TransportMeansDepartureDomain.userAnswersReader,
+      TransportMeansDepartureListDomain.userAnswersReader,
       borderModeOfTransportReader,
       transportMeansActiveReader(TransportMeansActiveListDomain.userAnswersReader)
     ).map(PostTransitionTransportMeansMultipleActiveDomain.apply)
 }
 
 case class PostTransitionTransportMeansSingleActiveDomain(
-  transportMeansDeparture: TransportMeansDepartureDomain,
+  transportMeansDepartureList: TransportMeansDepartureListDomain,
   borderModeOfTransport: Option[BorderMode],
   transportMeansActiveList: Option[TransportMeansActiveDomain]
 ) extends PostTransitionTransportMeansDomain
@@ -156,7 +155,7 @@ object PostTransitionTransportMeansSingleActiveDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansDomain] =
     (
-      TransportMeansDepartureDomain.userAnswersReader,
+      TransportMeansDepartureListDomain.userAnswersReader,
       borderModeOfTransportReader,
       transportMeansActiveReader(TransportMeansActiveDomain.userAnswersReader(Index(0)))
     ).map(PostTransitionTransportMeansSingleActiveDomain.apply)

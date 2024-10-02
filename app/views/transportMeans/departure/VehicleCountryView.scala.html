@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[Nationality], lrn: LocalReferenceNumber, nationalityList: Seq[Nationality], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[Nationality], lrn: LocalReferenceNumber, nationalityList: Seq[Nationality], mode: Mode, departureIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("transportMeans.departure.vehicleCountry.title"),
@@ -39,7 +39,7 @@
     lrn = lrn
 ) {
 
-    @formHelper(action = routes.VehicleCountryController.onSubmit(lrn, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.VehicleCountryController.onSubmit(lrn, mode, departureIndex), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

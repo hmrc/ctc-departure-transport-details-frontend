@@ -20,8 +20,8 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider
-import models.{LocalReferenceNumber, Mode}
-import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
+import models.{Index, LocalReferenceNumber, Mode}
+import navigation.{TransportMeansDepartureNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.departure.VehicleCountryPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -35,8 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class VehicleCountryController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
-  navigatorProvider: TransportMeansNavigatorProvider,
+  sessionRepository: SessionRepository,
+  navigatorProvider: TransportMeansDepartureNavigatorProvider,
   actions: Actions,
   formProvider: SelectableFormProvider,
   service: NationalitiesService,
@@ -46,21 +46,21 @@ class VehicleCountryController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       service.getNationalities().map {
         nationalityList =>
           val form = formProvider("transportMeans.departure.vehicleCountry", nationalityList)
-          val preparedForm = request.userAnswers.get(VehicleCountryPage) match {
+          val preparedForm = request.userAnswers.get(VehicleCountryPage(departureIndex)) match {
             case None        => form
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, lrn, nationalityList.values, mode))
+          Ok(view(preparedForm, lrn, nationalityList.values, mode, departureIndex))
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       service.getNationalities().flatMap {
         nationalityList =>
@@ -68,10 +68,10 @@ class VehicleCountryController @Inject() (
           form
             .bindFromRequest()
             .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, nationalityList.values, mode))),
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, nationalityList.values, mode, departureIndex))),
               value => {
-                implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                VehicleCountryPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                val navigator: UserAnswersNavigator = navigatorProvider(mode, departureIndex)
+                VehicleCountryPage(departureIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
               }
             )
       }

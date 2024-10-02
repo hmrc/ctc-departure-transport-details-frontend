@@ -106,7 +106,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
       "must redirect to add another Authorisation Type of routing and remove Authorisation Type at specified index" - {
         "when Authorisation Type is not inferred" in {
           reset(mockSessionRepository)
-          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
           val userAnswers = emptyUserAnswers
             .setValue(AuthorisationTypePage(authorisationIndex), authType)
@@ -131,7 +131,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
 
         "when Authorisation Type is inferred" in {
           reset(mockSessionRepository)
-          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
           val userAnswers = emptyUserAnswers
             .setValue(InferredAuthorisationTypePage(authorisationIndex), authType)
@@ -159,7 +159,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
     "when no submitted" - {
       "must redirect to add another Authorisation Type and not remove Authorisation Type at specified index" in {
         reset(mockSessionRepository)
-        when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+        when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
         val userAnswers = emptyUserAnswers
           .setValue(AuthorisationTypePage(authorisationIndex), authType)
@@ -212,7 +212,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "if no authorisation is found" in {
@@ -241,7 +241,7 @@ class RemoveAuthorisationYesNoControllerSpec extends SpecBase with AppWithDefaul
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "if no authorisation is found" in {

@@ -19,6 +19,8 @@ package generators
 import models.LockCheck.{LockCheckFailure, Locked, Unlocked}
 import models._
 import models.reference._
+import models.reference.additionalInformation.AdditionalInformationCode
+import models.reference.additionalReference.AdditionalReferenceType
 import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
 import models.reference.supplyChainActors.SupplyChainActorType
@@ -166,6 +168,14 @@ trait ModelGenerators {
       } yield Nationality(code, desc)
     }
 
+  implicit lazy val arbitraryAdditionalReferenceType: Arbitrary[AdditionalReferenceType] =
+    Arbitrary {
+      for {
+        docType <- nonEmptyString
+        desc    <- nonEmptyString
+      } yield AdditionalReferenceType(docType, desc)
+    }
+
   implicit def arbitrarySelectableList[T <: Selectable](implicit arbitrary: Arbitrary[T]): Arbitrary[SelectableList[T]] = Arbitrary {
     for {
       values <- listWithMaxLength[T]()
@@ -212,6 +222,14 @@ trait ModelGenerators {
       } yield InlandMode(code, description)
     }
 
+  val arbitraryNonRoadInlandMode: Arbitrary[InlandMode] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("1", "2", "4", "5", "7", "8")
+        description <- nonEmptyString
+      } yield InlandMode(code, description)
+    }
+
   val arbitraryOptionalNonMaritimeRailAirInlandMode: Arbitrary[Option[InlandMode]] =
     Arbitrary {
       for {
@@ -233,6 +251,36 @@ trait ModelGenerators {
     Arbitrary {
       for {
         code        <- Gen.oneOf("C521", "C523", "C524")
+        description <- nonEmptyString
+      } yield AuthorisationType(code, description)
+    }
+
+  lazy val arbitraryACRAuthorisationType: Arbitrary[AuthorisationType] =
+    Arbitrary {
+      for {
+        description <- nonEmptyString
+      } yield AuthorisationType("C521", description)
+    }
+
+  lazy val arbitraryNonACRAuthorisationType: Arbitrary[AuthorisationType] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("C523", "C524")
+        description <- nonEmptyString
+      } yield AuthorisationType(code, description)
+    }
+
+  lazy val arbitraryTRDAuthorisationType: Arbitrary[AuthorisationType] =
+    Arbitrary {
+      for {
+        description <- nonEmptyString
+      } yield AuthorisationType("C524", description)
+    }
+
+  lazy val arbitraryNonTRDAuthorisationType: Arbitrary[AuthorisationType] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("C521", "C523")
         description <- nonEmptyString
       } yield AuthorisationType(code, description)
     }
@@ -286,4 +334,11 @@ trait ModelGenerators {
     } yield values.distinctBy(_.code)
   }
 
+  implicit lazy val arbitraryAdditionalInformationCode: Arbitrary[AdditionalInformationCode] =
+    Arbitrary {
+      for {
+        code <- nonEmptyString
+        desc <- nonEmptyString
+      } yield AdditionalInformationCode(code, desc)
+    }
 }

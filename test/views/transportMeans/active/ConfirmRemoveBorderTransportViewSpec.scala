@@ -17,6 +17,7 @@
 package views.transportMeans.active
 
 import models.NormalMode
+import org.scalacheck.Gen
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -24,8 +25,10 @@ import views.html.transportMeans.active.ConfirmRemoveBorderTransportView
 
 class ConfirmRemoveBorderTransportViewSpec extends YesNoViewBehaviours {
 
+  private val insetText = Gen.alphaNumStr.sample.value
+
   override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[ConfirmRemoveBorderTransportView].apply(form, lrn, NormalMode, activeIndex)(fakeRequest, messages)
+    injector.instanceOf[ConfirmRemoveBorderTransportView].apply(form, lrn, NormalMode, activeIndex, Some(insetText))(fakeRequest, messages)
 
   override val prefix: String = "transportMeans.active.confirmRemoveBorderTransport"
 
@@ -39,5 +42,16 @@ class ConfirmRemoveBorderTransportViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithRadioItems(args = Seq(activeIndex.display))
 
+  behave like pageWithInsetText(insetText)
+
   behave like pageWithSubmitButton("Save and continue")
+
+  "when inset text undefined" - {
+    val view = injector
+      .instanceOf[ConfirmRemoveBorderTransportView]
+      .apply(form, lrn, NormalMode, activeIndex, None)(fakeRequest, messages)
+    val doc = parseView(view)
+
+    behave like pageWithoutInsetText(doc)
+  }
 }

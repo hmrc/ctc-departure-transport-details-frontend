@@ -107,7 +107,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
           setExistingUserAnswers(userAnswers)
 
-          when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+          when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
           val request = FakeRequest(POST, identificationNumberRoute)
             .withFormUrlEncodedBody(("value", validAnswer))
@@ -154,7 +154,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -168,7 +168,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }

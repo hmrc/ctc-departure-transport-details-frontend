@@ -31,7 +31,7 @@
     button: Button
 )
 
-@(form: Form[CustomsOffice], lrn: LocalReferenceNumber, customsOffices: Seq[CustomsOffice], mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[CustomsOffice], lrn: LocalReferenceNumber, customsOffices: Seq[CustomsOffice], mode: Mode, activeIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("transportMeans.active.customsOfficeActiveBorder.title"),

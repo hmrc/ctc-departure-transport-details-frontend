@@ -23,6 +23,7 @@ import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.TransportMeansCheckYourAnswersHelper
 import utils.cyaHelpers.transportMeans.active.ActiveBorderTransportAnswersHelper
 import viewModels.Section
+import viewModels.transportMeans.departure.AddDepartureTransportMeansYesNoViewModel._
 
 import javax.inject.Inject
 
@@ -43,18 +44,15 @@ object TransportMeansAnswersViewModel {
         ).flatten
       )
 
-      val departureMeansSection = Section(
-        sectionTitle = messages("transportMeans.departureMeans.subheading"),
-        rows = Seq(
-          helper.addDepartureTransportMeans,
-          helper.departureAddTypeYesNo,
-          helper.departureIdentificationType,
-          helper.departureAddIdentificationNumber,
-          helper.departureIdentificationNumber,
-          helper.departureAddNationality,
-          helper.departureNationality
-        ).flatten
-      )
+      val departureMeansSection: Section = {
+        val prefix = new AddDepartureTransportMeansYesNoViewModelProvider().apply(userAnswers).prefix
+        val row    = helper.addDepartureTransportMeans(prefix).toSeq
+        Section(
+          sectionTitle = messages("transportMeans.departureMeans.subheading"),
+          rows = row ++ helper.departureTransportsMeans,
+          addAnotherLink = helper.addOrRemoveDepartureTransportsMeans()
+        )
+      }
 
       val borderModeSection = Section(
         sectionTitle = messages("transportMeans.borderMode.subheading"),

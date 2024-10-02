@@ -17,6 +17,7 @@
 package controllers.authorisationsAndLimit
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
+import cats.data.NonEmptySet
 import generators.Generators
 import models.reference.authorisations.AuthorisationType
 import models.{NormalMode, TaskStatus, UserAnswers}
@@ -38,7 +39,9 @@ import scala.concurrent.Future
 
 class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultMockFixtures with MockitoSugar with Generators {
 
-  private val authorisationTypes = arbitrary[Seq[AuthorisationType]].sample.value
+  private val authorisationType1 = arbitrary[AuthorisationType].sample.value
+  private val authorisationType2 = arbitrary[AuthorisationType].sample.value
+  private val authorisationTypes = NonEmptySet.of(authorisationType1, authorisationType2)
 
   private val mode                             = NormalMode
   private lazy val authorisationInferenceRoute = routes.AuthorisationInferenceController.infer(lrn, mode).url
@@ -61,7 +64,7 @@ class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultM
       setExistingUserAnswers(userAnswersBeforeInference)
 
       val userAnswersAfterInference = userAnswersBeforeInference.copy(data = Json.obj("foo" -> "bar"))
-      when(mockAuthorisationTypesService.getAll()(any())).thenReturn(Future.successful(authorisationTypes))
+      when(mockAuthorisationTypesService.getAuthorisationTypes()(any())).thenReturn(Future.successful(authorisationTypes))
       when(mockAuthorisationInferenceService.inferAuthorisations(any(), any())).thenReturn(userAnswersAfterInference)
 
       val request = FakeRequest(GET, authorisationInferenceRoute)
@@ -89,7 +92,7 @@ class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultM
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }

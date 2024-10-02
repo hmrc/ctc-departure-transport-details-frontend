@@ -20,7 +20,7 @@ import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.SelectableFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
-import navigation.TransportMeansNavigatorProvider
+import navigation.TransportMeansDepartureNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.transportMeans.departure.VehicleCountryPage
@@ -44,12 +44,12 @@ class VehicleCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtu
   private val mode         = NormalMode
 
   private val mockNationalitiesService: NationalitiesService = mock[NationalitiesService]
-  private lazy val vehicleCountryRoute                       = routes.VehicleCountryController.onPageLoad(lrn, mode).url
+  private lazy val vehicleCountryRoute                       = routes.VehicleCountryController.onPageLoad(lrn, mode, departureIndex).url
 
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[TransportMeansNavigatorProvider]).toInstance(fakeTransportMeansNavigatorProvider))
+      .overrides(bind(classOf[TransportMeansDepartureNavigatorProvider]).toInstance(fakeTransportMeansDepartureNavigatorProvider))
       .overrides(bind(classOf[NationalitiesService]).toInstance(mockNationalitiesService))
 
   "VehicleCountry Controller" - {
@@ -68,13 +68,13 @@ class VehicleCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, nationalityList.values, mode)(request, messages).toString
+        view(form, lrn, nationalityList.values, mode, departureIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
       when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
-      val userAnswers = emptyUserAnswers.setValue(VehicleCountryPage, nationality1)
+      val userAnswers = emptyUserAnswers.setValue(VehicleCountryPage(departureIndex), nationality1)
       setExistingUserAnswers(userAnswers)
 
       val request = FakeRequest(GET, vehicleCountryRoute)
@@ -88,13 +88,13 @@ class VehicleCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, nationalityList.values, mode)(request, messages).toString
+        view(filledForm, lrn, nationalityList.values, mode, departureIndex)(request, messages).toString
     }
 
     "must redirect to the next page when valid data is submitted" in {
 
       when(mockNationalitiesService.getNationalities()(any())).thenReturn(Future.successful(nationalityList))
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -123,7 +123,7 @@ class VehicleCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, lrn, nationalityList.values, mode)(request, messages).toString
+        view(boundForm, lrn, nationalityList.values, mode, departureIndex)(request, messages).toString
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {
@@ -135,7 +135,7 @@ class VehicleCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -149,7 +149,7 @@ class VehicleCountryControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }

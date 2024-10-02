@@ -20,7 +20,7 @@ import config.PhaseConfig
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import controllers.actions._
 import forms.YesNoFormProvider
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.departure.AddIdentificationNumberYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddIdentificationNumberYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
   actions: Actions,
   formProvider: YesNoFormProvider,
@@ -46,25 +46,25 @@ class AddIdentificationNumberYesNoController @Inject() (
 
   private val form = formProvider("transportMeans.departure.addIdentificationNumberYesNo")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AddIdentificationNumberYesNoPage) match {
+      val preparedForm = request.userAnswers.get(AddIdentificationNumberYesNoPage(departureIndex)) match {
         case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, lrn, mode))
+      Ok(view(preparedForm, lrn, mode, departureIndex))
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, departureIndex))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            AddIdentificationNumberYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            AddIdentificationNumberYesNoPage(departureIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }

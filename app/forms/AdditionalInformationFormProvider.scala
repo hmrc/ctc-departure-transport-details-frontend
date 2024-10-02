@@ -16,23 +16,22 @@
 
 package forms
 
-import forms.Constants.maxEoriNumberLength
+import forms.Constants.maxAdditionalInfoTextLength
 import forms.mappings.Mappings
-import models.RichString
-import models.domain.StringFieldRegex._
+import models.domain.StringFieldRegex.stringFieldRegexComma
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class EoriNumberFormProvider @Inject() extends Mappings {
+class AdditionalInformationFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
-      "value" -> adaptedText(s"$prefix.error.required")(_.removeSpaces())
+      "value" -> text(s"$prefix.error.required")
         .verifying(
           forms.StopOnFirstFail[String](
-            regexp(alphaNumericRegex, s"$prefix.error.invalid"),
-            maxLength(maxEoriNumberLength, s"$prefix.error.length")
+            regexp(stringFieldRegexComma, s"$prefix.error.invalidCharacters"),
+            maxLength(maxAdditionalInfoTextLength, s"$prefix.error.length")
           )
         )
     )

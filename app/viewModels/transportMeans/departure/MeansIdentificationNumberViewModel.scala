@@ -16,7 +16,7 @@
 
 package viewModels.transportMeans.departure
 
-import models.UserAnswers
+import models.{Index, UserAnswers}
 import models.reference.transportMeans.departure.Identification
 import pages.transportMeans.departure.IdentificationPage
 import play.api.i18n.Messages
@@ -39,7 +39,7 @@ object MeansIdentificationNumberViewModel {
 
   class MeansIdentificationNumberViewModelProvider @Inject() () {
 
-    def apply(userAnswers: UserAnswers): MeansIdentificationNumberViewModel =
-      new MeansIdentificationNumberViewModel(userAnswers.get(IdentificationPage))
+    def apply(userAnswers: UserAnswers, departureIndex: Index): MeansIdentificationNumberViewModel =
+      new MeansIdentificationNumberViewModel(userAnswers.get(IdentificationPage(departureIndex)))
   }
 }

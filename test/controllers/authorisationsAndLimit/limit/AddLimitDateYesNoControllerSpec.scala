@@ -17,7 +17,6 @@
 package controllers.authorisationsAndLimit.limit
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import controllers.authorisationsAndLimit.limit.routes
 import forms.YesNoFormProvider
 import models.NormalMode
 import navigation.TransportNavigatorProvider
@@ -83,7 +82,7 @@ class AddLimitDateYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
 
     "must redirect to the next page when valid data is submitted" in {
 
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
       setExistingUserAnswers(emptyUserAnswers)
 
@@ -124,7 +123,7 @@ class AddLimitDateYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -138,7 +137,7 @@ class AddLimitDateYesNoControllerSpec extends SpecBase with AppWithDefaultMockFi
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }

@@ -16,7 +16,6 @@
 
 package forms.mappings
 
-import models.reference.CountryCode
 import models.{Enumerable, OptionalBoolean, Radioable, RichString, Selectable, SelectableList}
 import play.api.data.FormError
 import play.api.data.format.Formatter
@@ -34,22 +33,6 @@ trait Formatters {
         case Some(s) if g(s).isEmpty => Left(Seq(FormError(key, errorKey, args)))
         case Some(s)                 => Right(g(s))
       }
-    }
-
-    override def unbind(key: String, value: String): Map[String, String] =
-      Map(key -> value)
-  }
-
-  private[mappings] def eoriFormatter(errorKey: String): Formatter[String] = new Formatter[String] {
-
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] = {
-      val n = CountryCode.Constants.countryCodeLength
-      stringFormatter(errorKey)(_.removeSpaces())
-        .bind(key, data)
-        .flatMap {
-          eori =>
-            Right(eori.take(n).toUpperCase + eori.drop(n))
-        }
     }
 
     override def unbind(key: String, value: String): Map[String, String] =

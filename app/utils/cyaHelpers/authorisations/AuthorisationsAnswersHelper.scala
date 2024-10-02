@@ -21,7 +21,7 @@ import controllers.authorisationsAndLimit.authorisations.index.routes
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.{Mode, UserAnswers}
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
-import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage}
+import pages.authorisationsAndLimit.authorisations.index.{AuthorisationTypePage, InferredAuthorisationTypePage, IsMandatoryPage}
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -37,12 +37,9 @@ class AuthorisationsAnswersHelper(
   def listItems: Seq[Either[ListItem, ListItem]] =
     buildListItems(AuthorisationsSection) {
       index =>
-        // a non-removable inference can only be made at index 0
-        val removeRoute: Option[Call] = index match {
-          case index if index.isFirst && userAnswers.get(InferredAuthorisationTypePage(index)).isDefined =>
-            None
-          case _ =>
-            Some(routes.RemoveAuthorisationYesNoController.onPageLoad(lrn, mode, index))
+        val removeRoute: Option[Call] = userAnswers.get(IsMandatoryPage(index)) match {
+          case Some(true) => None
+          case _          => Some(routes.RemoveAuthorisationYesNoController.onPageLoad(lrn, mode, index))
         }
 
         buildListItem[AuthorisationDomain](

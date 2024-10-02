@@ -33,7 +33,7 @@ import scala.concurrent.ExecutionContext
 
 class AuthorisationInferenceController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
@@ -45,11 +45,11 @@ class AuthorisationInferenceController @Inject() (
 
   def infer(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      authorisationTypesService.getAll().flatMap {
+      authorisationTypesService.getAuthorisationTypes().flatMap {
         authorisationTypes =>
-          val userAnswers                              = authorisationInferenceService.inferAuthorisations(request.userAnswers, authorisationTypes)
-          implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-          AuthorisationsInferredPage.writeToUserAnswers(true).updateTask().writeToSession(userAnswers).navigate()
+          val userAnswers                     = authorisationInferenceService.inferAuthorisations(request.userAnswers, authorisationTypes)
+          val navigator: UserAnswersNavigator = navigatorProvider(mode)
+          AuthorisationsInferredPage.writeToUserAnswers(true).updateTask().writeToSession(userAnswers, sessionRepository).navigateWith(navigator)
       }
   }
 }

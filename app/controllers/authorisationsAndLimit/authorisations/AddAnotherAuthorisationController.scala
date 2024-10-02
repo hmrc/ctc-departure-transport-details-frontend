@@ -27,7 +27,6 @@ import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
 import services.AuthorisationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.authorisations.AddAnotherAuthorisationViewModel
@@ -39,7 +38,6 @@ import scala.concurrent.ExecutionContext
 
 class AddAnotherAuthorisationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   formProvider: AddAnotherFormProvider,

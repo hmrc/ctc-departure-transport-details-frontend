@@ -29,7 +29,7 @@
     button: Button
 )
 
-@(form: Form[Identification], lrn: LocalReferenceNumber, identifiers: Seq[Identification], mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Identification], lrn: LocalReferenceNumber, identifiers: Seq[Identification], mode: Mode, activeIndex: Index)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("transportMeans.active.identification.title"),

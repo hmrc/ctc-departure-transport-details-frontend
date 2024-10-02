@@ -16,10 +16,9 @@
 
 import cats.data.ReaderT
 import config.{FrontendAppConfig, PhaseConfig}
-import models.TaskStatus.{Completed, InProgress}
-import models.journeyDomain.UserAnswersReader
+import models.TaskStatus._
 import models.journeyDomain.OpsError.WriterError
-import models.journeyDomain.TransportDomain
+import models.journeyDomain.{TransportDomain, UserAnswersReader}
 import models.requests.MandatoryDataRequest
 import models.{Index, LocalReferenceNumber, UserAnswers}
 import navigation.UserAnswersNavigator
@@ -31,6 +30,7 @@ import play.api.mvc.{Call, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpVerbs.GET
+import uk.gov.hmrc.play.bootstrap.binders.{AbsoluteWithHostnameFromAllowlist, OnlyRelative, RedirectUrl}
 
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
@@ -67,8 +67,8 @@ package object controllers {
           UserAnswersWriter.updateTask(page) {
             section =>
               userAnswers.tasks.get(section) match {
-                case Some(Completed | InProgress) => UserAnswersWriter.updateTask(page, section, userAnswers)
-                case _                            => Right((page, userAnswers))
+                case Some(Completed | InProgress | Amended) => UserAnswersWriter.updateTask(page, section, userAnswers)
+                case _                                      => Right((page, userAnswers))
               }
           }
       }
@@ -134,8 +134,9 @@ package object controllers {
       }
 
     def writeToSession(
-      userAnswers: UserAnswers
-    )(implicit sessionRepository: SessionRepository, executionContext: ExecutionContext, hc: HeaderCarrier): Future[Write[A]] =
+      userAnswers: UserAnswers,
+      sessionRepository: SessionRepository
+    )(implicit executionContext: ExecutionContext, hc: HeaderCarrier): Future[Write[A]] =
       userAnswersWriter.run(userAnswers) match {
         case Left(opsError) => Future.failed(new Exception(s"${opsError.toString}"))
         case Right(value) =>
@@ -147,17 +148,16 @@ package object controllers {
             }
       }
 
-    def writeToSession()(implicit
-      dataRequest: MandatoryDataRequest[_],
-      sessionRepository: SessionRepository,
+    def writeToSession(sessionRepository: SessionRepository)(implicit
+      dataRequest: MandatoryDataRequest[?],
       ex: ExecutionContext,
       hc: HeaderCarrier
-    ): Future[Write[A]] = writeToSession(dataRequest.userAnswers)
+    ): Future[Write[A]] = writeToSession(dataRequest.userAnswers, sessionRepository)
   }
 
   implicit class NavigatorOps[A](write: Future[Write[A]]) {
 
-    def navigate()(implicit navigator: UserAnswersNavigator, executionContext: ExecutionContext): Future[Result] =
+    def navigateWith(navigator: UserAnswersNavigator)(implicit executionContext: ExecutionContext): Future[Result] =
       navigate {
         case (page, userAnswers) => navigator.nextPage(userAnswers, Some(page))
       }
@@ -170,11 +170,27 @@ package object controllers {
     def navigateTo(route: String)(implicit executionContext: ExecutionContext): Future[Result] =
       navigateTo(Call(GET, route))
 
-    def getNextPage()(implicit navigator: UserAnswersNavigator, executionContext: ExecutionContext, frontendAppConfig: FrontendAppConfig): Future[Call] =
+    def navigateTo(url: RedirectUrl)(implicit executionContext: ExecutionContext, appConfig: FrontendAppConfig): Future[Result] = {
+      import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.idFunctor
+      write.map {
+        _ =>
+          val redirectUrlPolicy = AbsoluteWithHostnameFromAllowlist(appConfig.allowedRedirectUrls*) | OnlyRelative
+          Redirect(url.get(redirectUrlPolicy).url)
+      }
+    }
+
+    def getNextPage(navigator: UserAnswersNavigator)(implicit executionContext: ExecutionContext, frontendAppConfig: FrontendAppConfig): Future[Call] =
       write.map {
         case (page, userAnswers) =>
           val call = navigator.nextPage(userAnswers, Some(page))
           val url  = frontendAppConfig.absoluteURL(call.url)
+          call.copy(url = url)
+      }
+
+    def getNextPage(call: Call)(implicit executionContext: ExecutionContext, frontendAppConfig: FrontendAppConfig): Future[Call] =
+      write.map {
+        _ =>
+          val url = frontendAppConfig.absoluteURL(call.url)
           call.copy(url = url)
       }
 

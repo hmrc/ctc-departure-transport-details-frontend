@@ -20,6 +20,7 @@ import cats.Order
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json.{Format, Json}
+import models.reference.RichComparison
 
 case class PaymentMethod(method: String, description: String) extends Radioable[PaymentMethod] {
 
@@ -34,7 +35,5 @@ case class PaymentMethod(method: String, description: String) extends Radioable[
 object PaymentMethod extends DynamicEnumerableType[PaymentMethod] {
   implicit val format: Format[PaymentMethod] = Json.format[PaymentMethod]
 
-  implicit val order: Order[PaymentMethod] = (x: PaymentMethod, y: PaymentMethod) => {
-    x.code.compareToIgnoreCase(y.code)
-  }
+  implicit val order: Order[PaymentMethod] = (x: PaymentMethod, y: PaymentMethod) => (x, y).compareBy(_.method)
 }

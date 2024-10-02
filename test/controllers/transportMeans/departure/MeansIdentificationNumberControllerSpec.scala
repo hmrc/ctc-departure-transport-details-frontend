@@ -17,10 +17,10 @@
 package controllers.transportMeans.departure
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.IdentificationNumberFormProvider
+import forms.DepartureTransportMeansIdentificationNumberFormProvider
 import generators.Generators
 import models.NormalMode
-import navigation.TransportMeansNavigatorProvider
+import navigation.TransportMeansDepartureNavigatorProvider
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalacheck.Arbitrary.arbitrary
@@ -39,10 +39,10 @@ class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefau
 
   private val prefix: String = "transportMeans.departure.meansIdentificationNumber"
 
-  private def form: Form[String] = app.injector.instanceOf[IdentificationNumberFormProvider].apply(prefix)
+  private def form: Form[String] = app.injector.instanceOf[DepartureTransportMeansIdentificationNumberFormProvider].apply(prefix)
 
   private val mode                                = NormalMode
-  private lazy val meansIdentificationNumberRoute = routes.MeansIdentificationNumberController.onPageLoad(lrn, mode).url
+  private lazy val meansIdentificationNumberRoute = routes.MeansIdentificationNumberController.onPageLoad(lrn, mode, departureIndex).url
 
   private lazy val mockViewModelProvider = mock[MeansIdentificationNumberViewModelProvider]
 
@@ -51,7 +51,7 @@ class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefau
   override def guiceApplicationBuilder(): GuiceApplicationBuilder =
     super
       .guiceApplicationBuilder()
-      .overrides(bind(classOf[TransportMeansNavigatorProvider]).toInstance(fakeTransportMeansNavigatorProvider))
+      .overrides(bind(classOf[TransportMeansDepartureNavigatorProvider]).toInstance(fakeTransportMeansDepartureNavigatorProvider))
       .overrides(bind(classOf[MeansIdentificationNumberViewModelProvider]).toInstance(mockViewModelProvider))
 
   private val viewModel = arbitrary[MeansIdentificationNumberViewModel].sample.value
@@ -59,7 +59,7 @@ class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefau
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(mockViewModelProvider)
-    when(mockViewModelProvider.apply(any())).thenReturn(viewModel)
+    when(mockViewModelProvider.apply(any(), any())).thenReturn(viewModel)
   }
 
   "MeansIdentificationNumber Controller" - {
@@ -77,12 +77,12 @@ class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, lrn, mode, viewModel)(request, messages).toString
+        view(form, lrn, mode, viewModel, departureIndex)(request, messages).toString
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.setValue(MeansIdentificationNumberPage, validAnswer)
+      val userAnswers = emptyUserAnswers.setValue(MeansIdentificationNumberPage(departureIndex), validAnswer)
 
       setExistingUserAnswers(userAnswers)
 
@@ -96,7 +96,7 @@ class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefau
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, viewModel)(request, messages).toString
+        view(filledForm, lrn, mode, viewModel, departureIndex)(request, messages).toString
 
     }
 
@@ -128,7 +128,7 @@ class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefau
       val view = injector.instanceOf[MeansIdentificationNumberView]
 
       contentAsString(result) mustEqual
-        view(filledForm, lrn, mode, viewModel)(request, messages).toString()
+        view(filledForm, lrn, mode, viewModel, departureIndex)(request, messages).toString()
     }
 
     "must redirect to Session Expired for a GET" - {
@@ -142,7 +142,7 @@ class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefau
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
     }
@@ -159,7 +159,7 @@ class MeansIdentificationNumberControllerSpec extends SpecBase with AppWithDefau
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
     }
   }

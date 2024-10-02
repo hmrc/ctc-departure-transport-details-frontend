@@ -30,7 +30,7 @@
     phaseConfig: PhaseConfig
 )
 
-@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index, identificationType: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index, identificationType: String)(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("transportMeans.active.identificationNumber.title"),

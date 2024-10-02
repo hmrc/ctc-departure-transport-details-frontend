@@ -29,23 +29,23 @@ class MeansIdentificationNumberViewModelSpec extends SpecBase with ScalaCheckPro
   "must create view model" - {
     "when identification type is defined" in {
       val viewModelProvider = new MeansIdentificationNumberViewModelProvider()
-      val result            = viewModelProvider.apply(emptyUserAnswers)
+      val result            = viewModelProvider.apply(emptyUserAnswers, departureIndex)
 
       result.prefix mustBe "transportMeans.departure.meansIdentificationNumber.withNoIDType"
-      result.title mustBe "What is the identification number for this vehicle?"
-      result.heading mustBe "What is the identification number for this vehicle?"
+      result.title mustBe "What is the identification for this vehicle?"
+      result.heading mustBe "What is the identification for this vehicle?"
     }
 
     "when identification type is not defined" in {
       forAll(arbitrary[Identification]) {
         identification =>
-          val userAnswers       = emptyUserAnswers.setValue(IdentificationPage, identification)
+          val userAnswers       = emptyUserAnswers.setValue(IdentificationPage(departureIndex), identification)
           val viewModelProvider = new MeansIdentificationNumberViewModelProvider()
-          val result            = viewModelProvider.apply(userAnswers)
+          val result            = viewModelProvider.apply(userAnswers, departureIndex)
 
           result.prefix mustBe "transportMeans.departure.meansIdentificationNumber.withIDType"
-          result.title mustBe "What is the identification number for this vehicle?"
-          result.heading mustBe "What is the identification number for this vehicle?"
+          result.title mustBe "What is the identification for this vehicle?"
+          result.heading mustBe "What is the identification for this vehicle?"
       }
     }
   }

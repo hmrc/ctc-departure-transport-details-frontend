@@ -16,43 +16,49 @@
 
 package services
 
-import config.Constants.ModeOfTransport._
-import models.ProcedureType.{Normal, Simplified}
-import models.journeyDomain._
-import models.journeyDomain.ReaderSuccess
+import cats.data.NonEmptySet
+import models.ProcedureType._
+import models.journeyDomain.{ReaderSuccess, _}
 import models.reference.authorisations.AuthorisationType
 import models.{Index, UserAnswers}
-import pages.authorisationsAndLimit.authorisations.index.InferredAuthorisationTypePage
+import pages.authorisationsAndLimit.authorisations.index.{InferredAuthorisationTypePage, IsMandatoryPage}
 import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
-import pages.transportMeans.InlandModePage
 
 import javax.inject.Inject
 
 class AuthorisationInferenceService @Inject() () {
 
-  def inferAuthorisations(userAnswers: UserAnswers, authorisationTypes: Seq[AuthorisationType]): UserAnswers = {
+  def inferAuthorisations(userAnswers: UserAnswers, authorisationTypes: NonEmptySet[AuthorisationType]): UserAnswers = {
 
     lazy val authTypeACR = authorisationTypes.find(_.isACR)
     lazy val authTypeTRD = authorisationTypes.find(_.isTRD)
 
-    val reader: UserAnswersReader[Option[UserAnswers]] =
+    val reader: UserAnswersReader[Option[UserAnswers]] = {
+      def updateUserAnswers(authorisationTypes: Option[AuthorisationType]*): Option[UserAnswers] =
+        authorisationTypes.flatten.zipWithIndex.foldLeft(Option(userAnswers)) {
+          case (acc, (authorisationType, i)) =>
+            acc
+              .flatMap(_.set(InferredAuthorisationTypePage(Index(i)), authorisationType).toOption)
+              .flatMap(_.set(IsMandatoryPage(Index(i)), true).toOption)
+        }
+
       (
         ProcedureTypePage.reader,
-        ApprovedOperatorPage.inferredReader,
-        InlandModePage.optionalReader.apply(_: Pages).map(_.to(_.map(_.code)))
+        ApprovedOperatorPage.inferredReader
       ).to {
-        case (procedureType, reducedDataset, inlandMode) =>
+        case (procedureType, reducedDataset) =>
           UserAnswersReader.success {
-            (procedureType, reducedDataset, inlandMode) match {
-              case (Simplified, _, _) =>
-                authTypeACR.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
-              case (Normal, true, Some(Maritime | Rail | Air)) =>
-                authTypeTRD.flatMap(userAnswers.set(InferredAuthorisationTypePage(Index(0)), _).toOption)
+            (procedureType, reducedDataset) match {
+              case (Simplified, false) =>
+                updateUserAnswers(authTypeACR)
+              case (Simplified, true) =>
+                updateUserAnswers(authTypeACR, authTypeTRD)
               case _ =>
                 Some(userAnswers)
             }
           }
       }.apply(Nil)
+    }
 
     reader.apply(userAnswers) match {
       case Right(ReaderSuccess(Some(value), _)) => value

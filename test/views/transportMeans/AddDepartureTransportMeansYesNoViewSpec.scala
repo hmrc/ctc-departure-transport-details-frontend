@@ -17,17 +17,23 @@
 package views.transportMeans
 
 import models.NormalMode
+import org.scalacheck.Arbitrary.arbitrary
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
+import viewModels.transportMeans.departure.AddDepartureTransportMeansYesNoViewModel
 import views.behaviours.YesNoViewBehaviours
 import views.html.transportMeans.AddDepartureTransportMeansYesNoView
 
 class AddDepartureTransportMeansYesNoViewSpec extends YesNoViewBehaviours {
 
-  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
-    injector.instanceOf[AddDepartureTransportMeansYesNoView].apply(form, lrn, NormalMode)(fakeRequest, messages)
+  private val addInlandModeYesNo = arbitrary[Boolean].sample.value
 
-  override val prefix: String = "transportMeans.addDepartureTransportMeansYesNo"
+  private def viewModel(addInlandModeYesNo: Boolean) = AddDepartureTransportMeansYesNoViewModel(addInlandModeYesNo)
+
+  override def applyView(form: Form[Boolean]): HtmlFormat.Appendable =
+    injector.instanceOf[AddDepartureTransportMeansYesNoView].apply(form, lrn, NormalMode, viewModel(addInlandModeYesNo))(fakeRequest, messages)
+
+  override val prefix: String = s"transportMeans.addDepartureTransportMeansYesNo.${if (addInlandModeYesNo) "inlandModeYes" else "inlandModeNo"}"
 
   behave like pageWithTitle()
 
@@ -40,4 +46,20 @@ class AddDepartureTransportMeansYesNoViewSpec extends YesNoViewBehaviours {
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")
+
+  "when addInlandModeYesNo is false must display paragraph" - {
+
+    val doc =
+      parseView(injector.instanceOf[AddDepartureTransportMeansYesNoView].apply(form, lrn, NormalMode, viewModel(false))(fakeRequest, messages))
+
+    behave like pageWithContent(doc, "p", "This is the means of transport used from the UK office of departure to a UK port or airport.")
+  }
+
+  "when addInlandModeYesNo is true must not display paragraph" - {
+
+    val doc =
+      parseView(injector.instanceOf[AddDepartureTransportMeansYesNoView].apply(form, lrn, NormalMode, viewModel(true))(fakeRequest, messages))
+
+    behave like pageWithoutContent(doc, "p", "This is the means of transport used from the UK office of departure to a UK port or airport.")
+  }
 }

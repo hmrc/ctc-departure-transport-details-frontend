@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveAuthorisationYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   actions: Actions,
   getMandatoryPage: SpecificDataRequiredActionProvider,
   formProvider: YesNoFormProvider,
@@ -48,7 +48,7 @@ class RemoveAuthorisationYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private type Request = SpecificDataRequestProvider1[AuthorisationType]#SpecificDataRequest[_]
+  private type Request = SpecificDataRequestProvider1[AuthorisationType]#SpecificDataRequest[?]
 
   private def authType(implicit request: Request): AuthorisationType = request.arg
 
@@ -79,7 +79,7 @@ class RemoveAuthorisationYesNoController @Inject() (
                 AuthorisationSection(authorisationIndex)
                   .removeFromUserAnswers()
                   .updateTask()
-                  .writeToSession()
+                  .writeToSession(sessionRepository)
                   .navigateTo(addAnother(lrn, mode))
               case false =>
                 Future.successful(Redirect(addAnother(lrn, mode)))

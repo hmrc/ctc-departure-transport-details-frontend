@@ -22,6 +22,7 @@ import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.i18n.Messages
 import play.api.libs.json.{Format, Json}
+import models.reference.RichComparison
 
 case class AuthorisationType(code: String, description: String) extends Radioable[AuthorisationType] {
 
@@ -45,7 +46,5 @@ case class AuthorisationType(code: String, description: String) extends Radioabl
 object AuthorisationType extends DynamicEnumerableType[AuthorisationType] {
   implicit val format: Format[AuthorisationType] = Json.format[AuthorisationType]
 
-  implicit val order: Order[AuthorisationType] = (x: AuthorisationType, y: AuthorisationType) => {
-    x.code.compareToIgnoreCase(y.code)
-  }
+  implicit val order: Order[AuthorisationType] = (x: AuthorisationType, y: AuthorisationType) => (x, y).compareBy(_.code)
 }

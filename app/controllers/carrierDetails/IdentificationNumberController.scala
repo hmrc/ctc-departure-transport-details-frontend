@@ -19,7 +19,7 @@ package controllers.carrierDetails
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.CarrierEoriNumberFormProvider
+import forms.EoriTcuinFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.carrierDetails.IdentificationNumberPage
@@ -34,9 +34,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IdentificationNumberController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
-  formProvider: CarrierEoriNumberFormProvider,
+  formProvider: EoriTcuinFormProvider,
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationNumberView
@@ -62,8 +62,8 @@ class IdentificationNumberController @Inject() (
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
           value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            IdentificationNumberPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+            val navigator: UserAnswersNavigator = navigatorProvider(mode)
+            IdentificationNumberPage.writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
           }
         )
   }

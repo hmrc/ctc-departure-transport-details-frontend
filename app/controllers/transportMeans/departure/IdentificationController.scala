@@ -21,8 +21,8 @@ import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
 import models.reference.transportMeans.departure.Identification
-import models.{LocalReferenceNumber, Mode}
-import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
+import models.{Index, LocalReferenceNumber, Mode}
+import navigation.{TransportMeansDepartureNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.InlandModePage
 import pages.transportMeans.departure.IdentificationPage
 import play.api.data.Form
@@ -31,6 +31,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.MeansOfTransportIdentificationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.transportMeans.departure.IdentificationViewModel.IdentificationViewModelProvider
 import views.html.transportMeans.departure.IdentificationView
 
 import javax.inject.Inject
@@ -38,13 +39,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class IdentificationController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
-  navigatorProvider: TransportMeansNavigatorProvider,
+  sessionRepository: SessionRepository,
+  navigatorProvider: TransportMeansDepartureNavigatorProvider,
   actions: Actions,
   formProvider: EnumerableFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationView,
-  service: MeansOfTransportIdentificationTypesService
+  service: MeansOfTransportIdentificationTypesService,
+  viewModelProvider: IdentificationViewModelProvider
 )(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
@@ -52,34 +54,37 @@ class IdentificationController @Inject() (
   private def form(identificationTypes: Seq[Identification]): Form[Identification] =
     formProvider[Identification]("transportMeans.departure.identification", identificationTypes)
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
     .async {
       implicit request =>
+        val viewModel = viewModelProvider(request.userAnswers, departureIndex)
         service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).map {
           identificationTypes =>
-            val preparedForm = request.userAnswers.get(IdentificationPage) match {
+            val preparedForm = request.userAnswers.get(IdentificationPage(departureIndex)) match {
               case None        => form(identificationTypes)
               case Some(value) => form(identificationTypes).fill(value)
             }
 
-            Ok(view(preparedForm, lrn, identificationTypes, mode))
+            Ok(view(preparedForm, lrn, identificationTypes, mode, departureIndex, viewModel))
         }
     }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions
     .requireData(lrn)
     .async {
       implicit request =>
+        val viewModel = viewModelProvider(request.userAnswers, departureIndex)
+
         service.getMeansOfTransportIdentificationTypes(request.userAnswers.get(InlandModePage)).flatMap {
           identificationTypes =>
             form(identificationTypes)
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, identificationTypes, mode))),
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, identificationTypes, mode, departureIndex, viewModel))),
                 value => {
-                  implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-                  IdentificationPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
+                  val navigator: UserAnswersNavigator = navigatorProvider(mode, departureIndex)
+                  IdentificationPage(departureIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
                 }
               )
         }

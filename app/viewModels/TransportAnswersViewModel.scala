@@ -94,13 +94,34 @@ object TransportAnswersViewModel {
         ).flatten
       )
 
+      val additionalReferenceSection =
+        Section(
+          sectionTitle = messages("checkYourAnswers.additionalReference"),
+          rows = Seq(
+            helper.addAdditionalReferenceYesNo,
+            helper.additionalReferences
+          ).flatten,
+          addAnotherLink = helper.addOrRemoveAdditionalReferences(mode)
+        )
+
+      val additionalInformationSection =
+        Section(
+          sectionTitle = messages("checkYourAnswers.additionalInformation"),
+          rows = Seq(
+            helper.additionalInformationList
+          ).flatten,
+          addAnotherLink = helper.addOrRemoveAdditionalInformation(mode)
+        )
+
       val sections = preRequisitesSection.toSeq ++
         transportMeansSections ++
         supplyChainActorsSection.toSeq ++
         authorisationsSection.toSeq ++
         carrierDetailsSection.toSeq ++
         transportEquipmentSection.toSeq ++
-        transportChargesSection.toSeq
+        transportChargesSection.toSeq ++
+        additionalReferenceSection.toSeq ++
+        additionalInformationSection.toSeq
 
       new TransportAnswersViewModel(sections)
     }

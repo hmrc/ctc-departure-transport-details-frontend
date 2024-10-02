@@ -41,7 +41,7 @@ class TransportAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
           val viewModelProvider = new TransportAnswersViewModelProvider(mockTransportMeansAnswersViewModelProvider, frontendAppConfig)
           val sections          = viewModelProvider.apply(answers).sections
 
-          sections.size mustBe 6
+          sections.size mustBe 8
 
           sections.head.sectionTitle must not be defined
           sections.head.rows must not be empty
@@ -58,6 +58,10 @@ class TransportAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
 
           sections(5: Int).sectionTitle.get mustBe "Transport charges"
           sections(5: Int).addAnotherLink must not be defined
+
+          sections(6: Int).sectionTitle.get mustBe "Additional references"
+
+          sections(7: Int).sectionTitle.get mustBe "Additional information"
 
           verify(mockTransportMeansAnswersViewModelProvider).apply(eqTo(answers), eqTo(mode))(any(), any())
       }

@@ -19,6 +19,7 @@ package controllers.transportMeans.active
 import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.YesNoFormProvider
 import generators.Generators
+import models.removable.ActiveBorderTransport
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -45,15 +46,16 @@ class ConfirmRemoveBorderTransportControllerSpec extends SpecBase with AppWithDe
         userAnswers =>
           setExistingUserAnswers(userAnswers)
 
-          val request = FakeRequest(GET, confirmRemoveBorderTransportRoute)
-          val result  = route(app, request).value
+          val request                   = FakeRequest(GET, confirmRemoveBorderTransportRoute)
+          val result                    = route(app, request).value
+          val insetText: Option[String] = ActiveBorderTransport(userAnswers, activeIndex).map(_.forRemoveDisplay)
 
           val view = injector.instanceOf[ConfirmRemoveBorderTransportView]
 
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, lrn, mode, activeIndex)(request, messages).toString
+            view(form, lrn, mode, activeIndex, insetText)(request, messages).toString
       }
     }
 
@@ -62,7 +64,7 @@ class ConfirmRemoveBorderTransportControllerSpec extends SpecBase with AppWithDe
         forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex)) {
           userAnswers =>
             reset(mockSessionRepository)
-            when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+            when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
             setExistingUserAnswers(userAnswers)
 
@@ -111,16 +113,17 @@ class ConfirmRemoveBorderTransportControllerSpec extends SpecBase with AppWithDe
         userAnswers =>
           setExistingUserAnswers(userAnswers)
 
-          val request   = FakeRequest(POST, confirmRemoveBorderTransportRoute).withFormUrlEncodedBody(("value", ""))
-          val boundForm = form.bind(Map("value" -> ""))
-          val result    = route(app, request).value
+          val request                   = FakeRequest(POST, confirmRemoveBorderTransportRoute).withFormUrlEncodedBody(("value", ""))
+          val boundForm                 = form.bind(Map("value" -> ""))
+          val result                    = route(app, request).value
+          val insetText: Option[String] = ActiveBorderTransport(userAnswers, activeIndex).map(_.forRemoveDisplay)
 
           status(result) mustEqual BAD_REQUEST
 
           val view = injector.instanceOf[ConfirmRemoveBorderTransportView]
 
           contentAsString(result) mustEqual
-            view(boundForm, lrn, mode, activeIndex)(request, messages).toString
+            view(boundForm, lrn, mode, activeIndex, insetText)(request, messages).toString
       }
     }
 
@@ -134,7 +137,7 @@ class ConfirmRemoveBorderTransportControllerSpec extends SpecBase with AppWithDe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when no active border transport means found" in {
@@ -162,7 +165,7 @@ class ConfirmRemoveBorderTransportControllerSpec extends SpecBase with AppWithDe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when no active border transport means found" in {

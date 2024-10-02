@@ -73,7 +73,7 @@ class TransportMeansCheckYourAnswersControllerSpec extends SpecBase with AppWith
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to next page" in {

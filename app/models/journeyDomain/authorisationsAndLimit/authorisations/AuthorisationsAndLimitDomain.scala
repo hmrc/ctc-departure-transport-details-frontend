@@ -40,9 +40,11 @@ object AuthorisationsAndLimitDomain {
   implicit val userAnswersReader: Read[AuthorisationsAndLimitDomain] =
     AuthorisationsDomain.userAnswersReader.to {
       authorisations =>
-        (
-          Read(authorisations),
-          limitReader(authorisations)
+        RichTuple2(
+          (
+            Read(authorisations),
+            limitReader(authorisations)
+          )
         ).map(AuthorisationsAndLimitDomain.apply)
     }
 }

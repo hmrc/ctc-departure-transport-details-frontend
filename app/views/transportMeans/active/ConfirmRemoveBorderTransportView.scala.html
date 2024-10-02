@@ -17,17 +17,19 @@
 @import controllers.transportMeans.active.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputYesNoViewModel._
-@import views.html.components.{Button, ErrorSummary, InputYesNo}
+@import viewModels.components.InputYesNoViewModel
+@import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     inputYesNo: InputYesNo,
     errorSummary: ErrorSummary,
+    insetText: InsetText,
     button: Button
 )
 
-@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index)(implicit request: Request[_], messages: Messages)
+@(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index, borderMeans: Option[String])(implicit request: Request[?], messages: Messages)
 
 @mainTemplate(
     title = messages("transportMeans.active.confirmRemoveBorderTransport.title", activeIndex.display),
@@ -41,9 +43,10 @@
 
         @inputYesNo(
             field = form("value"),
-            yesNoType = OrdinaryYesNo(
+            yesNoType = InputYesNoViewModel(
                 heading = messages("transportMeans.active.confirmRemoveBorderTransport.heading", activeIndex.display),
-                caption = Some(messages("activeBorderMeansOfTransport.caption"))
+                caption = Some(messages("activeBorderMeansOfTransport.caption")),
+                additionalHtml = borderMeans.map(insetText(_))
             )
         )
 

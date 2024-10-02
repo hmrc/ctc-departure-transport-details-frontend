@@ -18,11 +18,16 @@ package models.journeyDomain
 
 import base.SpecBase
 import config.Constants.DeclarationType.TIR
+import config.PhaseConfig
 import generators.Generators
+import models.Phase
 import models.ProcedureType.{Normal, Simplified}
 import models.reference.InlandMode
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.additionalInformation.AddAdditionalInformationYesNoPage
+import pages.additionalReference.AddAdditionalReferenceYesNoPage
 import pages.authorisationsAndLimit.{AddAuthorisationsYesNoPage, AuthorisationsInferredPage}
 import pages.carrierDetails.CarrierDetailYesNoPage
 import pages.external.{ApprovedOperatorPage, DeclarationTypePage, ProcedureTypePage}
@@ -33,6 +38,12 @@ import pages.transportMeans.{AddInlandModeYesNoPage, InlandModePage}
 class TransportDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
   "TransportDomain" - {
+
+    val mockPostTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
+
+    val mockTransitionPhaseConfig = mock[PhaseConfig]
+    when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
 
     val mailInlandMode = InlandMode("5", "Mail (Active mode of transport unknown)")
 
@@ -78,86 +89,34 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
         }
       }
 
-      "when reduced data set indicator is true" in {
+      "when procedure type is Normal and reduced data set indicator is undefined" in {
+        val initialUserAnswers = emptyUserAnswers
+          .setValue(DeclarationTypePage, TIR)
+          .setValue(ProcedureTypePage, Normal)
+          .setValue(AddAuthorisationsYesNoPage, false)
+
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+          userAnswers =>
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
+            result.value.value.authorisationsAndLimit must not be defined
+            result.value.pages.last mustBe TransportSection
+        }
+      }
+
+      "when reduced data set indicator is false and procedure type is Normal" in {
         forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
           declarationType =>
             val initialUserAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, true)
+              .setValue(ApprovedOperatorPage, false)
+              .setValue(ProcedureTypePage, Normal)
 
             forAll(arbitraryTransportAnswers(initialUserAnswers)) {
               userAnswers =>
                 val result = TransportDomain.userAnswersReader.run(userAnswers)
-                result.value.value.authorisationsAndLimit must be(defined)
+                result.value.value.authorisationsAndLimit must not be defined
                 result.value.pages.last mustBe TransportSection
             }
-        }
-      }
-
-      "when procedure type is Normal and reduced data set indicator is undefined" - {
-        "and not adding authorisations" in {
-          val initialUserAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, TIR)
-            .setValue(ProcedureTypePage, Normal)
-            .setValue(AddAuthorisationsYesNoPage, false)
-
-          forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-            userAnswers =>
-              val result = TransportDomain.userAnswersReader.run(userAnswers)
-              result.value.value.authorisationsAndLimit must not be defined
-              result.value.pages.last mustBe TransportSection
-          }
-        }
-
-        "and adding authorisations" in {
-          val initialUserAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, TIR)
-            .setValue(AddAuthorisationsYesNoPage, true)
-
-          forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-            userAnswers =>
-              val result = TransportDomain.userAnswersReader.run(userAnswers)
-              result.value.value.authorisationsAndLimit must be(defined)
-              result.value.pages.last mustBe TransportSection
-          }
-        }
-      }
-
-      "when reduced data set indicator is false and procedure type is Normal" - {
-        "and not adding authorisations" in {
-          forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
-            declarationType =>
-              val initialUserAnswers = emptyUserAnswers
-                .setValue(DeclarationTypePage, declarationType)
-                .setValue(ApprovedOperatorPage, false)
-                .setValue(ProcedureTypePage, Normal)
-                .setValue(AddAuthorisationsYesNoPage, false)
-
-              forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-                userAnswers =>
-                  val result = TransportDomain.userAnswersReader.run(userAnswers)
-                  result.value.value.authorisationsAndLimit must not be defined
-                  result.value.pages.last mustBe TransportSection
-              }
-          }
-        }
-
-        "and adding authorisations" in {
-          forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
-            declarationType =>
-              val initialUserAnswers = emptyUserAnswers
-                .setValue(DeclarationTypePage, declarationType)
-                .setValue(ApprovedOperatorPage, false)
-                .setValue(ProcedureTypePage, Normal)
-                .setValue(AddAuthorisationsYesNoPage, true)
-
-              forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-                userAnswers =>
-                  val result = TransportDomain.userAnswersReader.run(userAnswers)
-                  result.value.value.authorisationsAndLimit must be(defined)
-                  result.value.pages.last mustBe TransportSection
-              }
-          }
         }
       }
 
@@ -189,7 +148,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
             forAll(arbitraryTransportAnswers(initialUserAnswers)) {
               userAnswers =>
                 val result = TransportDomain.userAnswersReader.run(userAnswers)
-                result.value.value.authorisationsAndLimit must be(defined)
+                result.value.value.authorisationsAndLimit must not be defined
                 result.value.pages.last mustBe TransportSection
             }
         }
@@ -234,23 +193,91 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
             result.value.pages.last mustBe TransportSection
         }
       }
+
+      "when in Post Transition" - {
+        "and adding an additional reference" in {
+          val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage, true)
+          forAll(arbitraryTransportAnswers(initialUserAnswers)(mockPostTransitionPhaseConfig)) {
+            userAnswers =>
+              val result = TransportDomain.userAnswersReader(mockPostTransitionPhaseConfig).run(userAnswers)
+              result.value.value.additionalReferences must be(defined)
+              result.value.pages.last mustBe TransportSection
+          }
+        }
+
+        "and not adding an additional reference" in {
+          val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage, false)
+          forAll(arbitraryTransportAnswers(initialUserAnswers)(mockPostTransitionPhaseConfig)) {
+            userAnswers =>
+              val result = TransportDomain.userAnswersReader(mockPostTransitionPhaseConfig).run(userAnswers)
+              result.value.value.additionalReferences must not be defined
+              result.value.pages.last mustBe TransportSection
+          }
+        }
+
+        "and adding an additional information" in {
+          val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage, true)
+          forAll(arbitraryTransportAnswers(initialUserAnswers)(mockPostTransitionPhaseConfig)) {
+            userAnswers =>
+              val result = TransportDomain.userAnswersReader(mockPostTransitionPhaseConfig).run(userAnswers)
+              result.value.value.additionalInformations must be(defined)
+              result.value.pages.last mustBe TransportSection
+          }
+        }
+
+        "and not adding an additional information" in {
+          val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage, false)
+          forAll(arbitraryTransportAnswers(initialUserAnswers)(mockPostTransitionPhaseConfig)) {
+            userAnswers =>
+              val result = TransportDomain.userAnswersReader(mockPostTransitionPhaseConfig).run(userAnswers)
+              result.value.value.additionalInformations must not be defined
+              result.value.pages.last mustBe TransportSection
+          }
+        }
+      }
+
+      "when in Transition and therefore not requiring an additional reference" in {
+        forAll(arbitraryTransportAnswers(emptyUserAnswers)(mockTransitionPhaseConfig)) {
+          userAnswers =>
+            val result = TransportDomain.userAnswersReader(mockTransitionPhaseConfig).run(userAnswers)
+            result.value.value.additionalReferences must not be defined
+            result.value.pages.last mustBe TransportSection
+        }
+      }
+
+      "when in Transition and therefore not requiring an additional information" in {
+        forAll(arbitraryTransportAnswers(emptyUserAnswers)(mockTransitionPhaseConfig)) {
+          userAnswers =>
+            val result = TransportDomain.userAnswersReader(mockTransitionPhaseConfig).run(userAnswers)
+            result.value.value.additionalInformations must not be defined
+            result.value.pages.last mustBe TransportSection
+        }
+      }
     }
 
     "authorisationsAndLimitReads" - {
-      "can not be parsed from user answers" - {
-        "when inference is not flagged as true" in {
-          forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
-            declarationType =>
-              val userAnswers = emptyUserAnswers
-                .setValue(DeclarationTypePage, declarationType)
-                .setValue(ApprovedOperatorPage, true)
-                .setValue(ProcedureTypePage, Normal)
+      "can not parsed from user answers" - {
+        "when procedure type is normal" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(ProcedureTypePage, Normal)
 
-              val result = TransportDomain.authorisationsAndLimitReads.apply(Nil).run(userAnswers)
-              result.left.value.page mustBe AuthorisationsInferredPage
-              result.left.value.pages mustBe Seq(
-                AuthorisationsInferredPage
-              )
+          val result = TransportDomain.authorisationsAndLimitReads.apply(Nil).run(userAnswers)
+          result.value.value mustBe None
+          result.value.pages mustBe Nil
+        }
+      }
+
+      "can not be parsed from user answers" - {
+        "when procedure type is simplified" - {
+          "and inference is not flagged as true" in {
+            val userAnswers = emptyUserAnswers
+              .setValue(ProcedureTypePage, Simplified)
+
+            val result = TransportDomain.authorisationsAndLimitReads.apply(Nil).run(userAnswers)
+            result.left.value.page mustBe AuthorisationsInferredPage
+            result.left.value.pages mustBe Seq(
+              AuthorisationsInferredPage
+            )
           }
         }
       }

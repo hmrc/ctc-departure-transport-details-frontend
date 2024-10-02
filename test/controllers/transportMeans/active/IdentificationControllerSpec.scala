@@ -132,7 +132,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
     }
 
     "must redirect to the next page when valid data is submitted" in {
-      when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+      when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
       when(mockMeansOfTransportIdentificationTypesActiveService.getMeansOfTransportIdentificationTypesActive(any(), any())(any()))
         .thenReturn(Future.successful(identificationTypes))
 
@@ -181,7 +181,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
       val result = route(app, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
 
     "must redirect to Session Expired for a POST if no existing data is found" in {
@@ -195,7 +195,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+      redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
     }
   }
 }

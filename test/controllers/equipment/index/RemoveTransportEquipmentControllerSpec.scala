@@ -23,7 +23,10 @@ import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, reset, verify, when}
+import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.equipment.index.{AddContainerIdentificationNumberYesNoPage, ContainerIdentificationNumberPage}
+import pages.equipment.index.seals.IdentificationNumberPage
 import pages.sections.equipment.EquipmentSection
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -41,19 +44,26 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
   "RemoveTransportEquipment Controller" - {
 
     "must return OK and the correct view for a GET" in {
-      forAll(arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex)) {
-        userAnswers =>
+
+      forAll(Gen.alphaNumStr) {
+        containerId =>
+          val userAnswers = emptyUserAnswers
+            .setValue(IdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
+            .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
+            .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
+
           setExistingUserAnswers(userAnswers)
 
           val request = FakeRequest(GET, removeTransportEquipmentRoute)
           val result  = route(app, request).value
 
-          val view = injector.instanceOf[RemoveTransportEquipmentView]
+          val view      = injector.instanceOf[RemoveTransportEquipmentView]
+          val insetText = Some(s"Container $containerId")
 
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, lrn, mode, equipmentIndex)(request, messages).toString
+            view(form, lrn, mode, equipmentIndex, insetText)(request, messages).toString
       }
     }
 
@@ -62,7 +72,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
         forAll(arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex)) {
           userAnswers =>
             reset(mockSessionRepository)
-            when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+            when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
             setExistingUserAnswers(userAnswers)
 
@@ -74,7 +84,8 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
             status(result) mustEqual SEE_OTHER
 
             redirectLocation(result).value mustEqual
-              controllers.equipment.routes.AddAnotherEquipmentController.onPageLoad(lrn, mode).url
+              s"http://localhost:10127/manage-transit-movements/departures/items/$lrn/update-task?" +
+              s"continue=http://localhost:10131${controllers.equipment.routes.AddAnotherEquipmentController.onPageLoad(lrn, mode).url}"
 
             val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
             verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -86,7 +97,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
         forAll(arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex)) {
           userAnswers =>
             reset(mockSessionRepository)
-            when(mockSessionRepository.set(any())(any())) thenReturn Future.successful(true)
+            when(mockSessionRepository.set(any())(any())).thenReturn(Future.successful(true))
 
             setExistingUserAnswers(userAnswers)
 
@@ -106,21 +117,27 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-      forAll(arbitraryEquipmentAnswers(emptyUserAnswers, equipmentIndex)) {
-        userAnswers =>
+      forAll(Gen.alphaNumStr) {
+        containerId =>
+          val userAnswers = emptyUserAnswers
+            .setValue(IdentificationNumberPage(equipmentIndex, sealIndex), "Seal-1")
+            .setValue(AddContainerIdentificationNumberYesNoPage(equipmentIndex), true)
+            .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
+
           setExistingUserAnswers(userAnswers)
 
           val request   = FakeRequest(POST, removeTransportEquipmentRoute).withFormUrlEncodedBody(("value", ""))
           val boundForm = form.bind(Map("value" -> ""))
 
-          val result = route(app, request).value
+          val result    = route(app, request).value
+          val insetText = Some(s"Container $containerId")
 
           status(result) mustEqual BAD_REQUEST
 
           val view = injector.instanceOf[RemoveTransportEquipmentView]
 
           contentAsString(result) mustEqual
-            view(boundForm, lrn, mode, equipmentIndex)(request, messages).toString
+            view(boundForm, lrn, mode, equipmentIndex, insetText)(request, messages).toString
       }
     }
 
@@ -134,7 +151,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when no transport equipment is found" in {
@@ -162,7 +179,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with AppWithDefaul
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl
+        redirectLocation(result).value mustEqual frontendAppConfig.sessionExpiredUrl(lrn)
       }
 
       "when no transport equipment is found" in {

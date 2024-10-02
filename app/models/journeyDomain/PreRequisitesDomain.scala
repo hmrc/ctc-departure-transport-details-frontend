@@ -34,7 +34,7 @@ object PreRequisitesDomain {
 
   implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[PreRequisitesDomain] = {
 
-    val countryOfDispatchReader: Read[Option[Country]] = {
+    val countryOfDispatchReader: Read[Option[Country]] =
       phaseConfig.phase match {
         case Phase.Transition =>
           UserAnswersReader.none
@@ -46,7 +46,6 @@ object PreRequisitesDomain {
               UserAnswersReader.none
           }
       }
-    }
 
     (
       SameUcrYesNoPage.filterOptionalDependent(identity)(UniqueConsignmentReferencePage.reader),

@@ -31,9 +31,6 @@ trait Mappings extends Formatters with Constraints {
   protected def adaptedText(errorKey: String = "error.required", args: Seq[Any] = Seq.empty)(f: String => String): FieldMapping[String] =
     of(stringFormatter(errorKey, args)(f))
 
-  protected def eoriFormat(errorKey: String = "error.required"): FieldMapping[String] =
-    of(eoriFormatter(errorKey))
-
   protected def mandatoryIfBoolean(errorKey: String = "error.required", condition: Boolean, defaultValue: Boolean): FieldMapping[Boolean] =
     if (condition) boolean(errorKey) else of(ignoredFormat(defaultValue))
 
@@ -65,7 +62,7 @@ trait Mappings extends Formatters with Constraints {
     requiredKey: String,
     args: Seq[String] = Seq.empty
   ): FieldMapping[LocalDate] =
-    of(new LocalDateFormatter(invalidKey, requiredKey, args))
+    of(new LocalDateFormatter(invalidKey, requiredKey))
 
   protected def selectable[T <: Selectable](
     selectableList: SelectableList[T],

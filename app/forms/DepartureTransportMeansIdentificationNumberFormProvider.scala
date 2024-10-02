@@ -16,24 +16,22 @@
 
 package forms
 
-import forms.Constants.{maxEoriNumberLength, minLengthCarrierEori}
+import config.PhaseConfig
 import forms.mappings.Mappings
-import models.domain.StringFieldRegex._
+import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class CarrierEoriNumberFormProvider @Inject() extends Mappings {
+class DepartureTransportMeansIdentificationNumberFormProvider @Inject() (phaseConfig: PhaseConfig) extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
-      "value" -> eoriFormat(s"$prefix.error.required")
+      "value" -> adaptedText(s"$prefix.error.required")(_.toUpperCase)
         .verifying(
-          forms.StopOnFirstFail[String](
-            regexp(alphaNumericRegex, s"$prefix.error.invalidCharacters"),
-            maxLength(maxEoriNumberLength, s"$prefix.error.maxLength"),
-            minLength(minLengthCarrierEori, s"$prefix.error.minLength"),
-            regexp(carrierEoriRegex, s"$prefix.error.invalidFormat")
+          StopOnFirstFail[String](
+            maxLength(phaseConfig.maxIdentificationNumberLength, phaseConfig.lengthError(prefix)),
+            regexp(alphaNumericRegex, s"$prefix.error.invalid")
           )
         )
     )

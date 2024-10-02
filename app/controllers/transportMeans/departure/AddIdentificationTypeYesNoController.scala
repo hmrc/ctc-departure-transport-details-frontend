@@ -20,13 +20,15 @@ import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
-import models.{LocalReferenceNumber, Mode}
+import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.departure.AddIdentificationTypeYesNoPage
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import viewModels.transportMeans.departure.AddIdentificationTypeViewModel.AddIdentificationTypeViewModelProvider
 import views.html.transportMeans.departure.AddIdentificationTypeYesNoView
 
 import javax.inject.Inject
@@ -34,9 +36,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddIdentificationTypeYesNoController @Inject() (
   override val messagesApi: MessagesApi,
-  implicit val sessionRepository: SessionRepository,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansNavigatorProvider,
   actions: Actions,
+  viewModel: AddIdentificationTypeViewModelProvider,
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddIdentificationTypeYesNoView
@@ -44,28 +47,31 @@ class AddIdentificationTypeYesNoController @Inject() (
     extends FrontendBaseController
     with I18nSupport {
 
-  private val form = formProvider("transportMeans.departure.addIdentificationTypeYesNo")
+  private val form: Form[Boolean] = formProvider("transportMeans.departure.addIdentificationTypeYesNo")
 
-  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
-    implicit request =>
-      val preparedForm = request.userAnswers.get(AddIdentificationTypeYesNoPage) match {
-        case None        => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn) {
+      implicit request =>
+        val preparedForm = request.userAnswers.get(AddIdentificationTypeYesNoPage(departureIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
 
-      Ok(view(preparedForm, lrn, mode))
-  }
+        Ok(view(preparedForm, lrn, mode, departureIndex, viewModel(request.userAnswers)))
+    }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
-    implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode))),
-          value => {
-            implicit val navigator: UserAnswersNavigator = navigatorProvider(mode)
-            AddIdentificationTypeYesNoPage.writeToUserAnswers(value).updateTask().writeToSession().navigate()
-          }
-        )
-  }
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index): Action[AnyContent] = actions
+    .requireData(lrn)
+    .async {
+      implicit request =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, mode, departureIndex, viewModel(request.userAnswers)))),
+            value => {
+              val navigator: UserAnswersNavigator = navigatorProvider(mode)
+              AddIdentificationTypeYesNoPage(departureIndex).writeToUserAnswers(value).updateTask().writeToSession(sessionRepository).navigateWith(navigator)
+            }
+          )
+    }
 }

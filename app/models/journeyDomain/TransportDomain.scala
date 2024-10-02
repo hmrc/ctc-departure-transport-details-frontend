@@ -18,17 +18,22 @@ package models.journeyDomain
 
 import config.Constants.ModeOfTransport.Mail
 import config.PhaseConfig
-import models.ProcedureType.Normal
+import models.Phase.{PostTransition, Transition}
+import models.ProcedureType.{Normal, Simplified}
 import models.UserAnswers
+import models.journeyDomain.additionalInformation.AdditionalInformationsDomain
+import models.journeyDomain.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
 import models.journeyDomain.carrierDetails.CarrierDetailsDomain
 import models.journeyDomain.equipment.EquipmentsAndChargesDomain
 import models.journeyDomain.supplyChainActors.SupplyChainActorsDomain
 import models.journeyDomain.transportMeans.TransportMeansDomain
 import models.reference.InlandMode
-import pages.authorisationsAndLimit.{AddAuthorisationsYesNoPage, AuthorisationsInferredPage}
+import pages.additionalInformation.AddAdditionalInformationYesNoPage
+import pages.additionalReference.AddAdditionalReferenceYesNoPage
+import pages.authorisationsAndLimit.AuthorisationsInferredPage
 import pages.carrierDetails.CarrierDetailYesNoPage
-import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
+import pages.external.ProcedureTypePage
 import pages.sections.{Section, TransportSection}
 import pages.supplyChainActors.SupplyChainActorYesNoPage
 import pages.transportMeans.{AddInlandModeYesNoPage, InlandModePage}
@@ -40,10 +45,12 @@ case class TransportDomain(
   supplyChainActors: Option[SupplyChainActorsDomain],
   authorisationsAndLimit: Option[AuthorisationsAndLimitDomain],
   carrierDetails: Option[CarrierDetailsDomain],
-  equipmentsAndCharges: EquipmentsAndChargesDomain
+  equipmentsAndCharges: EquipmentsAndChargesDomain,
+  additionalReferences: Option[AdditionalReferencesDomain],
+  additionalInformations: Option[AdditionalInformationsDomain]
 ) extends JourneyDomainModel {
 
-  override def page(userAnswers: UserAnswers): Option[Section[_]] = Some(TransportSection)
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(TransportSection)
 }
 
 object TransportDomain {
@@ -56,6 +63,18 @@ object TransportDomain {
         case _                         => TransportMeansDomain.userAnswersReader.toOption
       }
 
+    implicit lazy val additionalReferencesReads: Read[Option[AdditionalReferencesDomain]] =
+      phaseConfig.phase match {
+        case Transition     => UserAnswersReader.none
+        case PostTransition => AddAdditionalReferenceYesNoPage.filterOptionalDependent(identity)(AdditionalReferencesDomain.userAnswersReader)
+      }
+
+    implicit lazy val additionalInformationsReads: Read[Option[AdditionalInformationsDomain]] =
+      phaseConfig.phase match {
+        case Transition     => UserAnswersReader.none
+        case PostTransition => AddAdditionalInformationYesNoPage.filterOptionalDependent(identity)(AdditionalInformationsDomain.userAnswersReader)
+      }
+
     (
       PreRequisitesDomain.userAnswersReader,
       AddInlandModeYesNoPage.filterOptionalDependent(identity)(InlandModePage.reader),
@@ -63,18 +82,17 @@ object TransportDomain {
       SupplyChainActorYesNoPage.filterOptionalDependent(identity)(SupplyChainActorsDomain.userAnswersReader),
       authorisationsAndLimitReads,
       CarrierDetailYesNoPage.filterOptionalDependent(identity)(CarrierDetailsDomain.userAnswersReader),
-      EquipmentsAndChargesDomain.userAnswersReader
+      EquipmentsAndChargesDomain.userAnswersReader,
+      additionalReferencesReads,
+      additionalInformationsReads
     ).map(TransportDomain.apply).apply(Nil)
   }
 
   implicit lazy val authorisationsAndLimitReads: Read[Option[AuthorisationsAndLimitDomain]] =
-    (
-      ApprovedOperatorPage.inferredReader,
-      ProcedureTypePage.reader
-    ).to {
-      case (false, Normal) =>
-        AddAuthorisationsYesNoPage.filterOptionalDependent(identity)(AuthorisationsAndLimitDomain.userAnswersReader)
-      case _ =>
+    ProcedureTypePage.reader.to {
+      case Normal =>
+        UserAnswersReader.none
+      case Simplified =>
         AuthorisationsInferredPage.reader.to {
           _ => AuthorisationsAndLimitDomain.userAnswersReader.toOption
         }

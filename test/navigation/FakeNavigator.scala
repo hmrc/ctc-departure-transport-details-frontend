@@ -44,6 +44,16 @@ class FakeTransportMeansActiveListNavigator(desiredRoute: Call, mode: Mode)(impl
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
 
+class FakeTransportMeansDepartureNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+    extends TransportMeansDepartureNavigator(mode, index) {
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
+}
+
+class FakeTransportMeansDepartureListNavigator(desiredRoute: Call, mode: Mode)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+    extends TransportMeansDepartureListNavigator(mode) {
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
+}
+
 class FakeSupplyChainActorNavigator(desiredRoute: Call, mode: Mode, index: Index)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends SupplyChainActorNavigator(mode, index) {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
@@ -68,5 +78,15 @@ class FakeSealNavigator(desiredRoute: Call, equipmentIndex: Index, sealIndex: In
   appConfig: FrontendAppConfig,
   phaseConfig: PhaseConfig
 ) extends SealNavigator(mode, equipmentIndex, sealIndex) {
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
+}
+
+class FakeAdditionalReferenceNavigator(desiredRoute: Call, index: Index, mode: Mode)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+    extends AdditionalReferenceNavigator(mode, index) {
+  override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
+}
+
+class FakeAdditionalInformationNavigator(desiredRoute: Call, index: Index, mode: Mode)(implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+    extends AdditionalInformationNavigator(mode, index) {
   override def nextPage(userAnswers: UserAnswers, currentPage: Option[Page]): Call = desiredRoute
 }
