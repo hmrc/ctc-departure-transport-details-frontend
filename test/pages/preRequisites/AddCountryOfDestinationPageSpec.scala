@@ -17,6 +17,7 @@
 package pages.preRequisites
 
 import models.OptionalBoolean
+import models.reference.{Country, CountryCode}
 import pages.behaviours.PageBehaviours
 
 class AddCountryOfDestinationPageSpec extends PageBehaviours {
@@ -28,5 +29,35 @@ class AddCountryOfDestinationPageSpec extends PageBehaviours {
     beSettable[OptionalBoolean](AddCountryOfDestinationPage)
 
     beRemovable[OptionalBoolean](AddCountryOfDestinationPage)
+
+    "cleanup" - {
+      "when no/maybe selected" - {
+        "must remove TransportedToSameCountryYesNoPage and ItemsDestinationCountryPage" in {
+          for (selection <- Seq(OptionalBoolean.no, OptionalBoolean.maybe)) {
+            val userAnswers = emptyUserAnswers
+              .setValue(TransportedToSameCountryYesNoPage, true)
+              .setValue(ItemsDestinationCountryPage, Country(CountryCode("GB"), "United Kingdom"))
+
+            val result = userAnswers.setValue(AddCountryOfDestinationPage, selection)
+
+            result.get(TransportedToSameCountryYesNoPage) must not be defined
+            result.get(ItemsDestinationCountryPage) must not be defined
+          }
+        }
+      }
+
+      "when yes selected" - {
+        "must do nothing" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(TransportedToSameCountryYesNoPage, true)
+            .setValue(ItemsDestinationCountryPage, Country(CountryCode("GB"), "United Kingdom"))
+
+          val result = userAnswers.setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
+
+          result.get(TransportedToSameCountryYesNoPage) must be(defined)
+          result.get(ItemsDestinationCountryPage) must be(defined)
+        }
+      }
+    }
   }
 }
