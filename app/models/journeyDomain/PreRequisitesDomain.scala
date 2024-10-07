@@ -16,16 +16,17 @@
 
 package models.journeyDomain
 
-import config.Constants.DeclarationType._
+import config.Constants.DeclarationType.*
 import models.OptionalBoolean
-import models.journeyDomain._
+import models.journeyDomain.*
 import models.reference.Country
 import pages.external.DeclarationTypePage
-import pages.preRequisites._
+import pages.preRequisites.*
 
 case class PreRequisitesDomain(
   ucr: Option[String],
   countryOfDispatch: Option[Country],
+  countryOfDestination: OptionalBoolean,
   itemsDestinationCountry: Option[Country],
   containerIndicator: OptionalBoolean
 ) extends JourneyDomainModel
@@ -40,11 +41,23 @@ object PreRequisitesDomain {
         UserAnswersReader.none
     }
 
+  implicit val countryOfDestinationReader: Read[OptionalBoolean] =
+    SameCountryOfDispatchYesNoPage.filterMandatoryDependent(
+      a => !a
+    )(AddCountryOfDestinationPage.reader)
+
+  implicit val itemsDestinationCountryReader: Read[Option[Country]] =
+    AddCountryOfDestinationPage.reader.to {
+      case OptionalBoolean.yes => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
+      case _                   => UserAnswersReader.none
+    }
+
   implicit val userAnswersReader: Read[PreRequisitesDomain] =
     (
       SameUcrYesNoPage.filterOptionalDependent(identity)(UniqueConsignmentReferencePage.reader),
       countryOfDispatchReader,
-      TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader),
+      AddCountryOfDestinationPage.reader,
+      itemsDestinationCountryReader,
       ContainerIndicatorPage.reader
     ).map(PreRequisitesDomain.apply)
 }

@@ -20,8 +20,10 @@ import controllers.preRequisites.routes
 import models.{Mode, OptionalBoolean, UserAnswers}
 import pages.QuestionPage
 import pages.sections.PreRequisitesSection
-import play.api.libs.json._
+import play.api.libs.json.*
 import play.api.mvc.Call
+
+import scala.util.Try
 
 case object AddCountryOfDestinationPage extends QuestionPage[OptionalBoolean] {
 
@@ -31,4 +33,13 @@ case object AddCountryOfDestinationPage extends QuestionPage[OptionalBoolean] {
 
   override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
     Some(routes.AddCountryOfDestinationController.onPageLoad(userAnswers.lrn, mode))
+
+  override def cleanup(value: Option[OptionalBoolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(OptionalBoolean.no) | Some(OptionalBoolean.maybe) =>
+        userAnswers
+          .remove(TransportedToSameCountryYesNoPage)
+          .flatMap(_.remove(ItemsDestinationCountryPage))
+      case _ => super.cleanup(value, userAnswers)
+    }
 }

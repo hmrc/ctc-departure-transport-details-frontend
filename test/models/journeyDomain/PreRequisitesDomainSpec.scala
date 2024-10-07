@@ -41,6 +41,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           .setValue(DeclarationTypePage, arbitrary[String](arbitraryNonTIRDeclarationType).sample.value)
           .setValue(SameUcrYesNoPage, true)
           .setValue(UniqueConsignmentReferencePage, ucr)
+          .setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
           .setValue(TransportedToSameCountryYesNoPage, true)
           .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
           .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
@@ -48,6 +49,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
         val expectedResult = PreRequisitesDomain(
           ucr = Some(ucr),
           countryOfDispatch = None,
+          countryOfDestination = OptionalBoolean.yes,
           itemsDestinationCountry = Some(itemsDestinationCountry),
           containerIndicator = OptionalBoolean.yes
         )
@@ -58,6 +60,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
         result.value.pages mustBe Seq(
           SameUcrYesNoPage,
           UniqueConsignmentReferencePage,
+          AddCountryOfDestinationPage,
           TransportedToSameCountryYesNoPage,
           ItemsDestinationCountryPage,
           ContainerIndicatorPage
@@ -71,6 +74,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             .setValue(SameUcrYesNoPage, false)
             .setValue(SameCountryOfDispatchYesNoPage, true)
             .setValue(CountryOfDispatchPage, country)
+            .setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
             .setValue(TransportedToSameCountryYesNoPage, true)
             .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
             .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
@@ -78,6 +82,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           val expectedResult = PreRequisitesDomain(
             ucr = None,
             countryOfDispatch = Some(country),
+            countryOfDestination = OptionalBoolean.yes,
             itemsDestinationCountry = Some(itemsDestinationCountry),
             containerIndicator = OptionalBoolean.yes
           )
@@ -89,6 +94,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             SameUcrYesNoPage,
             SameCountryOfDispatchYesNoPage,
             CountryOfDispatchPage,
+            AddCountryOfDestinationPage,
             TransportedToSameCountryYesNoPage,
             ItemsDestinationCountryPage,
             ContainerIndicatorPage
@@ -100,6 +106,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             .setValue(DeclarationTypePage, TIR)
             .setValue(SameUcrYesNoPage, false)
             .setValue(SameCountryOfDispatchYesNoPage, false)
+            .setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
             .setValue(TransportedToSameCountryYesNoPage, true)
             .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
             .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
@@ -107,6 +114,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           val expectedResult = PreRequisitesDomain(
             ucr = None,
             countryOfDispatch = None,
+            countryOfDestination = OptionalBoolean.yes,
             itemsDestinationCountry = Some(itemsDestinationCountry),
             containerIndicator = OptionalBoolean.yes
           )
@@ -117,6 +125,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           result.value.pages mustBe Seq(
             SameUcrYesNoPage,
             SameCountryOfDispatchYesNoPage,
+            AddCountryOfDestinationPage,
             TransportedToSameCountryYesNoPage,
             ItemsDestinationCountryPage,
             ContainerIndicatorPage
@@ -140,6 +149,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           val mandatoryPages: Seq[QuestionPage[?]] = Seq(
             SameUcrYesNoPage,
             UniqueConsignmentReferencePage,
+            AddCountryOfDestinationPage,
             SameCountryOfDispatchYesNoPage,
             CountryOfDispatchPage,
             TransportedToSameCountryYesNoPage,
@@ -151,6 +161,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             .setValue(DeclarationTypePage, TIR)
             .setValue(SameUcrYesNoPage, true)
             .setValue(UniqueConsignmentReferencePage, ucr)
+            .setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
             .setValue(SameCountryOfDispatchYesNoPage, true)
             .setValue(CountryOfDispatchPage, country)
             .setValue(TransportedToSameCountryYesNoPage, true)
@@ -171,6 +182,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           val mandatoryPages: Seq[QuestionPage[?]] = Seq(
             SameUcrYesNoPage,
             UniqueConsignmentReferencePage,
+            AddCountryOfDestinationPage,
             TransportedToSameCountryYesNoPage,
             ItemsDestinationCountryPage,
             ContainerIndicatorPage
@@ -180,6 +192,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             .setValue(DeclarationTypePage, arbitrary[String](arbitraryNonTIRDeclarationType).sample.value)
             .setValue(SameUcrYesNoPage, true)
             .setValue(UniqueConsignmentReferencePage, ucr)
+            .setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
             .setValue(TransportedToSameCountryYesNoPage, true)
             .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
             .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
