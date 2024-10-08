@@ -76,7 +76,7 @@ object TransportDomain {
       }
 
     (
-      PreRequisitesDomain.userAnswersReader,
+      PreRequisitesDomain.userAnswersReader(phaseConfig),
       AddInlandModeYesNoPage.filterOptionalDependent(identity)(InlandModePage.reader),
       transportMeansReads,
       SupplyChainActorYesNoPage.filterOptionalDependent(identity)(SupplyChainActorsDomain.userAnswersReader),

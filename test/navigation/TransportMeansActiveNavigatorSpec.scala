@@ -34,7 +34,6 @@ class TransportMeansActiveNavigatorSpec extends SpecBase with ScalaCheckProperty
       val mode = NormalMode
 
       "when answers complete" - {
-
         "during transition" - {
 
           val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
@@ -43,7 +42,7 @@ class TransportMeansActiveNavigatorSpec extends SpecBase with ScalaCheckProperty
           val navigator         = navigatorProvider.apply(mode, activeIndex)
 
           "must redirect to transport means check your answers" in {
-            forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex)) {
+            forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex)(mockPhaseConfig)) {
               answers =>
                 navigator
                   .nextPage(answers, None)
