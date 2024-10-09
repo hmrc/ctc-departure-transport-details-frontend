@@ -108,6 +108,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             .setValue(DeclarationTypePage, TIR)
             .setValue(SameUcrYesNoPage, false)
             .setValue(SameCountryOfDispatchYesNoPage, true)
+            .setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
             .setValue(CountryOfDispatchPage, country)
             .setValue(TransportedToSameCountryYesNoPage, true)
             .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
@@ -127,6 +128,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             SameUcrYesNoPage,
             SameCountryOfDispatchYesNoPage,
             CountryOfDispatchPage,
+            AddCountryOfDestinationPage,
             TransportedToSameCountryYesNoPage,
             ItemsDestinationCountryPage,
             ContainerIndicatorPage
@@ -278,6 +280,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
                 .setValue(UniqueConsignmentReferencePage, ucr)
                 .setValue(SameCountryOfDispatchYesNoPage, true)
                 .setValue(CountryOfDispatchPage, country)
+                .setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
                 .setValue(TransportedToSameCountryYesNoPage, true)
                 .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
                 .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
@@ -299,6 +302,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
                   UniqueConsignmentReferencePage,
                   SameCountryOfDispatchYesNoPage,
                   CountryOfDispatchPage,
+                  AddCountryOfDestinationPage,
                   TransportedToSameCountryYesNoPage,
                   ItemsDestinationCountryPage,
                   ContainerIndicatorPage
@@ -310,6 +314,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
                   .setValue(UniqueConsignmentReferencePage, ucr)
                   .setValue(SameCountryOfDispatchYesNoPage, true)
                   .setValue(CountryOfDispatchPage, country)
+                  .setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
                   .setValue(TransportedToSameCountryYesNoPage, true)
                   .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
                   .setValue(ContainerIndicatorPage, OptionalBoolean.yes)

@@ -48,13 +48,9 @@ object PreRequisitesDomain {
   implicit def countryOfDestinationReader(implicit phaseConfig: PhaseConfig): Read[Option[Country]] =
     phaseConfig.phase match {
       case Phase.PostTransition =>
-        SameCountryOfDispatchYesNoPage.reader.to {
-          case true => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
-          case false =>
-            AddCountryOfDestinationPage.reader.to {
-              case OptionalBoolean.yes => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
-              case _                   => UserAnswersReader.none
-            }
+        AddCountryOfDestinationPage.reader.to {
+          case OptionalBoolean.yes => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
+          case _                   => UserAnswersReader.none
         }
       case Phase.Transition => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
     }
