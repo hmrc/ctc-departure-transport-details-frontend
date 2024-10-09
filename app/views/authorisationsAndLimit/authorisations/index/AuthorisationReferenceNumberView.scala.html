@@ -49,7 +49,8 @@
                     HtmlFormat.fill(
                         Seq(
                             if (authType.isACR) Some(messages("authorisations.authorisationReferenceNumber.paragraph.ACR").toParagraph) else None,
-                            if (authType.isTRD) Some(messages("authorisations.authorisationReferenceNumber.paragraph.TRD").toParagraph) else None
+                            if (authType.isTRD) Some(messages("authorisations.authorisationReferenceNumber.paragraph.TRD").toParagraph) else None,
+                            if (authType.isSSE) Some(messages("authorisations.authorisationReferenceNumber.paragraph.SSE").toParagraph) else None
                         ).flatten
                     )
                 )

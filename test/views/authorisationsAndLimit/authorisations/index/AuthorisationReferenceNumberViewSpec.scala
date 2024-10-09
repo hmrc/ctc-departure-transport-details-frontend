@@ -48,6 +48,8 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
 
   private val paragraphTRD: String = "You need to enter this as you are using a reduced data set."
 
+  private val paragraphSSE: String = "You need to enter this as you are using seals of a special type."
+
   behave like pageWithTitle(authorisationType.forDisplay)
 
   behave like pageWithBackLink()
@@ -100,5 +102,25 @@ class AuthorisationReferenceNumberViewSpec extends InputTextViewBehaviours[Strin
     )
 
     behave like pageWithoutContent(doc, "p", paragraphTRD)
+  }
+
+  "when auth type is SSE" - {
+    val authorisationType = arbitrary[AuthorisationType](arbitrarySSEAuthorisationType).sample.value
+    val view              = injector.instanceOf[AuthorisationReferenceNumberView]
+    val doc = parseView(
+      view.apply(form, lrn, authorisationType, NormalMode, authorisationIndex)(fakeRequest, messages)
+    )
+
+    behave like pageWithContent(doc, "p", paragraphSSE)
+  }
+
+  "when auth type is not SSE" - {
+    val authorisationType = arbitrary[AuthorisationType](arbitraryNonSSEAuthorisationType).sample.value
+    val view              = injector.instanceOf[AuthorisationReferenceNumberView]
+    val doc = parseView(
+      view.apply(form, lrn, authorisationType, NormalMode, authorisationIndex)(fakeRequest, messages)
+    )
+
+    behave like pageWithoutContent(doc, "p", paragraphSSE)
   }
 }
