@@ -198,6 +198,78 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
       }
     }
 
+    "addCountryOfDestination" - {
+      "must return None" - {
+        s"when $AddCountryOfDestinationPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addCountryOfDestination
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $AddCountryOfDestinationPage true" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.addCountryOfDestination.get
+
+              result.key.value mustBe "Are the goods being transported to another country after the end of this transit movement?"
+              result.value.value mustBe "Yes"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe preRequisitesRoutes.AddCountryOfDestinationController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustBe "if the goods are being transported to another country after the end of this transit movement"
+              action.id mustBe "change-add-country-of-destination"
+          }
+        }
+
+        s"when $AddCountryOfDestinationPage false" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddCountryOfDestinationPage, OptionalBoolean.no)
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.addCountryOfDestination.get
+
+              result.key.value mustBe "Are the goods being transported to another country after the end of this transit movement?"
+              result.value.value mustBe "No"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe preRequisitesRoutes.AddCountryOfDestinationController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustBe "if the goods are being transported to another country after the end of this transit movement"
+              action.id mustBe "change-add-country-of-destination"
+          }
+        }
+
+        s"when $AddCountryOfDestinationPage not sure" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddCountryOfDestinationPage, OptionalBoolean.maybe)
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.addCountryOfDestination.get
+
+              result.key.value mustBe "Are the goods being transported to another country after the end of this transit movement?"
+              result.value.value mustBe "Not sure"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe preRequisitesRoutes.AddCountryOfDestinationController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustBe "if the goods are being transported to another country after the end of this transit movement"
+              action.id mustBe "change-add-country-of-destination"
+          }
+        }
+      }
+    }
+
     "transportedToSameCountry" - {
       "must return None" - {
         s"when $TransportedToSameCountryYesNoPage undefined" in {
@@ -252,14 +324,14 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.countryOfDestination.get
 
-              result.key.value mustBe "Country of destination"
+              result.key.value mustBe "Country the items are being transported to"
               result.value.value mustBe country.toString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe preRequisitesRoutes.ItemsDestinationCountryController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "country of destination"
+              action.visuallyHiddenText.get mustBe "country the items are being transported to"
               action.id mustBe "change-country-of-destination"
           }
         }

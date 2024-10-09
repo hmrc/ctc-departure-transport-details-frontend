@@ -16,17 +16,18 @@
 
 package models.journeyDomain
 
-import config.Constants.DeclarationType._
+import config.Constants.DeclarationType.*
 import config.PhaseConfig
-import models.{OptionalBoolean, Phase}
+import models.journeyDomain.*
 import models.reference.Country
+import models.{OptionalBoolean, Phase}
 import pages.external.DeclarationTypePage
-import pages.preRequisites._
+import pages.preRequisites.*
 
 case class PreRequisitesDomain(
   ucr: Option[String],
   countryOfDispatch: Option[Country],
-  itemsDestinationCountry: Option[Country],
+  countryOfDestination: Option[Country],
   containerIndicator: OptionalBoolean
 ) extends JourneyDomainModel
 
@@ -42,14 +43,23 @@ object PreRequisitesDomain {
             UserAnswersReader.none
         }
       case Phase.PostTransition => SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
+    }
 
+  implicit def countryOfDestinationReader(implicit phaseConfig: PhaseConfig): Read[Option[Country]] =
+    phaseConfig.phase match {
+      case Phase.PostTransition =>
+        AddCountryOfDestinationPage.reader.to {
+          case OptionalBoolean.yes => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
+          case _                   => UserAnswersReader.none
+        }
+      case Phase.Transition => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
     }
 
   implicit def userAnswersReader(phaseConfig: PhaseConfig): Read[PreRequisitesDomain] =
     (
       SameUcrYesNoPage.filterOptionalDependent(identity)(UniqueConsignmentReferencePage.reader),
       countryOfDispatchReader(phaseConfig),
-      TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader),
+      countryOfDestinationReader(phaseConfig),
       ContainerIndicatorPage.reader
     ).map(PreRequisitesDomain.apply)
 }
