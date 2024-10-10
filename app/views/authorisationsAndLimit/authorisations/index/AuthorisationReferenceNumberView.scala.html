@@ -45,15 +45,12 @@
             inputTextType = InputTextViewModel(
                 heading = messages("authorisations.authorisationReferenceNumber.heading", messages(authType.forDisplay)),
                 caption = Some(messages("authorisations.caption")),
-                additionalHtml = Some(
-                    HtmlFormat.fill(
-                        Seq(
-                            if (authType.isACR) Some(messages("authorisations.authorisationReferenceNumber.paragraph.ACR").toParagraph) else None,
-                            if (authType.isTRD) Some(messages("authorisations.authorisationReferenceNumber.paragraph.TRD").toParagraph) else None,
-                            if (authType.isSSE) Some(messages("authorisations.authorisationReferenceNumber.paragraph.SSE").toParagraph) else None
-                        ).flatten
-                    )
-                )
+                additionalHtml = authType match {
+                    case x if x.isACR => Some(messages("authorisations.authorisationReferenceNumber.paragraph.ACR").toParagraph)
+                    case x if x.isTRD => Some(messages("authorisations.authorisationReferenceNumber.paragraph.TRD").toParagraph)
+                    case x if x.isSSE => Some(messages("authorisations.authorisationReferenceNumber.paragraph.SSE").toParagraph)
+                    case _            => None
+                }
             ),
             hint = Some(messages("authorisations.authorisationReferenceNumber.hint")),
             inputClass = InputSize.Width20
