@@ -252,14 +252,14 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.countryOfDestination.get
 
-              result.key.value mustBe "Country items are being transported to"
+              result.key.value mustBe "Country of destination"
               result.value.value mustBe country.toString
               val actions = result.actions.get.items
               actions.size mustBe 1
               val action = actions.head
               action.content.value mustBe "Change"
               action.href mustBe preRequisitesRoutes.ItemsDestinationCountryController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "country the items are being transported to"
+              action.visuallyHiddenText.get mustBe "country of destination"
               action.id mustBe "change-country-of-destination"
           }
         }
