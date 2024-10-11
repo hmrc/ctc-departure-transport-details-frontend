@@ -25,7 +25,6 @@ import models.{OptionalBoolean, Phase}
 import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import pages.QuestionPage
 import pages.external.DeclarationTypePage
 import pages.preRequisites.*
@@ -57,7 +56,8 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
         val expectedResult = PreRequisitesDomain(
           ucr = Some(ucr),
           countryOfDispatch = None,
-          countryOfDestination = Some(itemsDestinationCountry),
+          countryOfDestination = None,
+          itemsDestinationCountry = Some(itemsDestinationCountry),
           containerIndicator = OptionalBoolean.yes
         )
 
@@ -87,7 +87,8 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           val expectedResult = PreRequisitesDomain(
             ucr = None,
             countryOfDispatch = Some(country),
-            countryOfDestination = Some(itemsDestinationCountry),
+            countryOfDestination = None,
+            itemsDestinationCountry = Some(itemsDestinationCountry),
             containerIndicator = OptionalBoolean.yes
           )
 
@@ -116,7 +117,8 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           val expectedResult = PreRequisitesDomain(
             ucr = None,
             countryOfDispatch = Some(country),
-            countryOfDestination = Some(itemsDestinationCountry),
+            countryOfDestination = None,
+            itemsDestinationCountry = Some(itemsDestinationCountry),
             containerIndicator = OptionalBoolean.yes
           )
 
@@ -138,6 +140,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             .setValue(DeclarationTypePage, TIR)
             .setValue(SameUcrYesNoPage, false)
             .setValue(SameCountryOfDispatchYesNoPage, false)
+            .setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
             .setValue(TransportedToSameCountryYesNoPage, true)
             .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
             .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
@@ -145,7 +148,8 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           val expectedResult = PreRequisitesDomain(
             ucr = None,
             countryOfDispatch = None,
-            countryOfDestination = Some(itemsDestinationCountry),
+            countryOfDestination = None,
+            itemsDestinationCountry = Some(itemsDestinationCountry),
             containerIndicator = OptionalBoolean.yes
           )
 
@@ -175,7 +179,8 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             val expectedResult = PreRequisitesDomain(
               ucr = None,
               countryOfDispatch = None,
-              countryOfDestination = Some(itemsDestinationCountry),
+              countryOfDestination = Some(OptionalBoolean.yes),
+              itemsDestinationCountry = Some(itemsDestinationCountry),
               containerIndicator = OptionalBoolean.yes
             )
 
@@ -193,31 +198,31 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           }
 
           "goods NOT transport to another country after transit" in {
-            forAll(Gen.oneOf(OptionalBoolean.no, OptionalBoolean.maybe)) {
-              selection =>
-                val userAnswers = emptyUserAnswers
-                  .setValue(DeclarationTypePage, TIR)
-                  .setValue(SameUcrYesNoPage, false)
-                  .setValue(SameCountryOfDispatchYesNoPage, false)
-                  .setValue(AddCountryOfDestinationPage, selection)
-                  .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+            for (selection <- Seq(OptionalBoolean.no, OptionalBoolean.maybe)) {
+              val userAnswers = emptyUserAnswers
+                .setValue(DeclarationTypePage, TIR)
+                .setValue(SameUcrYesNoPage, false)
+                .setValue(SameCountryOfDispatchYesNoPage, false)
+                .setValue(AddCountryOfDestinationPage, selection)
+                .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
-                val expectedResult = PreRequisitesDomain(
-                  ucr = None,
-                  countryOfDispatch = None,
-                  countryOfDestination = None,
-                  containerIndicator = OptionalBoolean.yes
-                )
+              val expectedResult = PreRequisitesDomain(
+                ucr = None,
+                countryOfDispatch = None,
+                countryOfDestination = Some(selection),
+                itemsDestinationCountry = None,
+                containerIndicator = OptionalBoolean.yes
+              )
 
-                val result = PreRequisitesDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+              val result = PreRequisitesDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
-                  SameUcrYesNoPage,
-                  SameCountryOfDispatchYesNoPage,
-                  AddCountryOfDestinationPage,
-                  ContainerIndicatorPage
-                )
+              result.value.value mustBe expectedResult
+              result.value.pages mustBe Seq(
+                SameUcrYesNoPage,
+                SameCountryOfDispatchYesNoPage,
+                AddCountryOfDestinationPage,
+                ContainerIndicatorPage
+              )
             }
           }
         }
@@ -234,7 +239,8 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
         val expectedResult = PreRequisitesDomain(
           ucr = None,
           countryOfDispatch = None,
-          countryOfDestination = Some(itemsDestinationCountry),
+          countryOfDestination = None,
+          itemsDestinationCountry = Some(itemsDestinationCountry),
           containerIndicator = OptionalBoolean.yes
         )
 
@@ -357,32 +363,31 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
                 }
 
                 "goods NOT transport to another country after transit" in {
-                  forAll(Gen.oneOf(OptionalBoolean.no, OptionalBoolean.maybe)) {
-                    selection =>
-                      val mandatoryPages: Seq[QuestionPage[?]] = Seq(
-                        SameUcrYesNoPage,
-                        UniqueConsignmentReferencePage,
-                        SameCountryOfDispatchYesNoPage,
-                        AddCountryOfDestinationPage,
-                        ContainerIndicatorPage
-                      )
+                  for (selection <- Seq(OptionalBoolean.no, OptionalBoolean.maybe)) {
+                    val mandatoryPages: Seq[QuestionPage[?]] = Seq(
+                      SameUcrYesNoPage,
+                      UniqueConsignmentReferencePage,
+                      SameCountryOfDispatchYesNoPage,
+                      AddCountryOfDestinationPage,
+                      ContainerIndicatorPage
+                    )
 
-                      val userAnswers = emptyUserAnswers
-                        .setValue(DeclarationTypePage, TIR)
-                        .setValue(SameUcrYesNoPage, true)
-                        .setValue(UniqueConsignmentReferencePage, ucr)
-                        .setValue(SameCountryOfDispatchYesNoPage, false)
-                        .setValue(AddCountryOfDestinationPage, selection)
-                        .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+                    val userAnswers = emptyUserAnswers
+                      .setValue(DeclarationTypePage, TIR)
+                      .setValue(SameUcrYesNoPage, true)
+                      .setValue(UniqueConsignmentReferencePage, ucr)
+                      .setValue(SameCountryOfDispatchYesNoPage, false)
+                      .setValue(AddCountryOfDestinationPage, selection)
+                      .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
-                      mandatoryPages.map {
-                        mandatoryPage =>
-                          val updatedAnswers = userAnswers.removeValue(mandatoryPage)
+                    mandatoryPages.map {
+                      mandatoryPage =>
+                        val updatedAnswers = userAnswers.removeValue(mandatoryPage)
 
-                          val result = PreRequisitesDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(updatedAnswers)
+                        val result = PreRequisitesDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(updatedAnswers)
 
-                          result.left.value.page mustBe mandatoryPage
-                      }
+                        result.left.value.page mustBe mandatoryPage
+                    }
                   }
                 }
               }

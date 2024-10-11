@@ -27,7 +27,8 @@ import pages.preRequisites.*
 case class PreRequisitesDomain(
   ucr: Option[String],
   countryOfDispatch: Option[Country],
-  countryOfDestination: Option[Country],
+  countryOfDestination: Option[OptionalBoolean],
+  itemsDestinationCountry: Option[Country],
   containerIndicator: OptionalBoolean
 ) extends JourneyDomainModel
 
@@ -45,15 +46,22 @@ object PreRequisitesDomain {
       case Phase.PostTransition => SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
     }
 
-  implicit def countryOfDestinationReader(implicit phaseConfig: PhaseConfig): Read[Option[Country]] =
+  implicit def countryOfDestinationReader(implicit phaseConfig: PhaseConfig): Read[Option[OptionalBoolean]] =
+    phaseConfig.phase match {
+      case Phase.PostTransition =>
+        SameCountryOfDispatchYesNoPage.filterOptionalDependent(!_)(AddCountryOfDestinationPage.reader)
+      case Phase.Transition => UserAnswersReader.none
+    }
+
+  implicit def itemsDestinationCountryReader(implicit phaseConfig: PhaseConfig): Read[Option[Country]] =
     phaseConfig.phase match {
       case Phase.PostTransition =>
         SameCountryOfDispatchYesNoPage.reader.to {
           case true => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
           case false =>
-            AddCountryOfDestinationPage.reader.to {
-              case OptionalBoolean.yes => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
-              case _                   => UserAnswersReader.none
+            AddCountryOfDestinationPage.optionalReader.to {
+              case Some(OptionalBoolean.yes) => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
+              case _                         => UserAnswersReader.none
             }
         }
       case Phase.Transition => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
@@ -64,6 +72,7 @@ object PreRequisitesDomain {
       SameUcrYesNoPage.filterOptionalDependent(identity)(UniqueConsignmentReferencePage.reader),
       countryOfDispatchReader(phaseConfig),
       countryOfDestinationReader(phaseConfig),
+      itemsDestinationCountryReader(phaseConfig),
       ContainerIndicatorPage.reader
     ).map(PreRequisitesDomain.apply)
 }
