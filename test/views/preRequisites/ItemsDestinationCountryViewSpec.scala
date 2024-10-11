@@ -45,6 +45,8 @@ class ItemsDestinationCountryViewSpec extends InputSelectViewBehaviours[Country]
 
   behave like pageWithHeading()
 
+  behave like pageWithContent("p", "This is where the goods complete their journey. It may not be where the transit movement ends.")
+
   behave like pageWithHint("Enter the country, like France or Portugal.")
 
   behave like pageWithSelect()
