@@ -88,20 +88,14 @@ preRequisites.countryOfDispatch.placeholder = Select a country
 preRequisites.countryOfDispatch.error.required = Enter the country of dispatch
 preRequisites.countryOfDispatch.paragraph = This is the country the item was originally dispatched from. It may not be where the transit movement begins.
 
-preRequisites.addCountryOfDestination.title = Are the goods being transported to another country after the end of this transit movement?
-preRequisites.addCountryOfDestination.heading = Are the goods being transported to another country after the end of this transit movement?
-preRequisites.addCountryOfDestination.paragraph = This means after the goods have arrived at the office of destination and have been processed by Customs.
-preRequisites.addCountryOfDestination.checkYourAnswersLabel = Are the goods being transported to another country after the end of this transit movement?
-preRequisites.addCountryOfDestination.change.hidden = if the goods are being transported to another country after the end of this transit movement
-preRequisites.addCountryOfDestination.error.required = Select yes if the goods are being transported to another country after the end of this transit movement
-
-preRequisites.itemsDestinationCountry.title = What country are the items being transported to?
-preRequisites.itemsDestinationCountry.heading = What country are the items being transported to?
+preRequisites.itemsDestinationCountry.title = What is the country of destination?
+preRequisites.itemsDestinationCountry.heading = What is the country of destination?
 preRequisites.itemsDestinationCountry.hint = Enter the country, like France or Portugal.
-preRequisites.itemsDestinationCountry.checkYourAnswersLabel = Country the items are being transported to
-preRequisites.itemsDestinationCountry.change.hidden = country the items are being transported to
+preRequisites.itemsDestinationCountry.paragraph = This is where the goods complete their journey. It may not be where the transit movement ends.
+preRequisites.itemsDestinationCountry.checkYourAnswersLabel = Country of destination
+preRequisites.itemsDestinationCountry.change.hidden = country of destination
 preRequisites.itemsDestinationCountry.placeholder = Select a country
-preRequisites.itemsDestinationCountry.error.required = Enter the country the items are being transported to
+preRequisites.itemsDestinationCountry.error.required = Enter the country of destination
 
 preRequisites.containerIndicator.title = Are you using any shipping containers to transport the goods?
 preRequisites.containerIndicator.heading = Are you using any shipping containers to transport the goods?

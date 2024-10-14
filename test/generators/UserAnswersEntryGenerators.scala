@@ -69,7 +69,6 @@ trait UserAnswersEntryGenerators {
       case SameUcrYesNoPage                  => arbitrary[Boolean].map(JsBoolean)
       case UniqueConsignmentReferencePage    => Gen.alphaNumStr.map(JsString.apply)
       case SameCountryOfDispatchYesNoPage    => arbitrary[Boolean].map(JsBoolean)
-      case AddCountryOfDestinationPage       => arbitrary[Option[Boolean]].map(Json.toJson(_))
       case CountryOfDispatchPage             => arbitrary[Country].map(Json.toJson(_))
       case TransportedToSameCountryYesNoPage => arbitrary[Boolean].map(JsBoolean)
       case ItemsDestinationCountryPage       => arbitrary[Country].map(Json.toJson(_))

@@ -19,11 +19,6 @@ POST       /country-of-dispatch/:lrn                      controllers.preRequisi
 GET        /change-country-of-dispatch/:lrn               controllers.preRequisites.CountryOfDispatchController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 POST       /change-country-of-dispatch/:lrn               controllers.preRequisites.CountryOfDispatchController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
 
-GET        /add-country-of-destination/:lrn               controllers.preRequisites.AddCountryOfDestinationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-POST       /add-country-of-destination/:lrn               controllers.preRequisites.AddCountryOfDestinationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
-GET        /change-add-country-of-destination/:lrn        controllers.preRequisites.AddCountryOfDestinationController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-POST       /change-add-country-of-destination/:lrn        controllers.preRequisites.AddCountryOfDestinationController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = CheckMode)
-
 GET        /items-same-destination-country/:lrn           controllers.preRequisites.TransportedToSameCountryYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 POST       /items-same-destination-country/:lrn           controllers.preRequisites.TransportedToSameCountryYesNoController.onSubmit(lrn: LocalReferenceNumber, mode: Mode = NormalMode)
 GET        /change-items-same-destination-country/:lrn    controllers.preRequisites.TransportedToSameCountryYesNoController.onPageLoad(lrn: LocalReferenceNumber, mode: Mode = CheckMode)

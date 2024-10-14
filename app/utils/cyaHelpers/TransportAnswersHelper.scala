@@ -84,13 +84,6 @@ class TransportAnswersHelper(
     id = Some("change-country-of-dispatch")
   )
 
-  def addCountryOfDestination: Option[SummaryListRow] = getAnswerAndBuildRow[OptionalBoolean](
-    page = AddCountryOfDestinationPage,
-    formatAnswer = formatAsOptionalYesOrNo,
-    prefix = "preRequisites.addCountryOfDestination",
-    id = Some("change-add-country-of-destination")
-  )
-
   def transportedToSameCountry: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
     page = TransportedToSameCountryYesNoPage,
     formatAnswer = formatAsYesOrNo,

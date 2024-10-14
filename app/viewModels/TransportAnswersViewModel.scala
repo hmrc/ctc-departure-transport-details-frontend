@@ -45,7 +45,6 @@ object TransportAnswersViewModel {
           helper.ucr,
           helper.usingSameCountryOfDispatch,
           helper.countryOfDispatch,
-          helper.addCountryOfDestination,
           helper.transportedToSameCountry,
           helper.countryOfDestination,
           helper.usingContainersYesNo
