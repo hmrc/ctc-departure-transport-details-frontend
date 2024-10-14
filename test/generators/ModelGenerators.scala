@@ -285,6 +285,21 @@ trait ModelGenerators {
       } yield AuthorisationType(code, description)
     }
 
+  lazy val arbitrarySSEAuthorisationType: Arbitrary[AuthorisationType] =
+    Arbitrary {
+      for {
+        description <- nonEmptyString
+      } yield AuthorisationType("C523", description)
+    }
+
+  lazy val arbitraryNonSSEAuthorisationType: Arbitrary[AuthorisationType] =
+    Arbitrary {
+      for {
+        code        <- Gen.oneOf("C521", "C524")
+        description <- nonEmptyString
+      } yield AuthorisationType(code, description)
+    }
+
   implicit lazy val arbitraryIdentificationActive: Arbitrary[active.Identification] =
     Arbitrary {
       for {
