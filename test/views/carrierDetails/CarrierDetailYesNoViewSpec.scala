@@ -42,6 +42,8 @@ class CarrierDetailYesNoViewSpec extends YesNoViewBehaviours {
     "This is the company that transports the goods to the office of destination."
   )
 
+  behave like pageWithHint("Adding a carrier is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")

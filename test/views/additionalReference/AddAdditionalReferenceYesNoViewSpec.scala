@@ -41,6 +41,8 @@ class AddAdditionalReferenceYesNoViewSpec extends YesNoViewBehaviours {
                               "This can be any other reference you want to declare, such as a certificate number, import licence or accompanying document."
   )
 
+  behave like pageWithHint("Adding an additional reference is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")

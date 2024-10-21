@@ -45,7 +45,8 @@
                 heading = messages("additionalReference.addAdditionalReferenceYesNo.heading"),
                 caption = Some(messages("additionalReference.caption")),
                 additionalHtml = messages("additionalReference.addAdditionalReferenceYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("additionalReference.addAdditionalReferenceYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))

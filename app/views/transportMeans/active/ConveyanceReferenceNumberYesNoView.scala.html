@@ -41,10 +41,11 @@
 
         @inputYesNo(
             field = form("value"),
-            hint = Some(HtmlContent(messages("transportMeans.active.conveyanceReferenceNumberYesNo.hint"))),
-            yesNoType = OrdinaryYesNo(
+            hint = Some(Text(messages("transportMeans.active.conveyanceReferenceNumberYesNo.hint"))),
+            yesNoType = YesNoWithAdditionalHtml(
                 heading = messages("transportMeans.active.conveyanceReferenceNumberYesNo.heading"),
-                caption = Some(messages("activeBorderMeansOfTransport.caption"))
+                caption = Some(messages("activeBorderMeansOfTransport.caption")),
+                additionalHtml = messages("transportMeans.active.conveyanceReferenceNumberYesNo.paragraph").toParagraph
             )
         )
 

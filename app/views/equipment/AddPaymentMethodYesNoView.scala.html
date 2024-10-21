@@ -45,7 +45,8 @@
                 heading = messages("equipment.addPaymentMethodYesNo.heading"),
                 caption = Some(messages("charges.caption")),
                 additionalHtml = messages("equipment.addPaymentMethodYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("equipment.addPaymentMethodYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))
