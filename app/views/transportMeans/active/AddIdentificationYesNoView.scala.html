@@ -44,7 +44,8 @@
             yesNoType = OrdinaryYesNo(
                 heading = messages("transportMeans.active.addIdentificationYesNo.heading"),
                 caption = Some(messages("activeBorderMeansOfTransport.caption"))
-            )
+            ),
+            hint = Some(Text(messages("transportMeans.active.addIdentificationYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))

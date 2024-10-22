@@ -39,6 +39,8 @@ class AddAuthorisationsYesNoViewSpec extends YesNoViewBehaviours {
 
   behave like pageWithContent("p", "This authorises the holder to perform specific functions during the transit movement.")
 
+  behave like pageWithHint("Adding an authorisation is optional.")
+
   behave like pageWithRadioItems()
 
   behave like pageWithSubmitButton("Save and continue")

@@ -44,7 +44,8 @@
             yesNoType = OrdinaryYesNo(
                 heading = messages("additionalReference.index.addAdditionalReferenceNumberYesNo.heading"),
                 caption = Some(messages("additionalReference.caption"))
-            )
+            ),
+            hint = Some(Text(messages("additionalReference.index.addAdditionalReferenceNumberYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))

@@ -45,7 +45,8 @@
                 heading = messages("authorisationsAndLimit.limit.addLimitDateYesNo.heading"),
                 caption = Some(messages("authorisations.caption")),
                 additionalHtml = messages("authorisationsAndLimit.limit.addLimitDateYesNo.paragraph").toParagraph
-            )
+            ),
+            hint = Some(Text(messages("authorisationsAndLimit.limit.addLimitDateYesNo.hint")))
         )
 
         @button(attributes = Map("id" -> "submit"))
