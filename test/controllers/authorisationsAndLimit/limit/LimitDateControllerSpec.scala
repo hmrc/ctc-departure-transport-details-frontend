@@ -88,9 +88,9 @@ class LimitDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       val filledForm = form.bind(
         Map(
-          "valueDay"   -> date.getDayOfMonth.toString,
-          "valueMonth" -> date.getMonthValue.toString,
-          "valueYear"  -> date.getYear.toString
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> date.getYear.toString
         )
       )
 
@@ -110,9 +110,9 @@ class LimitDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       val request = FakeRequest(POST, limitDateRoute)
         .withFormUrlEncodedBody(
-          "valueDay"   -> date.getDayOfMonth.toString,
-          "valueMonth" -> date.getMonthValue.toString,
-          "valueYear"  -> date.getYear.toString
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> date.getYear.toString
         )
 
       val result = route(app, request).value
@@ -160,9 +160,9 @@ class LimitDateControllerSpec extends SpecBase with AppWithDefaultMockFixtures {
 
       val request = FakeRequest(POST, limitDateRoute)
         .withFormUrlEncodedBody(
-          "valueDay"   -> date.getDayOfMonth.toString,
-          "valueMonth" -> date.getMonthValue.toString,
-          "valueYear"  -> date.getYear.toString
+          "value.day"   -> date.getDayOfMonth.toString,
+          "value.month" -> date.getMonthValue.toString,
+          "value.year"  -> date.getYear.toString
         )
 
       val result = route(app, request).value

@@ -18,10 +18,6 @@ site.email.subject = NCTS Phase 5 - Help with testing
 error.title.prefix = Error:
 error.summary.title = There is a problem
 
-date.day.capitalized = Day
-date.month.capitalized = Month
-date.year.capitalized = Year
-
 caption = Transport details
 
 checkYourAnswers.heading = Check your answers
