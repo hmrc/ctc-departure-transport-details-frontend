@@ -16,9 +16,9 @@
 
 package controllers.equipment.index
 
-import config.PhaseConfig
-import controllers.actions._
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import config.{FrontendAppConfig, PhaseConfig}
+import controllers.actions.*
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.UserAnswersNavigator
@@ -41,7 +41,7 @@ class AddContainerIdentificationNumberYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddContainerIdentificationNumberYesNoView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -70,7 +70,9 @@ class AddContainerIdentificationNumberYesNoController @Inject() (
               .appendTransportEquipmentUuidIfNotPresent(equipmentIndex)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateWith(navigator)
+              .getNextPage(navigator)
+              .updateItems(lrn)
+              .navigate()
           }
         )
   }

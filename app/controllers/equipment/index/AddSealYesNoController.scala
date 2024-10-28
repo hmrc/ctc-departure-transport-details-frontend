@@ -16,13 +16,12 @@
 
 package controllers.equipment.index
 
-import config.PhaseConfig
-import controllers.actions._
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import config.{FrontendAppConfig, PhaseConfig}
+import controllers.actions.*
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.EquipmentNavigatorProvider
+import navigation.{EquipmentNavigatorProvider, UserAnswersNavigator}
 import pages.equipment.index.AddSealYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -42,7 +41,7 @@ class AddSealYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddSealYesNoView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -74,7 +73,9 @@ class AddSealYesNoController @Inject() (
                 .appendTransportEquipmentUuidIfNotPresent(equipmentIndex)
                 .updateTask()
                 .writeToSession(sessionRepository)
-                .navigateWith(navigator)
+                .getNextPage(navigator)
+                .updateItems(lrn)
+                .navigate()
             }
           )
     }

@@ -103,7 +103,9 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual
+          s"http://localhost:10127/manage-transit-movements/departures/items/$lrn/update-task?" +
+          s"continue=http://localhost:10131${onwardRoute.url}"
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
@@ -125,7 +127,9 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual onwardRoute.url
+        redirectLocation(result).value mustEqual
+          s"http://localhost:10127/manage-transit-movements/departures/items/$lrn/update-task?" +
+          s"continue=http://localhost:10131${onwardRoute.url}"
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())

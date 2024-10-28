@@ -16,16 +16,15 @@
 
 package controllers.equipment.index
 
-import config.PhaseConfig
-import controllers.actions._
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import config.{FrontendAppConfig, PhaseConfig}
+import controllers.actions.*
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.ContainerIdentificationNumberFormProvider
 import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode, RichOptionalJsArray}
-import navigation.UserAnswersNavigator
-import navigation.EquipmentNavigatorProvider
-import pages.sections.equipment.EquipmentsSection
+import navigation.{EquipmentNavigatorProvider, UserAnswersNavigator}
 import pages.equipment.index.ContainerIdentificationNumberPage
+import pages.sections.equipment.EquipmentsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -44,7 +43,7 @@ class ContainerIdentificationNumberController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: ContainerIdentificationNumberView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -82,7 +81,9 @@ class ContainerIdentificationNumberController @Inject() (
               .appendTransportEquipmentUuidIfNotPresent(equipmentIndex)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateWith(navigator)
+              .getNextPage(navigator)
+              .updateItems(lrn)
+              .navigate()
           }
         )
   }
