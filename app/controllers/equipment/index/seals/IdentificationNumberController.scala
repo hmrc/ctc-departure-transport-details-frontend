@@ -16,9 +16,9 @@
 
 package controllers.equipment.index.seals
 
-import config.PhaseConfig
-import controllers.actions._
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import config.{FrontendAppConfig, PhaseConfig}
+import controllers.actions.*
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.SealIdentificationNumberFormProvider
 import models.requests.DataRequest
 import models.{Index, LocalReferenceNumber, Mode, RichOptionalJsArray}
@@ -42,7 +42,7 @@ class IdentificationNumberController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationNumberView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -79,7 +79,9 @@ class IdentificationNumberController @Inject() (
               .appendTransportEquipmentUuidIfNotPresent(equipmentIndex)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateWith(navigator)
+              .getNextPage(navigator)
+              .updateItems(lrn)
+              .navigate()
           }
         )
   }

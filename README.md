@@ -42,6 +42,13 @@ The following features can be toggled in [application.conf](conf/application.con
 | `play.additional.module`   | `String`      | `sbt -Dplay.additional.module=config.PostTransitionModule run` | Controls which module (TransitionModule or PostTransitionModule) we bind to the application at start-up.                                                                                       |
 | `play.http.router`         | `String`      | `sbt -Dplay.http.router=testOnlyDoNotUseInAppConf.Routes run`  | Controls which router is used for the application, either `prod.Routes` or `testOnlyDoNotUseInAppConf.Routes`                                                                                  |
 
+### Updating external tasks
+
+Due to the inherent link between transport equipment and items (a transport equipment goods reference corresponds to a consignment item declaration goods item number), we need logic to update the items task status for certain changes made to the transport equipment.
+To handle this we assign a UUID to each transport equipment, with each page in the transport equipment journey (container identification number and seals pages) utilising the `appendTransportEquipmentUuidIfNotPresent` method to do this.
+We also call the `updateItems` method as this will update the items task status to 'In progress' if the user needs to link an item to the newly added transport equipment as per rule C0670.
+This redirects to the next page via the `/update-task` endpoint in `ctc-departure-items-frontend`.
+
 ### Scaffold
 
 See [manage-transit-movements-departure-frontend](https://github.com/hmrc/manage-transit-movements-departure-frontend/blob/main/README.md#running-scaffold)
