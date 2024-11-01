@@ -16,7 +16,7 @@
 
 package forms.mappings
 
-import forms.mappings.LocalDateFormatter.{dayField, fieldKeys, monthField, yearField}
+import forms.mappings.LocalDateFormatter._
 import play.api.data.FormError
 import play.api.data.format.Formatter
 
@@ -39,7 +39,7 @@ private[mappings] class LocalDateFormatter(
 
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
     def binding(fieldKey: String): Either[Seq[FormError], Int] =
-      intFormatter(requiredKey, invalidKey, invalidKey, Seq(fieldKey)).bind(s"$key${fieldKey.capitalize}", data)
+      intFormatter(requiredKey, invalidKey, invalidKey, Seq(fieldKey)).bind(s"$key.$fieldKey", data)
 
     val dayBinding   = binding(dayField)
     val monthBinding = binding(monthField)
@@ -71,9 +71,9 @@ private[mappings] class LocalDateFormatter(
 
   override def unbind(key: String, value: LocalDate): Map[String, String] =
     Map(
-      s"${key}Day"   -> value.getDayOfMonth.toString,
-      s"${key}Month" -> value.getMonthValue.toString,
-      s"${key}Year"  -> value.getYear.toString
+      s"$key.day"   -> value.getDayOfMonth.toString,
+      s"$key.month" -> value.getMonthValue.toString,
+      s"$key.year"  -> value.getYear.toString
     )
 }
 
