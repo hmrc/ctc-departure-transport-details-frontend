@@ -30,8 +30,6 @@ trait PhaseConfig {
 
   def amendMessageKey(key: String): String
 
-  val maxIdentificationNumberLength: Int
-
   val areB1892AndB1897Disabled: Boolean
 
   def lengthError(prefix: String): String = amendMessageKey(s"$prefix.error.length")
@@ -42,15 +40,14 @@ trait PhaseConfig {
 
 object PhaseConfig {
 
-  case class Values(apiVersion: Double)
+  case class Values(apiVersion: Double, maxIdentificationNumberLength: Int)
 
   object Values {
 
     implicit val configLoader: ConfigLoader[Values] = (config: Config, path: String) =>
       config.getConfig(path) match {
         case phase =>
-          val apiVersion = phase.getDouble("apiVersion")
-          Values(apiVersion)
+          Values(phase.getDouble("apiVersion"), phase.getInt("maxIdentificationNumberLength"))
       }
   }
 }
@@ -61,8 +58,6 @@ class TransitionConfig @Inject() (configuration: Configuration) extends PhaseCon
 
   override def amendMessageKey(key: String): String = s"$key.transition"
 
-  override val maxIdentificationNumberLength: Int = 27
-
   override val areB1892AndB1897Disabled: Boolean = configuration.get[Boolean]("flag.areB1892AndB1897Disabled")
 
 }
@@ -72,8 +67,6 @@ class PostTransitionConfig @Inject() (configuration: Configuration) extends Phas
   override val values: Values = configuration.get[Values]("phase.final")
 
   override def amendMessageKey(key: String): String = s"$key.postTransition"
-
-  override val maxIdentificationNumberLength: Int = 35
 
   override val areB1892AndB1897Disabled: Boolean = false
 }
