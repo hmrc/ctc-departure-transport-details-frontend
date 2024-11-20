@@ -30,7 +30,7 @@ class DepartureTransportMeansIdentificationNumberFormProvider @Inject() (phaseCo
       "value" -> adaptedText(s"$prefix.error.required")(_.toUpperCase)
         .verifying(
           StopOnFirstFail[String](
-            maxLength(phaseConfig.maxIdentificationNumberLength, phaseConfig.lengthError(prefix)),
+            maxLength(phaseConfig.values.maxIdentificationNumberLength, phaseConfig.lengthError(prefix)),
             regexp(alphaNumericRegex, s"$prefix.error.invalid")
           )
         )

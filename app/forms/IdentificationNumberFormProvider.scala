@@ -29,7 +29,7 @@ class IdentificationNumberFormProvider @Inject() (phaseConfig: PhaseConfig) exte
       "value" -> text(s"$prefix.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(phaseConfig.maxIdentificationNumberLength, phaseConfig.lengthError(prefix)),
+            maxLength(phaseConfig.values.maxIdentificationNumberLength, phaseConfig.lengthError(prefix)),
             regexp(alphaNumericRegex, s"$prefix.error.invalid")
           )
         )
