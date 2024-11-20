@@ -78,7 +78,6 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
               .setValue(IdentificationPage(index), identification)
               .setValue(IdentificationNumberPage(index), identificationNumber)
-              .setValue(AddNationalityYesNoPage(index), true)
               .setValue(NationalityPage(index), nationality)
               .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
               .setValue(ConveyanceReferenceNumberYesNoPage(index), true)
@@ -87,7 +86,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             val expectedResult = PostTransitionTransportMeansActiveDomain(
               identification = identification,
               identificationNumber = identificationNumber,
-              nationality = Option(nationality),
+              nationality = nationality,
               customsOffice = customsOffice,
               conveyanceReferenceNumber = Some(conveyanceNumber)
             )(index)
@@ -98,7 +97,6 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
             result.value.pages mustBe Seq(
               IdentificationPage(index),
               IdentificationNumberPage(index),
-              AddNationalityYesNoPage(index),
               NationalityPage(index),
               CustomsOfficeActiveBorderPage(index),
               ConveyanceReferenceNumberYesNoPage(index),
@@ -116,7 +114,6 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                   .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
                   .setValue(IdentificationPage(index), identification)
                   .setValue(IdentificationNumberPage(index), identificationNumber)
-                  .setValue(AddNationalityYesNoPage(index), true)
                   .setValue(NationalityPage(index), nationality)
                   .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
                   .setValue(ConveyanceReferenceNumberPage(index), conveyanceNumber)
@@ -124,7 +121,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 val expectedResult = PostTransitionTransportMeansActiveDomain(
                   identification = identification,
                   identificationNumber = identificationNumber,
-                  nationality = Option(nationality),
+                  nationality = nationality,
                   customsOffice = customsOffice,
                   conveyanceReferenceNumber = Some(conveyanceNumber)
                 )(index)
@@ -135,44 +132,11 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 result.value.pages mustBe Seq(
                   IdentificationPage(index),
                   IdentificationNumberPage(index),
-                  AddNationalityYesNoPage(index),
                   NationalityPage(index),
                   CustomsOfficeActiveBorderPage(index),
                   ConveyanceReferenceNumberPage(index)
                 )
             }
-          }
-        }
-
-        "when the add nationality is answered no" - {
-          "and security detail type is 0 and inland mode is Sea and add conveyance number is no" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(SecurityDetailsTypePage, NoSecurityDetails)
-              .setValue(BorderModeOfTransportPage, BorderMode("1", "Sea"))
-              .setValue(IdentificationPage(index), identification)
-              .setValue(IdentificationNumberPage(index), identificationNumber)
-              .setValue(AddNationalityYesNoPage(index), false)
-              .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
-              .setValue(ConveyanceReferenceNumberYesNoPage(index), false)
-
-            val expectedResult = PostTransitionTransportMeansActiveDomain(
-              identification = identification,
-              identificationNumber = identificationNumber,
-              nationality = None,
-              customsOffice = customsOffice,
-              conveyanceReferenceNumber = None
-            )(index)
-
-            val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
-
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
-              IdentificationPage(index),
-              IdentificationNumberPage(index),
-              AddNationalityYesNoPage(index),
-              CustomsOfficeActiveBorderPage(index),
-              ConveyanceReferenceNumberYesNoPage(index)
-            )
           }
         }
       }
@@ -194,27 +158,11 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           }
         }
 
-        "when add nationality is unanswered" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(BorderModeOfTransportPage, BorderMode("3", "Road"))
-            .setValue(InferredIdentificationPage(index), Identification("30", "Registration number of a road vehicle"))
-            .setValue(IdentificationNumberPage(index), identificationNumber)
-
-          val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
-
-          result.left.value.page mustBe AddNationalityYesNoPage(index)
-          result.left.value.pages mustBe Seq(
-            IdentificationNumberPage(index),
-            AddNationalityYesNoPage(index)
-          )
-        }
-
         "when nationality is unanswered" in {
           val userAnswers = emptyUserAnswers
             .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
             .setValue(IdentificationPage(index), Identification("40", "IATA flight number"))
             .setValue(IdentificationNumberPage(index), identificationNumber)
-            .setValue(AddNationalityYesNoPage(index), true)
 
           val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
@@ -222,47 +170,25 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
           result.left.value.pages mustBe Seq(
             IdentificationPage(index),
             IdentificationNumberPage(index),
-            AddNationalityYesNoPage(index),
             NationalityPage(index)
           )
         }
 
-        "when customs office ref. number is unanswered" - {
-          "and add nationality is true" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(BorderModeOfTransportPage, BorderMode("3", "Road"))
-              .setValue(InferredIdentificationPage(index), Identification("30", "Registration number of a road vehicle"))
-              .setValue(IdentificationNumberPage(index), identificationNumber)
-              .setValue(AddNationalityYesNoPage(index), true)
-              .setValue(NationalityPage(index), nationality)
+        "when customs office ref. number is unanswered" in {
+          val userAnswers = emptyUserAnswers
+            .setValue(BorderModeOfTransportPage, BorderMode("3", "Road"))
+            .setValue(InferredIdentificationPage(index), Identification("30", "Registration number of a road vehicle"))
+            .setValue(IdentificationNumberPage(index), identificationNumber)
+            .setValue(NationalityPage(index), nationality)
 
-            val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+          val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe CustomsOfficeActiveBorderPage(index)
-            result.left.value.pages mustBe Seq(
-              IdentificationNumberPage(index),
-              AddNationalityYesNoPage(index),
-              NationalityPage(index),
-              CustomsOfficeActiveBorderPage(index)
-            )
-          }
-
-          "and add nationality is false" in {
-            val userAnswers = emptyUserAnswers
-              .setValue(BorderModeOfTransportPage, BorderMode("3", "Road"))
-              .setValue(InferredIdentificationPage(index), Identification("30", "Registration number of a road vehicle"))
-              .setValue(IdentificationNumberPage(index), identificationNumber)
-              .setValue(AddNationalityYesNoPage(index), false)
-
-            val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
-
-            result.left.value.page mustBe CustomsOfficeActiveBorderPage(index)
-            result.left.value.pages mustBe Seq(
-              IdentificationNumberPage(index),
-              AddNationalityYesNoPage(index),
-              CustomsOfficeActiveBorderPage(index)
-            )
-          }
+          result.left.value.page mustBe CustomsOfficeActiveBorderPage(index)
+          result.left.value.pages mustBe Seq(
+            IdentificationNumberPage(index),
+            NationalityPage(index),
+            CustomsOfficeActiveBorderPage(index)
+          )
         }
 
         "when security is in set {1,2,3}" - {
@@ -276,7 +202,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                   .setValue(BorderModeOfTransportPage, BorderMode("4", "Air"))
                   .setValue(IdentificationPage(index), identification)
                   .setValue(IdentificationNumberPage(index), identificationNumber)
-                  .setValue(AddNationalityYesNoPage(index), false)
+                  .setValue(NationalityPage(index), nationality)
                   .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
 
                 val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
@@ -285,7 +211,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 result.left.value.pages mustBe Seq(
                   IdentificationPage(index),
                   IdentificationNumberPage(index),
-                  AddNationalityYesNoPage(index),
+                  NationalityPage(index),
                   CustomsOfficeActiveBorderPage(index),
                   ConveyanceReferenceNumberPage(index)
                 )
@@ -303,7 +229,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                   .setValue(BorderModeOfTransportPage, borderMode)
                   .setValue(IdentificationPage(index), identification)
                   .setValue(IdentificationNumberPage(index), identificationNumber)
-                  .setValue(AddNationalityYesNoPage(index), false)
+                  .setValue(NationalityPage(index), nationality)
                   .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
 
                 val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
@@ -312,7 +238,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 result.left.value.pages mustBe Seq(
                   IdentificationPage(index),
                   IdentificationNumberPage(index),
-                  AddNationalityYesNoPage(index),
+                  NationalityPage(index),
                   CustomsOfficeActiveBorderPage(index),
                   ConveyanceReferenceNumberYesNoPage(index)
                 )
@@ -330,7 +256,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 .setValue(BorderModeOfTransportPage, borderMode)
                 .setValue(IdentificationPage(index), identification)
                 .setValue(IdentificationNumberPage(index), identificationNumber)
-                .setValue(AddNationalityYesNoPage(index), false)
+                .setValue(NationalityPage(index), nationality)
                 .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
 
               val result = TransportMeansActiveDomain.userAnswersReader(index)(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
@@ -339,7 +265,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               result.left.value.pages mustBe Seq(
                 IdentificationPage(index),
                 IdentificationNumberPage(index),
-                AddNationalityYesNoPage(index),
+                NationalityPage(index),
                 CustomsOfficeActiveBorderPage(index),
                 ConveyanceReferenceNumberYesNoPage(index)
               )
@@ -356,7 +282,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
                 .setValue(BorderModeOfTransportPage, borderMode)
                 .setValue(IdentificationPage(index), identification)
                 .setValue(IdentificationNumberPage(index), identificationNumber)
-                .setValue(AddNationalityYesNoPage(index), false)
+                .setValue(NationalityPage(index), nationality)
                 .setValue(CustomsOfficeActiveBorderPage(index), customsOffice)
                 .setValue(ConveyanceReferenceNumberYesNoPage(index), true)
 
@@ -366,7 +292,7 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
               result.left.value.pages mustBe Seq(
                 IdentificationPage(index),
                 IdentificationNumberPage(index),
-                AddNationalityYesNoPage(index),
+                NationalityPage(index),
                 CustomsOfficeActiveBorderPage(index),
                 ConveyanceReferenceNumberYesNoPage(index),
                 ConveyanceReferenceNumberPage(index)
