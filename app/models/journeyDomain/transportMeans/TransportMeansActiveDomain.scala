@@ -141,7 +141,7 @@ object TransitionTransportMeansActiveDomain {
 case class PostTransitionTransportMeansActiveDomain(
   identification: Identification,
   identificationNumber: String,
-  nationality: Option[Nationality],
+  nationality: Nationality,
   customsOffice: CustomsOffice,
   conveyanceReferenceNumber: Option[String]
 )(override val index: Index)
@@ -170,7 +170,7 @@ object PostTransitionTransportMeansActiveDomain {
     (
       UserAnswersReader.readInferred(IdentificationPage(index), InferredIdentificationPage(index)),
       IdentificationNumberPage(index).reader,
-      AddNationalityYesNoPage(index).filterOptionalDependent(identity)(NationalityPage(index).reader),
+      NationalityPage(index).reader,
       CustomsOfficeActiveBorderPage(index).reader,
       TransportMeansActiveDomain.conveyanceReader(index)
     ).map(PostTransitionTransportMeansActiveDomain.apply(_, _, _, _, _)(index))

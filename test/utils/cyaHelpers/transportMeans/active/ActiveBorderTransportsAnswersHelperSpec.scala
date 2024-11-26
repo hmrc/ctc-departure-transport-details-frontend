@@ -122,7 +122,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
               Left(
                 ListItem(
                   name = identificationNumber,
-                  changeUrl = routes.AddNationalityYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
+                  changeUrl = routes.NationalityController.onPageLoad(userAnswers.lrn, mode, index).url,
                   removeUrl = Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(userAnswers.lrn, mode, index).url)
                 )
               )
@@ -146,7 +146,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
               Left(
                 ListItem(
                   name = s"${identificationType.asString} - $identificationNumber",
-                  changeUrl = routes.AddNationalityYesNoController.onPageLoad(userAnswers.lrn, mode, index).url,
+                  changeUrl = routes.NationalityController.onPageLoad(userAnswers.lrn, mode, index).url,
                   removeUrl = Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(userAnswers.lrn, mode, index).url)
                 )
               )
