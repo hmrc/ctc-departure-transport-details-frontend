@@ -16,11 +16,11 @@
 
 package models.journeyDomain.equipment
 
-import models.journeyDomain.{JourneyDomainModel, _}
 import models.journeyDomain.equipment.seal.SealsDomain
+import models.journeyDomain.{JourneyDomainModel, *}
 import models.{Index, OptionalBoolean, ProcedureType, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.AuthorisationTypePage
-import pages.equipment.index._
+import pages.equipment.index.*
 import pages.external.ProcedureTypePage
 import pages.preRequisites.ContainerIndicatorPage
 import pages.sections.Section
@@ -56,41 +56,54 @@ object EquipmentDomain {
       messages("equipment.value.withIndex.withContainer", index.display, _)
     )
 
-  implicit def userAnswersReader(equipmentIndex: Index): Read[EquipmentDomain] =
-    (
-      containerIdReads(equipmentIndex),
-      sealsReads(equipmentIndex)
-    ).map(EquipmentDomain.apply(_, _)(equipmentIndex))
+  implicit def userAnswersReader(equipmentIndex: Index): Read[EquipmentDomain] = {
 
-  def containerIdReads(equipmentIndex: Index): Read[Option[String]] =
+    lazy val containerIdentificationNumberReads: Read[Option[String]] =
+      ContainerIdentificationNumberPage(equipmentIndex).reader.toOption
+
+    lazy val noContainerIdentificationNumberReads: Read[Option[String]] =
+      Read(None)
+
+    lazy val mandatorySealsReads: Read[SealsDomain] =
+      SealsDomain.userAnswersReader(equipmentIndex)
+
+    lazy val optionalSealsReads: Read[Option[SealsDomain]] =
+      (
+        ProcedureTypePage.reader,
+        AuthorisationsSection.fieldReader(AuthorisationTypePage.apply)
+      ).to {
+        case (ProcedureType.Simplified, authorisationTypes) if authorisationTypes.exists(_.isSSE) =>
+          mandatorySealsReads.toOption
+        case _ =>
+          AddSealYesNoPage(equipmentIndex).filterOptionalDependent(identity) {
+            mandatorySealsReads
+          }
+      }
+
     ContainerIndicatorPage.optionalReader.to {
       case Some(OptionalBoolean.yes) if equipmentIndex.isFirst =>
-        ContainerIdentificationNumberPage(equipmentIndex).reader.toOption
+        (
+          containerIdentificationNumberReads,
+          optionalSealsReads
+        ).map(EquipmentDomain.apply(_, _)(equipmentIndex))
       case Some(OptionalBoolean.yes) =>
-        AddContainerIdentificationNumberYesNoPage(equipmentIndex)
-          .filterOptionalDependent(identity) {
-            ContainerIdentificationNumberPage(equipmentIndex).reader
-          }
-      case _ =>
-        UserAnswersReader.none
-    }
-
-  def sealsReads(equipmentIndex: Index): Read[Option[SealsDomain]] =
-    ContainerIndicatorPage.optionalReader.to {
-      case Some(OptionalBoolean.no) =>
-        SealsDomain.userAnswersReader(equipmentIndex).toOption
+        AddContainerIdentificationNumberYesNoPage(equipmentIndex).reader.to {
+          case true =>
+            (
+              containerIdentificationNumberReads,
+              optionalSealsReads
+            ).map(EquipmentDomain.apply(_, _)(equipmentIndex))
+          case false =>
+            (
+              noContainerIdentificationNumberReads,
+              mandatorySealsReads.toOption
+            ).map(EquipmentDomain.apply(_, _)(equipmentIndex))
+        }
       case _ =>
         (
-          ProcedureTypePage.reader,
-          AuthorisationsSection.fieldReader(AuthorisationTypePage.apply)
-        ).to {
-          case (ProcedureType.Simplified, authorisationTypes) if authorisationTypes.exists(_.isSSE) =>
-            SealsDomain.userAnswersReader(equipmentIndex).toOption
-          case _ =>
-            AddSealYesNoPage(equipmentIndex).filterOptionalDependent(identity) {
-              SealsDomain.userAnswersReader(equipmentIndex)
-            }
-        }
-
+          noContainerIdentificationNumberReads,
+          mandatorySealsReads.toOption
+        ).map(EquipmentDomain.apply(_, _)(equipmentIndex))
     }
+  }
 }
