@@ -75,7 +75,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
 
     "redirect to add departure transport means yes/no page" - {
       "when 0 departure transport means" in {
-        when(mockViewModelProvider.apply(any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(viewModelWithNoItems)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -95,7 +95,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
     "must return OK and the correct view for a GET" - {
       "when max limit not reached" in {
 
-        when(mockViewModelProvider.apply(any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -114,7 +114,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
 
       "when max limit reached" in {
 
-        when(mockViewModelProvider.apply(any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -135,7 +135,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
     "when max limit not reached" - {
       "when yes submitted" - {
         "must redirect to identification type page at next index" in {
-          when(mockViewModelProvider.apply(any(), any())(any(), any()))
+          when(mockViewModelProvider.apply(any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -154,7 +154,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
 
       "when no submitted" - {
         "must redirect to add border mode page" in {
-          when(mockViewModelProvider.apply(any(), any())(any(), any()))
+          when(mockViewModelProvider.apply(any(), any())(any()))
             .thenReturn(notMaxedOutViewModel)
 
           setExistingUserAnswers(emptyUserAnswers)
@@ -173,7 +173,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
 
     "when max limit reached" - {
       "must redirect to add border mode page" in {
-        when(mockViewModelProvider.apply(any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(maxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)
@@ -191,7 +191,7 @@ class AddAnotherDepartureTransportMeansControllerSpec extends SpecBase with AppW
 
     "must return a Bad Request and errors" - {
       "when invalid data is submitted and max limit not reached" in {
-        when(mockViewModelProvider.apply(any(), any())(any(), any()))
+        when(mockViewModelProvider.apply(any(), any())(any()))
           .thenReturn(notMaxedOutViewModel)
 
         setExistingUserAnswers(emptyUserAnswers)

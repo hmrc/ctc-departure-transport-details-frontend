@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions.Actions
 import models.LocalReferenceNumber
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,8 +34,7 @@ class TransportAnswersController @Inject() (
   view: TransportAnswersView,
   viewModelProvider: TransportAnswersViewModelProvider,
   config: FrontendAppConfig
-)(implicit phaseConfig: PhaseConfig)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber): Action[AnyContent] = actions.requireData(lrn) {

@@ -16,21 +16,21 @@
 
 package utils.cyaHelpers.transportMeans.active
 
-import config.{FrontendAppConfig, PhaseConfig}
-import models.reference.{CustomsOffice, Nationality}
+import config.FrontendAppConfig
 import models.reference.transportMeans.active.Identification
-import models.{Index, Mode, Phase, UserAnswers}
-import pages.transportMeans.active._
+import models.reference.{CustomsOffice, Nationality}
+import models.{Index, Mode, UserAnswers}
+import pages.transportMeans.active.*
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import uk.gov.hmrc.govukfrontend.views.Aliases.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import utils.cyaHelpers.AnswersHelper
 
 class ActiveBorderTransportAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   index: Index
-)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit messages: Messages, appConfig: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def activeBorderAddIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
@@ -104,34 +104,20 @@ object ActiveBorderTransportAnswersHelper {
     userAnswers: UserAnswers,
     mode: Mode,
     index: Index
-  )(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig): Seq[SummaryListRow] = {
+  )(implicit messages: Messages, appConfig: FrontendAppConfig): Seq[SummaryListRow] = {
     val helper = new ActiveBorderTransportAnswersHelper(userAnswers, mode, index)
-    phaseConfig.phase match {
-      case Phase.Transition =>
-        Seq(
-          helper.activeBorderAddNationality,
-          helper.activeBorderNationality,
-          helper.activeBorderAddIdentificationType,
-          helper.activeBorderIdentificationType,
-          helper.activeBorderAddIdentificationNumber,
-          helper.activeBorderIdentificationNumber,
-          helper.customsOfficeAtBorder,
-          helper.activeBorderConveyanceReferenceNumberYesNo,
-          helper.conveyanceReferenceNumber
-        ).flatten
-      case Phase.PostTransition =>
-        Seq(
-          helper.activeBorderAddIdentificationType,
-          helper.activeBorderIdentificationType,
-          helper.activeBorderAddIdentificationNumber,
-          helper.activeBorderIdentificationNumber,
-          helper.activeBorderAddNationality,
-          helper.activeBorderNationality,
-          helper.customsOfficeAtBorder,
-          helper.activeBorderConveyanceReferenceNumberYesNo,
-          helper.conveyanceReferenceNumber
-        ).flatten
-    }
+
+    Seq(
+      helper.activeBorderAddIdentificationType,
+      helper.activeBorderIdentificationType,
+      helper.activeBorderAddIdentificationNumber,
+      helper.activeBorderIdentificationNumber,
+      helper.activeBorderAddNationality,
+      helper.activeBorderNationality,
+      helper.customsOfficeAtBorder,
+      helper.activeBorderConveyanceReferenceNumberYesNo,
+      helper.conveyanceReferenceNumber
+    ).flatten
   }
 
 }

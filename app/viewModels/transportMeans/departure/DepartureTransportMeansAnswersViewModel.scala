@@ -16,7 +16,7 @@
 
 package viewModels.transportMeans.departure
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import pages.transportMeans.AddInlandModeYesNoPage
 import play.api.i18n.Messages
@@ -29,7 +29,7 @@ case class DepartureTransportMeansAnswersViewModel(sections: Seq[Section])
 
 object DepartureTransportMeansAnswersViewModel {
 
-  class DepartureTransportMeansAnswersViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
+  class DepartureTransportMeansAnswersViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode, index: Index)(implicit messages: Messages): DepartureTransportMeansAnswersViewModel = {
       val helper = new DepartureTransportMeansAnswersHelper(userAnswers, mode, index)

@@ -16,7 +16,6 @@
 
 package controllers.preRequisites
 
-import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.OptionalYesNoFormProvider
@@ -40,7 +39,7 @@ class AddCountryOfDestinationController @Inject() (
   formProvider: OptionalYesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddCountryOfDestinationView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

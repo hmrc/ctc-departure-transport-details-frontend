@@ -17,11 +17,10 @@
 package navigation
 
 import base.SpecBase
-import models.Phase.{PostTransition, Transition}
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, ReaderSuccess, Stage}
-import models.{CheckMode, Mode, NormalMode, Phase, UserAnswers}
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import org.scalacheck.Gen
 import pages.QuestionPage
 import play.api.libs.json.JsPath
@@ -51,11 +50,10 @@ class UserAnswersNavigatorSpec extends SpecBase {
   private val userAnswers = emptyUserAnswers
 
   private val stage = Gen.oneOf(AccessingJourney, CompletingJourney).sample.value
-  private val phase = Gen.oneOf(Transition, PostTransition).sample.value
 
   private case object FakeDomainModel extends JourneyDomainModel {
 
-    override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
+    override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
       Some(Call(GET, "/cya"))
   }
 
@@ -71,7 +69,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
           val result = UserAnswersNavigator
             .nextPage(currentPage, userAnswersReaderResult, mode)
-            .apply(userAnswers, stage, phase)
+            .apply(userAnswers, stage)
 
           result.value.url mustBe "/foo"
         }
@@ -86,7 +84,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
               val result = UserAnswersNavigator
                 .nextPage(currentPage, userAnswersReaderResult, mode)
-                .apply(userAnswers, stage, phase)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/bar"
             }
@@ -97,7 +95,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
               val result = UserAnswersNavigator
                 .nextPage(currentPage, userAnswersReaderResult, mode)
-                .apply(userAnswers, stage, phase)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/bar"
             }
@@ -114,7 +112,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
               val result = UserAnswersNavigator
                 .nextPage(currentPage, userAnswersReaderResult, mode)
-                .apply(userAnswers, stage, phase)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/baz"
             }
@@ -125,7 +123,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
               val result = UserAnswersNavigator
                 .nextPage(currentPage, userAnswersReaderResult, mode)
-                .apply(userAnswers, stage, phase)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/baz"
             }
@@ -146,7 +144,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
               val result = UserAnswersNavigator
                 .nextPage(currentPage, userAnswersReaderResult, mode)
-                .apply(userAnswers, stage, phase)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/bar"
             }
@@ -157,7 +155,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
               val result = UserAnswersNavigator
                 .nextPage(currentPage, userAnswersReaderResult, mode)
-                .apply(userAnswers, stage, phase)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/bar"
             }
@@ -170,7 +168,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
               val result = UserAnswersNavigator
                 .nextPage(currentPage, userAnswersReaderResult, mode)
-                .apply(userAnswers, stage, phase)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/cya"
             }
@@ -187,7 +185,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
               val result = UserAnswersNavigator
                 .nextPage(currentPage, userAnswersReaderResult, mode)
-                .apply(userAnswers, stage, phase)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/baz"
             }
@@ -200,7 +198,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
               val result = UserAnswersNavigator
                 .nextPage(currentPage, userAnswersReaderResult, mode)
-                .apply(userAnswers, stage, phase)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/cya"
             }
@@ -217,7 +215,7 @@ class UserAnswersNavigatorSpec extends SpecBase {
 
               val result = UserAnswersNavigator
                 .nextPage(currentPage, userAnswersReaderResult, mode)
-                .apply(userAnswers, stage, phase)
+                .apply(userAnswers, stage)
 
               result.value.url mustBe "/cya"
             }

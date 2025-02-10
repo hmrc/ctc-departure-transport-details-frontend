@@ -16,13 +16,12 @@
 
 package controllers.preRequisites
 
-import config.{FrontendAppConfig, PhaseConfig}
-import controllers.actions._
+import config.FrontendAppConfig
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.YesNoFormProvider
 import models.{LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.TransportNavigatorProvider
+import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.preRequisites.SameUcrYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -41,7 +40,7 @@ class SameUcrYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: SameUcrYesNoView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig, appConfig: FrontendAppConfig)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

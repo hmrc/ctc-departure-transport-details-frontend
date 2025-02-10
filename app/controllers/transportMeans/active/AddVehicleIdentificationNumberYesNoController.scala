@@ -16,7 +16,6 @@
 
 package controllers.transportMeans.active
 
-import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.YesNoFormProvider
@@ -40,7 +39,7 @@ class AddVehicleIdentificationNumberYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddVehicleIdentificationNumberYesNoView
-)(implicit executionContext: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit executionContext: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

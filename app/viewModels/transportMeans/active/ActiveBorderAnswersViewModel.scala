@@ -16,7 +16,7 @@
 
 package viewModels.transportMeans.active
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.active.ActiveBorderTransportAnswersHelper
@@ -28,7 +28,7 @@ case class ActiveBorderAnswersViewModel(sections: Seq[Section])
 
 object ActiveBorderAnswersViewModel {
 
-  class ActiveBorderAnswersViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
+  class ActiveBorderAnswersViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode, index: Index)(implicit messages: Messages): ActiveBorderAnswersViewModel = {
       val rows = ActiveBorderTransportAnswersHelper(userAnswers, mode, index)

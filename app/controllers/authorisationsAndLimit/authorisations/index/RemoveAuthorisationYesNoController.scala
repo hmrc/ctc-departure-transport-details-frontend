@@ -16,7 +16,6 @@
 
 package controllers.authorisationsAndLimit.authorisations.index
 
-import config.PhaseConfig
 import controllers.actions._
 import controllers.authorisationsAndLimit.authorisations.{routes => authRoutes}
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
@@ -44,7 +43,7 @@ class RemoveAuthorisationYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveAuthorisationYesNoView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.additionalReference
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.journeyDomain.additionalReferences.AdditionalReferenceDomain
 import models.{Mode, UserAnswers}
 import pages.additionalReference.index.AdditionalReferenceTypePage
@@ -27,8 +27,7 @@ import viewModels.ListItem
 
 class AdditionalReferenceAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit
   messages: Messages,
-  config: FrontendAppConfig,
-  phaseConfig: PhaseConfig
+  config: FrontendAppConfig
 ) extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =

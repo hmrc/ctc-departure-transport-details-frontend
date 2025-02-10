@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.equipment
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.equipment.index.seals.routes
 import models.journeyDomain.equipment.seal.SealDomain
 import models.{Index, Mode, UserAnswers}
@@ -31,7 +31,7 @@ class SealsAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   equipmentIndex: Index
-)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit messages: Messages, appConfig: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =

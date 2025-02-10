@@ -16,20 +16,20 @@
 
 package forms
 
-import config.PhaseConfig
 import forms.mappings.Mappings
+import Constants.maxIdentificationNumberLength
 import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 import javax.inject.Inject
 
-class IdentificationNumberFormProvider @Inject() (phaseConfig: PhaseConfig) extends Mappings {
+class IdentificationNumberFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
         .verifying(
           StopOnFirstFail[String](
-            maxLength(phaseConfig.values.maxIdentificationNumberLength, phaseConfig.lengthError(prefix)),
+            maxLength(maxIdentificationNumberLength, s"$prefix.error.length"),
             regexp(alphaNumericRegex, s"$prefix.error.invalid")
           )
         )

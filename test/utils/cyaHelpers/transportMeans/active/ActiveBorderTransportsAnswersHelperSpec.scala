@@ -18,14 +18,12 @@ package utils.cyaHelpers.transportMeans.active
 
 import base.SpecBase
 import config.Constants.SecurityType._
-import config.PhaseConfig
 import controllers.transportMeans.active.routes
 import generators.Generators
-import models.journeyDomain.transportMeans.PostTransitionTransportMeansActiveDomain
+import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.reference.transportMeans.active.Identification
 import models.reference.{BorderMode, Nationality}
-import models.{Mode, NormalMode, Phase}
-import org.mockito.Mockito.when
+import models.{Mode, NormalMode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
@@ -51,9 +49,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
     }
 
     "when user answers populated with a complete active border transport" - {
-      val mockPhaseConfig: PhaseConfig = mock[PhaseConfig]
-      when(mockPhaseConfig.phase).thenReturn(Phase.PostTransition)
-      "and AnotherVehicleCrossingBorder has been answered during post transition" in {
+      "and AnotherVehicleCrossingBorder has been answered" in {
         forAll(arbitrary[Nationality]) {
           nationality =>
             val initialAnswers = emptyUserAnswers
@@ -62,10 +58,10 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
               .setValue(BorderModeOfTransportPage, BorderMode("1", "Maritime"))
               .setValue(NationalityPage(index), nationality)
 
-            forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index)(mockPhaseConfig), arbitrary[Mode]) {
+            forAll(arbitraryTransportMeansActiveAnswers(initialAnswers, index), arbitrary[Mode]) {
               (userAnswers, mode) =>
-                val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)(messages, frontendAppConfig, mockPhaseConfig)
-                val active = PostTransitionTransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers).value.value
+                val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)(messages, frontendAppConfig)
+                val active = TransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers).value.value
                 helper.listItems mustBe Seq(
                   Right(
                     ListItem(

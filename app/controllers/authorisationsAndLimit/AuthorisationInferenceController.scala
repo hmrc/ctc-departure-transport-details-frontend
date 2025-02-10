@@ -16,7 +16,6 @@
 
 package controllers.authorisationsAndLimit
 
-import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import models.{LocalReferenceNumber, Mode}
@@ -39,7 +38,7 @@ class AuthorisationInferenceController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   authorisationInferenceService: AuthorisationInferenceService,
   authorisationTypesService: AuthorisationTypesService
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

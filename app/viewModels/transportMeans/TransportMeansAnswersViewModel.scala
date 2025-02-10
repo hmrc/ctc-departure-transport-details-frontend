@@ -16,14 +16,14 @@
 
 package viewModels.transportMeans
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.TransportMeansCheckYourAnswersHelper
 import utils.cyaHelpers.transportMeans.active.ActiveBorderTransportAnswersHelper
 import viewModels.Section
-import viewModels.transportMeans.departure.AddDepartureTransportMeansYesNoViewModel._
+import viewModels.transportMeans.departure.AddDepartureTransportMeansYesNoViewModel.*
 
 import javax.inject.Inject
 
@@ -33,7 +33,7 @@ object TransportMeansAnswersViewModel {
 
   class TransportMeansAnswersViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
-    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig): TransportMeansAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): TransportMeansAnswersViewModel = {
       val helper = new TransportMeansCheckYourAnswersHelper(userAnswers, mode)
 
       val inlandModeSection = Section(

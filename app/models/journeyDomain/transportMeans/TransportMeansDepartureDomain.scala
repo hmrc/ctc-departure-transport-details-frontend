@@ -16,61 +16,36 @@
 
 package models.journeyDomain.transportMeans
 
-import config.Constants.ModeOfTransport.Rail
-import config.PhaseConfig
-import models.journeyDomain.{JourneyDomainModel, _}
+import models.journeyDomain.{JourneyDomainModel, *}
+import models.reference.Nationality
 import models.reference.transportMeans.departure.Identification
-import models.reference.{InlandMode, Nationality}
-import models.{Index, Mode, OptionalBoolean, Phase, TransportMeans, UserAnswers}
-import pages.preRequisites.ContainerIndicatorPage
+import models.{Index, Mode, TransportMeans, UserAnswers}
 import pages.sections.Section
 import pages.sections.transportMeans.{DepartureSection, TransportMeansSection}
-import pages.transportMeans.departure._
-import pages.transportMeans.{AddDepartureTransportMeansYesNoPage, InlandModePage}
+import pages.transportMeans.departure.*
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
-sealed trait TransportMeansDepartureDomain extends JourneyDomainModel {
-  val index: Index
+case class TransportMeansDepartureDomain(
+  identification: Identification,
+  identificationNumber: String,
+  nationality: Nationality
+)(val index: Index)
+    extends JourneyDomainModel {
 
-  def asString(implicit messages: Messages): String
+  def asString(implicit messages: Messages): String =
+    TransportMeansDepartureDomain.asString(identification, identificationNumber, index)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     page(userAnswers) match {
       case Some(value) => value.route(userAnswers, mode)
       case None        => TransportMeansSection.route(userAnswers, mode)
     }
 
   override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(DepartureSection(index))
-
 }
 
 object TransportMeansDepartureDomain {
-
-  implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): Read[TransportMeansDepartureDomain] =
-    phaseConfig.phase match {
-      case Phase.Transition =>
-        if (phaseConfig.areB1892AndB1897Disabled) {
-          TransitionTransportMeansDepartureRulesDisabledDomain.userAnswersReader(index)
-        } else
-          TransitionTransportMeansDepartureDomain.userAnswersReader(index)
-      case Phase.PostTransition =>
-        PostTransitionTransportMeansDepartureDomain.userAnswersReader(index)
-    }
-}
-
-case class PostTransitionTransportMeansDepartureDomain(
-  identification: Identification,
-  identificationNumber: String,
-  nationality: Nationality
-)(override val index: Index)
-    extends TransportMeansDepartureDomain {
-
-  override def asString(implicit messages: Messages): String =
-    PostTransitionTransportMeansDepartureDomain.asString(identification, identificationNumber, index)
-}
-
-object PostTransitionTransportMeansDepartureDomain {
 
   def asString(identification: Identification, identificationNumber: String, index: Index)(implicit messages: Messages): String =
     TransportMeans(index, Some(identification), Some(identificationNumber)).forAddAnotherDisplay
@@ -80,88 +55,5 @@ object PostTransitionTransportMeansDepartureDomain {
       IdentificationPage(index).reader,
       MeansIdentificationNumberPage(index).reader,
       VehicleCountryPage(index).reader
-    ).map(PostTransitionTransportMeansDepartureDomain.apply(_, _, _)(index))
-}
-
-case class TransitionTransportMeansDepartureDomain(
-  identification: Option[Identification],
-  identificationNumber: Option[String],
-  nationality: Option[Nationality]
-)(override val index: Index)
-    extends TransportMeansDepartureDomain {
-
-  override def asString(implicit messages: Messages): String =
-    TransitionTransportMeansDepartureDomain.asString(identification, identificationNumber, index)
-}
-
-object TransitionTransportMeansDepartureDomain {
-
-  def asString(identification: Option[Identification], identificationNumber: Option[String], index: Index)(implicit messages: Messages): String =
-    TransportMeans(index, identification, identificationNumber).forAddAnotherDisplay
-
-  implicit def userAnswersReader(index: Index): Read[TransportMeansDepartureDomain] = {
-    lazy val identificationReader: Read[Option[Identification]] =
-      AddDepartureTransportMeansYesNoPage.optionalReader.to {
-        case Some(_) =>
-          ContainerIndicatorPage.optionalReader.to {
-            case Some(OptionalBoolean.no) =>
-              IdentificationPage(index).reader.toOption
-            case _ =>
-              AddIdentificationTypeYesNoPage(index).filterOptionalDependent(identity)(IdentificationPage(index).reader)
-          }
-        case None =>
-          IdentificationPage(index).reader.toOption
-      }
-
-    lazy val identificationNumberReader: Read[Option[String]] =
-      ContainerIndicatorPage.optionalReader.to {
-        case Some(OptionalBoolean.no) =>
-          MeansIdentificationNumberPage(index).reader.toOption
-        case _ =>
-          AddIdentificationNumberYesNoPage(index).filterOptionalDependent(identity)(MeansIdentificationNumberPage(index).reader)
-      }
-
-    lazy val nationalityReader: Read[Option[Nationality]] =
-      InlandModePage.optionalReader.to {
-        case Some(InlandMode(Rail, _)) =>
-          UserAnswersReader.none
-        case _ =>
-          ContainerIndicatorPage.optionalReader.to {
-            case Some(OptionalBoolean.yes) =>
-              AddVehicleCountryYesNoPage(index).filterOptionalDependent(identity)(VehicleCountryPage(index).reader)
-            case _ =>
-              VehicleCountryPage(index).reader.toOption
-          }
-      }
-
-    (
-      identificationReader,
-      identificationNumberReader,
-      nationalityReader
-    ).map(TransitionTransportMeansDepartureDomain.apply(_, _, _)(index))
-  }
-}
-
-case class TransitionTransportMeansDepartureRulesDisabledDomain(
-  identification: Identification,
-  identificationNumber: String,
-  nationality: Nationality
-)(override val index: Index)
-    extends TransportMeansDepartureDomain {
-
-  override def asString(implicit messages: Messages): String =
-    TransitionTransportMeansDepartureRulesDisabledDomain.asString(identification, identificationNumber, index)
-}
-
-object TransitionTransportMeansDepartureRulesDisabledDomain {
-
-  def asString(identification: Identification, identificationNumber: String, index: Index)(implicit messages: Messages): String =
-    messages("departureTransportMeans.label.bothArgs", index.display, identification.asString, identificationNumber)
-
-  implicit def userAnswersReader(index: Index): Read[TransportMeansDepartureDomain] =
-    (
-      IdentificationPage(index).reader,
-      MeansIdentificationNumberPage(index).reader,
-      VehicleCountryPage(index).reader
-    ).map(TransitionTransportMeansDepartureRulesDisabledDomain.apply(_, _, _)(index))
+    ).map(TransportMeansDepartureDomain.apply(_, _, _)(index))
 }

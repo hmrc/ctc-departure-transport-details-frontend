@@ -17,10 +17,9 @@
 package models.journeyDomain
 
 import config.Constants.DeclarationType.*
-import config.PhaseConfig
+import models.OptionalBoolean
 import models.journeyDomain.*
 import models.reference.Country
-import models.{OptionalBoolean, Phase}
 import pages.external.DeclarationTypePage
 import pages.preRequisites.*
 
@@ -33,33 +32,25 @@ case class PreRequisitesDomain(
 
 object PreRequisitesDomain {
 
-  implicit def countryOfDispatchReader(implicit phaseConfig: PhaseConfig): Read[Option[Country]] =
-    phaseConfig.phase match {
-      case Phase.Transition =>
-        DeclarationTypePage.reader.to {
-          case TIR =>
-            SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
-          case _ =>
-            UserAnswersReader.none
-        }
-      case Phase.PostTransition => SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
+  implicit def countryOfDispatchReader(): Read[Option[Country]] =
+    DeclarationTypePage.reader.to {
+      case TIR =>
+        SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
+      case _ =>
+        UserAnswersReader.none
     }
 
-  implicit def countryOfDestinationReader(implicit phaseConfig: PhaseConfig): Read[Option[Country]] =
-    phaseConfig.phase match {
-      case Phase.PostTransition =>
-        AddCountryOfDestinationPage.reader.to {
-          case OptionalBoolean.yes => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
-          case _                   => UserAnswersReader.none
-        }
-      case Phase.Transition => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
+  implicit def countryOfDestinationReader(): Read[Option[Country]] =
+    AddCountryOfDestinationPage.reader.to {
+      case OptionalBoolean.yes => TransportedToSameCountryYesNoPage.filterOptionalDependent(identity)(ItemsDestinationCountryPage.reader)
+      case _                   => UserAnswersReader.none
     }
 
-  implicit def userAnswersReader(phaseConfig: PhaseConfig): Read[PreRequisitesDomain] =
+  implicit val userAnswersReader: Read[PreRequisitesDomain] =
     (
       SameUcrYesNoPage.filterOptionalDependent(identity)(UniqueConsignmentReferencePage.reader),
-      countryOfDispatchReader(phaseConfig),
-      countryOfDestinationReader(phaseConfig),
+      countryOfDispatchReader(),
+      countryOfDestinationReader(),
       ContainerIndicatorPage.reader
     ).map(PreRequisitesDomain.apply)
 }
