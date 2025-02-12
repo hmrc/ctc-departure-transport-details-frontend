@@ -20,7 +20,6 @@ import config.Constants.DeclarationType.*
 import models.OptionalBoolean
 import models.journeyDomain.*
 import models.reference.Country
-import pages.external.DeclarationTypePage
 import pages.preRequisites.*
 
 case class PreRequisitesDomain(
@@ -32,13 +31,7 @@ case class PreRequisitesDomain(
 
 object PreRequisitesDomain {
 
-  implicit def countryOfDispatchReader(): Read[Option[Country]] =
-    DeclarationTypePage.reader.to {
-      case TIR =>
-        SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
-      case _ =>
-        UserAnswersReader.none
-    }
+  implicit def countryOfDispatchReader(): Read[Option[Country]] = SameCountryOfDispatchYesNoPage.filterOptionalDependent(identity)(CountryOfDispatchPage.reader)
 
   implicit def countryOfDestinationReader(): Read[Option[Country]] =
     AddCountryOfDestinationPage.reader.to {
