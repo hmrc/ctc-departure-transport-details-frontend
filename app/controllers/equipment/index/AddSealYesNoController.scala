@@ -16,7 +16,7 @@
 
 package controllers.equipment.index
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.YesNoFormProvider
@@ -41,7 +41,7 @@ class AddSealYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddSealYesNoView
-)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

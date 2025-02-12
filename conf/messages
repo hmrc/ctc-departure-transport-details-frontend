@@ -198,14 +198,12 @@ transportMeans.departure.meansIdentificationNumber.withIDType.title = What is th
 transportMeans.departure.meansIdentificationNumber.withNoIDType.title = What is the identification for this vehicle?
 transportMeans.departure.meansIdentificationNumber.withIDType.heading = What is the identification for this vehicle?
 transportMeans.departure.meansIdentificationNumber.withNoIDType.heading = What is the identification for this vehicle?
-transportMeans.departure.meansIdentificationNumber.hint.transition = This can be up to 27 characters long and include both letters and numbers.
-transportMeans.departure.meansIdentificationNumber.hint.postTransition = This can be up to 35 characters long and include both letters and numbers.
+transportMeans.departure.meansIdentificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 transportMeans.departure.meansIdentificationNumber.checkYourAnswersLabel = Identification
 transportMeans.departure.meansIdentificationNumber.change.hidden = identification for the departure means of transport
 transportMeans.departure.meansIdentificationNumber.error.required = Enter the identification for this vehicle
 transportMeans.departure.meansIdentificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
-transportMeans.departure.meansIdentificationNumber.error.length.transition = The identification must be 27 characters or less
-transportMeans.departure.meansIdentificationNumber.error.length.postTransition = The identification must be 35 characters or less
+transportMeans.departure.meansIdentificationNumber.error.length = The identification must be 35 characters or less
 
 transportMeans.departure.addVehicleCountryYesNo.title = Do you want to add the registered country for this vehicle?
 transportMeans.departure.addVehicleCountryYesNo.heading = Do you want to add the registered country for this vehicle?
@@ -290,14 +288,12 @@ transportMeans.active.addNationalityYesNo.error.required = Select yes if you wan
 
 transportMeans.active.identificationNumber.title = What is the identification for this vehicle?
 transportMeans.active.identificationNumber.heading = What is the identification for this vehicle?
-transportMeans.active.identificationNumber.hint.transition = This can be up to 27 characters long and include both letters and numbers.
-transportMeans.active.identificationNumber.hint.postTransition = This can be up to 35 characters long and include both letters and numbers.
+transportMeans.active.identificationNumber.hint = This can be up to 35 characters long and include both letters and numbers.
 transportMeans.active.identificationNumber.checkYourAnswersLabel = Identification
 transportMeans.active.identificationNumber.change.hidden = identification for the border means of transport
 transportMeans.active.identificationNumber.error.required = Enter the identification for this vehicle
 transportMeans.active.identificationNumber.error.invalid = The identification must only include letters a to z and numbers 0 to 9
-transportMeans.active.identificationNumber.error.length.transition = The identification must be 27 characters or less
-transportMeans.active.identificationNumber.error.length.postTransition = The identification must be 35 characters or less
+transportMeans.active.identificationNumber.error.length = The identification must be 35 characters or less
 
 transportMeans.active.nationality.title = What country is this vehicle registered to?
 transportMeans.active.nationality.heading = What country is this vehicle registered to?

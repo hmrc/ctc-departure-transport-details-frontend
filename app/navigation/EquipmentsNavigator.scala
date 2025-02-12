@@ -16,7 +16,7 @@
 
 package navigation
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.equipment.EquipmentsDomain
 import models.{CheckMode, Mode, NormalMode}
@@ -24,7 +24,7 @@ import models.{CheckMode, Mode, NormalMode}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class EquipmentsNavigatorProviderImpl @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) extends EquipmentsNavigatorProvider {
+class EquipmentsNavigatorProviderImpl @Inject() (implicit appConfig: FrontendAppConfig) extends EquipmentsNavigatorProvider {
 
   override def apply(mode: Mode): UserAnswersNavigator =
     mode match {
@@ -37,8 +37,7 @@ trait EquipmentsNavigatorProvider {
   def apply(mode: Mode): UserAnswersNavigator
 }
 
-class EquipmentsNavigator(override val mode: Mode)(implicit override val appConfig: FrontendAppConfig, override val phaseConfig: PhaseConfig)
-    extends UserAnswersNavigator {
+class EquipmentsNavigator(override val mode: Mode)(implicit override val appConfig: FrontendAppConfig) extends UserAnswersNavigator {
 
   override type T = EquipmentsDomain
 

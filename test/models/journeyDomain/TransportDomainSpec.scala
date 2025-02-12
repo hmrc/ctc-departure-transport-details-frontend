@@ -18,12 +18,9 @@ package models.journeyDomain
 
 import base.SpecBase
 import config.Constants.DeclarationType.TIR
-import config.PhaseConfig
 import generators.Generators
-import models.Phase
 import models.ProcedureType.{Normal, Simplified}
 import models.reference.InlandMode
-import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.additionalInformation.AddAdditionalInformationYesNoPage
@@ -38,12 +35,6 @@ import pages.transportMeans.{AddInlandModeYesNoPage, InlandModePage}
 class TransportDomainSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
 
   "TransportDomain" - {
-
-    val mockPostTransitionPhaseConfig = mock[PhaseConfig]
-    when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
-
-    val mockTransitionPhaseConfig = mock[PhaseConfig]
-    when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
 
     val mailInlandMode = InlandMode("5", "Mail (Active mode of transport unknown)")
 
@@ -194,61 +185,41 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
         }
       }
 
-      "when in Post Transition" - {
-        "and adding an additional reference" in {
-          val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage, true)
-          forAll(arbitraryTransportAnswers(initialUserAnswers)(mockPostTransitionPhaseConfig)) {
-            userAnswers =>
-              val result = TransportDomain.userAnswersReader(mockPostTransitionPhaseConfig).run(userAnswers)
-              result.value.value.additionalReferences must be(defined)
-              result.value.pages.last mustBe TransportSection
-          }
-        }
-
-        "and not adding an additional reference" in {
-          val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage, false)
-          forAll(arbitraryTransportAnswers(initialUserAnswers)(mockPostTransitionPhaseConfig)) {
-            userAnswers =>
-              val result = TransportDomain.userAnswersReader(mockPostTransitionPhaseConfig).run(userAnswers)
-              result.value.value.additionalReferences must not be defined
-              result.value.pages.last mustBe TransportSection
-          }
-        }
-
-        "and adding an additional information" in {
-          val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage, true)
-          forAll(arbitraryTransportAnswers(initialUserAnswers)(mockPostTransitionPhaseConfig)) {
-            userAnswers =>
-              val result = TransportDomain.userAnswersReader(mockPostTransitionPhaseConfig).run(userAnswers)
-              result.value.value.additionalInformations must be(defined)
-              result.value.pages.last mustBe TransportSection
-          }
-        }
-
-        "and not adding an additional information" in {
-          val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage, false)
-          forAll(arbitraryTransportAnswers(initialUserAnswers)(mockPostTransitionPhaseConfig)) {
-            userAnswers =>
-              val result = TransportDomain.userAnswersReader(mockPostTransitionPhaseConfig).run(userAnswers)
-              result.value.value.additionalInformations must not be defined
-              result.value.pages.last mustBe TransportSection
-          }
+      "when adding an additional reference" in {
+        val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage, true)
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+          userAnswers =>
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
+            result.value.value.additionalReferences must be(defined)
+            result.value.pages.last mustBe TransportSection
         }
       }
 
-      "when in Transition and therefore not requiring an additional reference" in {
-        forAll(arbitraryTransportAnswers(emptyUserAnswers)(mockTransitionPhaseConfig)) {
+      "when not adding an additional reference" in {
+        val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalReferenceYesNoPage, false)
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
           userAnswers =>
-            val result = TransportDomain.userAnswersReader(mockTransitionPhaseConfig).run(userAnswers)
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
             result.value.value.additionalReferences must not be defined
             result.value.pages.last mustBe TransportSection
         }
       }
 
-      "when in Transition and therefore not requiring an additional information" in {
-        forAll(arbitraryTransportAnswers(emptyUserAnswers)(mockTransitionPhaseConfig)) {
+      "when adding an additional information" in {
+        val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage, true)
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
           userAnswers =>
-            val result = TransportDomain.userAnswersReader(mockTransitionPhaseConfig).run(userAnswers)
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
+            result.value.value.additionalInformations must be(defined)
+            result.value.pages.last mustBe TransportSection
+        }
+      }
+
+      "when not adding an additional information" in {
+        val initialUserAnswers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage, false)
+        forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+          userAnswers =>
+            val result = TransportDomain.userAnswersReader.run(userAnswers)
             result.value.value.additionalInformations must not be defined
             result.value.pages.last mustBe TransportSection
         }

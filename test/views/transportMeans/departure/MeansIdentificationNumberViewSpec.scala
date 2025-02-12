@@ -25,7 +25,6 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import play.api.Application
 import play.api.data.Form
-import play.api.test.Helpers.running
 import play.twirl.api.HtmlFormat
 import viewModels.InputSize
 import viewModels.transportMeans.departure.MeansIdentificationNumberViewModel
@@ -45,11 +44,6 @@ class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] 
   override def applyView(form: Form[String]): HtmlFormat.Appendable =
     applyView(app, form, viewModel)
 
-  private def applyView(app: Application): HtmlFormat.Appendable = {
-    val form = app.injector.instanceOf[DepartureTransportMeansIdentificationNumberFormProvider].apply(prefix)
-    applyView(app, form, viewModel)
-  }
-
   private def applyView(app: Application, form: Form[String], viewModel: MeansIdentificationNumberViewModel): HtmlFormat.Appendable =
     app.injector.instanceOf[MeansIdentificationNumberView].apply(form, lrn, NormalMode, viewModel, departureIndex)(fakeRequest, messages)
 
@@ -59,25 +53,11 @@ class MeansIdentificationNumberViewSpec extends InputTextViewBehaviours[String] 
 
   behave like pageWithSectionCaption("Transport details - Departure means of transport")
 
+  behave like pageWithHint("This can be up to 35 characters long and include both letters and numbers.")
+
   behave like pageWithInputText(Some(InputSize.Width20))
 
   behave like pageWithSubmitButton("Save and continue")
-
-  "when during transition" - {
-    val app = transitionApplicationBuilder().build()
-    running(app) {
-      val doc = parseView(applyView(app))
-      behave like pageWithHint(doc, "This can be up to 27 characters long and include both letters and numbers.")
-    }
-  }
-
-  "when post transition" - {
-    val app = postTransitionApplicationBuilder().build()
-    running(app) {
-      val doc = parseView(applyView(app))
-      behave like pageWithHint(doc, "This can be up to 35 characters long and include both letters and numbers.")
-    }
-  }
 
   "when no identification type is present in user answers" - {
 

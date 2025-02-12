@@ -16,7 +16,6 @@
 
 package controllers.transportMeans.departure
 
-import config.PhaseConfig
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import controllers.actions._
 import forms.YesNoFormProvider
@@ -40,7 +39,7 @@ class AddIdentificationNumberYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddIdentificationNumberYesNoView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

@@ -16,21 +16,20 @@
 
 package utils.cyaHelpers.transportMeans.departure
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.transportMeans.departure.routes
 import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
 import models.{Index, Mode, TransportMeans, UserAnswers}
 import pages.sections.transportMeans.DeparturesSection
 import pages.transportMeans.AddDepartureTransportMeansYesNoPage
-import pages.transportMeans.departure._
+import pages.transportMeans.departure.*
 import play.api.i18n.Messages
 import utils.cyaHelpers.{AnswersHelper, RichListItems}
 import viewModels.ListItem
 
 class DeparturesTransportMeansAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit
   messages: Messages,
-  config: FrontendAppConfig,
-  phaseConfig: PhaseConfig
+  config: FrontendAppConfig
 ) extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] = {

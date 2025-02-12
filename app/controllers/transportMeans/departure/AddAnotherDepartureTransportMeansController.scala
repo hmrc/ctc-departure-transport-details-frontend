@@ -16,7 +16,7 @@
 
 package controllers.transportMeans.departure
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.journeyDomain.UserAnswersReader
@@ -42,7 +42,7 @@ class AddAnotherDepartureTransportMeansController @Inject() (
   navigatorProvider: TransportMeansNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherDepartureTransportMeansView
-)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

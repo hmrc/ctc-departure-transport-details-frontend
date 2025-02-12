@@ -35,7 +35,7 @@ class TransportAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
       val mode = CheckMode
       forAll(arbitraryTransportAnswers(emptyUserAnswers)) {
         answers =>
-          when(mockTransportMeansAnswersViewModelProvider.apply(any(), any())(any(), any()))
+          when(mockTransportMeansAnswersViewModelProvider.apply(any(), any())(any()))
             .thenReturn(TransportMeansAnswersViewModel(Nil))
 
           val viewModelProvider = new TransportAnswersViewModelProvider(mockTransportMeansAnswersViewModelProvider, frontendAppConfig)
@@ -63,7 +63,7 @@ class TransportAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChec
 
           sections(7: Int).sectionTitle.get mustBe "Additional information"
 
-          verify(mockTransportMeansAnswersViewModelProvider).apply(eqTo(answers), eqTo(mode))(any(), any())
+          verify(mockTransportMeansAnswersViewModelProvider).apply(eqTo(answers), eqTo(mode))(any())
       }
     }
   }

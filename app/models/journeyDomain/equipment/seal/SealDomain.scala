@@ -20,7 +20,7 @@ import controllers.equipment.index.seals.routes
 import models.journeyDomain._
 import models.journeyDomain.Stage._
 import models.journeyDomain.{JourneyDomainModel, Stage}
-import models.{Index, Mode, Phase, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.equipment.index.seals.IdentificationNumberPage
 import pages.sections.equipment.SealsSection
 import play.api.mvc.Call
@@ -32,7 +32,7 @@ case class SealDomain(
 
   override def toString: String = identificationNumber
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     stage match {
       case AccessingJourney =>
         Some(routes.IdentificationNumberController.onPageLoad(userAnswers.lrn, mode, equipmentIndex, sealIndex))

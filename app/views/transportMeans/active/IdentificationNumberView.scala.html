@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.PhaseConfig
 @import controllers.transportMeans.active.routes
 @import models.LocalReferenceNumber
 @import viewModels.components.InputTextViewModel._
@@ -26,8 +25,7 @@
     inputText: InputText,
     insetText: InsetText,
     errorSummary: ErrorSummary,
-    button: Button,
-    phaseConfig: PhaseConfig
+    button: Button
 )
 
 @(form: Form[String], lrn: LocalReferenceNumber, mode: Mode, activeIndex: Index, identificationType: String)(implicit request: Request[?], messages: Messages)
@@ -50,7 +48,7 @@
                 additionalHtml = insetText(identificationType)
             ),
             inputClass = InputSize.Width20,
-            hint = Some(messages(phaseConfig.activeIdentificationNumberHint))
+            hint = Some(messages("transportMeans.active.identificationNumber.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))

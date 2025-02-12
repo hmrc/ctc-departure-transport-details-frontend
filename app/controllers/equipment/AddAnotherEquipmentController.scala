@@ -16,8 +16,8 @@
 
 package controllers.equipment
 
-import config.{FrontendAppConfig, PhaseConfig}
-import controllers.actions._
+import config.FrontendAppConfig
+import controllers.actions.*
 import forms.AddAnotherFormProvider
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.equipment.EquipmentDomain
@@ -42,7 +42,7 @@ class AddAnotherEquipmentController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherEquipmentView,
   viewModelProvider: AddAnotherEquipmentViewModelProvider
-)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

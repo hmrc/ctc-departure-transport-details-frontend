@@ -16,53 +16,48 @@
 
 package models.journeyDomain.transportMeans
 
-import config.Constants.ModeOfTransport.Rail
 import config.Constants.SecurityType.NoSecurityDetails
-import config.PhaseConfig
-import models.journeyDomain._
-import models.journeyDomain.{JourneyDomainModel, Stage}
+import models.journeyDomain.*
 import models.reference.transportMeans.active.Identification
 import models.reference.{BorderMode, CustomsOffice, Nationality}
-import models.{Index, Mode, Phase, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.external.SecurityDetailsTypePage
 import pages.sections.Section
 import pages.sections.external.OfficesOfTransitSection
 import pages.sections.transportMeans.{ActiveSection, TransportMeansSection}
 import pages.transportMeans.BorderModeOfTransportPage
-import pages.transportMeans.active._
+import pages.transportMeans.active.*
 import play.api.i18n.Messages
 import play.api.mvc.Call
 
-sealed trait TransportMeansActiveDomain extends JourneyDomainModel {
+case class TransportMeansActiveDomain(
+  identification: Identification,
+  identificationNumber: String,
+  nationality: Nationality,
+  customsOffice: CustomsOffice,
+  conveyanceReferenceNumber: Option[String]
+)(val index: Index)
+    extends JourneyDomainModel {
 
-  val index: Index
+  def asString(implicit messages: Messages): String =
+    TransportMeansActiveDomain.asString(identification, identificationNumber)
 
-  def asString(implicit messages: Messages): String
-
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] =
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] =
     page(userAnswers) match {
       case Some(value) => value.route(userAnswers, mode)
       case None        => TransportMeansSection.route(userAnswers, mode)
     }
 
-  override def page(userAnswers: UserAnswers): Option[Section[?]] = Some(ActiveSection(index))
+  override def page(userAnswers: UserAnswers): Option[Section[?]] = Option.when(TransportMeansActiveDomain.hasMultiplicity(userAnswers))(ActiveSection(index))
 }
 
 object TransportMeansActiveDomain {
 
-  def hasMultiplicity(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Boolean =
-    phaseConfig.phase match {
-      case Phase.PostTransition => PostTransitionTransportMeansActiveDomain.hasMultiplicity(userAnswers)
-      case Phase.Transition     => false
-    }
+  def asString(identification: Identification, identificationNumber: String)(implicit messages: Messages): String =
+    s"${identification.asString} - $identificationNumber"
 
-  implicit def userAnswersReader(index: Index)(implicit phaseConfig: PhaseConfig): Read[TransportMeansActiveDomain] =
-    phaseConfig.phase match {
-      case Phase.Transition =>
-        TransitionTransportMeansActiveDomain.userAnswersReader(index)
-      case Phase.PostTransition =>
-        PostTransitionTransportMeansActiveDomain.userAnswersReader(index)
-    }
+  def hasMultiplicity(userAnswers: UserAnswers): Boolean =
+    userAnswers.get(OfficesOfTransitSection).isDefined
 
   def conveyanceReader(index: Index): Read[Option[String]] =
     (
@@ -74,97 +69,6 @@ object TransportMeansActiveDomain {
       case _ =>
         ConveyanceReferenceNumberYesNoPage(index).filterOptionalDependent(identity)(ConveyanceReferenceNumberPage(index).reader)
     }
-}
-
-case class TransitionTransportMeansActiveDomain(
-  nationality: Option[Nationality],
-  identification: Option[Identification],
-  identificationNumber: Option[String],
-  customsOffice: CustomsOffice,
-  conveyanceReferenceNumber: Option[String]
-)(override val index: Index)
-    extends TransportMeansActiveDomain {
-
-  override def asString(implicit messages: Messages): String = this.toString
-
-  override def page(userAnswers: UserAnswers): Option[Section[?]] = None
-}
-
-object TransitionTransportMeansActiveDomain {
-
-  implicit def userAnswersReader(index: Index): Read[TransportMeansActiveDomain] =
-    (
-      nationalityReader(index),
-      identificationReader(index),
-      identificationNumberReader(index),
-      CustomsOfficeActiveBorderPage(index).reader,
-      TransportMeansActiveDomain.conveyanceReader(index)
-    ).map(TransitionTransportMeansActiveDomain.apply(_, _, _, _, _)(index))
-
-  def nationalityReader(index: Index): Read[Option[Nationality]] =
-    BorderModeOfTransportPage.optionalReader.to {
-      case Some(BorderMode(Rail, _)) =>
-        AddNationalityYesNoPage(index).filterOptionalDependent(identity)(NationalityPage(index).reader)
-      case _ =>
-        NationalityPage(index).reader.toOption
-    }
-
-  def identificationReader(index: Index): Read[Option[Identification]] = {
-    lazy val genericReader = UserAnswersReader.readInferred(IdentificationPage(index), InferredIdentificationPage(index))
-    (
-      BorderModeOfTransportPage.optionalReader,
-      NationalityPage(index).optionalReader.apply(_: Pages).map(_.to(_.isDefined))
-    ).to {
-      case (borderMode, registeredCountryIsPresent) =>
-        if (borderMode.exists(_.isRail) || registeredCountryIsPresent) {
-          genericReader.toOption
-        } else {
-          AddIdentificationYesNoPage(index).filterOptionalDependent(identity)(genericReader)
-        }
-    }
-  }
-
-  def identificationNumberReader(index: Index): Read[Option[String]] =
-    (
-      BorderModeOfTransportPage.optionalReader,
-      NationalityPage(index).optionalReader.apply(_: Pages).map(_.to(_.isDefined))
-    ).to {
-      case (borderMode, registeredCountryIsPresent) =>
-        if (borderMode.exists(_.isRail) || registeredCountryIsPresent) {
-          IdentificationNumberPage(index).reader.toOption
-        } else {
-          AddVehicleIdentificationNumberYesNoPage(index).filterOptionalDependent(identity)(IdentificationNumberPage(index).reader)
-        }
-    }
-}
-
-case class PostTransitionTransportMeansActiveDomain(
-  identification: Identification,
-  identificationNumber: String,
-  nationality: Nationality,
-  customsOffice: CustomsOffice,
-  conveyanceReferenceNumber: Option[String]
-)(override val index: Index)
-    extends TransportMeansActiveDomain {
-
-  override def asString(implicit messages: Messages): String =
-    PostTransitionTransportMeansActiveDomain.asString(identification, identificationNumber)
-
-  override def page(userAnswers: UserAnswers): Option[Section[?]] =
-    if (PostTransitionTransportMeansActiveDomain.hasMultiplicity(userAnswers)) {
-      super.page(userAnswers)
-    } else {
-      None
-    }
-}
-
-object PostTransitionTransportMeansActiveDomain {
-
-  def asString(identification: Identification, identificationNumber: String)(implicit messages: Messages): String =
-    s"${identification.asString} - $identificationNumber"
-
-  def hasMultiplicity(userAnswers: UserAnswers): Boolean =
-    userAnswers.get(OfficesOfTransitSection).isDefined
 
   implicit def userAnswersReader(index: Index): Read[TransportMeansActiveDomain] =
     (
@@ -172,6 +76,6 @@ object PostTransitionTransportMeansActiveDomain {
       IdentificationNumberPage(index).reader,
       NationalityPage(index).reader,
       CustomsOfficeActiveBorderPage(index).reader,
-      TransportMeansActiveDomain.conveyanceReader(index)
-    ).map(PostTransitionTransportMeansActiveDomain.apply(_, _, _, _, _)(index))
+      conveyanceReader(index)
+    ).map(TransportMeansActiveDomain.apply(_, _, _, _, _)(index))
 }

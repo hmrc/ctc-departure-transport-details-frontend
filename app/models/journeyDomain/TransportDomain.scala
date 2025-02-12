@@ -17,10 +17,9 @@
 package models.journeyDomain
 
 import config.Constants.ModeOfTransport.Mail
-import config.PhaseConfig
-import models.Phase.{PostTransition, Transition}
 import models.ProcedureType.{Normal, Simplified}
 import models.UserAnswers
+import models.journeyDomain.*
 import models.journeyDomain.additionalInformation.AdditionalInformationsDomain
 import models.journeyDomain.additionalReferences.AdditionalReferencesDomain
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationsAndLimitDomain
@@ -55,7 +54,7 @@ case class TransportDomain(
 
 object TransportDomain {
 
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): UserAnswersReader[TransportDomain] = {
+  implicit val userAnswersReader: UserAnswersReader[TransportDomain] = {
 
     implicit lazy val transportMeansReads: Read[Option[TransportMeansDomain]] =
       InlandModePage.optionalReader.to {
@@ -64,19 +63,13 @@ object TransportDomain {
       }
 
     implicit lazy val additionalReferencesReads: Read[Option[AdditionalReferencesDomain]] =
-      phaseConfig.phase match {
-        case Transition     => UserAnswersReader.none
-        case PostTransition => AddAdditionalReferenceYesNoPage.filterOptionalDependent(identity)(AdditionalReferencesDomain.userAnswersReader)
-      }
+      AddAdditionalReferenceYesNoPage.filterOptionalDependent(identity)(AdditionalReferencesDomain.userAnswersReader)
 
     implicit lazy val additionalInformationsReads: Read[Option[AdditionalInformationsDomain]] =
-      phaseConfig.phase match {
-        case Transition     => UserAnswersReader.none
-        case PostTransition => AddAdditionalInformationYesNoPage.filterOptionalDependent(identity)(AdditionalInformationsDomain.userAnswersReader)
-      }
+      AddAdditionalInformationYesNoPage.filterOptionalDependent(identity)(AdditionalInformationsDomain.userAnswersReader)
 
     (
-      PreRequisitesDomain.userAnswersReader(phaseConfig),
+      PreRequisitesDomain.userAnswersReader,
       AddInlandModeYesNoPage.filterOptionalDependent(identity)(InlandModePage.reader),
       transportMeansReads,
       SupplyChainActorYesNoPage.filterOptionalDependent(identity)(SupplyChainActorsDomain.userAnswersReader),
