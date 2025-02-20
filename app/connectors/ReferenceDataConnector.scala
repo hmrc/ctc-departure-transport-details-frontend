@@ -19,17 +19,17 @@ package connectors
 import cats.Order
 import cats.data.NonEmptySet
 import config.FrontendAppConfig
-import connectors.ReferenceDataConnector.{NoReferenceDataFoundException, Response, Responses}
+import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.reference.additionalInformation.AdditionalInformationCode
 import models.reference.additionalReference.AdditionalReferenceType
 import models.reference.authorisations.AuthorisationType
 import models.reference.equipment.PaymentMethod
 import models.reference.supplyChainActors.SupplyChainActorType
-import models.reference.transportMeans.*
+import models.reference.transportMeans._
 import models.reference.{Country, ModeOfTransport, Nationality}
 import play.api.Logging
 import play.api.http.Status.OK
-import play.api.libs.json.*
+import play.api.libs.json._
 import sttp.model.HeaderNames
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse, StringContextOps}
@@ -39,30 +39,30 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClientV2) extends Logging {
 
-  def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Country]] = {
+  def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Country]] = {
     val url = url"${config.referenceDataUrl}/lists/CountryCodesFullList"
     http
       .get(url)
       .setHeader(version2Header*)
-      .execute[Responses[Country]]
+      .execute[NonEmptySet[Country]]
   }
 
-  def getNationalities()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Nationality]] = {
+  def getNationalities()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[Nationality]] = {
     val url = url"${config.referenceDataUrl}/lists/Nationality"
     http
       .get(url)
       .setHeader(version2Header*)
-      .execute[Responses[Nationality]]
+      .execute[NonEmptySet[Nationality]]
   }
 
-  def getCountryCodesCommonTransitCountry(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[Country]] = {
-    val queryParameters = Seq("data.code" -> code)
-    val url             = url"${config.referenceDataUrl}/lists/CountryCodesCommonTransit"
+  def getCountryCodesCommonTransitCountry(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Country] = {
+    val url = url"${config.referenceDataUrl}/lists/CountryCodesCommonTransit"
     http
       .get(url)
+      .transform(_.withQueryStringParameters("data.code" -> code))
       .setHeader(version2Header*)
-      .execute[Responses[Country]]
-      .map(_.map(_.head))
+      .execute[NonEmptySet[Country]]
+      .map(_.head)
   }
 
   def getTransportModeCodes[T <: ModeOfTransport[T]]()(implicit
@@ -70,97 +70,94 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     hc: HeaderCarrier,
     reads: Reads[T],
     order: Order[T]
-  ): Future[Responses[T]] = {
+  ): Future[NonEmptySet[T]] = {
     val url = url"${config.referenceDataUrl}/lists/TransportModeCode"
     http
       .get(url)
       .setHeader(version2Header*)
-      .execute[Responses[T]]
+      .execute[NonEmptySet[T]]
   }
 
-  def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[departure.Identification]] = {
+  def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[departure.Identification]] = {
     val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
     http
       .get(url)
       .setHeader(version2Header*)
-      .execute[Responses[departure.Identification]]
+      .execute[NonEmptySet[departure.Identification]]
   }
 
-  def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[active.Identification]] = {
+  def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[active.Identification]] = {
     val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
     http
       .get(url)
       .setHeader(version2Header*)
-      .execute[Responses[active.Identification]]
+      .execute[NonEmptySet[active.Identification]]
   }
 
-  def getSupplyChainActorTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[SupplyChainActorType]] = {
+  def getSupplyChainActorTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[SupplyChainActorType]] = {
     val url = url"${config.referenceDataUrl}/lists/AdditionalSupplyChainActorRoleCode"
     http
       .get(url)
       .setHeader(version2Header*)
-      .execute[Responses[SupplyChainActorType]]
+      .execute[NonEmptySet[SupplyChainActorType]]
   }
 
-  def getAuthorisationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[AuthorisationType]] = {
+  def getAuthorisationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[AuthorisationType]] = {
     val url = url"${config.referenceDataUrl}/lists/AuthorisationTypeDeparture"
     http
       .get(url)
       .setHeader(version2Header*)
-      .execute[Responses[AuthorisationType]]
+      .execute[NonEmptySet[AuthorisationType]]
   }
 
-  def getPaymentMethods()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[PaymentMethod]] = {
+  def getPaymentMethods()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[PaymentMethod]] = {
     val url = url"${config.referenceDataUrl}/lists/TransportChargesMethodOfPayment"
     http
       .get(url)
       .setHeader(version2Header*)
-      .execute[Responses[PaymentMethod]]
+      .execute[NonEmptySet[PaymentMethod]]
   }
 
-  def getAdditionalReferences()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[AdditionalReferenceType]] = {
+  def getAdditionalReferences()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[AdditionalReferenceType]] = {
     val url = url"${config.referenceDataUrl}/lists/AdditionalReference"
     http
       .get(url)
       .setHeader(version2Header*)
-      .execute[Responses[AdditionalReferenceType]]
+      .execute[NonEmptySet[AdditionalReferenceType]]
   }
 
-  def getAdditionalInformationCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[AdditionalInformationCode]] = {
+  def getAdditionalInformationCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[NonEmptySet[AdditionalInformationCode]] = {
     val url = url"${config.referenceDataUrl}/lists/AdditionalInformation"
 
     http
       .get(url)
       .setHeader(version2Header*)
-      .execute[Responses[AdditionalInformationCode]]
+      .execute[NonEmptySet[AdditionalInformationCode]]
   }
 
   private def version2Header: Seq[(String, String)] = Seq(
     HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
   )
 
-  implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[Responses[A]] =
+  implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[NonEmptySet[A]] =
     (_: String, url: String, response: HttpResponse) =>
       response.status match {
         case OK =>
           (response.json \ "data").validate[List[A]] match {
             case JsSuccess(Nil, _) =>
-              Left(NoReferenceDataFoundException(url))
+              throw new NoReferenceDataFoundException(url)
             case JsSuccess(head :: tail, _) =>
-              Right(NonEmptySet.of(head, tail*))
+              NonEmptySet.of(head, tail*)
             case JsError(errors) =>
-              Left(JsResultException(errors))
+              throw JsResultException(errors)
           }
         case e =>
           logger.warn(s"[ReferenceDataConnector][responseHandlerGeneric] Reference data call returned $e")
-          Left(Exception(s"[ReferenceDataConnector][responseHandlerGeneric] $e - ${response.body}"))
+          throw new Exception(s"[ReferenceDataConnector][responseHandlerGeneric] $e - ${response.body}")
       }
 }
 
 object ReferenceDataConnector {
-
-  type Responses[T] = Either[Exception, NonEmptySet[T]]
-  type Response[T]  = Either[Exception, T]
 
   class NoReferenceDataFoundException(url: String) extends Exception(s"The reference data call was successful but the response body is empty: $url")
 }
