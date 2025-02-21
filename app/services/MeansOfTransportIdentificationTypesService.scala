@@ -16,8 +16,8 @@
 
 package services
 
-import config.Constants.MeansOfTransportIdentification._
-import config.Constants.ModeOfTransport._
+import config.Constants.MeansOfTransportIdentification.*
+import config.Constants.ModeOfTransport.*
 import connectors.ReferenceDataConnector
 import models.reference.InlandMode
 import models.reference.transportMeans.departure.Identification
@@ -31,6 +31,7 @@ class MeansOfTransportIdentificationTypesService @Inject() (referenceDataConnect
   def getMeansOfTransportIdentificationTypes(inlandMode: Option[InlandMode])(implicit hc: HeaderCarrier): Future[Seq[Identification]] =
     referenceDataConnector
       .getMeansOfTransportIdentificationTypes()
+      .map(_.resolve())
       .map(_.toSeq)
       .map(filter(_, inlandMode))
 

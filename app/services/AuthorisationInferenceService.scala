@@ -17,8 +17,8 @@
 package services
 
 import cats.data.NonEmptySet
-import models.ProcedureType._
-import models.journeyDomain.{ReaderSuccess, _}
+import models.ProcedureType.*
+import models.journeyDomain.{ReaderSuccess, *}
 import models.reference.authorisations.AuthorisationType
 import models.{Index, UserAnswers}
 import pages.authorisationsAndLimit.authorisations.index.{InferredAuthorisationTypePage, IsMandatoryPage}

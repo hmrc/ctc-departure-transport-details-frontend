@@ -33,6 +33,7 @@ class MeansOfTransportIdentificationTypesActiveService @Inject() (referenceDataC
   ): Future[Seq[Identification]] =
     referenceDataConnector
       .getMeansOfTransportIdentificationTypesActive()
+      .map(_.resolve())
       .map(_.toSeq)
       .map(filter(_, index, borderModeOfTransport))
 
