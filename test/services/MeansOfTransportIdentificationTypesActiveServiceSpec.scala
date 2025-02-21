@@ -44,10 +44,9 @@ class MeansOfTransportIdentificationTypesActiveServiceSpec extends SpecBase with
   private val identification4 = Identification("21", "Train number")
   private val identification5 = Identification("11", "Name of a sea-going vessel")
   private val identification6 = Identification("10", "IMO ship identification number")
-  private val identification7 = Identification("99", "Unknown – Valid only during the Transitional Period")
 
   private val identifications =
-    NonEmptySet.of(identification1, identification2, identification3, identification4, identification5, identification6, identification7)
+    NonEmptySet.of(identification1, identification2, identification3, identification4, identification5, identification6)
 
   override def beforeEach(): Unit = {
     reset(mockRefDataConnector)

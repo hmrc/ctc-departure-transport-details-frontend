@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.PhaseConfig
 @import controllers.transportMeans.departure.routes
 @import models.LocalReferenceNumber
 @import models.reference.transportMeans.departure.Identification
@@ -28,8 +27,7 @@
     inputText: InputText,
     insetText: InsetText,
     errorSummary: ErrorSummary,
-    button: Button,
-    phaseConfig: PhaseConfig
+    button: Button
 )
 
 
@@ -53,7 +51,7 @@
                 additionalHtml = viewModel.identification.map(_.asString).map(insetText(_))
             ),
             inputClass = InputSize.Width20,
-            hint = Some(messages(phaseConfig.departureIdentificationNumberHint))
+            hint = Some(messages("transportMeans.departure.meansIdentificationNumber.hint"))
         )
 
         @button(attributes = Map("id" -> "submit"))

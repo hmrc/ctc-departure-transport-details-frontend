@@ -31,4 +31,5 @@ object Constants {
   lazy val maxContainerIdNumberLength: Int      = 17
   lazy val maxAdditionalReferenceNumLength: Int = 70
   lazy val maxAdditionalInfoTextLength: Int     = 512
+  lazy val maxIdentificationNumberLength: Int   = 35
 }

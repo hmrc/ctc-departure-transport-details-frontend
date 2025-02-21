@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.authorisations
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.authorisationsAndLimit.authorisations.index.routes
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.{Mode, UserAnswers}
@@ -31,7 +31,7 @@ import viewModels.ListItem
 class AuthorisationsAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode
-)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit messages: Messages, appConfig: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def listItems: Seq[Either[ListItem, ListItem]] =

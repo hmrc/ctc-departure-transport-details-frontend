@@ -16,10 +16,9 @@
 
 package utils.cyaHelpers
 
-import config.{FrontendAppConfig, PhaseConfig}
-import models.journeyDomain.UserAnswersReader
+import config.FrontendAppConfig
 import models.journeyDomain.Stage.AccessingJourney
-import models.journeyDomain.{JourneyDomainModel, ReaderSuccess}
+import models.journeyDomain.{JourneyDomainModel, ReaderSuccess, UserAnswersReader}
 import models.{Index, LocalReferenceNumber, Mode, RichJsArray, RichOptionalJsArray, UserAnswers}
 import navigation.UserAnswersNavigator
 import pages.QuestionPage
@@ -33,7 +32,7 @@ import viewModels.{Link, ListItem}
 class AnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode
-)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit messages: Messages, appConfig: FrontendAppConfig)
     extends SummaryListRowHelper {
 
   protected def lrn: LocalReferenceNumber = userAnswers.lrn
@@ -114,7 +113,7 @@ class AnswersHelper(
               .map(Left(_))
         }
       case Right(ReaderSuccess(journeyDomainModel, _)) =>
-        journeyDomainModel.routeIfCompleted(userAnswers, mode, AccessingJourney, phaseConfig.phase).map {
+        journeyDomainModel.routeIfCompleted(userAnswers, mode, AccessingJourney).map {
           changeRoute =>
             Right(
               ListItem(

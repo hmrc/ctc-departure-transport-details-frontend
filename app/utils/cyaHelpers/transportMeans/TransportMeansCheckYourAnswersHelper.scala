@@ -16,14 +16,14 @@
 
 package utils.cyaHelpers.transportMeans
 
-import config.{FrontendAppConfig, PhaseConfig}
-import models.journeyDomain.transportMeans.{PostTransitionTransportMeansActiveDomain, TransportMeansActiveDomain, TransportMeansDepartureDomain}
+import config.FrontendAppConfig
+import models.journeyDomain.transportMeans.{TransportMeansActiveDomain, TransportMeansDepartureDomain}
 import models.reference.{BorderMode, InlandMode}
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transportMeans.{ActivesSection, DeparturesSection}
-import pages.transportMeans._
+import pages.transportMeans.*
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import utils.cyaHelpers.AnswersHelper
 import viewModels.Link
@@ -31,19 +31,18 @@ import viewModels.Link
 class TransportMeansCheckYourAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode
-)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit messages: Messages, appConfig: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def activeBorderTransportsMeans: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(ActivesSection)(activeBorderTransportMeans)
 
-  // only used in post-transition (no multiplicity during transition period)
   def activeBorderTransportMeans(index: Index): Option[SummaryListRow] = getAnswerAndBuildSectionRow[TransportMeansActiveDomain](
     formatAnswer = _.asString.toText,
     prefix = "transportMeans.active",
     id = Some(s"change-active-border-transport-means-${index.display}"),
     args = index.display
-  )(PostTransitionTransportMeansActiveDomain.userAnswersReader(index).apply(Nil))
+  )(TransportMeansActiveDomain.userAnswersReader(index).apply(Nil))
 
   def departureTransportsMeans: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(DeparturesSection)(departureTransportMeans)

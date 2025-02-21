@@ -16,7 +16,6 @@
 
 package controllers.transportMeans.active
 
-import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
@@ -46,7 +45,7 @@ class IdentificationController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: IdentificationView,
   service: MeansOfTransportIdentificationTypesActiveService
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

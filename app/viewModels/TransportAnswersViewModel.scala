@@ -16,7 +16,7 @@
 
 package viewModels
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
 import utils.cyaHelpers.TransportAnswersHelper
@@ -34,7 +34,7 @@ object TransportAnswersViewModel {
   ) {
 
     // scalastyle:off method.length
-    def apply(userAnswers: UserAnswers)(implicit messages: Messages, phaseConfig: PhaseConfig): TransportAnswersViewModel = {
+    def apply(userAnswers: UserAnswers)(implicit messages: Messages): TransportAnswersViewModel = {
       val mode = CheckMode
 
       val helper = new TransportAnswersHelper(userAnswers, mode)

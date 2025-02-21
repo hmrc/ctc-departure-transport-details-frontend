@@ -44,7 +44,6 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
   private val identification8  = Identification("20", "Wagon number")
   private val identification9  = Identification("11", "Name of a sea-going vessel")
   private val identification10 = Identification("10", "IMO ship identification number")
-  private val identification11 = Identification("99", "Unknown – Valid only during the Transitional Period")
 
   private val identifications =
     NonEmptySet.of(
@@ -57,8 +56,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
       identification7,
       identification8,
       identification9,
-      identification10,
-      identification11
+      identification10
     )
 
   override def beforeEach(): Unit = {

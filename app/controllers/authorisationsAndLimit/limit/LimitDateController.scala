@@ -16,8 +16,8 @@
 
 package controllers.authorisationsAndLimit.limit
 
-import config.{FrontendAppConfig, PhaseConfig}
-import controllers.actions._
+import config.FrontendAppConfig
+import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.DateFormProvider
 import models.{LocalReferenceNumber, Mode}
@@ -48,7 +48,7 @@ class LimitDateController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: LimitDateView,
   dateTimeService: DateTimeService
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

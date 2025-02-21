@@ -26,7 +26,7 @@ import models.ProcedureType.{Normal, Simplified}
 import models.journeyDomain.Stage
 import models.reference.InlandMode
 import models.reference.authorisations.AuthorisationType
-import models.{Index, Mode, Phase, ProcedureType}
+import models.{Index, Mode, ProcedureType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
@@ -295,11 +295,11 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
     "routeIfCompleted" - {
       "when accessing journey" - {
         "must be auth. ref. number page" in {
-          forAll(arbitrary[AuthorisationType], Gen.alphaNumStr, arbitrary[Mode], arbitrary[Phase], arbitrary[Index]) {
-            (authorisationType, referenceNumber, mode, phase, index) =>
+          forAll(arbitrary[AuthorisationType], Gen.alphaNumStr, arbitrary[Mode], arbitrary[Index]) {
+            (authorisationType, referenceNumber, mode, index) =>
               val authorisation = AuthorisationDomain(authorisationType, referenceNumber)(index)
 
-              authorisation.routeIfCompleted(emptyUserAnswers, mode, Stage.AccessingJourney, phase).value mustBe
+              authorisation.routeIfCompleted(emptyUserAnswers, mode, Stage.AccessingJourney).value mustBe
                 authorisationRoutes.AuthorisationReferenceNumberController.onPageLoad(lrn, mode, index)
           }
         }
@@ -307,25 +307,25 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
       "when completing journey" - {
         "and auth type inferred at next index but auth number isn't" in {
-          forAll(arbitrary[AuthorisationType], Gen.alphaNumStr, arbitrary[Mode], arbitrary[Phase]) {
-            (authorisationType, referenceNumber, mode, phase) =>
+          forAll(arbitrary[AuthorisationType], Gen.alphaNumStr, arbitrary[Mode]) {
+            (authorisationType, referenceNumber, mode) =>
               val authorisation = AuthorisationDomain(authorisationType, referenceNumber)(Index(0))
               val userAnswers = emptyUserAnswers
                 .setValue(InferredAuthorisationTypePage(Index(0)), authorisationType)
                 .setValue(AuthorisationReferenceNumberPage(Index(0)), referenceNumber)
                 .setValue(InferredAuthorisationTypePage(Index(1)), authorisationType)
 
-              authorisation.routeIfCompleted(userAnswers, mode, Stage.CompletingJourney, phase).value mustBe
+              authorisation.routeIfCompleted(userAnswers, mode, Stage.CompletingJourney).value mustBe
                 authorisationRoutes.AuthorisationReferenceNumberController.onPageLoad(lrn, mode, Index(1))
           }
         }
 
         "and nothing at next index" in {
-          forAll(arbitrary[AuthorisationType], Gen.alphaNumStr, arbitrary[Mode], arbitrary[Phase]) {
-            (authorisationType, referenceNumber, mode, phase) =>
+          forAll(arbitrary[AuthorisationType], Gen.alphaNumStr, arbitrary[Mode]) {
+            (authorisationType, referenceNumber, mode) =>
               val authorisation = AuthorisationDomain(authorisationType, referenceNumber)(Index(0))
 
-              authorisation.routeIfCompleted(emptyUserAnswers, mode, Stage.CompletingJourney, phase).value mustBe
+              authorisation.routeIfCompleted(emptyUserAnswers, mode, Stage.CompletingJourney).value mustBe
                 authorisationsRoutes.AddAnotherAuthorisationController.onPageLoad(lrn, mode)
           }
         }

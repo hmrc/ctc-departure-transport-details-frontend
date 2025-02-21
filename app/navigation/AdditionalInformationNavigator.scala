@@ -16,7 +16,7 @@
 
 package navigation
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.additionalInformation.AdditionalInformationDomain
 import models.{CheckMode, Index, Mode, NormalMode}
@@ -24,8 +24,7 @@ import models.{CheckMode, Index, Mode, NormalMode}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class AdditionalInformationNavigatorProviderImpl @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
-    extends AdditionalInformationNavigatorProvider {
+class AdditionalInformationNavigatorProviderImpl @Inject() (implicit appConfig: FrontendAppConfig) extends AdditionalInformationNavigatorProvider {
 
   override def apply(mode: Mode, index: Index): UserAnswersNavigator =
     mode match {
@@ -39,8 +38,7 @@ trait AdditionalInformationNavigatorProvider {
 }
 
 class AdditionalInformationNavigator(override val mode: Mode, index: Index)(implicit
-  override val appConfig: FrontendAppConfig,
-  override val phaseConfig: PhaseConfig
+  override val appConfig: FrontendAppConfig
 ) extends UserAnswersNavigator {
 
   override type T = AdditionalInformationDomain
