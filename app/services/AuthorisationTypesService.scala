@@ -54,5 +54,8 @@ class AuthorisationTypesService @Inject() (referenceDataConnector: ReferenceData
   }
 
   def getAuthorisationTypes()(implicit hc: HeaderCarrier): Future[NonEmptySet[AuthorisationType]] =
-    referenceDataConnector.getAuthorisationTypes()
+    referenceDataConnector
+      .getAuthorisationTypes()
+      .map(_.resolve())
+
 }

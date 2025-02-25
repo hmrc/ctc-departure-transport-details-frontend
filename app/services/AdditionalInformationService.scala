@@ -16,7 +16,7 @@
 
 package services
 
-import config.Constants.AdditionalInformation._
+import config.Constants.AdditionalInformation.*
 import connectors.ReferenceDataConnector
 import models.reference.additionalInformation.AdditionalInformationCode
 import models.{Index, RichOptionalJsArray, SelectableList, UserAnswers}
@@ -33,6 +33,7 @@ class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceD
   def getAdditionalInformationCodes(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalInformationCode]] =
     referenceDataConnector
       .getAdditionalInformationCodes()
+      .map(_.resolve())
       .map {
         additionalInformationList =>
           val isConsignmentCountryOfDestinationInCL009 = userAnswers.get(ItemsDestinationCountryInCL009Page).contains(true)

@@ -17,7 +17,6 @@
 package services
 
 import connectors.ReferenceDataConnector
-import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import models.SelectableList
 import models.reference.Country
 import uk.gov.hmrc.http.HeaderCarrier
@@ -30,15 +29,12 @@ class CountriesService @Inject() (referenceDataConnector: ReferenceDataConnector
   def getCountries()(implicit hc: HeaderCarrier): Future[SelectableList[Country]] =
     referenceDataConnector
       .getCountries()
-      .map(SelectableList(_))
+      .map(_.resolve())
+      .map(_.toSelectableList)
 
   def isInCL009(country: Country)(implicit hc: HeaderCarrier): Future[Boolean] =
     referenceDataConnector
       .getCountryCodesCommonTransitCountry(country.code.code)
-      .map {
-        _ => true
-      }
-      .recover {
-        case _: NoReferenceDataFoundException => false
-      }
+      .map(_.isDefined)
+
 }

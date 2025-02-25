@@ -53,7 +53,7 @@ class PaymentMethodsServiceSpec extends SpecBase with BeforeAndAfterEach {
     "getPaymentMethods" - {
       "must return a list of payment methods" in {
         when(mockRefDataConnector.getPaymentMethods()(any(), any()))
-          .thenReturn(Future.successful(paymentMethods))
+          .thenReturn(Future.successful(Right(paymentMethods)))
 
         service.getPaymentMethods().futureValue mustBe
           Seq(paymentMethod1, paymentMethod2, paymentMethod3, paymentMethod7, paymentMethod4, paymentMethod5, paymentMethod6)

@@ -16,7 +16,7 @@
 
 package services
 
-import config.Constants.ModeOfTransport._
+import config.Constants.ModeOfTransport.*
 import connectors.ReferenceDataConnector
 import models.reference.{BorderMode, InlandMode}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,12 +29,14 @@ class TransportModeCodesService @Inject() (referenceDataConnector: ReferenceData
   def getInlandModes()(implicit hc: HeaderCarrier): Future[Seq[InlandMode]] =
     referenceDataConnector
       .getTransportModeCodes[InlandMode]()
+      .map(_.resolve())
       .map(_.toSeq)
       .map(_.filterNot(_.code == Unknown))
 
   def getBorderModes()(implicit hc: HeaderCarrier): Future[Seq[BorderMode]] =
     referenceDataConnector
       .getTransportModeCodes[BorderMode]()
+      .map(_.resolve())
       .map(_.toSeq)
       .map(_.filter(_.isOneOf(Maritime, Rail, Road, Air)))
 }
