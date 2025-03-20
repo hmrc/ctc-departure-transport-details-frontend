@@ -16,7 +16,7 @@
 
 package views.preRequisites
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import models.reference.Country
 import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
@@ -27,7 +27,9 @@ import views.html.preRequisites.CountryOfDispatchView
 
 class CountryOfDispatchViewSpec extends InputSelectViewBehaviours[Country] {
 
-  override def form: Form[Country] = new SelectableFormProvider()(prefix, SelectableList(values))
+  val formProvider                 = new CountryFormProvider()
+  override val field               = formProvider.field
+  override def form: Form[Country] = formProvider(prefix, SelectableList(values))
 
   override def applyView(form: Form[Country]): HtmlFormat.Appendable =
     injector.instanceOf[CountryOfDispatchView].apply(form, lrn, values, NormalMode)(fakeRequest, messages)

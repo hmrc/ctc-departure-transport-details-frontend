@@ -16,7 +16,7 @@
 
 package views.transportMeans.active
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CustomsOfficeFormProvider
 import models.reference.CustomsOffice
 import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
@@ -27,7 +27,9 @@ import views.html.transportMeans.active.CustomsOfficeActiveBorderView
 
 class CustomsOfficeActiveBorderViewSpec extends InputSelectViewBehaviours[CustomsOffice] {
 
-  override def form: Form[CustomsOffice] = new SelectableFormProvider()(prefix, SelectableList(values))
+  val formProvider                       = new CustomsOfficeFormProvider()
+  override val field: String             = formProvider.field
+  override def form: Form[CustomsOffice] = formProvider(prefix, SelectableList(values))
 
   override def applyView(form: Form[CustomsOffice]): HtmlFormat.Appendable =
     injector.instanceOf[CustomsOfficeActiveBorderView].apply(form, lrn, values, NormalMode, activeIndex)(fakeRequest, messages)

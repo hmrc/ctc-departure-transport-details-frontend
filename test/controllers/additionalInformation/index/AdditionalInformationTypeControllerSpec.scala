@@ -17,7 +17,7 @@
 package controllers.additionalInformation.index
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.AdditionalInformationTypeFormProvider
 import generators.Generators
 import models.{NormalMode, SelectableList}
 import navigation.AdditionalInformationNavigatorProvider
@@ -39,7 +39,8 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
   private val additionalInformationCode2    = arbitraryAdditionalInformationCode.arbitrary.sample.get
   private val additionalInformationCodeList = SelectableList(Seq(additionalInformationCode1, additionalInformationCode2))
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new AdditionalInformationTypeFormProvider()
+  private val field        = formProvider.field
   private val form         = formProvider("additionalInformation.index.additionalInformationType", additionalInformationCodeList)
   private val mode         = NormalMode
 
@@ -81,7 +82,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> additionalInformationCode1.value))
+      val filledForm = form.bind(Map(field -> additionalInformationCode1.value))
 
       val view = injector.instanceOf[AdditionalInformationTypeView]
 
@@ -99,7 +100,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, additionalInformationTypeRoute)
-        .withFormUrlEncodedBody(("value", additionalInformationCode1.value))
+        .withFormUrlEncodedBody((field, additionalInformationCode1.value))
 
       val result = route(app, request).value
 
@@ -113,8 +114,8 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
       when(mockAdditionalInformationService.getAdditionalInformationCodes(any())(any())).thenReturn(Future.successful(additionalInformationCodeList))
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, additionalInformationTypeRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, additionalInformationTypeRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -143,7 +144,7 @@ class AdditionalInformationTypeControllerSpec extends SpecBase with AppWithDefau
       setNoExistingUserAnswers()
 
       val request = FakeRequest(POST, additionalInformationTypeRoute)
-        .withFormUrlEncodedBody(("value", additionalInformationCode1.value))
+        .withFormUrlEncodedBody((field, additionalInformationCode1.value))
 
       val result = route(app, request).value
 
