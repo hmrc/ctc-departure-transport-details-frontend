@@ -467,7 +467,7 @@ authorisationsAndLimit.limit.limitDate.error.invalid.all = The arrival date must
 authorisationsAndLimit.limit.limitDate.error.invalid.multiple = The arrival date must be a real date
 authorisationsAndLimit.limit.limitDate.error.invalid.day = The arrival day must only include numbers 1 to {0}
 authorisationsAndLimit.limit.limitDate.error.invalid.month = The arrival month must only include numbers 1 to 12
-authorisationsAndLimit.limit.limitDate.error.invalid.year = The arrival year must must be a real year
+authorisationsAndLimit.limit.limitDate.error.invalid.year = The arrival year must be a real year
 authorisationsAndLimit.limit.limitDate.error.min.date = The arrival date must be today or in the future
 authorisationsAndLimit.limit.limitDate.error.max.date = The arrival date must be before {0}
 
