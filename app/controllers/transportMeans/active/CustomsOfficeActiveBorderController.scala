@@ -19,7 +19,7 @@ package controllers.transportMeans.active
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CustomsOfficeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.active.CustomsOfficeActiveBorderPage
@@ -38,7 +38,7 @@ class CustomsOfficeActiveBorderController @Inject() (
   sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CustomsOfficeFormProvider,
   customsOfficeService: CustomsOfficesService,
   val controllerComponents: MessagesControllerComponents,
   view: CustomsOfficeActiveBorderView

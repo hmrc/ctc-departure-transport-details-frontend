@@ -16,7 +16,7 @@
 
 package views.additionalInformation.index
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.AdditionalInformationTypeFormProvider
 import models.reference.additionalInformation.AdditionalInformationCode
 import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
@@ -27,7 +27,9 @@ import views.html.additionalInformation.index.AdditionalInformationTypeView
 
 class AdditionalInformationTypeViewSpec extends InputSelectViewBehaviours[AdditionalInformationCode] {
 
-  override def form: Form[AdditionalInformationCode] = new SelectableFormProvider().apply(prefix, SelectableList(values))
+  val formProvider                                   = new AdditionalInformationTypeFormProvider()
+  override val field: String                         = formProvider.field
+  override def form: Form[AdditionalInformationCode] = new AdditionalInformationTypeFormProvider().apply(prefix, SelectableList(values))
 
   override def applyView(form: Form[AdditionalInformationCode]): HtmlFormat.Appendable =
     injector

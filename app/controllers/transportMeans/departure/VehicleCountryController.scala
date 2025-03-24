@@ -19,7 +19,7 @@ package controllers.transportMeans.departure
 import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansDepartureNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.departure.VehicleCountryPage
@@ -38,7 +38,7 @@ class VehicleCountryController @Inject() (
   sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansDepartureNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CountryFormProvider,
   service: NationalitiesService,
   val controllerComponents: MessagesControllerComponents,
   view: VehicleCountryView
