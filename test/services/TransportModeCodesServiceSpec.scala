@@ -53,7 +53,7 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
       "must return a list of sorted inland modes excluding Unknown" in {
         when(mockRefDataConnector.getTransportModeCodes[InlandMode]()(any(), any(), any(), any()))
-          .thenReturn(Future.successful(inlandModes))
+          .thenReturn(Future.successful(Right(inlandModes)))
 
         service.getInlandModes().futureValue mustBe
           Seq(inlandMode7, inlandMode6, inlandMode5, inlandMode4, inlandMode3, inlandMode2, inlandMode1)
@@ -76,7 +76,7 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
       "must return the agreed list of sorted border modes" in {
         when(mockRefDataConnector.getTransportModeCodes[BorderMode]()(any(), any(), any(), any()))
-          .thenReturn(Future.successful(borderModes))
+          .thenReturn(Future.successful(Right(borderModes)))
 
         service.getBorderModes().futureValue mustBe
           Seq(borderMode7, borderMode6, borderMode5, borderMode4)

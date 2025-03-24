@@ -61,7 +61,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
 
         "when user answers contains no information about consignment or item countries of destination" in {
           when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
-            .thenReturn(Future.successful(additionalInformationCodes))
+            .thenReturn(Future.successful(Right(additionalInformationCodes)))
 
           service.getAdditionalInformationCodes(emptyUserAnswers).futureValue mustBe expectedResult
 
@@ -70,7 +70,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
 
         "when consignment country of destination is not in CL009" in {
           when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
-            .thenReturn(Future.successful(additionalInformationCodes))
+            .thenReturn(Future.successful(Right(additionalInformationCodes)))
 
           val userAnswers = emptyUserAnswers.setValue(ItemsDestinationCountryInCL009Page, false)
 
@@ -81,7 +81,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
 
         "when no item countries of destination are in CL009" in {
           when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
-            .thenReturn(Future.successful(additionalInformationCodes))
+            .thenReturn(Future.successful(Right(additionalInformationCodes)))
 
           val userAnswers = emptyUserAnswers
             .setValue(ItemCountryOfDestinationInCL009Page(Index(0)), false)
@@ -99,7 +99,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
 
         "when consignment country of destination is in CL009" in {
           when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
-            .thenReturn(Future.successful(additionalInformationCodes))
+            .thenReturn(Future.successful(Right(additionalInformationCodes)))
 
           val userAnswers = emptyUserAnswers.setValue(ItemsDestinationCountryInCL009Page, true)
 
@@ -110,7 +110,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
 
         "when one item country of destination is in CL009" in {
           when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
-            .thenReturn(Future.successful(additionalInformationCodes))
+            .thenReturn(Future.successful(Right(additionalInformationCodes)))
 
           val userAnswers = emptyUserAnswers
             .setValue(ItemCountryOfDestinationInCL009Page(Index(0)), true)
@@ -124,7 +124,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
 
         "when all item countries of destination are in CL009" in {
           when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
-            .thenReturn(Future.successful(additionalInformationCodes))
+            .thenReturn(Future.successful(Right(additionalInformationCodes)))
 
           val userAnswers = emptyUserAnswers
             .setValue(ItemCountryOfDestinationInCL009Page(Index(0)), true)

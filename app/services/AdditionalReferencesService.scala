@@ -29,5 +29,6 @@ class AdditionalReferencesService @Inject() (referenceDataConnector: ReferenceDa
   def getAdditionalReferences()(implicit hc: HeaderCarrier): Future[SelectableList[AdditionalReferenceType]] =
     referenceDataConnector
       .getAdditionalReferences()
+      .map(_.resolve())
       .map(SelectableList(_))
 }

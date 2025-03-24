@@ -64,7 +64,7 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         "must return the full sorted list of authorisation types" in {
           when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
-            .thenReturn(Future.successful(authorisationTypes))
+            .thenReturn(Future.successful(Right(authorisationTypes)))
 
           val userAnswers = emptyUserAnswers
 
@@ -78,7 +78,7 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
         "must filter out that type" - {
           "when it has been inferred" in {
             when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
-              .thenReturn(Future.successful(authorisationTypes))
+              .thenReturn(Future.successful(Right(authorisationTypes)))
 
             val userAnswers = emptyUserAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), c521)
@@ -90,7 +90,7 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
           "when it has not been inferred" in {
             when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
-              .thenReturn(Future.successful(authorisationTypes))
+              .thenReturn(Future.successful(Right(authorisationTypes)))
 
             val userAnswers = emptyUserAnswers
               .setValue(AuthorisationTypePage(Index(0)), c521)
@@ -105,7 +105,7 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "when all 3 auth types are in user answers" - {
         "must return empty list" in {
           when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
-            .thenReturn(Future.successful(authorisationTypes))
+            .thenReturn(Future.successful(Right(authorisationTypes)))
 
           val userAnswers = emptyUserAnswers
             .setValue(InferredAuthorisationTypePage(Index(0)), c521)
@@ -121,7 +121,7 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
       "when one auth type has been added and we are that index" - {
         "must return all 3 auth types" in {
           when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
-            .thenReturn(Future.successful(authorisationTypes))
+            .thenReturn(Future.successful(Right(authorisationTypes)))
 
           val userAnswers = emptyUserAnswers
             .setValue(InferredAuthorisationTypePage(Index(0)), c524)
@@ -136,7 +136,7 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
     "getAll" - {
       "must return all authorisation types" in {
         when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
-          .thenReturn(Future.successful(authorisationTypes))
+          .thenReturn(Future.successful(Right(authorisationTypes)))
 
         service.getAuthorisationTypes().futureValue mustBe NonEmptySet.of(c521, c523, c524)
 

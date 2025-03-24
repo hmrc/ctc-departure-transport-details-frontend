@@ -53,7 +53,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
       "must return a list of sorted countries" in {
 
         when(mockRefDataConnector.getCountries()(any(), any()))
-          .thenReturn(Future.successful(countries))
+          .thenReturn(Future.successful(Right(countries)))
 
         service.getCountries().futureValue mustBe
           SelectableList(Seq(country2, country3, country1))
@@ -70,7 +70,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
               beforeEach()
 
               when(mockRefDataConnector.getCountryCodesCommonTransitCountry(any())(any(), any()))
-                .thenReturn(Future.successful(country))
+                .thenReturn(Future.successful(Right(country)))
 
               val result = service.isInCL009(country).futureValue
 
@@ -86,7 +86,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
           forAll(arbitrary[Country]) {
             country =>
               when(mockRefDataConnector.getCountryCodesCommonTransitCountry(any())(any(), any()))
-                .thenReturn(Future.failed(new NoReferenceDataFoundException("")))
+                .thenReturn(Future.successful(Left(new NoReferenceDataFoundException(""))))
 
               val result = service.isInCL009(country).futureValue
 
@@ -100,7 +100,7 @@ class CountriesServiceSpec extends SpecBase with BeforeAndAfterEach with Generat
           forAll(arbitrary[Country]) {
             country =>
               when(mockRefDataConnector.getCountryCodesCommonTransitCountry(any())(any(), any()))
-                .thenReturn(Future.failed(new Throwable("")))
+                .thenReturn(Future.successful(Left(new Throwable(""))))
 
               val result = service.isInCL009(country)
 

@@ -28,5 +28,6 @@ class PaymentMethodsService @Inject() (referenceDataConnector: ReferenceDataConn
   def getPaymentMethods()(implicit hc: HeaderCarrier): Future[Seq[PaymentMethod]] =
     referenceDataConnector
       .getPaymentMethods()
+      .map(_.resolve())
       .map(_.toSeq)
 }
