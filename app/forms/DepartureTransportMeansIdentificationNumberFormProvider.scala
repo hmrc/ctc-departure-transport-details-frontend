@@ -16,21 +16,21 @@
 
 package forms
 
-import config.PhaseConfig
+import Constants.maxIdentificationNumberLength
 import forms.mappings.Mappings
 import models.domain.StringFieldRegex.alphaNumericRegex
 import play.api.data.Form
 
 import javax.inject.Inject
 
-class DepartureTransportMeansIdentificationNumberFormProvider @Inject() (phaseConfig: PhaseConfig) extends Mappings {
+class DepartureTransportMeansIdentificationNumberFormProvider @Inject() extends Mappings {
 
   def apply(prefix: String): Form[String] =
     Form(
       "value" -> adaptedText(s"$prefix.error.required")(_.toUpperCase)
         .verifying(
           StopOnFirstFail[String](
-            maxLength(phaseConfig.values.maxIdentificationNumberLength, phaseConfig.lengthError(prefix)),
+            maxLength(maxIdentificationNumberLength, s"$prefix.error.length"),
             regexp(alphaNumericRegex, s"$prefix.error.invalid")
           )
         )

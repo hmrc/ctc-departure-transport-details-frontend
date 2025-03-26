@@ -16,7 +16,7 @@
 
 package navigation
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
 import models.{CheckMode, Index, Mode, NormalMode}
@@ -24,8 +24,7 @@ import models.{CheckMode, Index, Mode, NormalMode}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class TransportMeansDepartureNavigatorProviderImpl @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
-    extends TransportMeansDepartureNavigatorProvider {
+class TransportMeansDepartureNavigatorProviderImpl @Inject() (implicit appConfig: FrontendAppConfig) extends TransportMeansDepartureNavigatorProvider {
 
   override def apply(mode: Mode, index: Index): UserAnswersNavigator =
     mode match {
@@ -39,8 +38,7 @@ trait TransportMeansDepartureNavigatorProvider {
 }
 
 class TransportMeansDepartureNavigator(override val mode: Mode, index: Index)(implicit
-  override val appConfig: FrontendAppConfig,
-  override val phaseConfig: PhaseConfig
+  override val appConfig: FrontendAppConfig
 ) extends UserAnswersNavigator {
 
   override type T = TransportMeansDepartureDomain

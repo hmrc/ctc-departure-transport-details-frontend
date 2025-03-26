@@ -16,11 +16,11 @@
 
 package utils.cyaHelpers.equipment
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.equipment.index.routes
 import models.journeyDomain.equipment.seal.SealDomain
 import models.{Index, Mode, UserAnswers}
-import pages.equipment.index._
+import pages.equipment.index.*
 import pages.sections.equipment.SealsSection
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -31,7 +31,7 @@ class EquipmentAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   equipmentIndex: Index
-)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit messages: Messages, appConfig: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def containerIdentificationNumberYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](

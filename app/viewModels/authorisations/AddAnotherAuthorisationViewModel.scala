@@ -16,7 +16,7 @@
 
 package viewModels.authorisations
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.authorisationsAndLimit.authorisations.routes
 import models.reference.authorisations.AuthorisationType
 import models.{Mode, UserAnswers}
@@ -40,7 +40,7 @@ case class AddAnotherAuthorisationViewModel(
 
 object AddAnotherAuthorisationViewModel {
 
-  class AddAnotherAuthorisationViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
+  class AddAnotherAuthorisationViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig) {
 
     def apply(
       userAnswers: UserAnswers,

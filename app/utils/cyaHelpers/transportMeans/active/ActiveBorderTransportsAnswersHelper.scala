@@ -16,23 +16,21 @@
 
 package utils.cyaHelpers.transportMeans.active
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.transportMeans.active.routes
-import models.journeyDomain.transportMeans.{PostTransitionTransportMeansActiveDomain, TransportMeansActiveDomain}
+import models.journeyDomain.transportMeans.TransportMeansActiveDomain
 import models.{Index, Mode, UserAnswers}
 import pages.sections.transportMeans.ActivesSection
-import pages.transportMeans.active._
+import pages.transportMeans.active.*
 import play.api.i18n.Messages
 import utils.cyaHelpers.AnswersHelper
 import viewModels.ListItem
 
 class ActiveBorderTransportsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(implicit
   messages: Messages,
-  config: FrontendAppConfig,
-  phaseConfig: PhaseConfig
+  config: FrontendAppConfig
 ) extends AnswersHelper(userAnswers, mode) {
 
-  // only used in post-transition (no multiplicity during transition period)
   def listItems: Seq[Either[ListItem, ListItem]] = {
     def nameWhenInProgress(index: Index): Option[String] =
       (userAnswers.get(IdentificationPage(index)), userAnswers.get(IdentificationNumberPage(index))) match {
@@ -48,7 +46,7 @@ class ActiveBorderTransportsAnswersHelper(userAnswers: UserAnswers, mode: Mode)(
           nameWhenComplete = _.asString,
           nameWhenInProgress = nameWhenInProgress(index),
           removeRoute = Some(routes.ConfirmRemoveBorderTransportController.onPageLoad(lrn, mode, index))
-        )(PostTransitionTransportMeansActiveDomain.userAnswersReader(index).apply(Nil))
+        )(TransportMeansActiveDomain.userAnswersReader(index).apply(Nil))
     }
   }
 

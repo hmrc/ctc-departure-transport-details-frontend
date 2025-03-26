@@ -16,7 +16,6 @@
 
 package generators
 
-import config.PhaseConfig
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.OpsError.ReaderError
 import models.journeyDomain.additionalInformation.AdditionalInformationDomain
@@ -35,7 +34,7 @@ import org.scalacheck.{Arbitrary, Gen}
 trait UserAnswersGenerator extends UserAnswersEntryGenerators {
   self: Generators =>
 
-  implicit def arbitraryUserAnswers(implicit phaseConfig: PhaseConfig): Arbitrary[UserAnswers] =
+  implicit val arbitraryUserAnswers: Arbitrary[UserAnswers] =
     Arbitrary {
       for {
         lrn             <- arbitrary[LocalReferenceNumber]
@@ -67,25 +66,25 @@ trait UserAnswersGenerator extends UserAnswersEntryGenerators {
     rec(initialUserAnswers)
   }
 
-  def arbitraryTransportAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
+  def arbitraryTransportAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[TransportDomain](userAnswers)
 
-  def arbitraryPreRequisitesAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
+  def arbitraryPreRequisitesAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[PreRequisitesDomain](userAnswers)(
-      PreRequisitesDomain.userAnswersReader(phaseConfig).apply(Nil)
+      PreRequisitesDomain.userAnswersReader.apply(Nil)
     )
 
-  def arbitraryTransportMeansAnswers(userAnswers: UserAnswers)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
+  def arbitraryTransportMeansAnswers(userAnswers: UserAnswers): Gen[UserAnswers] =
     buildUserAnswers[TransportMeansDomain](userAnswers)(
       TransportMeansDomain.userAnswersReader.apply(Nil)
     )
 
-  def arbitraryTransportMeansDepartureAnswers(userAnswers: UserAnswers, index: Index)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
+  def arbitraryTransportMeansDepartureAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
     buildUserAnswers[TransportMeansDepartureDomain](userAnswers)(
       TransportMeansDepartureDomain.userAnswersReader(index).apply(Nil)
     )
 
-  def arbitraryTransportMeansActiveAnswers(userAnswers: UserAnswers, index: Index)(implicit phaseConfig: PhaseConfig): Gen[UserAnswers] =
+  def arbitraryTransportMeansActiveAnswers(userAnswers: UserAnswers, index: Index): Gen[UserAnswers] =
     buildUserAnswers[TransportMeansActiveDomain](userAnswers)(
       TransportMeansActiveDomain.userAnswersReader(index).apply(Nil)
     )

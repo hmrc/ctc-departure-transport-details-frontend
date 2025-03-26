@@ -20,7 +20,7 @@ import models.journeyDomain._
 import models.journeyDomain.Stage.{AccessingJourney, CompletingJourney}
 import models.journeyDomain.{JourneyDomainModel, Stage}
 import models.reference.supplyChainActors.SupplyChainActorType
-import models.{Index, Mode, Phase, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import pages.supplyChainActors.index.{IdentificationNumberPage, SupplyChainActorTypePage}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -34,7 +34,7 @@ case class SupplyChainActorDomain(
   def asString(implicit messages: Messages): String =
     SupplyChainActorDomain.asString(role, identification)
 
-  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage, phase: Phase): Option[Call] = Some {
+  override def routeIfCompleted(userAnswers: UserAnswers, mode: Mode, stage: Stage): Option[Call] = Some {
     stage match {
       case AccessingJourney =>
         controllers.supplyChainActors.index.routes.SupplyChainActorTypeController.onPageLoad(userAnswers.lrn, mode, index)

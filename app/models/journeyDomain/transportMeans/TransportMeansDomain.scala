@@ -16,18 +16,15 @@
 
 package models.journeyDomain.transportMeans
 
-import config.Constants.ModeOfTransport.Rail
 import config.Constants.SecurityType.NoSecurityDetails
-import config.PhaseConfig
-import models.journeyDomain.{JourneyDomainModel, _}
-import models.journeyDomain.transportMeans.PostTransitionTransportMeansDomain.{borderModeOfTransportReader, transportMeansActiveReader}
+import models.journeyDomain.transportMeans.TransportMeansDomain.{borderModeOfTransportReader, transportMeansActiveReader}
+import models.journeyDomain.{JourneyDomainModel, *}
 import models.reference.BorderMode
-import models.{Index, OptionalBoolean, Phase, UserAnswers}
-import pages.external.{OfficeOfDepartureInCL010Page, SecurityDetailsTypePage}
-import pages.preRequisites.ContainerIndicatorPage
+import models.{Index, UserAnswers}
+import pages.external.SecurityDetailsTypePage
 import pages.sections.Section
 import pages.sections.transportMeans.TransportMeansSection
-import pages.transportMeans._
+import pages.transportMeans.*
 
 sealed trait TransportMeansDomain extends JourneyDomainModel {
 
@@ -36,83 +33,17 @@ sealed trait TransportMeansDomain extends JourneyDomainModel {
 
 object TransportMeansDomain {
 
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansDomain] =
-    phaseConfig.phase match {
-      case Phase.Transition =>
-        TransitionTransportMeansDomain.userAnswersReader
-      case Phase.PostTransition =>
-        UserAnswersReader
-          .success {
-            ua => PostTransitionTransportMeansActiveDomain.hasMultiplicity(ua)
-          }
-          .to {
-            case true =>
-              PostTransitionTransportMeansMultipleActiveDomain.userAnswersReader
-            case false =>
-              PostTransitionTransportMeansSingleActiveDomain.userAnswersReader
-          }
-    }
-}
-
-case class TransitionTransportMeansDomain(
-  transportMeansDepartureList: Option[TransportMeansDepartureListDomain],
-  borderModeOfTransport: Option[BorderMode],
-  transportMeansActiveList: Option[TransportMeansActiveDomain]
-) extends TransportMeansDomain
-
-object TransitionTransportMeansDomain {
-
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansDomain] = {
-
-    lazy val transportMeansDepartureReader: Read[Option[TransportMeansDepartureListDomain]] =
-      ContainerIndicatorPage.optionalReader.to {
-        case Some(OptionalBoolean.yes) =>
-          AddDepartureTransportMeansYesNoPage
-            .filterOptionalDependent(identity) {
-              TransportMeansDepartureListDomain.userAnswersReader
-            }
-        case _ =>
-          TransportMeansDepartureListDomain.userAnswersReader.toOption
+  implicit val userAnswersReader: Read[TransportMeansDomain] =
+    UserAnswersReader
+      .success {
+        ua => TransportMeansActiveDomain.hasMultiplicity(ua)
       }
-
-    lazy val borderModeOfTransportReader: Read[Option[BorderMode]] = {
-      lazy val optionalReader: Read[Option[BorderMode]] = AddBorderModeOfTransportYesNoPage.filterOptionalDependent(identity) {
-        BorderModeOfTransportPage.reader
-      }
-
-      OfficeOfDepartureInCL010Page.reader.to {
+      .to {
         case true =>
-          optionalReader
+          TransportMeansMultipleActiveDomain.userAnswersReader
         case false =>
-          SecurityDetailsTypePage.reader.to {
-            case NoSecurityDetails => optionalReader
-            case _                 => BorderModeOfTransportPage.reader.toOption
-          }
+          TransportMeansSingleActiveDomain.userAnswersReader
       }
-    }
-
-    lazy val transportMeansActiveReader: Read[Option[TransportMeansActiveDomain]] =
-      BorderModeOfTransportPage.optionalReader.to {
-        case Some(borderModeOfTransport) if borderModeOfTransport.code != Rail =>
-          TransportMeansActiveDomain.userAnswersReader(Index(0)).toOption
-        case _ =>
-          AddActiveBorderTransportMeansYesNoPage
-            .filterOptionalDependent(identity) {
-              TransportMeansActiveDomain.userAnswersReader(Index(0))
-            }
-      }
-
-    (
-      transportMeansDepartureReader,
-      borderModeOfTransportReader,
-      transportMeansActiveReader
-    ).map(TransitionTransportMeansDomain.apply)
-  }
-}
-
-sealed trait PostTransitionTransportMeansDomain extends TransportMeansDomain
-
-object PostTransitionTransportMeansDomain {
 
   lazy val borderModeOfTransportReader: Read[Option[BorderMode]] =
     SecurityDetailsTypePage.reader.to {
@@ -127,36 +58,37 @@ object PostTransitionTransportMeansDomain {
       case NoSecurityDetails => AddActiveBorderTransportMeansYesNoPage.filterOptionalDependent(identity)(read)
       case _                 => read.toOption
     }
+
 }
 
-case class PostTransitionTransportMeansMultipleActiveDomain(
+case class TransportMeansMultipleActiveDomain(
   transportMeansDepartureList: TransportMeansDepartureListDomain,
   borderModeOfTransport: Option[BorderMode],
   transportMeansActiveList: Option[TransportMeansActiveListDomain]
-) extends PostTransitionTransportMeansDomain
+) extends TransportMeansDomain
 
-object PostTransitionTransportMeansMultipleActiveDomain {
+object TransportMeansMultipleActiveDomain {
 
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansDomain] =
+  implicit val userAnswersReader: Read[TransportMeansDomain] =
     (
       TransportMeansDepartureListDomain.userAnswersReader,
       borderModeOfTransportReader,
       transportMeansActiveReader(TransportMeansActiveListDomain.userAnswersReader)
-    ).map(PostTransitionTransportMeansMultipleActiveDomain.apply)
+    ).map(TransportMeansMultipleActiveDomain.apply)
 }
 
-case class PostTransitionTransportMeansSingleActiveDomain(
+case class TransportMeansSingleActiveDomain(
   transportMeansDepartureList: TransportMeansDepartureListDomain,
   borderModeOfTransport: Option[BorderMode],
   transportMeansActiveList: Option[TransportMeansActiveDomain]
-) extends PostTransitionTransportMeansDomain
+) extends TransportMeansDomain
 
-object PostTransitionTransportMeansSingleActiveDomain {
+object TransportMeansSingleActiveDomain {
 
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansDomain] =
+  implicit val userAnswersReader: Read[TransportMeansDomain] =
     (
       TransportMeansDepartureListDomain.userAnswersReader,
       borderModeOfTransportReader,
       transportMeansActiveReader(TransportMeansActiveDomain.userAnswersReader(Index(0)))
-    ).map(PostTransitionTransportMeansSingleActiveDomain.apply)
+    ).map(TransportMeansSingleActiveDomain.apply)
 }

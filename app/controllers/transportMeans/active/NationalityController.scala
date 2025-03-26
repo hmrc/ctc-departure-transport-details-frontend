@@ -16,7 +16,6 @@
 
 package controllers.transportMeans.active
 
-import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.SelectableFormProvider.CountryFormProvider
@@ -42,7 +41,7 @@ class NationalityController @Inject() (
   service: NationalitiesService,
   val controllerComponents: MessagesControllerComponents,
   view: NationalityView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

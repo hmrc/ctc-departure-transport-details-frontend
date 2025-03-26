@@ -16,13 +16,12 @@
 
 package controllers.equipment.index
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner, UpdateOps}
 import forms.YesNoFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.UserAnswersNavigator
-import navigation.EquipmentNavigatorProvider
+import navigation.{EquipmentNavigatorProvider, UserAnswersNavigator}
 import pages.equipment.index.AddContainerIdentificationNumberYesNoPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -41,7 +40,7 @@ class AddContainerIdentificationNumberYesNoController @Inject() (
   formProvider: YesNoFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddContainerIdentificationNumberYesNoView
-)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, appConfig: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

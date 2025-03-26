@@ -16,7 +16,7 @@
 
 package viewModels
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.{CheckMode, Index, UserAnswers}
 import play.api.i18n.Messages
 import utils.cyaHelpers.transportMeans.departure.DepartureTransportMeansAnswersHelper
@@ -33,7 +33,7 @@ object DepartureTransportAnswersViewModel {
   ) {
 
     // scalastyle:off method.length
-    def apply(userAnswers: UserAnswers, index: Index)(implicit messages: Messages, phaseConfig: PhaseConfig): DepartureTransportAnswersViewModel = {
+    def apply(userAnswers: UserAnswers, index: Index)(implicit messages: Messages): DepartureTransportAnswersViewModel = {
       val mode = CheckMode
 
       val helper = new DepartureTransportMeansAnswersHelper(userAnswers, mode, index)

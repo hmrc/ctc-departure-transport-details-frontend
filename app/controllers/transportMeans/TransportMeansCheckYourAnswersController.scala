@@ -16,7 +16,6 @@
 
 package controllers.transportMeans
 
-import config.PhaseConfig
 import controllers.actions._
 import models.{LocalReferenceNumber, Mode}
 import navigation.TransportNavigatorProvider
@@ -36,8 +35,7 @@ class TransportMeansCheckYourAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: TransportMeansCheckYourAnswersView,
   viewModelProvider: TransportMeansAnswersViewModelProvider
-)(implicit phaseConfig: PhaseConfig)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
