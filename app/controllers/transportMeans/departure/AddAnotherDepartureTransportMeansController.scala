@@ -18,14 +18,17 @@ package controllers.transportMeans.departure
 
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.*
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
 import pages.sections.transportMeans.DeparturesSection
+import pages.transportMeans.AddAnotherDepartureTransportMeansPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import repositories.SessionRepository
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transportMeans.departure.AddAnotherDepartureTransportMeansViewModel
@@ -33,16 +36,18 @@ import viewModels.transportMeans.departure.AddAnotherDepartureTransportMeansView
 import views.html.transportMeans.departure.AddAnotherDepartureTransportMeansView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherDepartureTransportMeansController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   viewModelProvider: AddAnotherDepartureTransportMeansViewModelProvider,
   navigatorProvider: TransportMeansNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherDepartureTransportMeansView
-)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -54,25 +59,37 @@ class AddAnotherDepartureTransportMeansController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, mode)
       viewModel.count match {
         case 0 => Redirect(controllers.transportMeans.routes.AddDepartureTransportMeansYesNoController.onPageLoad(lrn, mode))
-        case _ => Ok(view(form(viewModel), lrn, viewModel))
+        case _ =>
+          val preparedForm = request.userAnswers.get(AddAnotherDepartureTransportMeansPage) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, lrn, viewModel))
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       lazy val currentPage = DeparturesSection
       lazy val viewModel   = viewModelProvider(request.userAnswers, mode)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
-          {
-            case true =>
-              implicit val reader: UserAnswersReader[TransportMeansDepartureDomain] =
-                TransportMeansDepartureDomain.userAnswersReader(viewModel.nextIndex).apply(Nil)
-              Redirect(UserAnswersNavigator.nextPage[TransportMeansDepartureDomain](request.userAnswers, Some(currentPage), mode))
-            case false => Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(currentPage)))
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel))),
+          value =>
+            AddAnotherDepartureTransportMeansPage
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession(sessionRepository)
+              .navigateTo {
+                if (value) {
+                  implicit val reader: UserAnswersReader[TransportMeansDepartureDomain] =
+                    TransportMeansDepartureDomain.userAnswersReader(viewModel.nextIndex).apply(Nil)
+                  UserAnswersNavigator.nextPage[TransportMeansDepartureDomain](request.userAnswers, Some(currentPage), mode)
+                } else {
+                  navigatorProvider(mode).nextPage(request.userAnswers, Some(currentPage))
+                }
+              }
         )
   }
 }

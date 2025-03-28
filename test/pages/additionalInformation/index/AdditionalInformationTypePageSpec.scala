@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package pages.additionalInformation
+package pages.additionalInformation.index
 
 import models.reference.additionalInformation.AdditionalInformationCode
-import pages.additionalInformation.index.AdditionalInformationTypePage
 import pages.behaviours.PageBehaviours
 
 class AdditionalInformationTypePageSpec extends PageBehaviours {

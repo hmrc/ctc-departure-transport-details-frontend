@@ -16,31 +16,36 @@
 
 package controllers.equipment.index
 
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.*
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.EquipmentNavigatorProvider
+import pages.equipment.index.AddAnotherSealPage
 import pages.sections.equipment.SealsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.equipment.AddAnotherSealViewModel
 import viewModels.equipment.AddAnotherSealViewModel.AddAnotherSealViewModelProvider
 import views.html.equipment.index.AddAnotherSealView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherSealController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   navigatorProvider: EquipmentNavigatorProvider,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherSealView,
   viewModelProvider: AddAnotherSealViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -52,26 +57,31 @@ class AddAnotherSealController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, mode, equipmentIndex)
       viewModel.count match {
         case 0 => Redirect(controllers.equipment.index.routes.AddSealYesNoController.onPageLoad(lrn, mode, equipmentIndex))
-        case _ => Ok(view(form(viewModel), lrn, viewModel))
+        case _ =>
+          val preparedForm = request.userAnswers.get(AddAnotherSealPage(equipmentIndex)) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, lrn, viewModel))
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(lrn) {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode, equipmentIndex: Index): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, mode, equipmentIndex)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
-          {
-            case true =>
-              Redirect(
-                controllers.equipment.index.seals.routes.IdentificationNumberController
-                  .onPageLoad(lrn, mode, equipmentIndex, viewModel.nextIndex)
-              )
-            case false =>
-              Redirect(navigatorProvider(mode, equipmentIndex).nextPage(request.userAnswers, Some(SealsSection(equipmentIndex))))
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel))),
+          value =>
+            AddAnotherSealPage(equipmentIndex)
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession(sessionRepository)
+              .navigateTo {
+                if value then controllers.equipment.index.seals.routes.IdentificationNumberController.onPageLoad(lrn, mode, equipmentIndex, viewModel.nextIndex)
+                else navigatorProvider(mode, equipmentIndex).nextPage(request.userAnswers, Some(SealsSection(equipmentIndex)))
+              }
         )
   }
 }

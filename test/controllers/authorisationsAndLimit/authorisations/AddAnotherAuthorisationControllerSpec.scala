@@ -32,6 +32,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import pages.authorisationsAndLimit.authorisations.AddAnotherAuthorisationPage
 import services.AuthorisationTypesService
 import uk.gov.hmrc.http.HttpVerbs.GET
 import viewModels.authorisations.AddAnotherAuthorisationViewModel
@@ -98,6 +99,48 @@ class AddAnotherAuthorisationControllerSpec extends SpecBase with AppWithDefault
 
           redirectLocation(result).value mustEqual
             controllers.authorisationsAndLimit.routes.AddAuthorisationsYesNoController.onPageLoad(lrn, mode).url
+        }
+      }
+
+      "must populate the view correctly on a GET when the question has previously been answered" - {
+        "when max limit not reached" in {
+          when(mockViewModelProvider.apply(any(), any(), any())(any()))
+            .thenReturn(notMaxedOutViewModel)
+
+          setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherAuthorisationPage, true))
+
+          val request = FakeRequest(GET, addAnotherAuthorisationRoute)
+
+          val result = route(app, request).value
+
+          val filledForm = form(notMaxedOutViewModel).bind(Map("value" -> "true"))
+
+          val view = injector.instanceOf[AddAnotherAuthorisationView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(filledForm, lrn, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+        }
+
+        "when max limit reached" in {
+          when(mockViewModelProvider.apply(any(), any(), any())(any()))
+            .thenReturn(maxedOutViewModel)
+
+          setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherAuthorisationPage, true))
+
+          val request = FakeRequest(GET, addAnotherAuthorisationRoute)
+
+          val result = route(app, request).value
+
+          val filledForm = form(maxedOutViewModel).bind(Map("value" -> "true"))
+
+          val view = injector.instanceOf[AddAnotherAuthorisationView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(filledForm, lrn, maxedOutViewModel)(request, messages, frontendAppConfig).toString
         }
       }
 

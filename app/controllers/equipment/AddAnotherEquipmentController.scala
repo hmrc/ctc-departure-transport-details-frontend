@@ -17,13 +17,16 @@
 package controllers.equipment
 
 import config.{FrontendAppConfig, PhaseConfig}
-import controllers.actions._
+import controllers.actions.*
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.equipment.EquipmentDomain
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
+import pages.equipment.AddAnotherEquipmentPage
 import pages.sections.equipment.EquipmentsSection
+import repositories.SessionRepository
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,16 +36,18 @@ import viewModels.equipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentView
 import views.html.equipment.AddAnotherEquipmentView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherEquipmentController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   navigatorProvider: TransportNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherEquipmentView,
   viewModelProvider: AddAnotherEquipmentViewModelProvider
-)(implicit config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit config: FrontendAppConfig, ec: ExecutionContext, phaseConfig: PhaseConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -54,25 +59,36 @@ class AddAnotherEquipmentController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, mode)
       viewModel.count match {
         case 0 => Redirect(routes.AddTransportEquipmentYesNoController.onPageLoad(lrn, mode))
-        case _ => Ok(view(form(viewModel), lrn, viewModel))
+        case _ =>
+          val preparedForm = request.userAnswers.get(AddAnotherEquipmentPage) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, lrn, viewModel))
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       lazy val currentPage = EquipmentsSection
       val viewModel        = viewModelProvider(request.userAnswers, mode)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
-          {
-            case true =>
-              implicit val reader: UserAnswersReader[EquipmentDomain] = EquipmentDomain.userAnswersReader(viewModel.nextIndex).apply(Nil)
-              Redirect(UserAnswersNavigator.nextPage[EquipmentDomain](request.userAnswers, Some(currentPage), mode))
-            case false =>
-              Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(currentPage)))
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel))),
+          value =>
+            AddAnotherEquipmentPage
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession(sessionRepository)
+              .navigateTo {
+                if (value) {
+                  implicit val reader: UserAnswersReader[EquipmentDomain] = EquipmentDomain.userAnswersReader(viewModel.nextIndex).apply(Nil)
+                  UserAnswersNavigator.nextPage[EquipmentDomain](request.userAnswers, Some(currentPage), mode)
+                } else {
+                  navigatorProvider(mode).nextPage(request.userAnswers, Some(currentPage))
+                }
+              }
         )
   }
 }
