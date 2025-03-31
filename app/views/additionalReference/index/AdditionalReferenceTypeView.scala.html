@@ -19,6 +19,7 @@
 @import models.reference.additionalReference.AdditionalReferenceType
 @import models.Selectable
 @import models.Selectable._
+@import forms.SelectableFormProvider.AdditionalReferenceTypeFormProvider.field
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import viewModels.components.InputSelectViewModel._
 @import views.html.components.{Button, ErrorSummary, InputSelect}
@@ -44,7 +45,7 @@
         @errorSummary(form.errors)
 
         @inputSelect(
-            field = form("value"),
+            field = form(field),
             selectType = OrdinarySelect(
                 heading = messages("additionalReference.index.additionalReferenceType.heading"),
                 caption = Some(messages("additionalReference.caption"))

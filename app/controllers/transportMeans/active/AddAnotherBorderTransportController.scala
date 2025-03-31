@@ -18,26 +18,31 @@ package controllers.transportMeans.active
 
 import config.FrontendAppConfig
 import controllers.actions.*
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
+import pages.transportMeans.AddAnotherBorderTransportPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.transportMeans.active.AddAnotherBorderTransportViewModel
 import viewModels.transportMeans.active.AddAnotherBorderTransportViewModel.AddAnotherBorderTransportViewModelProvider
 import views.html.transportMeans.active.AddAnotherBorderTransportView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherBorderTransportController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   viewModelProvider: AddAnotherBorderTransportViewModelProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherBorderTransportView
-)(implicit config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -49,21 +54,31 @@ class AddAnotherBorderTransportController @Inject() (
       val viewModel = viewModelProvider(request.userAnswers, mode)
       viewModel.count match {
         case 0 => Redirect(controllers.transportMeans.routes.BorderModeOfTransportController.onPageLoad(lrn, mode))
-        case _ => Ok(view(form(viewModel), lrn, viewModel))
+        case _ =>
+          val preparedForm = request.userAnswers.get(AddAnotherBorderTransportPage) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, lrn, viewModel))
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       lazy val viewModel = viewModelProvider(request.userAnswers, mode)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
-          {
-            case true  => Redirect(routes.IdentificationController.onPageLoad(lrn, mode, viewModel.nextIndex))
-            case false => Redirect(controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(lrn, mode))
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel))),
+          value =>
+            AddAnotherBorderTransportPage
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession(sessionRepository)
+              .navigateTo {
+                if value then routes.IdentificationController.onPageLoad(lrn, mode, viewModel.nextIndex)
+                else controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(lrn, mode)
+              }
         )
   }
 }

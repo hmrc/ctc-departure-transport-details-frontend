@@ -18,7 +18,7 @@ package controllers.additionalReference.index
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.AdditionalReferenceTypeFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{AdditionalReferenceNavigatorProvider, UserAnswersNavigator}
 import pages.additionalReference.index.AdditionalReferenceTypePage
@@ -37,7 +37,7 @@ class AdditionalReferenceTypeController @Inject() (
   sessionRepository: SessionRepository,
   navigatorProvider: AdditionalReferenceNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: AdditionalReferenceTypeFormProvider,
   service: AdditionalReferencesService,
   val controllerComponents: MessagesControllerComponents,
   view: AdditionalReferenceTypeView

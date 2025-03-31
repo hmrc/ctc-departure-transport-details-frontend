@@ -18,29 +18,34 @@ package controllers.additionalReference
 
 import config.FrontendAppConfig
 import controllers.actions.*
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.TransportNavigatorProvider
+import pages.additionalReference.AddAnotherAdditionalReferencePage
 import pages.sections.additionalReference.AdditionalReferencesSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.additionalReference.AddAnotherAdditionalReferenceViewModel
 import viewModels.additionalReference.AddAnotherAdditionalReferenceViewModel.AddAnotherAdditionalReferenceViewModelProvider
 import views.html.additionalReference.AddAnotherAdditionalReferenceView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherAdditionalReferenceController @Inject() (
   override val messagesApi: MessagesApi,
   navigatorProvider: TransportNavigatorProvider,
+  sessionRepository: SessionRepository,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherAdditionalReferenceView,
   viewModelProvider: AddAnotherAdditionalReferenceViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -53,23 +58,30 @@ class AddAnotherAdditionalReferenceController @Inject() (
         case 0 =>
           Redirect(controllers.additionalReference.routes.AddAdditionalReferenceYesNoController.onPageLoad(lrn, mode))
         case _ =>
-          Ok(view(form(viewModel), lrn, viewModel))
+          val preparedForm = request.userAnswers.get(AddAnotherAdditionalReferencePage) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, lrn, viewModel))
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, mode)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
-          {
-            case true =>
-              Redirect(controllers.additionalReference.index.routes.AdditionalReferenceTypeController.onPageLoad(lrn, mode, viewModel.nextIndex))
-            case false =>
-              Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(AdditionalReferencesSection)))
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel))),
+          value =>
+            AddAnotherAdditionalReferencePage
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession(sessionRepository)
+              .navigateTo {
+                if value then controllers.additionalReference.index.routes.AdditionalReferenceTypeController.onPageLoad(lrn, mode, viewModel.nextIndex)
+                else navigatorProvider(mode).nextPage(request.userAnswers, Some(AdditionalReferencesSection))
+              }
         )
   }
 }

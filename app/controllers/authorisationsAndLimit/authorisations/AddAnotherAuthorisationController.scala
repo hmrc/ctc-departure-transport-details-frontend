@@ -17,16 +17,19 @@
 package controllers.authorisationsAndLimit.authorisations
 
 import config.FrontendAppConfig
-import controllers.actions._
-import controllers.authorisationsAndLimit.authorisations.index.{routes => authorisationRoutes}
-import controllers.authorisationsAndLimit.{routes => authorisationsRoutes}
+import controllers.actions.*
+import controllers.authorisationsAndLimit.authorisations.index.routes as authorisationRoutes
+import controllers.authorisationsAndLimit.routes as authorisationsRoutes
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.TransportNavigatorProvider
+import pages.authorisationsAndLimit.authorisations.AddAnotherAuthorisationPage
 import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import services.AuthorisationTypesService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.authorisations.AddAnotherAuthorisationViewModel
@@ -34,10 +37,11 @@ import viewModels.authorisations.AddAnotherAuthorisationViewModel.AddAnotherAuth
 import views.html.authorisationsAndLimit.authorisations.AddAnotherAuthorisationView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherAuthorisationController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
@@ -59,26 +63,34 @@ class AddAnotherAuthorisationController @Inject() (
           val viewModel = viewModelProvider(request.userAnswers, mode, availableAuthorisationsYetToAdd)
           viewModel.count match {
             case 0 => Redirect(authorisationsRoutes.AddAuthorisationsYesNoController.onPageLoad(lrn, mode))
-            case _ => Ok(view(form(viewModel), lrn, viewModel))
+            case _ =>
+              val preparedForm = request.userAnswers.get(AddAnotherAuthorisationPage) match {
+                case None        => form(viewModel)
+                case Some(value) => form(viewModel).fill(value)
+              }
+              Ok(view(preparedForm, lrn, viewModel))
           }
       }
   }
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      authorisationTypesService.getAuthorisationTypes(request.userAnswers, None).map {
+      authorisationTypesService.getAuthorisationTypes(request.userAnswers, None).flatMap {
         availableAuthorisationsYetToAdd =>
           val viewModel = viewModelProvider(request.userAnswers, mode, availableAuthorisationsYetToAdd)
           form(viewModel)
             .bindFromRequest()
             .fold(
-              formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
-              {
-                case true =>
-                  Redirect(authorisationRoutes.AuthorisationTypeController.onPageLoad(lrn, mode, viewModel.nextIndex))
-                case false =>
-                  Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(AuthorisationsSection)))
-              }
+              formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel))),
+              value =>
+                AddAnotherAuthorisationPage
+                  .writeToUserAnswers(value)
+                  .updateTask()
+                  .writeToSession(sessionRepository)
+                  .navigateTo {
+                    if value then authorisationRoutes.AuthorisationTypeController.onPageLoad(lrn, mode, viewModel.nextIndex)
+                    else navigatorProvider(mode).nextPage(request.userAnswers, Some(AuthorisationsSection))
+                  }
             )
       }
   }

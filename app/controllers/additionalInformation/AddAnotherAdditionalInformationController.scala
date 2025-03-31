@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,29 +18,34 @@ package controllers.additionalInformation
 
 import config.FrontendAppConfig
 import controllers.actions.*
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
 import navigation.TransportNavigatorProvider
+import pages.additionalInformation.AddAnotherAdditionalInformationPage
 import pages.sections.additionalInformation.AdditionalInformationListSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.additionalInformation.AddAnotherAdditionalInformationViewModel
 import viewModels.additionalInformation.AddAnotherAdditionalInformationViewModel.AddAnotherAdditionalInformationViewModelProvider
 import views.html.additionalInformation.AddAnotherAdditionalInformationView
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAnotherAdditionalInformationController @Inject() (
   override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
   navigatorProvider: TransportNavigatorProvider,
   actions: Actions,
   formProvider: AddAnotherFormProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherAdditionalInformationView,
   viewModelProvider: AddAnotherAdditionalInformationViewModelProvider
-)(implicit config: FrontendAppConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 
@@ -53,23 +58,30 @@ class AddAnotherAdditionalInformationController @Inject() (
         case 0 =>
           Redirect(controllers.additionalInformation.routes.AddAdditionalInformationYesNoController.onPageLoad(lrn, mode))
         case _ =>
-          Ok(view(form(viewModel), lrn, viewModel))
+          val preparedForm = request.userAnswers.get(AddAnotherAdditionalInformationPage) match {
+            case None        => form(viewModel)
+            case Some(value) => form(viewModel).fill(value)
+          }
+          Ok(view(preparedForm, lrn, viewModel))
       }
   }
 
-  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn) {
+  def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
       val viewModel = viewModelProvider(request.userAnswers, mode)
       form(viewModel)
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, lrn, viewModel)),
-          {
-            case true =>
-              Redirect(controllers.additionalInformation.index.routes.AdditionalInformationTypeController.onPageLoad(viewModel.nextIndex, lrn, mode))
-            case false =>
-              Redirect(navigatorProvider(mode).nextPage(request.userAnswers, Some(AdditionalInformationListSection)))
-          }
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, lrn, viewModel))),
+          value =>
+            AddAnotherAdditionalInformationPage
+              .writeToUserAnswers(value)
+              .updateTask()
+              .writeToSession(sessionRepository)
+              .navigateTo {
+                if value then controllers.additionalInformation.index.routes.AdditionalInformationTypeController.onPageLoad(viewModel.nextIndex, lrn, mode)
+                else navigatorProvider(mode).nextPage(request.userAnswers, Some(AdditionalInformationListSection))
+              }
         )
   }
 }

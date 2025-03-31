@@ -18,7 +18,7 @@ package controllers.transportMeans.active
 
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.{TransportMeansActiveNavigatorProvider, UserAnswersNavigator}
 import pages.transportMeans.active.NationalityPage
@@ -37,7 +37,7 @@ class NationalityController @Inject() (
   sessionRepository: SessionRepository,
   navigatorProvider: TransportMeansActiveNavigatorProvider,
   actions: Actions,
-  formProvider: SelectableFormProvider,
+  formProvider: CountryFormProvider,
   service: NationalitiesService,
   val controllerComponents: MessagesControllerComponents,
   view: NationalityView

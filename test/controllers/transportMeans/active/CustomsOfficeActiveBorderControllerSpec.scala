@@ -17,7 +17,7 @@
 package controllers.transportMeans.active
 
 import base.{AppWithDefaultMockFixtures, SpecBase}
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CustomsOfficeFormProvider
 import generators.Generators
 import models.reference.CustomsOffice
 import models.{NormalMode, SelectableList}
@@ -43,7 +43,8 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
   private val allCustomOfficesList = SelectableList(List(exitOffice, transitOffice, destinationOffice))
 
-  private val formProvider = new SelectableFormProvider()
+  private val formProvider = new CustomsOfficeFormProvider()
+  private val field        = formProvider.field
   private val form         = formProvider("transportMeans.active.customsOfficeActiveBorder", allCustomOfficesList)
   private val mode         = NormalMode
 
@@ -93,7 +94,7 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
       val result = route(app, request).value
 
-      val filledForm = form.bind(Map("value" -> destinationOffice.id))
+      val filledForm = form.bind(Map(field -> destinationOffice.id))
 
       val view = injector.instanceOf[CustomsOfficeActiveBorderView]
 
@@ -114,7 +115,7 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
       setExistingUserAnswers(emptyUserAnswers)
 
       val request = FakeRequest(POST, customsOfficeActiveBorderRoute)
-        .withFormUrlEncodedBody(("value", destinationOffice.id))
+        .withFormUrlEncodedBody((field, destinationOffice.id))
 
       val result = route(app, request).value
 
@@ -131,8 +132,8 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
 
       setExistingUserAnswers(emptyUserAnswers)
 
-      val request   = FakeRequest(POST, customsOfficeActiveBorderRoute).withFormUrlEncodedBody(("value", "invalid value"))
-      val boundForm = form.bind(Map("value" -> "invalid value"))
+      val request   = FakeRequest(POST, customsOfficeActiveBorderRoute).withFormUrlEncodedBody((field, "invalid value"))
+      val boundForm = form.bind(Map(field -> "invalid value"))
 
       val result = route(app, request).value
 
@@ -162,7 +163,7 @@ class CustomsOfficeActiveBorderControllerSpec extends SpecBase with AppWithDefau
     setNoExistingUserAnswers()
 
     val request = FakeRequest(POST, customsOfficeActiveBorderRoute)
-      .withFormUrlEncodedBody(("value", destinationOffice.id))
+      .withFormUrlEncodedBody((field, destinationOffice.id))
 
     val result = route(app, request).value
 

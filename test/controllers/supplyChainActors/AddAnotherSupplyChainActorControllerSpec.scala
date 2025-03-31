@@ -30,6 +30,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import pages.supplyChainActors.AddAnotherSupplyChainActorPage
 import viewModels.ListItem
 import viewModels.supplyChainActors.AddAnotherSupplyChainActorViewModel
 import viewModels.supplyChainActors.AddAnotherSupplyChainActorViewModel.AddAnotherSupplyChainActorViewModelProvider
@@ -70,6 +71,48 @@ class AddAnotherSupplyChainActorControllerSpec extends SpecBase with AppWithDefa
   "AddAnotherSupplyChainActor Controller" - {
 
     "onPageLoad" - {
+
+      "must populate the view correctly on a GET when the question has previously been answered" - {
+        "when max limit not reached" in {
+          when(mockViewModelProvider.apply(any(), any())(any()))
+            .thenReturn(notMaxedOutViewModel)
+
+          setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherSupplyChainActorPage, true))
+
+          val request = FakeRequest(GET, addAnotherSupplyChainActorRoute)
+
+          val result = route(app, request).value
+
+          val filledForm = form(notMaxedOutViewModel).bind(Map("value" -> "true"))
+
+          val view = injector.instanceOf[AddAnotherSupplyChainActorView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(filledForm, lrn, notMaxedOutViewModel)(request, messages, frontendAppConfig).toString
+        }
+
+        "when max limit reached" in {
+          when(mockViewModelProvider.apply(any(), any())(any()))
+            .thenReturn(maxedOutViewModel)
+
+          setExistingUserAnswers(emptyUserAnswers.setValue(AddAnotherSupplyChainActorPage, true))
+
+          val request = FakeRequest(GET, addAnotherSupplyChainActorRoute)
+
+          val result = route(app, request).value
+
+          val filledForm = form(maxedOutViewModel).bind(Map("value" -> "true"))
+
+          val view = injector.instanceOf[AddAnotherSupplyChainActorView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(filledForm, lrn, maxedOutViewModel)(request, messages, frontendAppConfig).toString
+        }
+      }
 
       "when no supply chain actors" - {
         "must redirect to SupplyChainActorYesNoController" in {

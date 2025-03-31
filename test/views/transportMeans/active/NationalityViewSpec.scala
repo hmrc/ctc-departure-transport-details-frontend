@@ -16,7 +16,7 @@
 
 package views.transportMeans.active
 
-import forms.SelectableFormProvider
+import forms.SelectableFormProvider.CountryFormProvider
 import models.reference.Nationality
 import models.{NormalMode, SelectableList}
 import org.scalacheck.Arbitrary
@@ -27,7 +27,9 @@ import views.html.transportMeans.active.NationalityView
 
 class NationalityViewSpec extends InputSelectViewBehaviours[Nationality] {
 
-  override def form: Form[Nationality] = new SelectableFormProvider()(prefix, SelectableList(values))
+  val formProvider                     = new CountryFormProvider()
+  override val field: String           = formProvider.field
+  override def form: Form[Nationality] = formProvider(prefix, SelectableList(values))
 
   override def applyView(form: Form[Nationality]): HtmlFormat.Appendable =
     injector.instanceOf[NationalityView].apply(form, lrn, values, NormalMode, index)(fakeRequest, messages)

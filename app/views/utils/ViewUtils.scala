@@ -16,13 +16,12 @@
 
 package views.utils
 
-import forms.mappings.LocalDateFormatter
 import play.api.data.{Field, FormError}
 import play.api.i18n.Messages
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases._
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.govukfrontend.views.implicits._
+import uk.gov.hmrc.govukfrontend.views.Aliases.*
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
+import uk.gov.hmrc.govukfrontend.views.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.errorsummary.ErrorLink
 import uk.gov.hmrc.govukfrontend.views.viewmodels.input.Input
@@ -83,13 +82,15 @@ object ViewUtils {
   implicit class DateTimeRichFormErrors(formErrors: Seq[FormError])(implicit messages: Messages) {
 
     def toErrorLinks: Seq[ErrorLink] =
-      formErrors.map {
-        formError =>
-          val args = LocalDateFormatter.fieldKeys
-          val arg  = formError.args.find(args.contains).getOrElse(args.head).toString
-          val key  = s"#${formError.key}.$arg"
-          ErrorLink(href = Some(key), content = messages(formError.message, formError.args*).toText)
-      }
+      formErrors
+        .distinctBy(_.message)
+        .map {
+          formError =>
+            ErrorLink(
+              href = Some(s"#${formError.key}"),
+              content = messages(formError.message, formError.args*).toText
+            )
+        }
   }
 
   implicit class FieldsetImplicits(fieldset: Fieldset)(implicit val messages: Messages) extends ImplicitsSupport[Fieldset] {
