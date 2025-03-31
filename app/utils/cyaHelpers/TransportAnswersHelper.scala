@@ -29,6 +29,7 @@ import models.reference.additionalReference.AdditionalReferenceType
 import models.reference.equipment.PaymentMethod
 import models.{Index, Mode, OptionalBoolean, UserAnswers}
 import pages.additionalInformation.index.AdditionalInformationTypePage
+import pages.additionalInformation.AddAdditionalInformationYesNoPage
 import pages.additionalReference.AddAdditionalReferenceYesNoPage
 import pages.additionalReference.index.AdditionalReferenceTypePage
 import pages.authorisationsAndLimit.AddAuthorisationsYesNoPage
@@ -275,6 +276,13 @@ class TransportAnswersHelper(
       href = controllers.additionalReference.routes.AddAnotherAdditionalReferenceController.onPageLoad(userAnswers.lrn, mode).url
     )
   }
+
+  def addAdditionalInformationYesNo: Option[SummaryListRow] = getAnswerAndBuildRow[Boolean](
+    page = AddAdditionalInformationYesNoPage,
+    formatAnswer = formatAsYesOrNo,
+    prefix = "additionalInformation.addAdditionalInformationYesNo",
+    id = Some("change-add-additional-information")
+  )
 
   def additionalInformationList: Seq[SummaryListRow] =
     getAnswersAndBuildSectionRows(AdditionalInformationListSection)(additionalInformation)
