@@ -75,9 +75,12 @@ class AddAnotherBorderTransportController @Inject() (
               .writeToUserAnswers(value)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateTo {
-                if value then routes.IdentificationController.onPageLoad(lrn, mode, viewModel.nextIndex)
-                else controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(lrn, mode)
+              .and {
+                if (value) {
+                  _.navigateTo(routes.IdentificationController.onPageLoad(lrn, mode, viewModel.nextIndex))
+                } else {
+                  _.navigateTo(controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(lrn, mode))
+                }
               }
         )
   }

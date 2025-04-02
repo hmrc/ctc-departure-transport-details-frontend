@@ -18,18 +18,17 @@ package controllers.supplyChainActors
 
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.*
-import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import controllers.supplyChainActors.index.routes as supplyChainActorRoutes
 import controllers.supplyChainActors.routes as supplyChainActorsRoutes
+import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
-import navigation.TransportNavigatorProvider
-import pages.sections.supplyChainActors.SupplyChainActorsSection
+import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.supplyChainActors.AddAnotherSupplyChainActorPage
 import play.api.data.Form
-import repositories.SessionRepository
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewModels.supplyChainActors.AddAnotherSupplyChainActorViewModel
 import viewModels.supplyChainActors.AddAnotherSupplyChainActorViewModel.AddAnotherSupplyChainActorViewModelProvider
@@ -80,9 +79,13 @@ class AddAnotherSupplyChainActorController @Inject() (
               .writeToUserAnswers(value)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateTo {
-                if value then supplyChainActorRoutes.SupplyChainActorTypeController.onPageLoad(lrn, mode, viewModel.nextIndex)
-                else navigatorProvider(mode).nextPage(request.userAnswers, Some(SupplyChainActorsSection))
+              .and {
+                if (value) {
+                  _.navigateTo(supplyChainActorRoutes.SupplyChainActorTypeController.onPageLoad(lrn, mode, viewModel.nextIndex))
+                } else {
+                  val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                  _.navigateWith(navigator)
+                }
               }
         )
   }

@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
-import pages.sections.authorisationsAndLimit.AuthorisationsSection
+import pages.authorisationsAndLimit.authorisations.AddAnotherAuthorisationPage
 
 class AuthorisationsDomainSpec extends SpecBase with Generators {
 
@@ -38,7 +38,7 @@ class AuthorisationsDomainSpec extends SpecBase with Generators {
       val result = AuthorisationsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
       result.value.value.authorisations.length mustBe numberOfAuthorisations
-      result.value.pages.last mustBe AuthorisationsSection
+      result.value.pages.last mustBe AddAnotherAuthorisationPage
     }
   }
 }

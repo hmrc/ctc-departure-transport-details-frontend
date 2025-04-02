@@ -21,9 +21,8 @@ import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.{Index, LocalReferenceNumber, Mode}
-import navigation.EquipmentNavigatorProvider
+import navigation.{EquipmentNavigatorProvider, UserAnswersNavigator}
 import pages.equipment.index.AddAnotherSealPage
-import pages.sections.equipment.SealsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -78,9 +77,15 @@ class AddAnotherSealController @Inject() (
               .writeToUserAnswers(value)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateTo {
-                if value then controllers.equipment.index.seals.routes.IdentificationNumberController.onPageLoad(lrn, mode, equipmentIndex, viewModel.nextIndex)
-                else navigatorProvider(mode, equipmentIndex).nextPage(request.userAnswers, Some(SealsSection(equipmentIndex)))
+              .and {
+                if (value) {
+                  _.navigateTo(
+                    controllers.equipment.index.seals.routes.IdentificationNumberController.onPageLoad(lrn, mode, equipmentIndex, viewModel.nextIndex)
+                  )
+                } else {
+                  val navigator: UserAnswersNavigator = navigatorProvider(mode, equipmentIndex)
+                  _.navigateWith(navigator)
+                }
               }
         )
   }

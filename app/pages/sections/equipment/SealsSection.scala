@@ -16,18 +16,17 @@
 
 package pages.sections.equipment
 
-import controllers.equipment.index.routes
-import models.{Index, Mode, UserAnswers}
-import pages.sections.Section
-import play.api.libs.json.{JsArray, JsPath}
-import play.api.mvc.Call
+import models.Index
+import pages.AddAnotherPage
+import pages.equipment.index.AddAnotherSealPage
+import pages.sections.AddAnotherSection
+import play.api.libs.json.JsPath
 
-case class SealsSection(equipmentIndex: Index) extends Section[JsArray] {
+case class SealsSection(equipmentIndex: Index) extends AddAnotherSection {
 
   override def path: JsPath = EquipmentSection(equipmentIndex).path \ toString
 
   override def toString: String = "seals"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAnotherSealController.onPageLoad(userAnswers.lrn, mode, equipmentIndex))
+  override val addAnotherPage: AddAnotherPage = AddAnotherSealPage(equipmentIndex)
 }

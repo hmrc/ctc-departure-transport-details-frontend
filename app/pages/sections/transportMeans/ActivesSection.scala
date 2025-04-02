@@ -16,18 +16,16 @@
 
 package pages.sections.transportMeans
 
-import controllers.transportMeans.active.routes
-import models.{Mode, UserAnswers}
-import pages.sections.Section
-import play.api.libs.json.{JsArray, JsPath}
-import play.api.mvc.Call
+import pages.AddAnotherPage
+import pages.sections.AddAnotherSection
+import pages.transportMeans.AddAnotherBorderTransportPage
+import play.api.libs.json.JsPath
 
-case object ActivesSection extends Section[JsArray] {
+case object ActivesSection extends AddAnotherSection {
 
   override def path: JsPath = TransportMeansSection.path \ toString
 
   override def toString: String = "active"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAnotherBorderTransportController.onPageLoad(userAnswers.lrn, mode))
+  override val addAnotherPage: AddAnotherPage = AddAnotherBorderTransportPage
 }
