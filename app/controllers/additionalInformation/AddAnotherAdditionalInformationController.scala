@@ -18,12 +18,11 @@ package controllers.additionalInformation
 
 import config.{FrontendAppConfig, PhaseConfig}
 import controllers.actions.*
-import forms.AddAnotherFormProvider
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
+import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
-import navigation.TransportNavigatorProvider
+import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.additionalInformation.AddAnotherAdditionalInformationPage
-import pages.sections.additionalInformation.AdditionalInformationListSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -78,9 +77,13 @@ class AddAnotherAdditionalInformationController @Inject() (
               .writeToUserAnswers(value)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateTo {
-                if value then controllers.additionalInformation.index.routes.AdditionalInformationTypeController.onPageLoad(viewModel.nextIndex, lrn, mode)
-                else navigatorProvider(mode).nextPage(request.userAnswers, Some(AdditionalInformationListSection))
+              .and {
+                if (value) {
+                  _.navigateTo(controllers.additionalInformation.index.routes.AdditionalInformationTypeController.onPageLoad(viewModel.nextIndex, lrn, mode))
+                } else {
+                  val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                  _.navigateWith(navigator)
+                }
               }
         )
   }

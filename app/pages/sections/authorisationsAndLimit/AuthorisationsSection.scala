@@ -16,18 +16,17 @@
 
 package pages.sections.authorisationsAndLimit
 
-import controllers.authorisationsAndLimit.authorisations.routes
-import models.{Mode, UserAnswers}
-import pages.sections.Section
-import play.api.libs.json.{JsArray, JsPath}
-import play.api.mvc.Call
+import pages.AddAnotherPage
+import pages.authorisationsAndLimit.authorisations.AddAnotherAuthorisationPage
+import pages.sections.AddAnotherSection
+import play.api.libs.json.JsPath
 
-case object AuthorisationsSection extends Section[JsArray] {
+case object AuthorisationsSection extends AddAnotherSection {
 
   override def path: JsPath = AuthorisationsAndLimitSection.path \ toString
 
   override def toString: String = "authorisations"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAnotherAuthorisationController.onPageLoad(userAnswers.lrn, mode))
+  override val addAnotherPage: AddAnotherPage = AddAnotherAuthorisationPage
+
 }

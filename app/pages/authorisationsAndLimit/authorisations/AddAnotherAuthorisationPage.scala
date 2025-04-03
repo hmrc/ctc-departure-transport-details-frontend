@@ -18,12 +18,12 @@ package pages.authorisationsAndLimit.authorisations
 
 import controllers.authorisationsAndLimit.authorisations.routes
 import models.{Mode, UserAnswers}
-import pages.QuestionPage
+import pages.AddAnotherPage
 import pages.sections.authorisationsAndLimit.AuthorisationsAndLimitSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddAnotherAuthorisationPage extends QuestionPage[Boolean] {
+case object AddAnotherAuthorisationPage extends AddAnotherPage {
 
   override def path: JsPath = AuthorisationsAndLimitSection.path \ toString
 

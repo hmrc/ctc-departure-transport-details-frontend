@@ -18,12 +18,12 @@ package pages.transportMeans
 
 import controllers.transportMeans.departure.routes
 import models.{Mode, UserAnswers}
-import pages.QuestionPage
+import pages.AddAnotherPage
 import pages.sections.TransportSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddAnotherDepartureTransportMeansPage extends QuestionPage[Boolean] {
+case object AddAnotherDepartureTransportMeansPage extends AddAnotherPage {
 
   override def path: JsPath = TransportSection.path \ toString
 

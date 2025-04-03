@@ -18,12 +18,12 @@ package pages.equipment.index
 
 import controllers.equipment.index.routes
 import models.{Index, Mode, UserAnswers}
-import pages.QuestionPage
+import pages.AddAnotherPage
 import pages.sections.equipment.EquipmentSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case class AddAnotherSealPage(equipmentIndex: Index) extends QuestionPage[Boolean] {
+case class AddAnotherSealPage(equipmentIndex: Index) extends AddAnotherPage {
 
   override def path: JsPath = EquipmentSection(equipmentIndex).path \ toString
 

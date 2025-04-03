@@ -28,7 +28,7 @@ import pages.equipment.index.*
 import pages.equipment.index.seals.IdentificationNumberPage
 import pages.external.ProcedureTypePage
 import pages.preRequisites.ContainerIndicatorPage
-import pages.sections.equipment.{EquipmentSection, SealsSection}
+import pages.sections.equipment.EquipmentSection
 import play.api.libs.json.Json
 
 class EquipmentDomainSpec extends SpecBase with Generators {
@@ -73,7 +73,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
               result.value.pages mustBe Seq(
                 ContainerIdentificationNumberPage(equipmentIndex),
                 IdentificationNumberPage(equipmentIndex, sealIndex),
-                SealsSection(equipmentIndex),
+                AddAnotherSealPage(equipmentIndex),
                 EquipmentSection(equipmentIndex)
               )
             }
@@ -133,7 +133,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
                 ContainerIdentificationNumberPage(equipmentIndex),
                 AddSealYesNoPage(equipmentIndex),
                 IdentificationNumberPage(equipmentIndex, sealIndex),
-                SealsSection(equipmentIndex),
+                AddAnotherSealPage(equipmentIndex),
                 EquipmentSection(equipmentIndex)
               )
             }
@@ -171,7 +171,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
                   AddContainerIdentificationNumberYesNoPage(index),
                   ContainerIdentificationNumberPage(index),
                   IdentificationNumberPage(index, sealIndex),
-                  SealsSection(index),
+                  AddAnotherSealPage(index),
                   EquipmentSection(index)
                 )
               }
@@ -226,7 +226,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
               result.value.pages mustBe Seq(
                 AddContainerIdentificationNumberYesNoPage(index),
                 IdentificationNumberPage(index, sealIndex),
-                SealsSection(index),
+                AddAnotherSealPage(index),
                 EquipmentSection(index)
               )
             }
@@ -259,7 +259,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
             result.value.value mustBe expectedResult
             result.value.pages mustBe Seq(
               IdentificationNumberPage(equipmentIndex, sealIndex),
-              SealsSection(equipmentIndex),
+              AddAnotherSealPage(equipmentIndex),
               EquipmentSection(equipmentIndex)
             )
           }
@@ -288,7 +288,7 @@ class EquipmentDomainSpec extends SpecBase with Generators {
             result.value.value mustBe expectedResult
             result.value.pages mustBe Seq(
               IdentificationNumberPage(index, sealIndex),
-              SealsSection(index),
+              AddAnotherSealPage(index),
               EquipmentSection(index)
             )
           }
