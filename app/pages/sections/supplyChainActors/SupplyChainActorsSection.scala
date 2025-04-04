@@ -16,18 +16,16 @@
 
 package pages.sections.supplyChainActors
 
-import controllers.supplyChainActors.routes
-import models.{Mode, UserAnswers}
-import pages.sections.{Section, TransportSection}
-import play.api.libs.json.{JsArray, JsPath}
-import play.api.mvc.Call
+import pages.AddAnotherPage
+import pages.sections.{AddAnotherSection, TransportSection}
+import pages.supplyChainActors.AddAnotherSupplyChainActorPage
+import play.api.libs.json.JsPath
 
-case object SupplyChainActorsSection extends Section[JsArray] {
+case object SupplyChainActorsSection extends AddAnotherSection {
 
   override def path: JsPath = TransportSection.path \ toString
 
   override def toString: String = "supplyChainActors"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAnotherSupplyChainActorController.onPageLoad(userAnswers.lrn, mode))
+  override val addAnotherPage: AddAnotherPage = AddAnotherSupplyChainActorPage
 }

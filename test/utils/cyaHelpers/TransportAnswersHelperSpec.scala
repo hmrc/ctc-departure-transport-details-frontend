@@ -17,18 +17,18 @@
 package utils.cyaHelpers
 
 import base.SpecBase
-import controllers.additionalInformation.{routes => additionalInformationRoutes}
-import controllers.authorisationsAndLimit.authorisations.index.{routes => authorisationRoutes}
-import controllers.authorisationsAndLimit.authorisations.{routes => authorisationsRoutes}
-import controllers.authorisationsAndLimit.limit.{routes => limitRoutes}
-import controllers.authorisationsAndLimit.{routes => authorisationsAndLimitRoutes}
-import controllers.carrierDetails.contact.{routes => carrierDetailsContactRoutes}
-import controllers.carrierDetails.{routes => carrierDetailsRoutes}
-import controllers.equipment.index.{routes => equipmentRoutes}
-import controllers.equipment.{routes => equipmentsRoutes}
-import controllers.preRequisites.{routes => preRequisitesRoutes}
-import controllers.supplyChainActors.index.{routes => supplyChainActorRoutes}
-import controllers.supplyChainActors.{routes => supplyChainActorsRoutes}
+import controllers.additionalInformation.routes as additionalInformationRoutes
+import controllers.authorisationsAndLimit.authorisations.index.routes as authorisationRoutes
+import controllers.authorisationsAndLimit.authorisations.routes as authorisationsRoutes
+import controllers.authorisationsAndLimit.limit.routes as limitRoutes
+import controllers.authorisationsAndLimit.routes as authorisationsAndLimitRoutes
+import controllers.carrierDetails.contact.routes as carrierDetailsContactRoutes
+import controllers.carrierDetails.routes as carrierDetailsRoutes
+import controllers.equipment.index.routes as equipmentRoutes
+import controllers.equipment.routes as equipmentsRoutes
+import controllers.preRequisites.routes as preRequisitesRoutes
+import controllers.supplyChainActors.index.routes as supplyChainActorRoutes
+import controllers.supplyChainActors.routes as supplyChainActorsRoutes
 import generators.Generators
 import models.journeyDomain.authorisationsAndLimit.authorisations.AuthorisationDomain
 import models.journeyDomain.equipment.EquipmentDomain
@@ -40,6 +40,7 @@ import models.reference.equipment.PaymentMethod
 import models.{Index, Mode, OptionalBoolean}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.additionalInformation.AddAdditionalInformationYesNoPage
 import pages.additionalReference.AddAdditionalReferenceYesNoPage
 import pages.additionalReference.index.AdditionalReferenceTypePage
 import pages.additionalInformation.index.AdditionalInformationTypePage
@@ -48,7 +49,7 @@ import pages.authorisationsAndLimit.limit.{AddLimitDateYesNoPage, LimitDatePage}
 import pages.carrierDetails.contact.{NamePage, TelephoneNumberPage}
 import pages.carrierDetails.{AddContactYesNoPage, CarrierDetailYesNoPage, IdentificationNumberPage}
 import pages.equipment.{AddPaymentMethodYesNoPage, AddTransportEquipmentYesNoPage, PaymentMethodPage}
-import pages.preRequisites._
+import pages.preRequisites.*
 import pages.sections.additionalInformation.AdditionalInformationSection
 import pages.sections.authorisationsAndLimit.AuthorisationSection
 import pages.sections.equipment.EquipmentSection
@@ -1116,6 +1117,40 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                 .url
               action.visuallyHiddenText.get mustBe "if you want to add any additional information for all items"
               action.id mustBe s"change-add-additional-reference-${additionalReferenceIndex.display}"
+          }
+        }
+      }
+    }
+
+    "addAdditionalInformation" - {
+      "must return None" - {
+        s"when $AddAdditionalInformationYesNoPage undefined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
+              val result = helper.addAdditionalInformationYesNo
+              result mustBe None
+          }
+        }
+      }
+
+      "must return Some(Row)" - {
+        s"when $AddAdditionalInformationYesNoPage defined" in {
+          forAll(arbitrary[Mode]) {
+            mode =>
+              val answers = emptyUserAnswers.setValue(AddAdditionalInformationYesNoPage, true)
+              val helper  = new TransportAnswersHelper(answers, mode)
+              val result  = helper.addAdditionalInformationYesNo.get
+
+              result.key.value mustBe "Do you want to add any additional information for all items?"
+              result.value.value mustBe "Yes"
+              val actions = result.actions.get.items
+              actions.size mustBe 1
+              val action = actions.head
+              action.content.value mustBe "Change"
+              action.href mustBe controllers.additionalInformation.routes.AddAdditionalInformationYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustBe "if you want to add any additional information for all items"
+              action.id mustBe "change-add-additional-information"
           }
         }
       }

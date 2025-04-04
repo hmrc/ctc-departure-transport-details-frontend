@@ -109,6 +109,7 @@ object TransportAnswersViewModel {
         Section(
           sectionTitle = messages("checkYourAnswers.additionalInformation"),
           rows = Seq(
+            helper.addAdditionalInformationYesNo,
             helper.additionalInformationList
           ).flatten,
           addAnotherLink = helper.addOrRemoveAdditionalInformation(mode)

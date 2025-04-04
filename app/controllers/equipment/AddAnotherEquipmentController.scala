@@ -25,7 +25,6 @@ import models.journeyDomain.equipment.EquipmentDomain
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.equipment.AddAnotherEquipmentPage
-import pages.sections.equipment.EquipmentsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -70,7 +69,7 @@ class AddAnotherEquipmentController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      lazy val currentPage = EquipmentsSection
+      lazy val currentPage = AddAnotherEquipmentPage
       val viewModel        = viewModelProvider(request.userAnswers, mode)
       form(viewModel)
         .bindFromRequest()
@@ -81,12 +80,13 @@ class AddAnotherEquipmentController @Inject() (
               .writeToUserAnswers(value)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateTo {
+              .and {
                 if (value) {
                   implicit val reader: UserAnswersReader[EquipmentDomain] = EquipmentDomain.userAnswersReader(viewModel.nextIndex).apply(Nil)
-                  UserAnswersNavigator.nextPage[EquipmentDomain](request.userAnswers, Some(currentPage), mode)
+                  _.navigateTo(UserAnswersNavigator.nextPage[EquipmentDomain](request.userAnswers, Some(currentPage), mode))
                 } else {
-                  navigatorProvider(mode).nextPage(request.userAnswers, Some(currentPage))
+                  val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                  _.navigateWith(navigator)
                 }
               }
         )

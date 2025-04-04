@@ -18,12 +18,12 @@ package pages.additionalReference
 
 import controllers.additionalReference.routes
 import models.{Mode, UserAnswers}
-import pages.QuestionPage
+import pages.AddAnotherPage
 import pages.sections.TransportSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddAnotherAdditionalReferencePage extends QuestionPage[Boolean] {
+case object AddAnotherAdditionalReferencePage extends AddAnotherPage {
 
   override def path: JsPath = TransportSection.path \ toString
 

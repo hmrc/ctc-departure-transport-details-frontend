@@ -18,12 +18,12 @@ package pages.equipment
 
 import controllers.equipment.routes
 import models.{Mode, UserAnswers}
-import pages.QuestionPage
+import pages.AddAnotherPage
 import pages.sections.equipment.EquipmentsAndChargesSection
 import play.api.libs.json.JsPath
 import play.api.mvc.Call
 
-case object AddAnotherEquipmentPage extends QuestionPage[Boolean] {
+case object AddAnotherEquipmentPage extends AddAnotherPage {
 
   override def path: JsPath = EquipmentsAndChargesSection.path \ toString
 

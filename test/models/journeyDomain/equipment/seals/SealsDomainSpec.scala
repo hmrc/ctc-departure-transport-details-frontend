@@ -20,6 +20,7 @@ import base.SpecBase
 import models.Index
 import models.journeyDomain.equipment.seal.{SealDomain, SealsDomain}
 import org.scalacheck.Gen
+import pages.equipment.index.AddAnotherSealPage
 import pages.equipment.index.seals.IdentificationNumberPage
 import pages.sections.equipment.SealsSection
 
@@ -49,7 +50,7 @@ class SealsDomainSpec extends SpecBase {
         result.value.pages mustBe Seq(
           IdentificationNumberPage(equipmentIndex, Index(0)),
           IdentificationNumberPage(equipmentIndex, Index(1)),
-          SealsSection(equipmentIndex)
+          AddAnotherSealPage(equipmentIndex)
         )
       }
     }

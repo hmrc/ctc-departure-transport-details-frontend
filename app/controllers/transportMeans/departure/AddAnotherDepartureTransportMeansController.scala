@@ -24,7 +24,6 @@ import models.journeyDomain.UserAnswersReader
 import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
 import models.{LocalReferenceNumber, Mode}
 import navigation.{TransportMeansNavigatorProvider, UserAnswersNavigator}
-import pages.sections.transportMeans.DeparturesSection
 import pages.transportMeans.AddAnotherDepartureTransportMeansPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -70,7 +69,7 @@ class AddAnotherDepartureTransportMeansController @Inject() (
 
   def onSubmit(lrn: LocalReferenceNumber, mode: Mode): Action[AnyContent] = actions.requireData(lrn).async {
     implicit request =>
-      lazy val currentPage = DeparturesSection
+      lazy val currentPage = AddAnotherDepartureTransportMeansPage
       lazy val viewModel   = viewModelProvider(request.userAnswers, mode)
       form(viewModel)
         .bindFromRequest()
@@ -81,13 +80,14 @@ class AddAnotherDepartureTransportMeansController @Inject() (
               .writeToUserAnswers(value)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateTo {
+              .and {
                 if (value) {
                   implicit val reader: UserAnswersReader[TransportMeansDepartureDomain] =
                     TransportMeansDepartureDomain.userAnswersReader(viewModel.nextIndex).apply(Nil)
-                  UserAnswersNavigator.nextPage[TransportMeansDepartureDomain](request.userAnswers, Some(currentPage), mode)
+                  _.navigateTo(UserAnswersNavigator.nextPage[TransportMeansDepartureDomain](request.userAnswers, Some(currentPage), mode))
                 } else {
-                  navigatorProvider(mode).nextPage(request.userAnswers, Some(currentPage))
+                  val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                  _.navigateWith(navigator)
                 }
               }
         )

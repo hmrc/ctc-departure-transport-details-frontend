@@ -23,8 +23,7 @@ import controllers.supplyChainActors.routes as supplyChainActorsRoutes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
-import navigation.TransportNavigatorProvider
-import pages.sections.supplyChainActors.SupplyChainActorsSection
+import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.supplyChainActors.AddAnotherSupplyChainActorPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -80,9 +79,13 @@ class AddAnotherSupplyChainActorController @Inject() (
               .writeToUserAnswers(value)
               .updateTask()
               .writeToSession(sessionRepository)
-              .navigateTo {
-                if value then supplyChainActorRoutes.SupplyChainActorTypeController.onPageLoad(lrn, mode, viewModel.nextIndex)
-                else navigatorProvider(mode).nextPage(request.userAnswers, Some(SupplyChainActorsSection))
+              .and {
+                if (value) {
+                  _.navigateTo(supplyChainActorRoutes.SupplyChainActorTypeController.onPageLoad(lrn, mode, viewModel.nextIndex))
+                } else {
+                  val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                  _.navigateWith(navigator)
+                }
               }
         )
   }

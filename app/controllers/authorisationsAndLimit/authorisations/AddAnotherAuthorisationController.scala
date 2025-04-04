@@ -23,9 +23,8 @@ import controllers.authorisationsAndLimit.routes as authorisationsRoutes
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
 import models.{LocalReferenceNumber, Mode}
-import navigation.TransportNavigatorProvider
+import navigation.{TransportNavigatorProvider, UserAnswersNavigator}
 import pages.authorisationsAndLimit.authorisations.AddAnotherAuthorisationPage
-import pages.sections.authorisationsAndLimit.AuthorisationsSection
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -87,9 +86,13 @@ class AddAnotherAuthorisationController @Inject() (
                   .writeToUserAnswers(value)
                   .updateTask()
                   .writeToSession(sessionRepository)
-                  .navigateTo {
-                    if value then authorisationRoutes.AuthorisationTypeController.onPageLoad(lrn, mode, viewModel.nextIndex)
-                    else navigatorProvider(mode).nextPage(request.userAnswers, Some(AuthorisationsSection))
+                  .and {
+                    if (value) {
+                      _.navigateTo(authorisationRoutes.AuthorisationTypeController.onPageLoad(lrn, mode, viewModel.nextIndex))
+                    } else {
+                      val navigator: UserAnswersNavigator = navigatorProvider(mode)
+                      _.navigateWith(navigator)
+                    }
                   }
             )
       }

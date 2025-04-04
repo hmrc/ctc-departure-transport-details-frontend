@@ -20,6 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
+import pages.additionalInformation.AddAnotherAdditionalInformationPage
 import pages.additionalInformation.index.AdditionalInformationTypePage
 import pages.sections.additionalInformation.AdditionalInformationListSection
 
@@ -39,7 +40,7 @@ class AdditionalInformationsDomainSpec extends SpecBase with Generators {
       val result = AdditionalInformationsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
       result.value.value.value.length mustBe numberOfAdditionalInformations
-      result.value.pages.last mustBe AdditionalInformationListSection
+      result.value.pages.last mustBe AddAnotherAdditionalInformationPage
     }
 
     "cannot be parsed from user answers" - {

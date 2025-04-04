@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,16 @@
 
 package pages.sections.additionalInformation
 
-import controllers.additionalInformation.routes
-import models.{Mode, UserAnswers}
-import pages.sections.{Section, TransportSection}
-import play.api.libs.json.{JsArray, JsPath}
-import play.api.mvc.Call
+import pages.AddAnotherPage
+import pages.additionalInformation.AddAnotherAdditionalInformationPage
+import pages.sections.{AddAnotherSection, TransportSection}
+import play.api.libs.json.JsPath
 
-case object AdditionalInformationListSection extends Section[JsArray] {
+case object AdditionalInformationListSection extends AddAnotherSection {
 
   override def path: JsPath = TransportSection.path \ toString
 
   override def toString: String = "additionalInformation"
 
-  override def route(userAnswers: UserAnswers, mode: Mode): Option[Call] =
-    Some(routes.AddAnotherAdditionalInformationController.onPageLoad(userAnswers.lrn, mode))
+  override val addAnotherPage: AddAnotherPage = AddAnotherAdditionalInformationPage
 }
