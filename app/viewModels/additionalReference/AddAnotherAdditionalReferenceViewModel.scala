@@ -16,7 +16,7 @@
 
 package viewModels.additionalReference
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.additionalReference.routes
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
@@ -38,7 +38,7 @@ case class AddAnotherAdditionalReferenceViewModel(
 
 object AddAnotherAdditionalReferenceViewModel {
 
-  class AddAnotherAdditionalReferenceViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
+  class AddAnotherAdditionalReferenceViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit
       messages: Messages

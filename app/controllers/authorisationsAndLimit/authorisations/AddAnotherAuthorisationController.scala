@@ -16,7 +16,7 @@
 
 package controllers.authorisationsAndLimit.authorisations
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions.*
 import controllers.authorisationsAndLimit.authorisations.index.routes as authorisationRoutes
 import controllers.authorisationsAndLimit.routes as authorisationsRoutes
@@ -48,7 +48,7 @@ class AddAnotherAuthorisationController @Inject() (
   view: AddAnotherAuthorisationView,
   viewModelProvider: AddAnotherAuthorisationViewModelProvider,
   authorisationTypesService: AuthorisationTypesService
-)(implicit config: FrontendAppConfig, ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit config: FrontendAppConfig, ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

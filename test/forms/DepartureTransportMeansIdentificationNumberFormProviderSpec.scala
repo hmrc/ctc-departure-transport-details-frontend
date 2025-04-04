@@ -21,7 +21,6 @@ import forms.behaviours.StringFieldBehaviours
 import models.domain.StringFieldRegex.alphaNumericRegex
 import org.scalacheck.Gen
 import play.api.data.FormError
-import play.api.test.Helpers.running
 
 class DepartureTransportMeansIdentificationNumberFormProviderSpec extends StringFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
 
@@ -29,98 +28,44 @@ class DepartureTransportMeansIdentificationNumberFormProviderSpec extends String
 
   private val requiredKey = s"$prefix.error.required"
   private val invalidKey  = s"$prefix.error.invalid"
+  private val lengthKey   = s"$prefix.error.length"
+  val maxLength           = 35
 
-  "DepartureTransportMeansIdentificationNumberFormProvider" - {
+  val form = new DepartureTransportMeansIdentificationNumberFormProvider()(prefix)
 
-    val lengthKey = s"$prefix.error.length.transition"
-    val app       = transitionApplicationBuilder().build()
-    val maxLength = 27
+  ".value" - {
 
-    ".value" - {
+    val fieldName = "value"
 
-      running(app) {
+    behave like fieldThatBindsValidData(
+      form,
+      fieldName,
+      stringsWithMaxLength(maxLength)
+    )
 
-        val form      = app.injector.instanceOf[DepartureTransportMeansIdentificationNumberFormProvider].apply(prefix)
-        val fieldName = "value"
+    behave like fieldWithMaxLength(
+      form,
+      fieldName,
+      maxLength = maxLength,
+      lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
+    )
 
-        behave like fieldThatBindsValidData(
-          form,
-          fieldName,
-          stringsWithMaxLength(maxLength)
-        )
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
 
-        behave like fieldWithMaxLength(
-          form,
-          fieldName,
-          maxLength = maxLength,
-          lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-        )
+    behave like fieldWithInvalidCharacters(
+      form,
+      fieldName,
+      error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.toString())),
+      maxLength
+    )
 
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, requiredKey)
-        )
-
-        behave like fieldWithInvalidCharacters(
-          form,
-          fieldName,
-          error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.toString())),
-          maxLength
-        )
-
-        "must convert input to upper case" in {
-          val result = form.bind(Map(fieldName -> "abc123def456"))
-          result.value.value mustBe "ABC123DEF456"
-        }
-      }
-    }
-  }
-
-  "PostTransitionIdentificationNumberFormProvider" - {
-
-    val lengthKey = s"$prefix.error.length.postTransition"
-    val app       = postTransitionApplicationBuilder().build()
-    val maxLength = 35
-
-    ".value" - {
-
-      running(app) {
-
-        val form      = app.injector.instanceOf[DepartureTransportMeansIdentificationNumberFormProvider].apply(prefix)
-        val fieldName = "value"
-
-        behave like fieldThatBindsValidData(
-          form,
-          fieldName,
-          stringsWithMaxLength(maxLength)
-        )
-
-        behave like fieldWithMaxLength(
-          form,
-          fieldName,
-          maxLength = maxLength,
-          lengthError = FormError(fieldName, lengthKey, Seq(maxLength))
-        )
-
-        behave like mandatoryField(
-          form,
-          fieldName,
-          requiredError = FormError(fieldName, requiredKey)
-        )
-
-        behave like fieldWithInvalidCharacters(
-          form,
-          fieldName,
-          error = FormError(fieldName, invalidKey, Seq(alphaNumericRegex.toString())),
-          maxLength
-        )
-
-        "must convert input to upper case" in {
-          val result = form.bind(Map(fieldName -> "abc123def456"))
-          result.value.value mustBe "ABC123DEF456"
-        }
-      }
+    "must convert input to upper case" in {
+      val result = form.bind(Map(fieldName -> "abc123def456"))
+      result.value.value mustBe "ABC123DEF456"
     }
   }
 }

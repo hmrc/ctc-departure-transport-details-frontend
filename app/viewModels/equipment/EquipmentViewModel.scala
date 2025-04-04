@@ -16,7 +16,7 @@
 
 package viewModels.equipment
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.{Index, Mode, UserAnswers}
 import play.api.i18n.Messages
 import utils.cyaHelpers.equipment.EquipmentAnswersHelper
@@ -28,7 +28,7 @@ case class EquipmentViewModel(sections: Seq[Section])
 
 object EquipmentViewModel {
 
-  class EquipmentViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
+  class EquipmentViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode, equipmentIndex: Index)(implicit messages: Messages): EquipmentViewModel = {
       val helper = new EquipmentAnswersHelper(userAnswers, mode, equipmentIndex)

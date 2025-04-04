@@ -16,7 +16,6 @@
 
 package controllers.authorisationsAndLimit.authorisations.index
 
-import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.EnumerableFormProvider
@@ -46,7 +45,7 @@ class AuthorisationTypeController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AuthorisationTypeView,
   service: AuthorisationTypesService
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

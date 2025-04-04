@@ -16,7 +16,6 @@
 
 package models.journeyDomain.transportMeans
 
-import config.PhaseConfig
 import models.journeyDomain._
 import models.journeyDomain.JourneyDomainModel
 import models.{Index, RichJsArray, UserAnswers}
@@ -32,7 +31,7 @@ case class TransportMeansActiveListDomain(
 
 object TransportMeansActiveListDomain {
 
-  implicit def userAnswersReader(implicit phaseConfig: PhaseConfig): Read[TransportMeansActiveListDomain] = {
+  implicit val userAnswersReader: Read[TransportMeansActiveListDomain] = {
 
     val activesReader: Read[Seq[TransportMeansActiveDomain]] =
       ActivesSection.arrayReader.to {

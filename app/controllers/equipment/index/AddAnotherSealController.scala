@@ -16,7 +16,7 @@
 
 package controllers.equipment.index
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
@@ -44,7 +44,7 @@ class AddAnotherSealController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherSealView,
   viewModelProvider: AddAnotherSealViewModelProvider
-)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

@@ -16,28 +16,21 @@
 
 package utils.cyaHelpers.transportMeans.departure
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.reference.Nationality
 import models.reference.transportMeans.departure.Identification
 import models.{Index, Mode, UserAnswers}
-import pages.transportMeans.departure.{
-  AddIdentificationNumberYesNoPage,
-  AddIdentificationTypeYesNoPage,
-  AddVehicleCountryYesNoPage,
-  IdentificationPage,
-  MeansIdentificationNumberPage,
-  VehicleCountryPage
-}
+import pages.transportMeans.departure.*
 import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 import utils.cyaHelpers.AnswersHelper
 
 class DepartureTransportMeansAnswersHelper(
   userAnswers: UserAnswers,
   mode: Mode,
   departureIndex: Index
-)(implicit messages: Messages, appConfig: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit messages: Messages, appConfig: FrontendAppConfig)
     extends AnswersHelper(userAnswers, mode) {
 
   def departureIdentificationType: Option[SummaryListRow] = getAnswerAndBuildRow[Identification](

@@ -16,7 +16,6 @@
 
 package controllers.additionalInformation.index
 
-import config.PhaseConfig
 import controllers.actions._
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AdditionalInformationFormProvider
@@ -41,7 +40,7 @@ class AdditionalInformationTextController @Inject() (
   actions: Actions,
   val controllerComponents: MessagesControllerComponents,
   view: AdditionalInformationTextView
-)(implicit ec: ExecutionContext, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController
     with I18nSupport {
 

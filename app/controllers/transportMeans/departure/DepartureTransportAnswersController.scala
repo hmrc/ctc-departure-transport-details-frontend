@@ -16,7 +16,6 @@
 
 package controllers.transportMeans.departure
 
-import config.PhaseConfig
 import controllers.actions.Actions
 import models.{Index, LocalReferenceNumber, Mode}
 import navigation.TransportMeansDepartureListNavigatorProvider
@@ -36,8 +35,7 @@ class DepartureTransportAnswersController @Inject() (
   view: DepartureTransportAnswersView,
   navigatorProvider: TransportMeansDepartureListNavigatorProvider,
   viewModelProvider: DepartureTransportAnswersViewModelProvider
-)(implicit phaseConfig: PhaseConfig)
-    extends FrontendBaseController
+) extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(lrn: LocalReferenceNumber, mode: Mode, index: Index): Action[AnyContent] = actions.requireData(lrn) {

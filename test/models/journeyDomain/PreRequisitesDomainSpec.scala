@@ -18,11 +18,9 @@ package models.journeyDomain
 
 import base.SpecBase
 import config.Constants.DeclarationType.*
-import config.PhaseConfig
 import generators.Generators
+import models.OptionalBoolean
 import models.reference.Country
-import models.{OptionalBoolean, Phase}
-import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
@@ -32,78 +30,16 @@ import pages.preRequisites.*
 
 class PreRequisitesDomainSpec extends SpecBase with Generators {
 
-  private val ucr                                    = Gen.alphaNumStr.sample.value
-  private val country                                = arbitrary[Country].sample.value
-  private val itemsDestinationCountry                = arbitrary[Country].sample.value
-  private val mockTransitionPhaseConfig: PhaseConfig = mock[PhaseConfig]
-  when(mockTransitionPhaseConfig.phase).thenReturn(Phase.Transition)
-
-  private val mockPostTransitionPhaseConfig: PhaseConfig = mock[PhaseConfig]
-  when(mockPostTransitionPhaseConfig.phase).thenReturn(Phase.PostTransition)
+  private val ucr                     = Gen.alphaNumStr.sample.value
+  private val country                 = arbitrary[Country].sample.value
+  private val itemsDestinationCountry = arbitrary[Country].sample.value
 
   "PreRequisitesDomain" - {
 
     "can be parsed from user answers" - {
-      "when using same UCR for all items in Transition" in {
-
-        val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, arbitrary[String](arbitraryNonTIRDeclarationType).sample.value)
-          .setValue(SameUcrYesNoPage, true)
-          .setValue(UniqueConsignmentReferencePage, ucr)
-          .setValue(TransportedToSameCountryYesNoPage, true)
-          .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
-          .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-
-        val expectedResult = PreRequisitesDomain(
-          ucr = Some(ucr),
-          countryOfDispatch = None,
-          countryOfDestination = Some(itemsDestinationCountry),
-          containerIndicator = OptionalBoolean.yes
-        )
-
-        val result = PreRequisitesDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
-
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
-          SameUcrYesNoPage,
-          UniqueConsignmentReferencePage,
-          TransportedToSameCountryYesNoPage,
-          ItemsDestinationCountryPage,
-          ContainerIndicatorPage
-        )
-      }
 
       "when TIR declaration type" - {
-        "when using the same country of dispatch in Transition" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, TIR)
-            .setValue(SameUcrYesNoPage, false)
-            .setValue(SameCountryOfDispatchYesNoPage, true)
-            .setValue(CountryOfDispatchPage, country)
-            .setValue(TransportedToSameCountryYesNoPage, true)
-            .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
-            .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-
-          val expectedResult = PreRequisitesDomain(
-            ucr = None,
-            countryOfDispatch = Some(country),
-            countryOfDestination = Some(itemsDestinationCountry),
-            containerIndicator = OptionalBoolean.yes
-          )
-
-          val result = PreRequisitesDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
-
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
-            SameUcrYesNoPage,
-            SameCountryOfDispatchYesNoPage,
-            CountryOfDispatchPage,
-            TransportedToSameCountryYesNoPage,
-            ItemsDestinationCountryPage,
-            ContainerIndicatorPage
-          )
-        }
-        "when using the same country of  in Post Transition" in {
+        "when using the same country of dispatch" in {
           val userAnswers = emptyUserAnswers
             .setValue(DeclarationTypePage, TIR)
             .setValue(SameUcrYesNoPage, false)
@@ -121,7 +57,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
             containerIndicator = OptionalBoolean.yes
           )
 
-          val result = PreRequisitesDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+          val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
           result.value.value mustBe expectedResult
           result.value.pages mustBe Seq(
@@ -135,35 +71,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
           )
         }
 
-        "when not using the same country of dispatch in Transition" in {
-          val userAnswers = emptyUserAnswers
-            .setValue(DeclarationTypePage, TIR)
-            .setValue(SameUcrYesNoPage, false)
-            .setValue(SameCountryOfDispatchYesNoPage, false)
-            .setValue(TransportedToSameCountryYesNoPage, true)
-            .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
-            .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-
-          val expectedResult = PreRequisitesDomain(
-            ucr = None,
-            countryOfDispatch = None,
-            countryOfDestination = Some(itemsDestinationCountry),
-            containerIndicator = OptionalBoolean.yes
-          )
-
-          val result = PreRequisitesDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
-
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
-            SameUcrYesNoPage,
-            SameCountryOfDispatchYesNoPage,
-            TransportedToSameCountryYesNoPage,
-            ItemsDestinationCountryPage,
-            ContainerIndicatorPage
-          )
-        }
-
-        "when not using the same country of dispatch in Post Transition" - {
+        "when not using the same country of dispatch" - {
           "goods transport to another country after transit" in {
             val userAnswers = emptyUserAnswers
               .setValue(DeclarationTypePage, TIR)
@@ -181,7 +89,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
               containerIndicator = OptionalBoolean.yes
             )
 
-            val result = PreRequisitesDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+            val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
             result.value.value mustBe expectedResult
             result.value.pages mustBe Seq(
@@ -211,7 +119,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
                   containerIndicator = OptionalBoolean.yes
                 )
 
-                val result = PreRequisitesDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(userAnswers)
+                val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
                 result.value.value mustBe expectedResult
                 result.value.pages mustBe Seq(
@@ -225,35 +133,9 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
         }
       }
 
-      "when not TIR declaration type in Transition" in {
-        val userAnswers = emptyUserAnswers
-          .setValue(DeclarationTypePage, T1)
-          .setValue(SameUcrYesNoPage, false)
-          .setValue(TransportedToSameCountryYesNoPage, true)
-          .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
-          .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-
-        val expectedResult = PreRequisitesDomain(
-          ucr = None,
-          countryOfDispatch = None,
-          countryOfDestination = Some(itemsDestinationCountry),
-          containerIndicator = OptionalBoolean.yes
-        )
-
-        val result = PreRequisitesDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(userAnswers)
-
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
-          SameUcrYesNoPage,
-          TransportedToSameCountryYesNoPage,
-          ItemsDestinationCountryPage,
-          ContainerIndicatorPage
-        )
-      }
-
       "can not be parsed from user answers" - {
         "when answers are empty" in {
-          val result = PreRequisitesDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(emptyUserAnswers)
+          val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
           result.left.value.page mustBe SameUcrYesNoPage
           result.left.value.pages mustBe Seq(
@@ -263,12 +145,13 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
 
         "when mandatory page is missing" - {
           "when TIR" - {
-            "Transition" in {
+            "same country of dispatch" in {
               val mandatoryPages: Seq[QuestionPage[?]] = Seq(
                 SameUcrYesNoPage,
                 UniqueConsignmentReferencePage,
                 SameCountryOfDispatchYesNoPage,
                 CountryOfDispatchPage,
+                AddCountryOfDestinationPage,
                 TransportedToSameCountryYesNoPage,
                 ItemsDestinationCountryPage,
                 ContainerIndicatorPage
@@ -289,19 +172,18 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
                 mandatoryPage =>
                   val updatedAnswers = userAnswers.removeValue(mandatoryPage)
 
-                  val result = PreRequisitesDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(updatedAnswers)
+                  val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(updatedAnswers)
 
                   result.left.value.page mustBe mandatoryPage
               }
             }
 
-            "Post Transition" - {
-              "same country of dispatch" in {
+            "when not same country of dispatch" - {
+              "goods transport to another country after transit" in {
                 val mandatoryPages: Seq[QuestionPage[?]] = Seq(
                   SameUcrYesNoPage,
                   UniqueConsignmentReferencePage,
                   SameCountryOfDispatchYesNoPage,
-                  CountryOfDispatchPage,
                   AddCountryOfDestinationPage,
                   TransportedToSameCountryYesNoPage,
                   ItemsDestinationCountryPage,
@@ -312,8 +194,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
                   .setValue(DeclarationTypePage, TIR)
                   .setValue(SameUcrYesNoPage, true)
                   .setValue(UniqueConsignmentReferencePage, ucr)
-                  .setValue(SameCountryOfDispatchYesNoPage, true)
-                  .setValue(CountryOfDispatchPage, country)
+                  .setValue(SameCountryOfDispatchYesNoPage, false)
                   .setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
                   .setValue(TransportedToSameCountryYesNoPage, true)
                   .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
@@ -323,136 +204,72 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
                   mandatoryPage =>
                     val updatedAnswers = userAnswers.removeValue(mandatoryPage)
 
-                    val result = PreRequisitesDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(updatedAnswers)
+                    val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(updatedAnswers)
 
                     result.left.value.page mustBe mandatoryPage
                 }
               }
 
-              "not same country of dispatch" - {
-                "goods transport to another country after transit" in {
-                  val mandatoryPages: Seq[QuestionPage[?]] = Seq(
-                    SameUcrYesNoPage,
-                    UniqueConsignmentReferencePage,
-                    SameCountryOfDispatchYesNoPage,
-                    AddCountryOfDestinationPage,
-                    TransportedToSameCountryYesNoPage,
-                    ItemsDestinationCountryPage,
-                    ContainerIndicatorPage
-                  )
+              "goods NOT transport to another country after transit" in {
+                forAll(Gen.oneOf(OptionalBoolean.no, OptionalBoolean.maybe)) {
+                  selection =>
+                    val mandatoryPages: Seq[QuestionPage[?]] = Seq(
+                      SameUcrYesNoPage,
+                      UniqueConsignmentReferencePage,
+                      SameCountryOfDispatchYesNoPage,
+                      AddCountryOfDestinationPage,
+                      ContainerIndicatorPage
+                    )
 
-                  val userAnswers = emptyUserAnswers
-                    .setValue(DeclarationTypePage, TIR)
-                    .setValue(SameUcrYesNoPage, true)
-                    .setValue(UniqueConsignmentReferencePage, ucr)
-                    .setValue(SameCountryOfDispatchYesNoPage, false)
-                    .setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
-                    .setValue(TransportedToSameCountryYesNoPage, true)
-                    .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
-                    .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+                    val userAnswers = emptyUserAnswers
+                      .setValue(DeclarationTypePage, TIR)
+                      .setValue(SameUcrYesNoPage, true)
+                      .setValue(UniqueConsignmentReferencePage, ucr)
+                      .setValue(SameCountryOfDispatchYesNoPage, false)
+                      .setValue(AddCountryOfDestinationPage, selection)
+                      .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
-                  mandatoryPages.map {
-                    mandatoryPage =>
-                      val updatedAnswers = userAnswers.removeValue(mandatoryPage)
+                    mandatoryPages.map {
+                      mandatoryPage =>
+                        val updatedAnswers = userAnswers.removeValue(mandatoryPage)
 
-                      val result = PreRequisitesDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(updatedAnswers)
+                        val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(updatedAnswers)
 
-                      result.left.value.page mustBe mandatoryPage
-                  }
-                }
-
-                "goods NOT transport to another country after transit" in {
-                  forAll(Gen.oneOf(OptionalBoolean.no, OptionalBoolean.maybe)) {
-                    selection =>
-                      val mandatoryPages: Seq[QuestionPage[?]] = Seq(
-                        SameUcrYesNoPage,
-                        UniqueConsignmentReferencePage,
-                        SameCountryOfDispatchYesNoPage,
-                        AddCountryOfDestinationPage,
-                        ContainerIndicatorPage
-                      )
-
-                      val userAnswers = emptyUserAnswers
-                        .setValue(DeclarationTypePage, TIR)
-                        .setValue(SameUcrYesNoPage, true)
-                        .setValue(UniqueConsignmentReferencePage, ucr)
-                        .setValue(SameCountryOfDispatchYesNoPage, false)
-                        .setValue(AddCountryOfDestinationPage, selection)
-                        .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-
-                      mandatoryPages.map {
-                        mandatoryPage =>
-                          val updatedAnswers = userAnswers.removeValue(mandatoryPage)
-
-                          val result = PreRequisitesDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(updatedAnswers)
-
-                          result.left.value.page mustBe mandatoryPage
-                      }
-                  }
+                        result.left.value.page mustBe mandatoryPage
+                    }
                 }
               }
             }
           }
 
-          "when non-TIR" - {
-            "Transition" in {
-              val mandatoryPages: Seq[QuestionPage[?]] = Seq(
-                SameUcrYesNoPage,
-                UniqueConsignmentReferencePage,
-                TransportedToSameCountryYesNoPage,
-                ItemsDestinationCountryPage,
-                ContainerIndicatorPage
-              )
+          "when non-TIR" in {
+            val mandatoryPages: Seq[QuestionPage[?]] = Seq(
+              SameUcrYesNoPage,
+              UniqueConsignmentReferencePage,
+              AddCountryOfDestinationPage,
+              TransportedToSameCountryYesNoPage,
+              ItemsDestinationCountryPage,
+              ContainerIndicatorPage
+            )
 
-              val userAnswers = emptyUserAnswers
-                .setValue(DeclarationTypePage, arbitrary[String](arbitraryNonTIRDeclarationType).sample.value)
-                .setValue(SameUcrYesNoPage, true)
-                .setValue(UniqueConsignmentReferencePage, ucr)
-                .setValue(SameCountryOfDispatchYesNoPage, false)
-                .setValue(CountryOfDispatchPage, country)
-                .setValue(TransportedToSameCountryYesNoPage, true)
-                .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
-                .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
+            val userAnswers = emptyUserAnswers
+              .setValue(DeclarationTypePage, arbitrary[String](arbitraryNonTIRDeclarationType).sample.value)
+              .setValue(SameUcrYesNoPage, true)
+              .setValue(UniqueConsignmentReferencePage, ucr)
+              .setValue(SameCountryOfDispatchYesNoPage, false)
+              .setValue(CountryOfDispatchPage, country)
+              .setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
+              .setValue(TransportedToSameCountryYesNoPage, true)
+              .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
+              .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
 
-              mandatoryPages.map {
-                mandatoryPage =>
-                  val updatedAnswers = userAnswers.removeValue(mandatoryPage)
+            mandatoryPages.map {
+              mandatoryPage =>
+                val updatedAnswers = userAnswers.removeValue(mandatoryPage)
 
-                  val result = PreRequisitesDomain.userAnswersReader(mockTransitionPhaseConfig).apply(Nil).run(updatedAnswers)
+                val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(updatedAnswers)
 
-                  result.left.value.page mustBe mandatoryPage
-              }
-            }
-
-            "Post Transition" in {
-              val mandatoryPages: Seq[QuestionPage[?]] = Seq(
-                SameUcrYesNoPage,
-                UniqueConsignmentReferencePage,
-                AddCountryOfDestinationPage,
-                TransportedToSameCountryYesNoPage,
-                ItemsDestinationCountryPage,
-                ContainerIndicatorPage
-              )
-
-              val userAnswers = emptyUserAnswers
-                .setValue(DeclarationTypePage, arbitrary[String](arbitraryNonTIRDeclarationType).sample.value)
-                .setValue(SameUcrYesNoPage, true)
-                .setValue(UniqueConsignmentReferencePage, ucr)
-                .setValue(SameCountryOfDispatchYesNoPage, false)
-                .setValue(CountryOfDispatchPage, country)
-                .setValue(AddCountryOfDestinationPage, OptionalBoolean.yes)
-                .setValue(TransportedToSameCountryYesNoPage, true)
-                .setValue(ItemsDestinationCountryPage, itemsDestinationCountry)
-                .setValue(ContainerIndicatorPage, OptionalBoolean.yes)
-
-              mandatoryPages.map {
-                mandatoryPage =>
-                  val updatedAnswers = userAnswers.removeValue(mandatoryPage)
-
-                  val result = PreRequisitesDomain.userAnswersReader(mockPostTransitionPhaseConfig).apply(Nil).run(updatedAnswers)
-
-                  result.left.value.page mustBe mandatoryPage
-              }
+                result.left.value.page mustBe mandatoryPage
             }
           }
         }

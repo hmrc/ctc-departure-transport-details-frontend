@@ -16,12 +16,12 @@
 
 package viewModels.transportMeans.active
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.Aliases.Content
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import utils.cyaHelpers.transportMeans.active.ActiveBorderTransportsAnswersHelper
 import viewModels.{AddAnotherViewModel, ListItem}
 
@@ -42,7 +42,7 @@ object AddAnotherBorderTransportViewModel {
 
   class AddAnotherBorderTransportViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
-    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig): AddAnotherBorderTransportViewModel = {
+    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherBorderTransportViewModel = {
       val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)
 
       val listItems = helper.listItems.collect {

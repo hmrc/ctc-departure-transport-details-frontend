@@ -16,7 +16,7 @@
 
 package controllers.transportMeans.departure
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions.*
 import controllers.{NavigatorOps, SettableOps, SettableOpsRunner}
 import forms.AddAnotherFormProvider
@@ -46,7 +46,7 @@ class AddAnotherDepartureTransportMeansController @Inject() (
   navigatorProvider: TransportMeansNavigatorProvider,
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherDepartureTransportMeansView
-)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

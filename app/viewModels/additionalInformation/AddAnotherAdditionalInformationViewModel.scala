@@ -16,7 +16,7 @@
 
 package viewModels.additionalInformation
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.additionalInformation.routes
 import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
@@ -38,7 +38,7 @@ case class AddAnotherAdditionalInformationViewModel(
 
 object AddAnotherAdditionalInformationViewModel {
 
-  class AddAnotherAdditionalInformationViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig, phaseConfig: PhaseConfig) {
+  class AddAnotherAdditionalInformationViewModelProvider @Inject() (implicit appConfig: FrontendAppConfig) {
 
     def apply(userAnswers: UserAnswers, mode: Mode)(implicit
       messages: Messages

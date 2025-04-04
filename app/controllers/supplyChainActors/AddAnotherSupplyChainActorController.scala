@@ -16,7 +16,7 @@
 
 package controllers.supplyChainActors
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import controllers.actions.*
 import controllers.supplyChainActors.index.routes as supplyChainActorRoutes
 import controllers.supplyChainActors.routes as supplyChainActorsRoutes
@@ -46,7 +46,7 @@ class AddAnotherSupplyChainActorController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AddAnotherSupplyChainActorView,
   viewModelProvider: AddAnotherSupplyChainActorViewModelProvider
-)(implicit ec: ExecutionContext, config: FrontendAppConfig, phaseConfig: PhaseConfig)
+)(implicit ec: ExecutionContext, config: FrontendAppConfig)
     extends FrontendBaseController
     with I18nSupport {
 

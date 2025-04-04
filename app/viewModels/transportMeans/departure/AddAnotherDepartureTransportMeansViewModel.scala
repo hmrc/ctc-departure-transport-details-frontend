@@ -16,7 +16,7 @@
 
 package viewModels.transportMeans.departure
 
-import config.{FrontendAppConfig, PhaseConfig}
+import config.FrontendAppConfig
 import models.{Mode, UserAnswers}
 import pages.transportMeans.InlandModePage
 import play.api.i18n.Messages
@@ -44,7 +44,7 @@ object AddAnotherDepartureTransportMeansViewModel {
 
   class AddAnotherDepartureTransportMeansViewModelProvider @Inject() (implicit config: FrontendAppConfig) {
 
-    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages, phaseConfig: PhaseConfig): AddAnotherDepartureTransportMeansViewModel = {
+    def apply(userAnswers: UserAnswers, mode: Mode)(implicit messages: Messages): AddAnotherDepartureTransportMeansViewModel = {
       val isRoadInlandMode: Boolean = userAnswers.get(InlandModePage).exists(_.code == "3")
 
       val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)
