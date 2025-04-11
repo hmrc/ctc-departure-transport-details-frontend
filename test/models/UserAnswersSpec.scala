@@ -130,20 +130,22 @@ class UserAnswersSpec extends SpecBase {
         val data = Json
           .parse(s"""
             |{
-            |  "items" : [
-            |    {
-            |      "description" : "item1",
-            |      "transportEquipment" : "$uuid"
-            |    },
-            |    {
-            |      "description" : "item2",
-            |      "transportEquipment" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
-            |    },
-            |    {
-            |      "description" : "item3",
-            |      "transportEquipment" : "ac50154c-cad1-4320-8def-d282eea63b2e"
-            |    }
-            |  ]
+            |  "items" : {
+            |    "items" : [
+            |      {
+            |        "description" : "item1",
+            |        "transportEquipment" : "$uuid"
+            |      },
+            |      {
+            |        "description" : "item2",
+            |        "transportEquipment" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+            |      },
+            |      {
+            |        "description" : "item3",
+            |        "transportEquipment" : "ac50154c-cad1-4320-8def-d282eea63b2e"
+            |      }
+            |    ]
+            |  }
             |}
             |""".stripMargin)
           .as[JsObject]
@@ -155,19 +157,21 @@ class UserAnswersSpec extends SpecBase {
         val expectedResult = Json
           .parse(s"""
             |{
-            |  "items" : [
-            |    {
-            |      "description" : "item1"
-            |    },
-            |    {
-            |      "description" : "item2",
-            |      "transportEquipment" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
-            |    },
-            |    {
-            |      "description" : "item3",
-            |      "transportEquipment" : "ac50154c-cad1-4320-8def-d282eea63b2e"
-            |    }
-            |  ]
+            |  "items" : {
+            |    "items" : [
+            |      {
+            |        "description" : "item1"
+            |      },
+            |      {
+            |        "description" : "item2",
+            |        "transportEquipment" : "a573bfd3-6470-40c4-a290-ea2d8d43c02a"
+            |      },
+            |      {
+            |        "description" : "item3",
+            |        "transportEquipment" : "ac50154c-cad1-4320-8def-d282eea63b2e"
+            |      }
+            |    ]
+            |  }
             |}
             |""".stripMargin)
           .as[JsObject]
