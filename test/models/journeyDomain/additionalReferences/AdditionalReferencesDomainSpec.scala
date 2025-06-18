@@ -22,7 +22,6 @@ import models.Index
 import org.scalacheck.Gen
 import pages.additionalReference.AddAnotherAdditionalReferencePage
 import pages.additionalReference.index.AdditionalReferenceTypePage
-import pages.sections.additionalReference.AdditionalReferencesSection
 
 class AdditionalReferencesDomainSpec extends SpecBase with Generators {
 

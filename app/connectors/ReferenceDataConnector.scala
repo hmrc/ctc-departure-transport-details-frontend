@@ -43,7 +43,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   private def get[T](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Responses[T]] =
     http
       .get(url)
-      .setHeader(version2Header*)
+      .setHeader(version1Header*)
       .execute[Responses[T]]
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Country]] = {
@@ -110,8 +110,8 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
 
   }
 
-  private def version2Header: Seq[(String, String)] = Seq(
-    HeaderNames.Accept -> "application/vnd.hmrc.2.0+json"
+  private def version1Header: Seq[(String, String)] = Seq(
+    HeaderNames.Accept -> "application/vnd.hmrc.1.0+json"
   )
 
   implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[Either[Exception, NonEmptySet[A]]] =
