@@ -43,8 +43,11 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   private def get[T](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Responses[T]] =
     http
       .get(url)
-      .setHeader(version1Header*)
+      .setHeader(HeaderNames.Accept -> "application/vnd.hmrc.1.0+json")
       .execute[Responses[T]]
+
+  private def getOne[T](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Response[T]] =
+    get[T](url).map(_.map(_.head))
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Country]] = {
     val url = url"${config.referenceDataUrl}/lists/CountryCodesFullList"
@@ -59,9 +62,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getCountryCodesCommonTransitCountry(code: String)(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Response[Country]] = {
     val queryParameters = Seq("data.code" -> code)
     val url             = url"${config.referenceDataUrl}/lists/CountryCodesCommonTransit?$queryParameters"
-    get[Country](url)
-      .map(_.map(_.head))
-
+    getOne[Country](url)
   }
 
   def getTransportModeCodes[T <: ModeOfTransport[T]]()(implicit
@@ -107,12 +108,7 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   def getAdditionalInformationCodes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[AdditionalInformationCode]] = {
     val url = url"${config.referenceDataUrl}/lists/AdditionalInformation"
     get[AdditionalInformationCode](url)
-
   }
-
-  private def version1Header: Seq[(String, String)] = Seq(
-    HeaderNames.Accept -> "application/vnd.hmrc.1.0+json"
-  )
 
   implicit def responseHandlerGeneric[A](implicit reads: Reads[A], order: Order[A]): HttpReads[Either[Exception, NonEmptySet[A]]] =
     (_: String, url: String, response: HttpResponse) =>
