@@ -17,7 +17,7 @@
 package connectors
 
 import cats.data.NonEmptySet
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, get, okJson, urlEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, equalTo, get, okJson, urlEqualTo}
 import connectors.ReferenceDataConnector.NoReferenceDataFoundException
 import itbase.{ItSpecBase, WireMockServerHandler}
 import models.reference.*
@@ -198,6 +198,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
         server.stubFor(
           get(urlEqualTo(str))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
             .willReturn(okJson(countryResponseJson))
         )
 
@@ -251,6 +252,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         "must return Seq of InlandMode when successful" in {
           server.stubFor(
             get(urlEqualTo(url))
+              .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
               .willReturn(okJson(transportModeCodesResponseJson))
           )
 
@@ -276,6 +278,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
         "must return Seq of BorderMode when successful" in {
           server.stubFor(
             get(urlEqualTo(url))
+              .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
               .willReturn(okJson(transportModeCodesResponseJson))
           )
 
@@ -329,6 +332,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
             .willReturn(okJson(identificationCodesDepartureResponseJson))
         )
 
@@ -381,6 +385,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
             .willReturn(okJson(identificationCodesActiveResponseJson))
         )
 
@@ -433,6 +438,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
             .willReturn(okJson(supplyChainActorTypesResponseJson))
         )
 
@@ -485,6 +491,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
             .willReturn(okJson(authorisationTypesResponseJson))
         )
 
@@ -540,6 +547,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
             .willReturn(okJson(paymentMethodsResponseJson))
         )
 
@@ -593,6 +601,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
             .willReturn(okJson(additionalReferenceJson))
         )
 
@@ -646,6 +655,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
 
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
             .willReturn(okJson(additionalInformationJson))
         )
 
@@ -671,6 +681,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
   private def checkNoReferenceDataFoundResponse(url: String, result: => Future[Either[Exception, ?]]): Assertion = {
     server.stubFor(
       get(urlEqualTo(url))
+        .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
         .willReturn(okJson(emptyResponseJson))
     )
 
@@ -684,6 +695,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
       errorResponse =>
         server.stubFor(
           get(urlEqualTo(url))
+            .withHeader("Accept", equalTo("application/vnd.hmrc.1.0+json"))
             .willReturn(
               aResponse()
                 .withStatus(errorResponse)

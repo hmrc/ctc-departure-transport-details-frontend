@@ -22,7 +22,6 @@ import models.Index
 import org.scalacheck.Gen
 import pages.additionalInformation.AddAnotherAdditionalInformationPage
 import pages.additionalInformation.index.AdditionalInformationTypePage
-import pages.sections.additionalInformation.AdditionalInformationListSection
 
 class AdditionalInformationsDomainSpec extends SpecBase with Generators {
 
