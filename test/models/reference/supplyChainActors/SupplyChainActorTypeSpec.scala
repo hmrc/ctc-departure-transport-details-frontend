@@ -17,9 +17,11 @@
 package models.reference.supplyChainActors
 
 import base.SpecBase
+import config.FrontendAppConfig
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
+import play.api.test.Helpers.running
 
 class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
@@ -38,18 +40,60 @@ class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
     }
 
-    "must deserialise" in {
+    "must deserialise" - {
+      "when phase- 6" in {
+        running(_.configure("feature-flags.phase-6-enabled" -> true)) {
+          app =>
+            val config = app.injector.instanceOf[FrontendAppConfig]
+            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+              (code, description) =>
+                val supplyChainActorType = SupplyChainActorType(code, description)
+                Json
+                  .parse(s"""
+                       |{
+                       |  "key": "$code",
+                       |  "value": "$description"
+                       |}
+                       |""".stripMargin)
+                  .as[SupplyChainActorType](SupplyChainActorType.reads(config)) mustEqual supplyChainActorType
+            }
+        }
+
+      }
+      "when phase- 5" in {
+        running(_.configure("feature-flags.phase-6-enabled" -> false)) {
+          app =>
+            val config = app.injector.instanceOf[FrontendAppConfig]
+            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+              (code, description) =>
+                val supplyChainActorType = SupplyChainActorType(code, description)
+                Json
+                  .parse(s"""
+                       |{
+                       |  "role": "$code",
+                       |  "description": "$description"
+                       |}
+                       |""".stripMargin)
+                  .as[SupplyChainActorType](SupplyChainActorType.reads(config)) mustEqual supplyChainActorType
+            }
+        }
+
+      }
+    }
+
+    "must read from mongo" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val supplyChainActorType = SupplyChainActorType(code, description)
+          val country = SupplyChainActorType(code, description)
           Json
             .parse(s"""
-                      |{
-                      |  "role": "$code",
-                      |  "description": "$description"
-                      |}
-                      |""".stripMargin)
-            .as[SupplyChainActorType] mustBe supplyChainActorType
+                 | {
+                 | "role" :"$code",
+                 | "description": "$description"
+                 | }
+                 |""".stripMargin)
+            .as[SupplyChainActorType] mustEqual country
+
       }
     }
 

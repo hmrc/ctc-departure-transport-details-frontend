@@ -40,22 +40,29 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClientV2) extends Logging {
 
+  private val versionHeader = config.phase6Enabled match {
+    case true  => "application/vnd.hmrc.2.0+json"
+    case false => "application/vnd.hmrc.1.0+json"
+  }
+
   private def get[T](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Responses[T]] =
     http
       .get(url)
-      .setHeader(HeaderNames.Accept -> "application/vnd.hmrc.1.0+json")
+      .setHeader(HeaderNames.Accept -> versionHeader)
       .execute[Responses[T]]
 
   private def getOne[T](url: URL)(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[Responses[T]]): Future[Response[T]] =
     get[T](url).map(_.map(_.head))
 
   def getCountries()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Country]] = {
-    val url = url"${config.referenceDataUrl}/lists/CountryCodesFullList"
+    val url                            = url"${config.referenceDataUrl}/lists/CountryCodesFullList"
+    implicit val reads: Reads[Country] = Country.reads(config)
     get[Country](url)
   }
 
   def getNationalities()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[Nationality]] = {
-    val url = url"${config.referenceDataUrl}/lists/Nationality"
+    val url                                = url"${config.referenceDataUrl}/lists/Nationality"
+    implicit val reads: Reads[Nationality] = Nationality.reads(config)
     get[Nationality](url)
   }
 
@@ -76,12 +83,14 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
   }
 
   def getMeansOfTransportIdentificationTypes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[departure.Identification]] = {
-    val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
+    val url                                             = url"${config.referenceDataUrl}/lists/TypeOfIdentificationOfMeansOfTransport"
+    implicit val reads: Reads[departure.Identification] = departure.Identification.reads(config)
     get[departure.Identification](url)
   }
 
   def getMeansOfTransportIdentificationTypesActive()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[active.Identification]] = {
-    val url = url"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
+    val url                                          = url"${config.referenceDataUrl}/lists/TypeOfIdentificationofMeansOfTransportActive"
+    implicit val reads: Reads[active.Identification] = active.Identification.reads(config)
     get[active.Identification](url)
   }
 
@@ -114,7 +123,8 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     (_: String, url: String, response: HttpResponse) =>
       response.status match {
         case OK =>
-          (response.json \ "data").validate[List[A]] match {
+          val json = if (config.phase6Enabled) response.json else response.json \ "data"
+          json.validate[List[A]] match {
             case JsSuccess(Nil, _) =>
               Left(NoReferenceDataFoundException(url))
             case JsSuccess(head :: tail, _) =>

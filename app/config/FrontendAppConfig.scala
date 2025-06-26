@@ -25,6 +25,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   val appName: String = configuration.get[String]("appName")
 
+  val phase6Enabled: Boolean = configuration.get[Boolean]("feature-flags.phase-6-enabled")
+
   lazy val limitDateDaysBefore: Int = configuration.get[Int]("dates.limitDate.daysBefore")
   lazy val limitDateDaysAfter: Int  = configuration.get[Int]("dates.limitDate.daysAfter")
 
