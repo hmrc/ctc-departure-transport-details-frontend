@@ -17,12 +17,14 @@
 package models.reference.authorisations
 
 import cats.Order
-import config.Constants.AuthorisationType._
+import config.Constants.AuthorisationType.*
+import config.FrontendAppConfig
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.i18n.Messages
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{__, Format, Json, Reads}
 import models.reference.RichComparison
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 
 case class AuthorisationType(code: String, description: String) extends Radioable[AuthorisationType] {
 
@@ -44,6 +46,16 @@ case class AuthorisationType(code: String, description: String) extends Radioabl
 }
 
 object AuthorisationType extends DynamicEnumerableType[AuthorisationType] {
+
+  def reads(config: FrontendAppConfig): Reads[AuthorisationType] =
+    if (config.phase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(AuthorisationType.apply)
+    } else {
+      Json.reads[AuthorisationType]
+    }
   implicit val format: Format[AuthorisationType] = Json.format[AuthorisationType]
 
   implicit val order: Order[AuthorisationType] = (x: AuthorisationType, y: AuthorisationType) => (x, y).compareBy(_.code)

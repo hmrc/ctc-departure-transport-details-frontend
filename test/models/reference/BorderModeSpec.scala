@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package models.reference.authorisations
+package models.reference
 
 import base.SpecBase
 import config.FrontendAppConfig
@@ -23,31 +23,30 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 import play.api.test.Helpers.running
 
-class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
+class BorderModeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
-  "AuthorisationType" - {
-
+  "BorderMode" - {
     "must serialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val authorisationType = AuthorisationType(code, description)
-          Json.toJson(authorisationType) mustEqual Json.parse(s"""
-               |{
-               |  "code": "$code",
-               |  "description": "$description"
-               |}
-               |""".stripMargin)
+          val borderMode = BorderMode(code, description)
+          Json.toJson(borderMode) mustEqual Json.parse(s"""
+                                                            |{
+                                                            |  "code": "$code",
+                                                            |  "description": "$description"
+                                                            |}
+                                                            |""".stripMargin)
       }
     }
 
     "must deserialise" - {
-      "when phase-6" in {
+      "when phase -6" in {
         running(_.configure("feature-flags.phase-6-enabled" -> true)) {
           app =>
             val config = app.injector.instanceOf[FrontendAppConfig]
             forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
               (code, description) =>
-                val authorisationType = AuthorisationType(code, description)
+                val borderMode = BorderMode(code, description)
                 Json
                   .parse(s"""
                        |{
@@ -55,18 +54,18 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
                        |  "value": "$description"
                        |}
                        |""".stripMargin)
-                  .as[AuthorisationType](AuthorisationType.reads(config)) mustEqual authorisationType
+                  .as[BorderMode](BorderMode.reads(config)) mustEqual borderMode
             }
-
         }
+
       }
-      "when phase-5" in {
+      "when phase -5" in {
         running(_.configure("feature-flags.phase-6-enabled" -> false)) {
           app =>
             val config = app.injector.instanceOf[FrontendAppConfig]
             forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
               (code, description) =>
-                val authorisationType = AuthorisationType(code, description)
+                val borderMode = BorderMode(code, description)
                 Json
                   .parse(s"""
                        |{
@@ -74,39 +73,39 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
                        |  "description": "$description"
                        |}
                        |""".stripMargin)
-                  .as[AuthorisationType](AuthorisationType.reads(config)) mustEqual authorisationType
+                  .as[BorderMode](BorderMode.reads(config)) mustEqual borderMode
             }
-
         }
+
       }
 
     }
     "must read from mongo" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val authorisationType = AuthorisationType(code, description)
+          val borderMode = BorderMode(code, description)
           Json
             .parse(s"""
-                   |{
-                   |  "code": "$code",
-                   |  "description": "$description"
-                   |}
-                   |""".stripMargin)
-            .as[AuthorisationType] mustEqual authorisationType
+                 |{
+                 |  "code": "$code",
+                 |  "description": "$description"
+                 |}
+                 |""".stripMargin)
+            .as[BorderMode] mustEqual borderMode
       }
     }
 
     "must format as string" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
-          val authorisationType = AuthorisationType(code, description)
-          authorisationType.toString mustBe s"$description"
+          val borderMode = BorderMode(code, description)
+          borderMode.toString mustBe s"$description"
       }
     }
 
     "when description contains raw HTML" in {
-      val authorisationType = AuthorisationType("test", "one &amp; two")
-      authorisationType.toString mustBe "one & two"
+      val borderMode = BorderMode("test", "one &amp; two")
+      borderMode.toString mustBe "one & two"
     }
   }
 

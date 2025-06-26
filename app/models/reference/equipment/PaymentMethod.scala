@@ -17,10 +17,12 @@
 package models.reference.equipment
 
 import cats.Order
+import config.FrontendAppConfig
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{__, Format, Json, Reads}
 import models.reference.RichComparison
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 
 case class PaymentMethod(method: String, description: String) extends Radioable[PaymentMethod] {
 
@@ -33,6 +35,16 @@ case class PaymentMethod(method: String, description: String) extends Radioable[
 }
 
 object PaymentMethod extends DynamicEnumerableType[PaymentMethod] {
+
+  def reads(config: FrontendAppConfig): Reads[PaymentMethod] =
+    if (config.phase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(PaymentMethod.apply)
+    } else {
+      Json.reads[PaymentMethod]
+    }
   implicit val format: Format[PaymentMethod] = Json.format[PaymentMethod]
 
   implicit val order: Order[PaymentMethod] = (x: PaymentMethod, y: PaymentMethod) => (x, y).compareBy(_.method)
