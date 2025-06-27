@@ -420,7 +420,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
                   InlandMode("2", "Rail")
                 )
 
-                connector.getTransportModeCodes[InlandMode]().futureValue.value mustEqual expectedResult
+                connector.getInlandModes().futureValue.value mustEqual expectedResult
             }
 
           }
@@ -429,13 +429,13 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             running(phase6App) {
               app =>
                 val connector = app.injector.instanceOf[ReferenceDataConnector]
-                checkNoReferenceDataFoundResponse(url, emptyPhase6ResponseJson, connector.getTransportModeCodes[InlandMode]())
+                checkNoReferenceDataFoundResponse(url, emptyPhase6ResponseJson, connector.getInlandModes())
             }
 
           }
 
           "must return an exception when an error response is returned" in {
-            checkErrorResponse(url, connector.getTransportModeCodes[InlandMode]())
+            checkErrorResponse(url, connector.getInlandModes())
           }
         }
         "when phase-5" - {
@@ -479,17 +479,17 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
                   InlandMode("2", "Rail")
                 )
 
-                connector.getTransportModeCodes[InlandMode]().futureValue.value mustEqual expectedResult
+                connector.getInlandModes().futureValue.value mustEqual expectedResult
             }
 
           }
 
           "must throw a NoReferenceDataFoundException for an empty response" in {
-            checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getTransportModeCodes[InlandMode]())
+            checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getInlandModes())
           }
 
           "must return an exception when an error response is returned" in {
-            checkErrorResponse(url, connector.getTransportModeCodes[InlandMode]())
+            checkErrorResponse(url, connector.getInlandModes())
           }
         }
 
@@ -525,7 +525,7 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
                   BorderMode("2", "Rail")
                 )
 
-                connector.getTransportModeCodes[BorderMode]().futureValue.value mustEqual expectedResult
+                connector.getBorderModes().futureValue.value mustEqual expectedResult
             }
 
           }
@@ -534,12 +534,12 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
             running(phase6App) {
               app =>
                 val connector = app.injector.instanceOf[ReferenceDataConnector]
-                checkNoReferenceDataFoundResponse(url, emptyPhase6ResponseJson, connector.getTransportModeCodes[BorderMode]())
+                checkNoReferenceDataFoundResponse(url, emptyPhase6ResponseJson, connector.getBorderModes())
             }
           }
 
           "must return an exception when an error response is returned" in {
-            checkErrorResponse(url, connector.getTransportModeCodes[BorderMode]())
+            checkErrorResponse(url, connector.getBorderModes())
           }
         }
         "when phase-5" - {
@@ -584,17 +584,17 @@ class ReferenceDataConnectorSpec extends ItSpecBase with WireMockServerHandler w
                   BorderMode("2", "Rail")
                 )
 
-                connector.getTransportModeCodes[BorderMode]().futureValue.value mustEqual expectedResult
+                connector.getBorderModes().futureValue.value mustEqual expectedResult
             }
 
           }
 
           "must throw a NoReferenceDataFoundException for an empty response" in {
-            checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getTransportModeCodes[BorderMode]())
+            checkNoReferenceDataFoundResponse(url, emptyPhase5ResponseJson, connector.getBorderModes())
           }
 
           "must return an exception when an error response is returned" in {
-            checkErrorResponse(url, connector.getTransportModeCodes[BorderMode]())
+            checkErrorResponse(url, connector.getBorderModes())
           }
         }
 

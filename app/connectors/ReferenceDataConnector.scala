@@ -37,7 +37,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse, StringContextOp
 import java.net.URL
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.reflect.ClassTag
 
 class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpClientV2) extends Logging {
 
@@ -74,17 +73,23 @@ class ReferenceDataConnector @Inject() (config: FrontendAppConfig, http: HttpCli
     getOne[Country](url)
   }
 
-  def getTransportModeCodes[T <: ModeOfTransport[T]]()(implicit
+  def getBorderModes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[BorderMode]] = {
+    implicit val reads: Reads[BorderMode] = BorderMode.reads(config)
+    getTransportModeCodes()
+  }
+
+  def getInlandModes()(implicit ec: ExecutionContext, hc: HeaderCarrier): Future[Responses[InlandMode]] = {
+    implicit val reads: Reads[InlandMode] = InlandMode.reads(config)
+    getTransportModeCodes()
+  }
+
+  private def getTransportModeCodes[T <: ModeOfTransport[T]]()(implicit
     ec: ExecutionContext,
     hc: HeaderCarrier,
-    typeTag: ClassTag[T],
+    reads: Reads[T],
     order: Order[T]
   ): Future[Responses[T]] = {
     val url = url"${config.referenceDataUrl}/lists/TransportModeCode"
-    implicit val reads: Reads[T] = typeTag.runtimeClass match {
-      case inLandMode if inLandMode == classOf[InlandMode] => InlandMode.reads(config).asInstanceOf[Reads[T]]
-      case borderMode if borderMode == classOf[BorderMode] => BorderMode.reads(config).asInstanceOf[Reads[T]]
-    }
     get[T](url)
   }
 
