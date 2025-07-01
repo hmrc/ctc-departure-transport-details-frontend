@@ -17,10 +17,12 @@
 package models.reference.supplyChainActors
 
 import cats.Order
+import config.FrontendAppConfig
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{__, Format, Json, Reads}
 import models.reference.RichComparison
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 
 case class SupplyChainActorType(role: String, description: String) extends Radioable[SupplyChainActorType] {
 
@@ -33,6 +35,17 @@ case class SupplyChainActorType(role: String, description: String) extends Radio
 }
 
 object SupplyChainActorType extends DynamicEnumerableType[SupplyChainActorType] {
+
+  def reads(config: FrontendAppConfig): Reads[SupplyChainActorType] =
+    if (config.phase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(SupplyChainActorType.apply)
+    } else {
+      Json.reads[SupplyChainActorType]
+    }
+
   implicit val format: Format[SupplyChainActorType] = Json.format[SupplyChainActorType]
 
   implicit val order: Order[SupplyChainActorType] = (x: SupplyChainActorType, y: SupplyChainActorType) => (x, y).compareBy(_.role)

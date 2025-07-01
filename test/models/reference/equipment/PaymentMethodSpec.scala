@@ -17,9 +17,11 @@
 package models.reference.equipment
 
 import base.SpecBase
+import config.FrontendAppConfig
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
+import play.api.test.Helpers.running
 
 class PaymentMethodSpec extends SpecBase with ScalaCheckPropertyChecks {
 
@@ -29,7 +31,7 @@ class PaymentMethodSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val paymentMethod = PaymentMethod(code, description)
-          Json.toJson(paymentMethod) mustBe Json.parse(s"""
+          Json.toJson(paymentMethod) mustEqual Json.parse(s"""
                |{
                |  "method": "$code",
                |  "description": "$description"
@@ -38,7 +40,48 @@ class PaymentMethodSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
     }
 
-    "must deserialise" in {
+    "must deserialise" - {
+      "when phase-6" in {
+        running(_.configure("feature-flags.phase-6-enabled" -> true)) {
+          app =>
+            val config = app.injector.instanceOf[FrontendAppConfig]
+            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+              (code, description) =>
+                val paymentMethod = PaymentMethod(code, description)
+                Json
+                  .parse(s"""
+                       |{
+                       |  "key": "$code",
+                       |  "value": "$description"
+                       |}
+                       |""".stripMargin)
+                  .as[PaymentMethod](PaymentMethod.reads(config)) mustEqual paymentMethod
+            }
+        }
+
+      }
+      "when phase-5" in {
+        running(_.configure("feature-flags.phase-6-enabled" -> false)) {
+          app =>
+            val config = app.injector.instanceOf[FrontendAppConfig]
+            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+              (code, description) =>
+                val paymentMethod = PaymentMethod(code, description)
+                Json
+                  .parse(s"""
+                       |{
+                       |  "method": "$code",
+                       |  "description": "$description"
+                       |}
+                       |""".stripMargin)
+                  .as[PaymentMethod](PaymentMethod.reads(config)) mustEqual paymentMethod
+            }
+        }
+
+      }
+    }
+
+    "must read from mongo" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val paymentMethod = PaymentMethod(code, description)
@@ -49,7 +92,7 @@ class PaymentMethodSpec extends SpecBase with ScalaCheckPropertyChecks {
                  |  "description": "$description"
                  |}
                  |""".stripMargin)
-            .as[PaymentMethod] mustBe paymentMethod
+            .as[PaymentMethod] mustEqual paymentMethod
       }
     }
 

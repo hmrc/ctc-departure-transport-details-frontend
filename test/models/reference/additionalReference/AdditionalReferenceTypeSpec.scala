@@ -17,11 +17,13 @@
 package models.reference.additionalReference
 
 import base.SpecBase
+import config.FrontendAppConfig
 import generators.Generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
+import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class AdditionalReferenceTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -41,18 +43,59 @@ class AdditionalReferenceTypeSpec extends SpecBase with ScalaCheckPropertyChecks
       }
     }
 
-    "must deserialise" in {
+    "must deserialise" - {
+      "when phase-6" in {
+        running(_.configure("feature-flags.phase-6-enabled" -> true)) {
+          app =>
+            val config = app.injector.instanceOf[FrontendAppConfig]
+            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+              (docType, description) =>
+                val additionalReferenceType = AdditionalReferenceType(docType, description)
+                Json
+                  .parse(s"""
+                       |{
+                       |  "key": "$docType",
+                       |  "value": "$description"
+                       |}
+                       |""".stripMargin)
+                  .as[AdditionalReferenceType](AdditionalReferenceType.reads(config)) mustEqual additionalReferenceType
+            }
+        }
+
+      }
+      "when phase-5" in {
+        running(_.configure("feature-flags.phase-6-enabled" -> false)) {
+          app =>
+            val config = app.injector.instanceOf[FrontendAppConfig]
+            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+              (docType, description) =>
+                val additionalReferenceType = AdditionalReferenceType(docType, description)
+                Json
+                  .parse(s"""
+                       |{
+                       |  "documentType": "$docType",
+                       |  "description": "$description"
+                       |}
+                       |""".stripMargin)
+                  .as[AdditionalReferenceType](AdditionalReferenceType.reads(config)) mustEqual additionalReferenceType
+            }
+        }
+
+      }
+
+    }
+    "must read from mongo" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (docType, description) =>
           val additionalReferenceType = AdditionalReferenceType(docType, description)
           Json
             .parse(s"""
-              |{
-              |  "documentType": "$docType",
-              |  "description": "$description"
-              |}
-              |""".stripMargin)
-            .as[AdditionalReferenceType] mustBe additionalReferenceType
+                 |{
+                 |  "documentType": "$docType",
+                 |  "description": "$description"
+                 |}
+                 |""".stripMargin)
+            .as[AdditionalReferenceType] mustEqual additionalReferenceType
       }
     }
 

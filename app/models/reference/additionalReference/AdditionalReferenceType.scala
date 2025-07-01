@@ -17,9 +17,11 @@
 package models.reference.additionalReference
 
 import cats.Order
+import config.FrontendAppConfig
 import models.Selectable
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{__, Format, Json, Reads}
 import models.reference.RichComparison
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 
 case class AdditionalReferenceType(documentType: String, description: String) extends Selectable {
 
@@ -29,6 +31,16 @@ case class AdditionalReferenceType(documentType: String, description: String) ex
 }
 
 object AdditionalReferenceType {
+
+  def reads(config: FrontendAppConfig): Reads[AdditionalReferenceType] =
+    if (config.phase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(AdditionalReferenceType.apply)
+    } else {
+      Json.reads[AdditionalReferenceType]
+    }
   implicit val format: Format[AdditionalReferenceType] = Json.format[AdditionalReferenceType]
 
   implicit val order: Order[AdditionalReferenceType] = (x: AdditionalReferenceType, y: AdditionalReferenceType) =>

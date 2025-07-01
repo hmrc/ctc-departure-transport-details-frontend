@@ -17,9 +17,11 @@
 package models.reference
 
 import base.SpecBase
+import config.FrontendAppConfig
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
+import play.api.test.Helpers.running
 
 class InlandModeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
@@ -29,7 +31,7 @@ class InlandModeSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val inlandMode = InlandMode(code, description)
-          Json.toJson(inlandMode) mustBe Json.parse(s"""
+          Json.toJson(inlandMode) mustEqual Json.parse(s"""
                                                             |{
                                                             |  "code": "$code",
                                                             |  "description": "$description"
@@ -38,18 +40,59 @@ class InlandModeSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
     }
 
-    "must deserialise" in {
+    "must deserialise" - {
+      "when phase -6" in {
+        running(_.configure("feature-flags.phase-6-enabled" -> true)) {
+          app =>
+            val config = app.injector.instanceOf[FrontendAppConfig]
+            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+              (code, description) =>
+                val inlandMode = InlandMode(code, description)
+                Json
+                  .parse(s"""
+                       |{
+                       |  "key": "$code",
+                       |  "value": "$description"
+                       |}
+                       |""".stripMargin)
+                  .as[InlandMode](InlandMode.reads(config)) mustEqual inlandMode
+            }
+        }
+
+      }
+      "when phase -5" in {
+        running(_.configure("feature-flags.phase-6-enabled" -> false)) {
+          app =>
+            val config = app.injector.instanceOf[FrontendAppConfig]
+            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+              (code, description) =>
+                val inlandMode = InlandMode(code, description)
+                Json
+                  .parse(s"""
+                       |{
+                       |  "code": "$code",
+                       |  "description": "$description"
+                       |}
+                       |""".stripMargin)
+                  .as[InlandMode](InlandMode.reads(config)) mustEqual inlandMode
+            }
+        }
+
+      }
+
+    }
+    "must read from mongo" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val inlandMode = InlandMode(code, description)
           Json
             .parse(s"""
-                      |{
-                      |  "code": "$code",
-                      |  "description": "$description"
-                      |}
-                      |""".stripMargin)
-            .as[InlandMode] mustBe inlandMode
+                 |{
+                 |  "code": "$code",
+                 |  "description": "$description"
+                 |}
+                 |""".stripMargin)
+            .as[InlandMode] mustEqual inlandMode
       }
     }
 

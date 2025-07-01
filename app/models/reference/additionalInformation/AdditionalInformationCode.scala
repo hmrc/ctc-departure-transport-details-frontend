@@ -17,10 +17,11 @@
 package models.reference.additionalInformation
 
 import cats.Order
+import config.FrontendAppConfig
 import models.Selectable
-
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{__, Format, Json, Reads}
 import models.reference.RichComparison
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
 
 case class AdditionalInformationCode(code: String, description: String) extends Selectable {
 
@@ -30,6 +31,16 @@ case class AdditionalInformationCode(code: String, description: String) extends 
 }
 
 object AdditionalInformationCode {
+
+  def reads(config: FrontendAppConfig): Reads[AdditionalInformationCode] =
+    if (config.phase6Enabled) {
+      (
+        (__ \ "key").read[String] and
+          (__ \ "value").read[String]
+      )(AdditionalInformationCode.apply)
+    } else {
+      Json.reads[AdditionalInformationCode]
+    }
 
   implicit val format: Format[AdditionalInformationCode] = Json.format[AdditionalInformationCode]
 
