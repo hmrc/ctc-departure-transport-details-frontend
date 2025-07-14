@@ -233,7 +233,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
             .setValue(ProcedureTypePage, Normal)
 
           val result = TransportDomain.authorisationsAndLimitReads.apply(Nil).run(userAnswers)
-          result.value.value mustBe None
+          result.value.value must not be defined
           result.value.pages mustBe Nil
         }
       }

@@ -70,7 +70,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.usingSameUcr
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -83,7 +83,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.usingSameUcr.get
 
-              result.key.value mustBe "Do you want to use the same Unique Consignment Reference (UCR) for all items?"
+              result.key.value mustEqual "Do you want to use the same Unique Consignment Reference (UCR) for all items?"
               result.value.value mustBe "Yes"
               val actions = result.actions.get.items
               actions.size mustBe 1
@@ -104,7 +104,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.ucr
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -138,7 +138,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.usingSameCountryOfDispatch
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -172,7 +172,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.countryOfDispatch
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -206,7 +206,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addCountryOfDestination
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -278,7 +278,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.transportedToSameCountry
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -312,7 +312,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.countryOfDestination
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -346,7 +346,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.usingContainersYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -418,7 +418,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addSupplyChainActor
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -452,7 +452,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.supplyChainActor(index)
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -486,7 +486,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addOrRemoveSupplyChainActors
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -514,7 +514,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addAuthorisation
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -548,7 +548,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.authorisation(index)
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -582,7 +582,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addOrRemoveAuthorisations
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -610,7 +610,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addLimitDateYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -644,7 +644,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.limitDate
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -679,7 +679,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addCarrierDetail
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -713,7 +713,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.eoriNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -747,7 +747,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addContactPerson
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -781,7 +781,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.contactName
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -815,7 +815,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.contactTelephoneNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -849,7 +849,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addEquipment
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -883,7 +883,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.equipment(index)
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -963,7 +963,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addOrRemoveEquipments
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -991,7 +991,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addPaymentMethod
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -1025,7 +1025,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.paymentMethod
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -1059,7 +1059,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addAdditionalReferenceYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -1129,7 +1129,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addAdditionalInformationYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -1198,7 +1198,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addOrRemoveAdditionalInformation(mode)
-              result mustBe None
+              result must not be defined
           }
         }
       }

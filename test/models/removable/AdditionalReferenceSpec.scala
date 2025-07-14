@@ -60,13 +60,13 @@ class AdditionalReferenceSpec extends SpecBase with ScalaCheckPropertyChecks wit
               .setValue(AdditionalReferenceNumberPage(index), additionalReferenceNumber)
 
             val result = AdditionalReference(userAnswers, index)
-            result mustBe None
+            result must not be defined
         }
       }
 
       "when neither type nor number defined" in {
         val result = AdditionalReference(emptyUserAnswers, index)
-        result mustBe None
+        result must not be defined
       }
     }
   }

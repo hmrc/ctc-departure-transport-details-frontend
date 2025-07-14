@@ -31,7 +31,7 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val identification = Identification(code, description)
-          Json.toJson(identification) mustBe Json.parse(s"""
+          Json.toJson(identification) mustEqual Json.parse(s"""
                                                             |{
                                                             |  "type": "$code",
                                                             |  "description": "$description"
@@ -101,13 +101,13 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val identification = Identification(code, description)
-          identification.toString mustBe s"$description"
+          identification.toString mustEqual s"$description"
       }
     }
 
     "when description contains raw HTML" in {
       val identification = Identification("test", "one &amp; two")
-      identification.toString mustBe "one & two"
+      identification.toString mustEqual "one & two"
     }
   }
 

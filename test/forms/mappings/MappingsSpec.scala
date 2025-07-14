@@ -115,17 +115,17 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
 
     "must bind true" in {
       val result = testForm.bind(Map("value" -> "true"))
-      result.value.value mustBe OptionalBoolean.yes
+      result.value.value mustEqual OptionalBoolean.yes
     }
 
     "must bind false" in {
       val result = testForm.bind(Map("value" -> "false"))
-      result.value.value mustBe OptionalBoolean.no
+      result.value.value mustEqual OptionalBoolean.no
     }
 
     "must bind maybe" in {
       val result = testForm.bind(Map("value" -> "maybe"))
-      result.value.value mustBe OptionalBoolean.maybe
+      result.value.value mustEqual OptionalBoolean.maybe
     }
 
     "must not bind a non-boolean" in {

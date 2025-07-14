@@ -40,7 +40,7 @@ class SealsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
               val userAnswers = emptyUserAnswers
 
               val helper = new SealsAnswersHelper(userAnswers, mode, equipmentIndex)
-              helper.listItems mustBe Nil
+              helper.listItems mustEqual Nil
           }
         }
       }
@@ -56,7 +56,7 @@ class SealsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
                   .setValue(IdentificationNumberPage(equipmentIndex, Index(1)), sealId)
 
                 val helper = new SealsAnswersHelper(userAnswers, mode, equipmentIndex)
-                helper.listItems mustBe Seq(
+                helper.listItems mustEqual Seq(
                   Right(
                     ListItem(
                       name = sealId,
@@ -85,7 +85,7 @@ class SealsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
                   .setValue(IdentificationNumberPage(equipmentIndex, Index(1)), sealId)
 
                 val helper = new SealsAnswersHelper(userAnswers, mode, equipmentIndex)
-                helper.listItems mustBe Seq(
+                helper.listItems mustEqual Seq(
                   Right(
                     ListItem(
                       name = sealId,
@@ -116,7 +116,7 @@ class SealsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
                   .setValue(IdentificationNumberPage(equipmentIndex, Index(0)), sealId)
 
                 val helper = new SealsAnswersHelper(userAnswers, mode, equipmentIndex)
-                helper.listItems mustBe Seq(
+                helper.listItems mustEqual Seq(
                   Right(
                     ListItem(
                       name = sealId,
@@ -137,7 +137,7 @@ class SealsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with
                   .setValue(IdentificationNumberPage(equipmentIndex, Index(0)), sealId)
 
                 val helper = new SealsAnswersHelper(userAnswers, mode, equipmentIndex)
-                helper.listItems mustBe Seq(
+                helper.listItems mustEqual Seq(
                   Right(
                     ListItem(
                       name = sealId,

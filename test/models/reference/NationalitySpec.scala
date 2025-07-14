@@ -34,7 +34,7 @@ class NationalitySpec extends SpecBase with ScalaCheckPropertyChecks with Genera
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val nationality = Nationality(code, description)
-          Json.toJson(nationality) mustBe Json.parse(s"""
+          Json.toJson(nationality) mustEqual Json.parse(s"""
               |{
               |  "code": "$code",
               |  "description": "$description"
@@ -102,14 +102,14 @@ class NationalitySpec extends SpecBase with ScalaCheckPropertyChecks with Genera
     "must convert to select item" in {
       forAll(arbitrary[Nationality], arbitrary[Boolean]) {
         (nationality, selected) =>
-          nationality.toSelectItem(selected) mustBe SelectItem(Some(nationality.code), s"${nationality.description} - ${nationality.code}", selected)
+          nationality.toSelectItem(selected) mustEqual SelectItem(Some(nationality.code), s"${nationality.description} - ${nationality.code}", selected)
       }
     }
 
     "must format as string" in {
       forAll(arbitrary[Nationality]) {
         nationality =>
-          nationality.toString mustBe s"${nationality.description} - ${nationality.code}"
+          nationality.toString mustEqual s"${nationality.description} - ${nationality.code}"
       }
     }
   }

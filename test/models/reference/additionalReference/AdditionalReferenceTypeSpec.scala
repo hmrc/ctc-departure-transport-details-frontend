@@ -34,7 +34,7 @@ class AdditionalReferenceTypeSpec extends SpecBase with ScalaCheckPropertyChecks
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (docType, description) =>
           val additionalReferenceType = AdditionalReferenceType(docType, description)
-          Json.toJson(additionalReferenceType) mustBe Json.parse(s"""
+          Json.toJson(additionalReferenceType) mustEqual Json.parse(s"""
               |{
               |  "documentType": "$docType",
               |  "description": "$description"
@@ -102,9 +102,10 @@ class AdditionalReferenceTypeSpec extends SpecBase with ScalaCheckPropertyChecks
     "must convert to select item" in {
       forAll(arbitrary[AdditionalReferenceType], arbitrary[Boolean]) {
         (additionalReferenceType, selected) =>
-          additionalReferenceType.toSelectItem(selected) mustBe SelectItem(Some(additionalReferenceType.documentType),
-                                                                           s"${additionalReferenceType.documentType} - ${additionalReferenceType.description}",
-                                                                           selected
+          additionalReferenceType.toSelectItem(selected) mustEqual SelectItem(
+            Some(additionalReferenceType.documentType),
+            s"${additionalReferenceType.documentType} - ${additionalReferenceType.description}",
+            selected
           )
       }
     }
@@ -112,7 +113,7 @@ class AdditionalReferenceTypeSpec extends SpecBase with ScalaCheckPropertyChecks
     "must format as string" in {
       forAll(arbitrary[AdditionalReferenceType]) {
         additionalReferenceType =>
-          additionalReferenceType.toString mustBe s"${additionalReferenceType.documentType} - ${additionalReferenceType.description}"
+          additionalReferenceType.toString mustEqual s"${additionalReferenceType.documentType} - ${additionalReferenceType.description}"
       }
     }
   }

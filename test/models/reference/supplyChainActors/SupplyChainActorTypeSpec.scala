@@ -31,7 +31,7 @@ class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val supplyChainActorType = SupplyChainActorType(code, description)
-          Json.toJson(supplyChainActorType) mustBe Json.parse(s"""
+          Json.toJson(supplyChainActorType) mustEqual Json.parse(s"""
                                                             |{
                                                             |  "role": "$code",
                                                             |  "description": "$description"
@@ -101,13 +101,13 @@ class SupplyChainActorTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val supplyChainActorType = SupplyChainActorType(code, description)
-          supplyChainActorType.toString mustBe s"$description"
+          supplyChainActorType.toString mustEqual s"$description"
       }
     }
 
     "when description contains raw HTML" in {
       val supplyChainActorType = SupplyChainActorType("test", "one &amp; two")
-      supplyChainActorType.toString mustBe "one & two"
+      supplyChainActorType.toString mustEqual "one & two"
     }
   }
 

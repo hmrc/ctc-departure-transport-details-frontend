@@ -60,13 +60,13 @@ class ActiveBorderTransportSpec extends SpecBase with ScalaCheckPropertyChecks w
               .setValue(IdentificationNumberPage(index), identificationNumber)
 
             val result = ActiveBorderTransport(userAnswers, index)
-            result mustBe None
+            result must not be defined
         }
       }
 
       "when neither type nor number defined" in {
         val result = ActiveBorderTransport(emptyUserAnswers, index)
-        result mustBe None
+        result must not be defined
       }
     }
   }

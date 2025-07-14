@@ -35,7 +35,7 @@ class AddDepartureTransportMeansYesNoViewModelSpec extends SpecBase with ScalaCh
       result.prefix mustBe "transportMeans.addDepartureTransportMeansYesNo.inlandModeYes"
       result.title mustBe "Do you want to add identification for this vehicle?"
       result.heading mustBe "Do you want to add identification for this vehicle?"
-      result.paragraph mustBe None
+      result.paragraph must not be defined
     }
 
     "when addInlandModeYesNo is false" in {
