@@ -100,13 +100,13 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val authorisationType = AuthorisationType(code, description)
-          authorisationType.toString mustBe s"$description"
+          authorisationType.toString mustEqual s"$description"
       }
     }
 
     "when description contains raw HTML" in {
       val authorisationType = AuthorisationType("test", "one &amp; two")
-      authorisationType.toString mustBe "one & two"
+      authorisationType.toString mustEqual "one & two"
     }
   }
 

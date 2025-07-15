@@ -49,7 +49,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addDepartureTransportMeans(prefix(false))
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -67,7 +67,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                 val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
                 val result = helper.addDepartureTransportMeans(prefix(true))
 
-                result mustBe Some(
+                result.value mustEqual
                   SummaryListRow(
                     key = Key("Do you want to add identification for this vehicle?".toText),
                     value = Value("Yes".toText),
@@ -84,7 +84,6 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                       )
                     )
                   )
-                )
             }
           }
         }
@@ -99,7 +98,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                 val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
                 val result = helper.addDepartureTransportMeans(prefix(false))
 
-                result mustBe Some(
+                result.value mustEqual
                   SummaryListRow(
                     key = Key("Do you want to add identification for the departure means of transport?".toText),
                     value = Value("Yes".toText),
@@ -116,7 +115,6 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                       )
                     )
                   )
-                )
             }
           }
 
@@ -132,7 +130,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)(messages, frontendAppConfig)
               val result = helper.activeBorderTransportMeans(index)
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -152,7 +150,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                   val helper = new TransportMeansCheckYourAnswersHelper(userAnswers, mode)(messages, frontendAppConfig)
                   val result = helper.activeBorderTransportMeans(index).get
 
-                  result.key.value mustBe "Active border transport means 1"
+                  result.key.value mustEqual "Active border transport means 1"
                   result.value.value mustBe abtm.asString
                   val actions = result.actions.get.items
                   actions.size mustBe 1
@@ -175,7 +173,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)(messages, frontendAppConfig)
               val result = helper.departureTransportMeans(index)
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -213,7 +211,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addOrRemoveActiveBorderTransportsMeans()
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -241,7 +239,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addOrRemoveDepartureTransportsMeans()
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -269,7 +267,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addInlandModeYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -282,7 +280,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
               val result  = helper.addInlandModeYesNo
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add an inland mode of transport?".toText),
                   value = Value("Yes".toText),
@@ -299,7 +297,6 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                     )
                   )
                 )
-              )
           }
         }
 
@@ -310,7 +307,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
               val result  = helper.addInlandModeYesNo
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add an inland mode of transport?".toText),
                   value = Value("No - the goods are already at the port or airport".toText),
@@ -327,7 +324,6 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -340,7 +336,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
               val result = helper.inlandMode
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -353,7 +349,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
               val result  = helper.inlandMode
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Mode".toText),
                   value = Value(inlandMode.asString.toText),
@@ -370,7 +366,6 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -383,7 +378,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addModeCrossingBorder()
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -398,7 +393,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
               val result = helper.addModeCrossingBorder()
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add a border mode of transport?".toText),
                   value = Value("Yes".toText),
@@ -415,7 +410,6 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -428,7 +422,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
               val result = helper.modeCrossingBorder
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -441,7 +435,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
               val result  = helper.modeCrossingBorder
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Border mode of transport".toText),
                   value = Value(borderModeOfTransport.asString.toText),
@@ -458,7 +452,6 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -471,7 +464,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new TransportMeansCheckYourAnswersHelper(emptyUserAnswers, mode)
               val result = helper.addActiveBorderTransportMeans
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -486,7 +479,7 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper = new TransportMeansCheckYourAnswersHelper(answers, mode)
               val result = helper.addActiveBorderTransportMeans
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add identification for this vehicle?".toText),
                   value = Value("Yes".toText),
@@ -503,7 +496,6 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                     )
                   )
                 )
-              )
           }
         }
       }

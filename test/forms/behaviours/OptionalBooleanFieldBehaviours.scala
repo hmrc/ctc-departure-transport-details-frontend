@@ -25,17 +25,17 @@ trait OptionalBooleanFieldBehaviours extends FieldBehaviours {
 
     "must bind true" in {
       val result = form.bind(Map(fieldName -> "true"))
-      result.value.value mustBe OptionalBoolean.yes
+      result.value.value mustEqual OptionalBoolean.yes
     }
 
     "must bind false" in {
       val result = form.bind(Map(fieldName -> "false"))
-      result.value.value mustBe OptionalBoolean.no
+      result.value.value mustEqual OptionalBoolean.no
     }
 
     "must bind maybe" in {
       val result = form.bind(Map(fieldName -> "maybe"))
-      result.value.value mustBe OptionalBoolean.maybe
+      result.value.value mustEqual OptionalBoolean.maybe
     }
 
     "must not bind non-booleans" in {

@@ -32,7 +32,7 @@ class IdentificationViewModelSpec extends SpecBase with ScalaCheckPropertyChecks
       val viewModelProvider = new IdentificationViewModelProvider()
       val result            = viewModelProvider.apply(emptyUserAnswers, departureIndex)
 
-      result.para mustBe None
+      result.para must not be defined
     }
 
     "when InlandMode is Road for first Index" in {

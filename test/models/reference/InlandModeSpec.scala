@@ -100,13 +100,13 @@ class InlandModeSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val inlandMode = InlandMode(code, description)
-          inlandMode.toString mustBe s"$description"
+          inlandMode.toString mustEqual s"$description"
       }
     }
 
     "when description contains raw HTML" in {
       val inlandMode = InlandMode("test", "one &amp; two")
-      inlandMode.toString mustBe "one & two"
+      inlandMode.toString mustEqual "one & two"
     }
   }
 

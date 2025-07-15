@@ -40,7 +40,7 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new EquipmentAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.containerIdentificationNumberYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -55,7 +55,7 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper = new EquipmentAnswersHelper(answers, mode, index)
               val result = helper.containerIdentificationNumberYesNo
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add a container identification number?".toText),
                   value = Value("Yes".toText),
@@ -72,7 +72,6 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -85,7 +84,7 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new EquipmentAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.containerIdentificationNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -100,7 +99,7 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper = new EquipmentAnswersHelper(answers, mode, index)
               val result = helper.containerIdentificationNumber
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Container identification number".toText),
                   value = Value(containerIdentificationNumber.toText),
@@ -117,7 +116,6 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -130,7 +128,7 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new EquipmentAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.sealsYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -145,7 +143,7 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper = new EquipmentAnswersHelper(answers, mode, index)
               val result = helper.sealsYesNo
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add a seal?".toText),
                   value = Value("Yes".toText),
@@ -162,7 +160,6 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -175,7 +172,7 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new EquipmentAnswersHelper(emptyUserAnswers, mode, equipmentIndex)
               val result = helper.seal(sealIndex)
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -188,15 +185,15 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper      = new EquipmentAnswersHelper(userAnswers, mode, equipmentIndex)
               val result      = helper.seal(index).get
 
-              result.key.value mustBe "Seal 1"
-              result.value.value mustBe sealIdNumber
+              result.key.value mustEqual "Seal 1"
+              result.value.value mustEqual sealIdNumber
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe IdentificationNumberController.onPageLoad(userAnswers.lrn, mode, equipmentIndex, sealIndex).url
-              action.visuallyHiddenText.get mustBe "seal 1"
-              action.id mustBe "change-seal-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual IdentificationNumberController.onPageLoad(userAnswers.lrn, mode, equipmentIndex, sealIndex).url
+              action.visuallyHiddenText.get mustEqual "seal 1"
+              action.id mustEqual "change-seal-1"
           }
         }
       }
@@ -209,7 +206,7 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new EquipmentAnswersHelper(emptyUserAnswers, mode, equipmentIndex)
               val result = helper.addOrRemoveSeals
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -222,9 +219,9 @@ class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new EquipmentAnswersHelper(answers, mode, equipmentIndex)
               val result  = helper.addOrRemoveSeals.get
 
-              result.id mustBe "add-or-remove-seals"
-              result.text mustBe "Add or remove seals"
-              result.href mustBe AddAnotherSealController.onPageLoad(answers.lrn, mode, equipmentIndex).url
+              result.id mustEqual "add-or-remove-seals"
+              result.text mustEqual "Add or remove seals"
+              result.href mustEqual AddAnotherSealController.onPageLoad(answers.lrn, mode, equipmentIndex).url
           }
         }
       }

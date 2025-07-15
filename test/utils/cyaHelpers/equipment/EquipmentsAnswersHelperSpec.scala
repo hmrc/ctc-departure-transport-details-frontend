@@ -43,7 +43,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
               val userAnswers = emptyUserAnswers
 
               val helper = new EquipmentsAnswersHelper(userAnswers, mode)
-              helper.listItems mustBe Nil
+              helper.listItems mustEqual Nil
           }
         }
       }
@@ -58,7 +58,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
                   val equipment = EquipmentDomain.userAnswersReader(equipmentIndex).apply(Nil).run(userAnswers).value.value
                   val helper    = new EquipmentsAnswersHelper(userAnswers, mode)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Right(
                       ListItem(
                         name = equipment.asString,
@@ -80,7 +80,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
                   val equipment = EquipmentDomain.userAnswersReader(equipmentIndex).apply(Nil).run(userAnswers).value.value
                   val helper    = new EquipmentsAnswersHelper(userAnswers, mode)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Right(
                       ListItem(
                         name = equipment.asString,
@@ -107,7 +107,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
 
                   val helper = new EquipmentsAnswersHelper(userAnswers, mode)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Right(
                       ListItem(
                         name = equipment1.asString,
@@ -139,7 +139,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
                   .setValue(ContainerIdentificationNumberPage(equipmentIndex), containerId)
                 val helper = new EquipmentsAnswersHelper(userAnswers, mode)
                 val result = helper.listItems
-                result.head.left.value.name mustBe s"Transport equipment 1 - container $containerId"
+                result.head.left.value.name mustEqual s"Transport equipment 1 - container $containerId"
             }
           }
         }
@@ -153,7 +153,7 @@ class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks
                   .setValue(AddSealYesNoPage(equipmentIndex), true)
                 val helper = new EquipmentsAnswersHelper(userAnswers, mode)
                 val result = helper.listItems
-                result.head.left.value.name mustBe "Transport equipment 1 - no container identification number"
+                result.head.left.value.name mustEqual "Transport equipment 1 - no container identification number"
             }
           }
         }

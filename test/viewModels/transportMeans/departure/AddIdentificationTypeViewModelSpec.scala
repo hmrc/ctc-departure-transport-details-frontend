@@ -35,7 +35,7 @@ class AddIdentificationTypeViewModelSpec extends SpecBase with ScalaCheckPropert
       result.prefix mustBe "transportMeans.departure.addIdentificationTypeYesNo.inlandModeYes"
       result.title mustBe "Do you want to add the type of identification for this vehicle?"
       result.heading mustBe "Do you want to add the type of identification for this vehicle?"
-      result.paragraph mustBe None
+      result.paragraph must not be defined
     }
 
     "when addInlandModeYesNo is false" in {

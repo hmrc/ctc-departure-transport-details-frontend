@@ -50,7 +50,7 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
       status(result) mustBe OK
-      redirectLocation(result) mustBe None
+      redirectLocation(result) must not be defined
     }
 
     "return None if dependent sections are in error state" in {
@@ -58,7 +58,7 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
       status(result) mustBe OK
-      redirectLocation(result) mustBe None
+      redirectLocation(result) must not be defined
     }
 
     "return None if dependent sections are in unavailable state" in {
@@ -66,7 +66,7 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
       status(result) mustBe OK
-      redirectLocation(result) mustBe None
+      redirectLocation(result) must not be defined
     }
 
     "return None if dependent sections are in amended state" in {
@@ -74,7 +74,7 @@ class DependentTasksActionSpec extends SpecBase with ScalaCheckPropertyChecks wi
       val userAnswers = emptyUserAnswers.copy(tasks = tasks)
       val result      = harness(userAnswers)
       status(result) mustBe OK
-      redirectLocation(result) mustBe None
+      redirectLocation(result) must not be defined
     }
 
     "return to task list" - {

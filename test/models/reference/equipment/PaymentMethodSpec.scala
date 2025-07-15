@@ -100,13 +100,13 @@ class PaymentMethodSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val paymentMethod = PaymentMethod(code, description)
-          paymentMethod.toString mustBe s"$description"
+          paymentMethod.toString mustEqual s"$description"
       }
     }
 
     "when description contains raw HTML" in {
       val paymentMethod = PaymentMethod("test", "one &amp; two")
-      paymentMethod.toString mustBe "one & two"
+      paymentMethod.toString mustEqual "one & two"
     }
   }
 

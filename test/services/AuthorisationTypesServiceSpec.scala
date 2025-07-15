@@ -68,7 +68,7 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
           val userAnswers = emptyUserAnswers
 
-          service.getAuthorisationTypes(userAnswers, Some(Index(0))).futureValue mustBe Seq(c523, c524)
+          service.getAuthorisationTypes(userAnswers, Some(Index(0))).futureValue mustEqual Seq(c523, c524)
 
           verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
         }
@@ -83,7 +83,7 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
             val userAnswers = emptyUserAnswers
               .setValue(InferredAuthorisationTypePage(Index(0)), c521)
 
-            service.getAuthorisationTypes(userAnswers, Some(Index(1))).futureValue mustBe Seq(c523, c524)
+            service.getAuthorisationTypes(userAnswers, Some(Index(1))).futureValue mustEqual Seq(c523, c524)
 
             verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
           }
@@ -95,7 +95,7 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
             val userAnswers = emptyUserAnswers
               .setValue(AuthorisationTypePage(Index(0)), c521)
 
-            service.getAuthorisationTypes(userAnswers, Some(Index(1))).futureValue mustBe Seq(c523, c524)
+            service.getAuthorisationTypes(userAnswers, Some(Index(1))).futureValue mustEqual Seq(c523, c524)
 
             verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
           }
@@ -112,7 +112,7 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
             .setValue(AuthorisationTypePage(Index(1)), c523)
             .setValue(InferredAuthorisationTypePage(Index(2)), c524)
 
-          service.getAuthorisationTypes(userAnswers, Some(Index(3))).futureValue mustBe Seq.empty
+          service.getAuthorisationTypes(userAnswers, Some(Index(3))).futureValue mustEqual Seq.empty
 
           verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
         }
@@ -126,7 +126,7 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
           val userAnswers = emptyUserAnswers
             .setValue(InferredAuthorisationTypePage(Index(0)), c524)
 
-          service.getAuthorisationTypes(userAnswers, Some(Index(0))).futureValue mustBe Seq(c523, c524)
+          service.getAuthorisationTypes(userAnswers, Some(Index(0))).futureValue mustEqual Seq(c523, c524)
 
           verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
         }
@@ -138,7 +138,7 @@ class AuthorisationTypesServiceSpec extends SpecBase with BeforeAndAfterEach {
         when(mockRefDataConnector.getAuthorisationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(authorisationTypes)))
 
-        service.getAuthorisationTypes().futureValue mustBe NonEmptySet.of(c521, c523, c524)
+        service.getAuthorisationTypes().futureValue mustEqual NonEmptySet.of(c521, c523, c524)
 
         verify(mockRefDataConnector).getAuthorisationTypes()(any(), any())
       }

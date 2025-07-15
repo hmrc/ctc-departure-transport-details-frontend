@@ -52,7 +52,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
           mode =>
             val result = ActiveBorderTransportAnswersHelper(userAnswers, mode, index)(messages, frontendAppConfig)
 
-            result.head.key.value mustBe "Do you want to add the type of identification?"
+            result.head.key.value mustEqual "Do you want to add the type of identification?"
             result(1).key.value mustBe "Identification type"
             result(2).key.value mustBe "Do you want to add an identification for this vehicle?"
             result(3).key.value mustBe "Identification"
@@ -72,7 +72,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
             mode =>
               val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.activeBorderIdentificationType
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -85,7 +85,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
               val helper  = new ActiveBorderTransportAnswersHelper(answers, mode, index)
               val result  = helper.activeBorderIdentificationType
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Identification type".toText),
                   value = Value(activeIdentification.asString.toText),
@@ -102,7 +102,6 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -115,7 +114,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
             mode =>
               val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.activeBorderIdentificationNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -128,7 +127,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
               val helper  = new ActiveBorderTransportAnswersHelper(answers, mode, index)
               val result  = helper.activeBorderIdentificationNumber
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Identification".toText),
                   value = Value(identificationNumber.toText),
@@ -145,7 +144,6 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -158,7 +156,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
             mode =>
               val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.activeBorderAddNationality
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -171,7 +169,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
               val helper  = new ActiveBorderTransportAnswersHelper(answers, mode, index)
               val result  = helper.activeBorderAddNationality
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add the registered country for this vehicle?".toText),
                   value = Value("Yes".toText),
@@ -188,7 +186,6 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -202,7 +199,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
             mode =>
               val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.activeBorderAddIdentificationType
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -215,7 +212,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
               val helper  = new ActiveBorderTransportAnswersHelper(answers, mode, index)
               val result  = helper.activeBorderAddIdentificationType
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add the type of identification?".toText),
                   value = Value("Yes".toText),
@@ -232,7 +229,6 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -246,7 +242,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
             mode =>
               val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.activeBorderAddIdentificationNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -259,7 +255,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
               val helper  = new ActiveBorderTransportAnswersHelper(answers, mode, index)
               val result  = helper.activeBorderAddIdentificationNumber
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add an identification for this vehicle?".toText),
                   value = Value("Yes".toText),
@@ -276,7 +272,6 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -290,7 +285,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
             mode =>
               val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.activeBorderNationality
-              result mustBe None
+              result must not be defined
           }
         }
 
@@ -302,7 +297,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                 val helper  = new ActiveBorderTransportAnswersHelper(answers, mode, index)
                 val result  = helper.activeBorderNationality
 
-                result mustBe Some(
+                result.value mustEqual
                   SummaryListRow(
                     key = Key("Registered country".toText),
                     value = Value(nationality.toString.toText),
@@ -319,7 +314,6 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                       )
                     )
                   )
-                )
             }
           }
         }
@@ -333,7 +327,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
             mode =>
               val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.customsOfficeAtBorder
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -346,7 +340,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
               val helper  = new ActiveBorderTransportAnswersHelper(answers, mode, index)
               val result  = helper.customsOfficeAtBorder
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Customs office".toText),
                   value = Value(s"$customsOffice".toText),
@@ -363,7 +357,6 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -376,7 +369,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
             mode =>
               val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.activeBorderConveyanceReferenceNumberYesNo
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -389,7 +382,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
               val helper  = new ActiveBorderTransportAnswersHelper(answers, mode, index)
               val result  = helper.activeBorderConveyanceReferenceNumberYesNo
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add a conveyance reference number?".toText),
                   value = Value("Yes".toText),
@@ -406,7 +399,6 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -420,7 +412,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
             mode =>
               val helper = new ActiveBorderTransportAnswersHelper(emptyUserAnswers, mode, index)
               val result = helper.conveyanceReferenceNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -433,7 +425,7 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
               val helper  = new ActiveBorderTransportAnswersHelper(answers, mode, index)
               val result  = helper.conveyanceReferenceNumber
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Conveyance reference number".toText),
                   value = Value(referenceNumber.toText),
@@ -450,7 +442,6 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
                     )
                   )
                 )
-              )
           }
         }
       }

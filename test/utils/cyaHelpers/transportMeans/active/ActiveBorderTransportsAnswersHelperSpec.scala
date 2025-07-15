@@ -44,7 +44,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         val userAnswers = emptyUserAnswers
 
         val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, NormalMode)
-        helper.listItems mustBe Nil
+        helper.listItems mustEqual Nil
       }
     }
 

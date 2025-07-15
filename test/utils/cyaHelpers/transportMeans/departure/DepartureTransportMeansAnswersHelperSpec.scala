@@ -48,7 +48,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, mode, departureIndex)
               val result = helper.departureAddTypeYesNo(prefix(false))
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -68,7 +68,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper = new DepartureTransportMeansAnswersHelper(answers, mode, departureIndex)
               val result = helper.departureAddTypeYesNo(prefix(addInlandModeYesNo))
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add the type of identification for this vehicle?".toText),
                   value = Value("Yes".toText),
@@ -85,7 +85,6 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                     )
                   )
                 )
-              )
           }
         }
 
@@ -102,7 +101,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper = new DepartureTransportMeansAnswersHelper(answers, mode, departureIndex)
               val result = helper.departureAddTypeYesNo(prefix(addInlandModeYesNo))
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add the type of identification for the departure means of transport?".toText),
                   value = Value("Yes".toText),
@@ -119,7 +118,6 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -132,7 +130,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, mode, departureIndex)
               val result = helper.departureAddIdentificationNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -147,7 +145,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper = new DepartureTransportMeansAnswersHelper(answers, mode, departureIndex)
               val result = helper.departureAddIdentificationNumber
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add an identification for this vehicle?".toText),
                   value = Value("Yes".toText),
@@ -166,7 +164,6 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -179,7 +176,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, mode, departureIndex)
               val result = helper.departureAddNationality
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -194,7 +191,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper = new DepartureTransportMeansAnswersHelper(answers, mode, departureIndex)
               val result = helper.departureAddNationality
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Do you want to add the registered country for this vehicle?".toText),
                   value = Value("Yes".toText),
@@ -211,7 +208,6 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -224,7 +220,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, mode, departureIndex)
               val result = helper.departureIdentificationType
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -237,7 +233,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper  = new DepartureTransportMeansAnswersHelper(answers, mode, departureIndex)
               val result  = helper.departureIdentificationType
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Identification type".toText),
                   value = Value(departureIdentification.asString.toText),
@@ -254,7 +250,6 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -267,7 +262,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, mode, departureIndex)
               val result = helper.departureIdentificationNumber
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -280,7 +275,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper  = new DepartureTransportMeansAnswersHelper(answers, mode, departureIndex)
               val result  = helper.departureIdentificationNumber
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Identification".toText),
                   value = Value(s"$identificationNumber".toText),
@@ -298,7 +293,6 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                     )
                   )
                 )
-              )
           }
         }
       }
@@ -311,7 +305,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
             mode =>
               val helper = new DepartureTransportMeansAnswersHelper(emptyUserAnswers, mode, departureIndex)
               val result = helper.departureNationality
-              result mustBe None
+              result must not be defined
           }
         }
       }
@@ -324,7 +318,7 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper  = new DepartureTransportMeansAnswersHelper(answers, mode, departureIndex)
               val result  = helper.departureNationality
 
-              result mustBe Some(
+              result.value mustEqual
                 SummaryListRow(
                   key = Key("Registered country".toText),
                   value = Value(s"$nationality".toText),
@@ -341,7 +335,6 @@ class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckP
                     )
                   )
                 )
-              )
           }
         }
       }

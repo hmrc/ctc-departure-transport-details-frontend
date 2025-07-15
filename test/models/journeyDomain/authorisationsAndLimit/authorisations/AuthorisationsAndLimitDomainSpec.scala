@@ -51,7 +51,7 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
 
           val result = AuthorisationsAndLimitDomain.limitReader(authorisationsDomain).apply(Nil).run(userAnswers)
 
-          result.value.value mustBe None
+          result.value.value must not be defined
           result.value.pages mustBe Nil
         }
 
@@ -67,7 +67,7 @@ class AuthorisationsAndLimitDomainSpec extends SpecBase with ScalaCheckPropertyC
 
           val result = AuthorisationsAndLimitDomain.limitReader(authorisationsDomain).apply(Nil).run(userAnswers)
 
-          result.value.value mustBe None
+          result.value.value must not be defined
           result.value.pages mustBe Nil
         }
       }
