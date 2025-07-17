@@ -52,7 +52,7 @@ class SupplyChainActorTypesServiceSpec extends SpecBase with BeforeAndAfterEach 
         when(mockRefDataConnector.getSupplyChainActorTypes()(any(), any()))
           .thenReturn(Future.successful(Right(supplyChainActorTypes)))
 
-        service.getSupplyChainActorTypes().futureValue mustBe
+        service.getSupplyChainActorTypes().futureValue mustEqual
           Seq(supplyChainActorType4, supplyChainActorType3, supplyChainActorType2, supplyChainActorType1)
 
         verify(mockRefDataConnector).getSupplyChainActorTypes()(any(), any())

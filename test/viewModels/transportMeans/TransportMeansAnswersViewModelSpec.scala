@@ -44,8 +44,8 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
       val result            = viewModelProvider.apply(userAnswers, mode)
 
       val section = result.sections.head
-      section.sectionTitle.get mustBe "Inland mode of transport"
-      section.rows.size mustBe 1
+      section.sectionTitle.get mustEqual "Inland mode of transport"
+      section.rows.size mustEqual 1
       section.addAnotherLink must not be defined
     }
 
@@ -58,8 +58,8 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
         val viewModelProvider = new TransportMeansAnswersViewModelProvider()
         val result            = viewModelProvider.apply(userAnswers, mode)(messages)
         val section           = result.sections(1)
-        section.sectionTitle.get mustBe sectionTitle
-        section.rows.size mustBe 1
+        section.sectionTitle.get mustEqual sectionTitle
+        section.rows.size mustEqual 1
         section.addAnotherLink must not be defined
       }
 
@@ -76,8 +76,8 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
                 val viewModelProvider = new TransportMeansAnswersViewModelProvider()
                 val result            = viewModelProvider.apply(userAnswers, mode)(messages)
                 val section           = result.sections(1)
-                section.sectionTitle.get mustBe sectionTitle
-                section.rows.size mustBe amount + 1
+                section.sectionTitle.get mustEqual sectionTitle
+                section.rows.size mustEqual amount + 1
                 section.addAnotherLink must be(defined)
             }
         }
@@ -93,8 +93,8 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
       val result            = viewModelProvider.apply(userAnswers, mode)
 
       val section = result.sections(2)
-      section.sectionTitle.get mustBe "Border mode of transport"
-      section.rows.size mustBe 2
+      section.sectionTitle.get mustEqual "Border mode of transport"
+      section.rows.size mustEqual 2
       section.addAnotherLink must not be defined
     }
 
@@ -111,8 +111,8 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
           val viewModelProvider = new TransportMeansAnswersViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers, mode)(messages)
           val section           = result.sections(3)
-          section.sectionTitle.get mustBe sectionTitle
-          section.rows.size mustBe 1
+          section.sectionTitle.get mustEqual sectionTitle
+          section.rows.size mustEqual 1
           section.addAnotherLink must not be defined
         }
 
@@ -129,8 +129,8 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
                   val viewModelProvider = new TransportMeansAnswersViewModelProvider()
                   val result            = viewModelProvider.apply(userAnswers, mode)(messages)
                   val section           = result.sections(3)
-                  section.sectionTitle.get mustBe sectionTitle
-                  section.rows.size mustBe amount + 1
+                  section.sectionTitle.get mustEqual sectionTitle
+                  section.rows.size mustEqual amount + 1
                   section.addAnotherLink must be(defined)
               }
           }
@@ -144,8 +144,8 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
           val viewModelProvider = new TransportMeansAnswersViewModelProvider()
           val result            = viewModelProvider.apply(userAnswers, mode)(messages)
           val section           = result.sections(3)
-          section.sectionTitle.get mustBe sectionTitle
-          section.rows.size mustBe 1
+          section.sectionTitle.get mustEqual sectionTitle
+          section.rows.size mustEqual 1
           section.addAnotherLink must not be defined
         }
 
@@ -157,9 +157,9 @@ class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropert
               val viewModelProvider = new TransportMeansAnswersViewModelProvider()
               val result            = viewModelProvider.apply(userAnswers, mode)(messages)
               val section           = result.sections(3)
-              section.sectionTitle.get mustBe sectionTitle
+              section.sectionTitle.get mustEqual sectionTitle
               section.rows.size must be > 1
-              section.rows.head.key.value mustBe "Do you want to add identification for this vehicle?"
+              section.rows.head.key.value mustEqual "Do you want to add identification for this vehicle?"
               section.addAnotherLink must not be defined
           }
         }

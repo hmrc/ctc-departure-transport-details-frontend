@@ -74,8 +74,8 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
               val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 AuthorisationTypePage(authorisationIndex),
                 AuthorisationReferenceNumberPage(authorisationIndex)
               )
@@ -105,8 +105,8 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
                 val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   AuthorisationReferenceNumberPage(authorisationIndex)
                 )
             }
@@ -133,8 +133,8 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
                   val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-                  result.value.value mustBe expectedResult
-                  result.value.pages mustBe Seq(
+                  result.value.value mustEqual expectedResult
+                  result.value.pages mustEqual Seq(
                     AuthorisationReferenceNumberPage(authorisationIndex)
                   )
               }
@@ -158,8 +158,8 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
                   val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-                  result.value.value mustBe expectedResult
-                  result.value.pages mustBe Seq(
+                  result.value.value mustEqual expectedResult
+                  result.value.pages mustEqual Seq(
                     AuthorisationTypePage(authorisationIndex),
                     AuthorisationReferenceNumberPage(authorisationIndex)
                   )
@@ -188,8 +188,8 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
               val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 AuthorisationTypePage(authorisationIndex),
                 AuthorisationReferenceNumberPage(authorisationIndex)
               )
@@ -212,8 +212,8 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
                 val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe AuthorisationTypePage(index)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual AuthorisationTypePage(index)
+                result.left.value.pages mustEqual Seq(
                   AuthorisationTypePage(authorisationIndex)
                 )
             }
@@ -232,8 +232,8 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
                 val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe AuthorisationTypePage(index)
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual AuthorisationTypePage(index)
+                result.left.value.pages mustEqual Seq(
                   AuthorisationTypePage(authorisationIndex)
                 )
             }
@@ -257,8 +257,8 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
                   val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-                  result.left.value.page mustBe AuthorisationReferenceNumberPage(index)
-                  result.left.value.pages mustBe Seq(
+                  result.left.value.page mustEqual AuthorisationReferenceNumberPage(index)
+                  result.left.value.pages mustEqual Seq(
                     AuthorisationReferenceNumberPage(authorisationIndex)
                   )
               }
@@ -280,8 +280,8 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
 
                     val result = AuthorisationDomain.userAnswersReader(authorisationIndex).apply(Nil).run(userAnswers)
 
-                    result.left.value.page mustBe AuthorisationReferenceNumberPage(index)
-                    result.left.value.pages mustBe Seq(
+                    result.left.value.page mustEqual AuthorisationReferenceNumberPage(index)
+                    result.left.value.pages mustEqual Seq(
                       AuthorisationReferenceNumberPage(authorisationIndex)
                     )
                 }
@@ -299,7 +299,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
             (authorisationType, referenceNumber, mode, index) =>
               val authorisation = AuthorisationDomain(authorisationType, referenceNumber)(index)
 
-              authorisation.routeIfCompleted(emptyUserAnswers, mode, Stage.AccessingJourney).value mustBe
+              authorisation.routeIfCompleted(emptyUserAnswers, mode, Stage.AccessingJourney).value mustEqual
                 authorisationRoutes.AuthorisationReferenceNumberController.onPageLoad(lrn, mode, index)
           }
         }
@@ -315,7 +315,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
                 .setValue(AuthorisationReferenceNumberPage(Index(0)), referenceNumber)
                 .setValue(InferredAuthorisationTypePage(Index(1)), authorisationType)
 
-              authorisation.routeIfCompleted(userAnswers, mode, Stage.CompletingJourney).value mustBe
+              authorisation.routeIfCompleted(userAnswers, mode, Stage.CompletingJourney).value mustEqual
                 authorisationRoutes.AuthorisationReferenceNumberController.onPageLoad(lrn, mode, Index(1))
           }
         }
@@ -325,7 +325,7 @@ class AuthorisationDomainSpec extends SpecBase with Generators {
             (authorisationType, referenceNumber, mode) =>
               val authorisation = AuthorisationDomain(authorisationType, referenceNumber)(Index(0))
 
-              authorisation.routeIfCompleted(emptyUserAnswers, mode, Stage.CompletingJourney).value mustBe
+              authorisation.routeIfCompleted(emptyUserAnswers, mode, Stage.CompletingJourney).value mustEqual
                 authorisationsRoutes.AddAnotherAuthorisationController.onPageLoad(lrn, mode)
           }
         }

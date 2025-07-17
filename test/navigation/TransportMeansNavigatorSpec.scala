@@ -38,7 +38,7 @@ class TransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(answers.lrn, mode))
+                .mustEqual(controllers.transportMeans.routes.TransportMeansCheckYourAnswersController.onPageLoad(answers.lrn, mode))
           }
         }
       }
@@ -55,7 +55,7 @@ class TransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
               answers =>
                 navigator
                   .nextPage(answers, None)
-                  .mustBe(controllers.routes.TransportAnswersController.onPageLoad(answers.lrn))
+                  .mustEqual(controllers.routes.TransportAnswersController.onPageLoad(answers.lrn))
             }
           }
         }

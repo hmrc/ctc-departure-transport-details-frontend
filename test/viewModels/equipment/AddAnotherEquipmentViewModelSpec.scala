@@ -36,7 +36,7 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
               val userAnswers = emptyUserAnswers
 
               val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, mode)
-              result.listItems mustBe Nil
+              result.listItems mustEqual Nil
           }
         }
       }
@@ -48,11 +48,11 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
 
             val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, mode)
 
-            result.listItems.length mustBe 1
-            result.title mustBe "You have added 1 transport equipment"
-            result.heading mustBe "You have added 1 transport equipment"
-            result.legend mustBe "Do you want to add any other transport equipment?"
-            result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+            result.listItems.length mustEqual 1
+            result.title mustEqual "You have added 1 transport equipment"
+            result.heading mustEqual "You have added 1 transport equipment"
+            result.legend mustEqual "Do you want to add any other transport equipment?"
+            result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
         }
       }
 
@@ -67,11 +67,11 @@ class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with Sca
             }
 
             val result = new AddAnotherEquipmentViewModelProvider().apply(userAnswers, mode)
-            result.listItems.length mustBe equipments
-            result.title mustBe s"You have added ${formatter.format(equipments)} transport equipment"
-            result.heading mustBe s"You have added ${formatter.format(equipments)} transport equipment"
-            result.legend mustBe "Do you want to add any other transport equipment?"
-            result.maxLimitLabel mustBe "You cannot add any more transport equipment. To add another, you need to remove one first."
+            result.listItems.length mustEqual equipments
+            result.title mustEqual s"You have added ${formatter.format(equipments)} transport equipment"
+            result.heading mustEqual s"You have added ${formatter.format(equipments)} transport equipment"
+            result.legend mustEqual "Do you want to add any other transport equipment?"
+            result.maxLimitLabel mustEqual "You cannot add any more transport equipment. To add another, you need to remove one first."
         }
       }
     }

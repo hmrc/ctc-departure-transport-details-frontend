@@ -41,8 +41,8 @@ class LimitDomainSpec extends SpecBase with Generators {
 
         val result = LimitDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           LimitDatePage
         )
       }
@@ -54,8 +54,8 @@ class LimitDomainSpec extends SpecBase with Generators {
 
         val result = LimitDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe LimitDatePage
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual LimitDatePage
+        result.left.value.pages mustEqual Seq(
           LimitDatePage
         )
       }

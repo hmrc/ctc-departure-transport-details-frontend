@@ -36,12 +36,12 @@ class AddAnotherAuthorisationViewModelSpec extends SpecBase with Generators with
 
           val result = new AddAnotherAuthorisationViewModelProvider().apply(userAnswers, mode, Seq(AuthorisationType("foo", "bar")))
 
-          result.listItems.length mustBe 1
-          result.title mustBe "You have added 1 authorisation"
-          result.heading mustBe "You have added 1 authorisation"
-          result.legend mustBe "Do you want to add another authorisation?"
-          result.maxLimitLabel mustBe "You cannot add any more authorisations. To add another, you need to remove one first."
-          result.allowMore mustBe true
+          result.listItems.length mustEqual 1
+          result.title mustEqual "You have added 1 authorisation"
+          result.heading mustEqual "You have added 1 authorisation"
+          result.legend mustEqual "Do you want to add another authorisation?"
+          result.maxLimitLabel mustEqual "You cannot add any more authorisations. To add another, you need to remove one first."
+          result.allowMore mustEqual true
       }
     }
 
@@ -56,12 +56,12 @@ class AddAnotherAuthorisationViewModelSpec extends SpecBase with Generators with
           }
 
           val result = new AddAnotherAuthorisationViewModelProvider().apply(userAnswers, mode, Nil)
-          result.listItems.length mustBe authorisations
-          result.title mustBe s"You have added ${formatter.format(authorisations)} authorisations"
-          result.heading mustBe s"You have added ${formatter.format(authorisations)} authorisations"
-          result.legend mustBe "Do you want to add another authorisation?"
-          result.maxLimitLabel mustBe "You cannot add any more authorisations. To add another, you need to remove one first."
-          result.allowMore mustBe false
+          result.listItems.length mustEqual authorisations
+          result.title mustEqual s"You have added ${formatter.format(authorisations)} authorisations"
+          result.heading mustEqual s"You have added ${formatter.format(authorisations)} authorisations"
+          result.legend mustEqual "Do you want to add another authorisation?"
+          result.maxLimitLabel mustEqual "You cannot add any more authorisations. To add another, you need to remove one first."
+          result.allowMore mustEqual false
       }
     }
   }

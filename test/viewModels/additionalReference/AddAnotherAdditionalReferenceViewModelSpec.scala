@@ -35,11 +35,11 @@ class AddAnotherAdditionalReferenceViewModelSpec extends SpecBase with Generator
 
           val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, mode)
 
-          result.listItems.length mustBe 1
-          result.title mustBe "You have added 1 additional reference for all items"
-          result.heading mustBe "You have added 1 additional reference for all items"
-          result.legend mustBe "Do you want to add another additional reference for all items?"
-          result.maxLimitLabel mustBe "You cannot add any more additional references for all items. To add another, you need to remove one first."
+          result.listItems.length mustEqual 1
+          result.title mustEqual "You have added 1 additional reference for all items"
+          result.heading mustEqual "You have added 1 additional reference for all items"
+          result.legend mustEqual "Do you want to add another additional reference for all items?"
+          result.maxLimitLabel mustEqual "You cannot add any more additional references for all items. To add another, you need to remove one first."
       }
     }
 
@@ -54,11 +54,11 @@ class AddAnotherAdditionalReferenceViewModelSpec extends SpecBase with Generator
           }
 
           val result = new AddAnotherAdditionalReferenceViewModelProvider().apply(userAnswers, mode)
-          result.listItems.length mustBe additionalReferences
-          result.title mustBe s"You have added ${formatter.format(additionalReferences)} additional references for all items"
-          result.heading mustBe s"You have added ${formatter.format(additionalReferences)} additional references for all items"
-          result.legend mustBe "Do you want to add another additional reference for all items?"
-          result.maxLimitLabel mustBe "You cannot add any more additional references for all items. To add another, you need to remove one first."
+          result.listItems.length mustEqual additionalReferences
+          result.title mustEqual s"You have added ${formatter.format(additionalReferences)} additional references for all items"
+          result.heading mustEqual s"You have added ${formatter.format(additionalReferences)} additional references for all items"
+          result.legend mustEqual "Do you want to add another additional reference for all items?"
+          result.maxLimitLabel mustEqual "You cannot add any more additional references for all items. To add another, you need to remove one first."
       }
     }
   }

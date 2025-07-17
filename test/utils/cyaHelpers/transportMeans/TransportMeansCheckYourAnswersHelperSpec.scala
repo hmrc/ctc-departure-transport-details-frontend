@@ -151,14 +151,14 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
                   val result = helper.activeBorderTransportMeans(index).get
 
                   result.key.value mustEqual "Active border transport means 1"
-                  result.value.value mustBe abtm.asString
+                  result.value.value mustEqual abtm.asString
                   val actions = result.actions.get.items
-                  actions.size mustBe 1
+                  actions.size mustEqual 1
                   val action = actions.head
-                  action.content.value mustBe "Change"
-                  action.href mustBe routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, activeIndex).url
-                  action.visuallyHiddenText.get mustBe "active border transport means 1"
-                  action.id mustBe "change-active-border-transport-means-1"
+                  action.content.value mustEqual "Change"
+                  action.href mustEqual routes.CheckYourAnswersController.onPageLoad(userAnswers.lrn, mode, activeIndex).url
+                  action.visuallyHiddenText.get mustEqual "active border transport means 1"
+                  action.id mustEqual "change-active-border-transport-means-1"
               }
           }
         }
@@ -188,17 +188,17 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper = new TransportMeansCheckYourAnswersHelper(userAnswers, mode)(messages, frontendAppConfig)
               val result = helper.departureTransportMeans(index).get
 
-              result.key.value mustBe "Departure means of transport 1"
-              result.value.value mustBe dtm.asString
+              result.key.value mustEqual "Departure means of transport 1"
+              result.value.value mustEqual dtm.asString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.transportMeans.departure.routes.DepartureTransportAnswersController
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.transportMeans.departure.routes.DepartureTransportAnswersController
                 .onPageLoad(userAnswers.lrn, mode, departureIndex)
                 .url
-              action.visuallyHiddenText.get mustBe "departure means of transport 1"
-              action.id mustBe "change-departure-means-of-transport-1"
+              action.visuallyHiddenText.get mustEqual "departure means of transport 1"
+              action.id mustEqual "change-departure-means-of-transport-1"
           }
         }
       }
@@ -224,9 +224,9 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
               val result  = helper.addOrRemoveActiveBorderTransportsMeans().get
 
-              result.id mustBe "add-or-remove-border-means-of-transport"
-              result.text mustBe "Add or remove border means of transport"
-              result.href mustBe routes.AddAnotherBorderTransportController.onPageLoad(answers.lrn, mode).url
+              result.id mustEqual "add-or-remove-border-means-of-transport"
+              result.text mustEqual "Add or remove border means of transport"
+              result.href mustEqual routes.AddAnotherBorderTransportController.onPageLoad(answers.lrn, mode).url
           }
         }
       }
@@ -252,9 +252,9 @@ class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckP
               val helper  = new TransportMeansCheckYourAnswersHelper(answers, mode)
               val result  = helper.addOrRemoveDepartureTransportsMeans().get
 
-              result.id mustBe "add-or-remove-departure-means-of-transport"
-              result.text mustBe "Add or remove departure means of transport"
-              result.href mustBe controllers.transportMeans.departure.routes.AddAnotherDepartureTransportMeansController.onPageLoad(answers.lrn, mode).url
+              result.id mustEqual "add-or-remove-departure-means-of-transport"
+              result.text mustEqual "Add or remove departure means of transport"
+              result.href mustEqual controllers.transportMeans.departure.routes.AddAnotherDepartureTransportMeansController.onPageLoad(answers.lrn, mode).url
           }
         }
       }

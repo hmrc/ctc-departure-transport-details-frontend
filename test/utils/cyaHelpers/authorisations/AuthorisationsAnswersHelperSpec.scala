@@ -111,7 +111,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
 
                   val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Right(
                       ListItem(
                         name = s"${authType.forDisplay} - $reference",
@@ -141,7 +141,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
 
                   val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Right(
                       ListItem(
                         name = s"${authType.forDisplay} - $reference",
@@ -175,7 +175,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
 
                   val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Right(
                       ListItem(
                         name = s"${authType.forDisplay} - $reference",
@@ -197,7 +197,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
 
                   val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Right(
                       ListItem(
                         name = s"${authType.forDisplay} - $reference",
@@ -225,7 +225,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
 
                   val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Right(
                       ListItem(
                         name = s"${authType.forDisplay} - $reference",
@@ -256,7 +256,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
 
                   val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
 
-                  helper.listItems mustBe Seq(
+                  helper.listItems mustEqual Seq(
                     Right(
                       ListItem(
                         name = s"${authType.forDisplay} - $reference",
@@ -292,7 +292,7 @@ class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyCh
                 .setValue(InferredAuthorisationTypePage(Index(2)), authType)
               val helper = new AuthorisationsAnswersHelper(userAnswers, mode)
 
-              helper.listItems mustBe Seq(
+              helper.listItems mustEqual Seq(
                 Right(
                   ListItem(
                     name = s"${authType.forDisplay} - $reference",

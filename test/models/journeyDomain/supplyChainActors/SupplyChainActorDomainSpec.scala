@@ -44,8 +44,8 @@ class SupplyChainActorDomainSpec extends SpecBase with Generators {
 
         val result = SupplyChainActorDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           SupplyChainActorTypePage(actorIndex),
           IdentificationNumberPage(actorIndex)
         )
@@ -56,8 +56,8 @@ class SupplyChainActorDomainSpec extends SpecBase with Generators {
       "when type missing" in {
         val result = SupplyChainActorDomain.userAnswersReader(index).apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe SupplyChainActorTypePage(index)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual SupplyChainActorTypePage(index)
+        result.left.value.pages mustEqual Seq(
           SupplyChainActorTypePage(actorIndex)
         )
       }
@@ -68,8 +68,8 @@ class SupplyChainActorDomainSpec extends SpecBase with Generators {
 
         val result = SupplyChainActorDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe IdentificationNumberPage(index)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual IdentificationNumberPage(index)
+        result.left.value.pages mustEqual Seq(
           SupplyChainActorTypePage(actorIndex),
           IdentificationNumberPage(actorIndex)
         )

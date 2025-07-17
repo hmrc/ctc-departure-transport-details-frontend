@@ -40,7 +40,7 @@ class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPrope
               val userAnswers = emptyUserAnswers
 
               val helper = new AdditionalReferenceAnswersHelper(userAnswers, mode)
-              helper.listItems mustBe Nil
+              helper.listItems mustEqual Nil
           }
         }
       }
@@ -57,7 +57,7 @@ class AdditionalReferenceAnswersHelperSpec extends SpecBase with ScalaCheckPrope
               .setValue(AddAdditionalReferenceNumberYesNoPage(Index(1)), false)
 
             val helper = new AdditionalReferenceAnswersHelper(userAnswers, mode)
-            helper.listItems mustBe Seq(
+            helper.listItems mustEqual Seq(
               Right(
                 ListItem(
                   name = s"${refType.toString} - $additionalReferenceNumber",

@@ -40,7 +40,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
     forAll(arbitraryTransportMeansActiveAnswers(emptyUserAnswers, activeIndex), arbitrary[Mode]) {
       (userAnswers, mode) =>
         val sections = new ActiveBorderAnswersViewModelProvider().apply(userAnswers, mode, activeIndex).sections
-        sections.size mustBe 1
+        sections.size mustEqual 1
     }
   }
 
@@ -66,7 +66,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
             val activeBorderSection = sections.head
 
             activeBorderSection.sectionTitle mustNot be(defined)
-            activeBorderSection.rows.size mustBe 8
+            activeBorderSection.rows.size mustEqual 8
             activeBorderSection.addAnotherLink must not be defined
 
         }
@@ -95,7 +95,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
             val activeBorderSection = sections.head
 
             activeBorderSection.sectionTitle mustNot be(defined)
-            activeBorderSection.rows.size mustBe 9
+            activeBorderSection.rows.size mustEqual 9
             activeBorderSection.addAnotherLink must not be defined
 
         }
@@ -126,7 +126,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
             val activeBorderSection = sections.head
 
             activeBorderSection.sectionTitle mustNot be(defined)
-            activeBorderSection.rows.size mustBe 8
+            activeBorderSection.rows.size mustEqual 8
             activeBorderSection.addAnotherLink must not be defined
 
         }
@@ -155,7 +155,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
             val activeBorderSection = sections.head
 
             activeBorderSection.sectionTitle mustNot be(defined)
-            activeBorderSection.rows.size mustBe 8
+            activeBorderSection.rows.size mustEqual 8
             activeBorderSection.addAnotherLink must not be defined
         }
       }

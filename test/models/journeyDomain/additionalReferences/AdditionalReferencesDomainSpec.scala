@@ -38,16 +38,16 @@ class AdditionalReferencesDomainSpec extends SpecBase with Generators {
 
       val result = AdditionalReferencesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value.value.length mustBe numberOfAdditionalReferences
-      result.value.pages.last mustBe AddAnotherAdditionalReferencePage
+      result.value.value.value.length mustEqual numberOfAdditionalReferences
+      result.value.pages.last mustEqual AddAnotherAdditionalReferencePage
     }
 
     "cannot be parsed from user answers" - {
       "when no additional reference" in {
         val result = AdditionalReferencesDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe AdditionalReferenceTypePage(Index(0))
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual AdditionalReferenceTypePage(Index(0))
+        result.left.value.pages mustEqual Seq(
           AdditionalReferenceTypePage(Index(0))
         )
       }

@@ -40,7 +40,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
             userAnswers =>
               val result = TransportMeansDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe AddBorderModeOfTransportYesNoPage
+              result.left.value.page mustEqual AddBorderModeOfTransportYesNoPage
           }
         }
 
@@ -55,7 +55,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
                 userAnswers =>
                   val result = TransportMeansDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-                  result.left.value.page mustBe BorderModeOfTransportPage
+                  result.left.value.page mustEqual BorderModeOfTransportPage
               }
           }
         }
@@ -75,7 +75,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
           userAnswers =>
             val result = TransportMeansDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe AddActiveBorderTransportMeansYesNoPage
+            result.left.value.page mustEqual AddActiveBorderTransportMeansYesNoPage
         }
       }
 
@@ -92,7 +92,7 @@ class TransportMeansDomainSpec extends SpecBase with ScalaCheckPropertyChecks wi
               userAnswers =>
                 val result = TransportMeansDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe IdentificationPage(index)
+                result.left.value.page mustEqual IdentificationPage(index)
             }
         }
       }

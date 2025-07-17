@@ -37,7 +37,7 @@ class SupplyChainActorNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.supplyChainActors.routes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode))
+                .mustEqual(controllers.supplyChainActors.routes.AddAnotherSupplyChainActorController.onPageLoad(lrn, mode))
           }
         }
       }
@@ -55,7 +55,7 @@ class SupplyChainActorNavigatorSpec extends SpecBase with ScalaCheckPropertyChec
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.routes.TransportAnswersController.onPageLoad(answers.lrn))
+                .mustEqual(controllers.routes.TransportAnswersController.onPageLoad(answers.lrn))
           }
         }
       }

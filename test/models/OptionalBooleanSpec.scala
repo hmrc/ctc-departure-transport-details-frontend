@@ -26,34 +26,34 @@ class OptionalBooleanSpec extends SpecBase {
     "must serialise" - {
       "when true" in {
         val result = Json.toJson(OptionalBoolean.yes)
-        result mustBe JsBoolean(true)
+        result mustEqual JsBoolean(true)
       }
 
       "when false" in {
         val result = Json.toJson(OptionalBoolean.no)
-        result mustBe JsBoolean(false)
+        result mustEqual JsBoolean(false)
       }
 
       "when maybe" in {
         val result = Json.toJson(OptionalBoolean.maybe)
-        result mustBe JsNull
+        result mustEqual JsNull
       }
     }
 
     "must deserialise" - {
       "when true" in {
         val result = JsBoolean(true).as[OptionalBoolean]
-        result mustBe OptionalBoolean.yes
+        result mustEqual OptionalBoolean.yes
       }
 
       "when false" in {
         val result = JsBoolean(false).as[OptionalBoolean]
-        result mustBe OptionalBoolean.no
+        result mustEqual OptionalBoolean.no
       }
 
       "when maybe" in {
         val result = JsNull.as[OptionalBoolean]
-        result mustBe OptionalBoolean.maybe
+        result mustEqual OptionalBoolean.maybe
       }
     }
   }

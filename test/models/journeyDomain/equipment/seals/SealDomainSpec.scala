@@ -36,8 +36,8 @@ class SealDomainSpec extends SpecBase {
 
         val result = SealDomain.userAnswersReader(equipmentIndex, sealIndex).apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           IdentificationNumberPage(equipmentIndex, sealIndex)
         )
       }
@@ -47,8 +47,8 @@ class SealDomainSpec extends SpecBase {
       "when seal identification page is unanswered" in {
         val result = SealDomain.userAnswersReader(equipmentIndex, sealIndex).apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe IdentificationNumberPage(equipmentIndex, sealIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual IdentificationNumberPage(equipmentIndex, sealIndex)
+        result.left.value.pages mustEqual Seq(
           IdentificationNumberPage(equipmentIndex, sealIndex)
         )
       }

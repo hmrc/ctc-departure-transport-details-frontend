@@ -37,8 +37,8 @@ class TransportMeansActiveListDomainSpec extends SpecBase with Generators {
 
       val result = TransportMeansActiveListDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value.transportMeansActiveListDomain.length mustBe numberOfActiveBorderMeans
-      result.value.pages.last mustBe AddAnotherBorderTransportPage
+      result.value.value.transportMeansActiveListDomain.length mustEqual numberOfActiveBorderMeans
+      result.value.pages.last mustEqual AddAnotherBorderTransportPage
     }
   }
 }

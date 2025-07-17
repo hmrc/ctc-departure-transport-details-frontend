@@ -46,14 +46,14 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
         "must be true" in {
           val userAnswers = emptyUserAnswers.setValue(OfficesOfTransitSection, JsArray(Seq(Json.obj("foo" -> "bar"))))
           val result      = TransportMeansActiveDomain.hasMultiplicity(userAnswers)
-          result mustBe true
+          result mustEqual true
         }
       }
 
       "when no offices of transit added" - {
         "must be false" in {
           val result = TransportMeansActiveDomain.hasMultiplicity(emptyUserAnswers)
-          result mustBe false
+          result mustEqual false
         }
       }
     }
@@ -82,8 +82,8 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
           val result = TransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             IdentificationPage(index),
             IdentificationNumberPage(index),
             NationalityPage(index),
@@ -117,8 +117,8 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
               val result = TransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 IdentificationPage(index),
                 IdentificationNumberPage(index),
                 NationalityPage(index),
@@ -139,8 +139,8 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
               val result = TransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe IdentificationPage(index)
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual IdentificationPage(index)
+              result.left.value.pages mustEqual Seq(
                 IdentificationPage(index)
               )
           }
@@ -155,8 +155,8 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
         val result = TransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe NationalityPage(index)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual NationalityPage(index)
+        result.left.value.pages mustEqual Seq(
           IdentificationPage(index),
           IdentificationNumberPage(index),
           NationalityPage(index)
@@ -172,8 +172,8 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
         val result = TransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe CustomsOfficeActiveBorderPage(index)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual CustomsOfficeActiveBorderPage(index)
+        result.left.value.pages mustEqual Seq(
           IdentificationNumberPage(index),
           NationalityPage(index),
           CustomsOfficeActiveBorderPage(index)
@@ -196,8 +196,8 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
               val result = TransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe ConveyanceReferenceNumberPage(index)
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual ConveyanceReferenceNumberPage(index)
+              result.left.value.pages mustEqual Seq(
                 IdentificationPage(index),
                 IdentificationNumberPage(index),
                 NationalityPage(index),
@@ -223,8 +223,8 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
               val result = TransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe ConveyanceReferenceNumberYesNoPage(index)
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual ConveyanceReferenceNumberYesNoPage(index)
+              result.left.value.pages mustEqual Seq(
                 IdentificationPage(index),
                 IdentificationNumberPage(index),
                 NationalityPage(index),
@@ -250,8 +250,8 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
             val result = TransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe ConveyanceReferenceNumberYesNoPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual ConveyanceReferenceNumberYesNoPage(index)
+            result.left.value.pages mustEqual Seq(
               IdentificationPage(index),
               IdentificationNumberPage(index),
               NationalityPage(index),
@@ -277,8 +277,8 @@ class TransportMeansActiveDomainSpec extends SpecBase with Generators with Scala
 
             val result = TransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe ConveyanceReferenceNumberPage(index)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual ConveyanceReferenceNumberPage(index)
+            result.left.value.pages mustEqual Seq(
               IdentificationPage(index),
               IdentificationNumberPage(index),
               NationalityPage(index),

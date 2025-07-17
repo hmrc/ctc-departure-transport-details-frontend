@@ -44,7 +44,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = service.getCustomsOffices(userAnswers)
 
-        result mustBe SelectableList(Seq(destinationOffice))
+        result mustEqual SelectableList(Seq(destinationOffice))
       }
 
       "must return a list of sorted customs offices of transit" in {
@@ -55,7 +55,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = service.getCustomsOffices(userAnswers)
 
-        result mustBe SelectableList(Seq(transitOffice2, transitOffice1))
+        result mustEqual SelectableList(Seq(transitOffice2, transitOffice1))
       }
 
       "must return a list of sorted customs offices of exit" in {
@@ -66,7 +66,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = service.getCustomsOffices(userAnswers)
 
-        result mustBe SelectableList(Seq(exitOffice2, exitOffice1))
+        result mustEqual SelectableList(Seq(exitOffice2, exitOffice1))
       }
 
       "must return a list of sorted customs offices of exit, transit and destination with no duplicates" in {
@@ -82,7 +82,7 @@ class CustomsOfficesServiceSpec extends SpecBase with BeforeAndAfterEach {
 
         val result = service.getCustomsOffices(userAnswers)
 
-        result mustBe SelectableList(Seq(exitOffice2, transitOffice2, exitOffice1, transitOffice1, destinationOffice))
+        result mustEqual SelectableList(Seq(exitOffice2, transitOffice2, exitOffice1, transitOffice1, destinationOffice))
       }
 
       "must throw an exception if no offices found in user answers" in {

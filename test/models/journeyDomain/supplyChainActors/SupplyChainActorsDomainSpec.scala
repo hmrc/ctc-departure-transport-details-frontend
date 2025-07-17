@@ -38,16 +38,16 @@ class SupplyChainActorsDomainSpec extends SpecBase with Generators {
 
       val result = SupplyChainActorsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value.SupplyChainActorsDomain.length mustBe numberOfSupplyChainActors
-      result.value.pages.last mustBe AddAnotherSupplyChainActorPage
+      result.value.value.SupplyChainActorsDomain.length mustEqual numberOfSupplyChainActors
+      result.value.pages.last mustEqual AddAnotherSupplyChainActorPage
     }
 
     "cannot be parsed from user answers" - {
       "when no supply chain actors" in {
         val result = SupplyChainActorsDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe SupplyChainActorTypePage(Index(0))
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual SupplyChainActorTypePage(Index(0))
+        result.left.value.pages mustEqual Seq(
           SupplyChainActorTypePage(Index(0))
         )
       }

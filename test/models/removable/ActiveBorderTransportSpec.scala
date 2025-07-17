@@ -36,7 +36,7 @@ class ActiveBorderTransportSpec extends SpecBase with ScalaCheckPropertyChecks w
               .setValue(IdentificationNumberPage(index), identificationNumber)
 
             val result = ActiveBorderTransport(userAnswers, index)
-            result.value mustBe ActiveBorderTransport(identification, Some(identificationNumber))
+            result.value mustEqual ActiveBorderTransport(identification, Some(identificationNumber))
         }
       }
 
@@ -47,7 +47,7 @@ class ActiveBorderTransportSpec extends SpecBase with ScalaCheckPropertyChecks w
               .setValue(IdentificationPage(index), identification)
 
             val result = ActiveBorderTransport(userAnswers, index)
-            result.value mustBe ActiveBorderTransport(identification, None)
+            result.value mustEqual ActiveBorderTransport(identification, None)
         }
       }
     }
@@ -78,7 +78,7 @@ class ActiveBorderTransportSpec extends SpecBase with ScalaCheckPropertyChecks w
           identification =>
             val activeBorderTransport = ActiveBorderTransport(identification, None)
             val result                = activeBorderTransport.forRemoveDisplay
-            result mustBe s"${identification.description}"
+            result mustEqual s"${identification.description}"
         }
       }
 
@@ -87,7 +87,7 @@ class ActiveBorderTransportSpec extends SpecBase with ScalaCheckPropertyChecks w
           (identification, identificationNumber) =>
             val additionalReference = ActiveBorderTransport(identification, Some(identificationNumber))
             val result              = additionalReference.forRemoveDisplay
-            result mustBe s"${identification.description} - $identificationNumber"
+            result mustEqual s"${identification.description} - $identificationNumber"
         }
       }
     }

@@ -53,14 +53,14 @@ class ActiveBorderTransportAnswersHelperSpec extends SpecBase with ScalaCheckPro
             val result = ActiveBorderTransportAnswersHelper(userAnswers, mode, index)(messages, frontendAppConfig)
 
             result.head.key.value mustEqual "Do you want to add the type of identification?"
-            result(1).key.value mustBe "Identification type"
-            result(2).key.value mustBe "Do you want to add an identification for this vehicle?"
-            result(3).key.value mustBe "Identification"
-            result(4).key.value mustBe "Do you want to add the registered country for this vehicle?"
-            result(5).key.value mustBe "Registered country"
-            result(6).key.value mustBe "Customs office"
-            result(7).key.value mustBe "Do you want to add a conveyance reference number?"
-            result(8).key.value mustBe "Conveyance reference number"
+            result(1).key.value mustEqual "Identification type"
+            result(2).key.value mustEqual "Do you want to add an identification for this vehicle?"
+            result(3).key.value mustEqual "Identification"
+            result(4).key.value mustEqual "Do you want to add the registered country for this vehicle?"
+            result(5).key.value mustEqual "Registered country"
+            result(6).key.value mustEqual "Customs office"
+            result(7).key.value mustEqual "Do you want to add a conveyance reference number?"
+            result(8).key.value mustEqual "Conveyance reference number"
         }
       }
     }

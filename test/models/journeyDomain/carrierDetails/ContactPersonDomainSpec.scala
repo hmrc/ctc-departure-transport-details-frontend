@@ -43,8 +43,8 @@ class ContactPersonDomainSpec extends SpecBase with UserAnswersSpecHelper with G
 
         val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           NamePage,
           TelephoneNumberPage
         )
@@ -61,8 +61,8 @@ class ContactPersonDomainSpec extends SpecBase with UserAnswersSpecHelper with G
 
         val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe NamePage
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual NamePage
+        result.left.value.pages mustEqual Seq(
           NamePage
         )
       }
@@ -75,8 +75,8 @@ class ContactPersonDomainSpec extends SpecBase with UserAnswersSpecHelper with G
 
         val result = ContactPersonDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe TelephoneNumberPage
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual TelephoneNumberPage
+        result.left.value.pages mustEqual Seq(
           NamePage,
           TelephoneNumberPage
         )

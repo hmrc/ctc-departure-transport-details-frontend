@@ -62,7 +62,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
               (userAnswers, mode) =>
                 val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)(messages, frontendAppConfig)
                 val active = TransportMeansActiveDomain.userAnswersReader(index).apply(Nil).run(userAnswers).value.value
-                helper.listItems mustBe Seq(
+                helper.listItems mustEqual Seq(
                   Right(
                     ListItem(
                       name = active.asString,
@@ -90,7 +90,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
             forAll(arbitrary[Mode]) {
               mode =>
                 val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)
-                helper.listItems mustBe Seq(
+                helper.listItems mustEqual Seq(
                   Left(
                     ListItem(
                       name = identificationType.asString,
@@ -114,7 +114,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         forAll(arbitrary[Mode]) {
           mode =>
             val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)
-            helper.listItems mustBe Seq(
+            helper.listItems mustEqual Seq(
               Left(
                 ListItem(
                   name = identificationNumber,
@@ -138,7 +138,7 @@ class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPr
         forAll(arbitrary[Mode]) {
           mode =>
             val helper = new ActiveBorderTransportsAnswersHelper(userAnswers, mode)
-            helper.listItems mustBe Seq(
+            helper.listItems mustEqual Seq(
               Left(
                 ListItem(
                   name = s"${identificationType.asString} - $identificationNumber",

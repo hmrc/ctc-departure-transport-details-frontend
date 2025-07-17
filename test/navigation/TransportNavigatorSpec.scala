@@ -35,7 +35,7 @@ class TransportNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
 
             navigator
               .nextPage(answers, None)
-              .mustBe(controllers.routes.TransportAnswersController.onPageLoad(answers.lrn))
+              .mustEqual(controllers.routes.TransportAnswersController.onPageLoad(answers.lrn))
         }
       }
     }

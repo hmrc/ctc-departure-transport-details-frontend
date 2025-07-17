@@ -129,7 +129,7 @@ class ContainerIdentificationNumberControllerSpec extends SpecBase with AppWithD
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
 
-        userAnswersCaptor.getValue.get(UuidPage(equipmentIndex)).value mustBe uuid
+        userAnswersCaptor.getValue.get(UuidPage(equipmentIndex)).value mustEqual uuid
       }
     }
 

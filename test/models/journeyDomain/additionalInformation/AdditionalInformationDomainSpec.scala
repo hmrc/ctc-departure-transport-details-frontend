@@ -45,8 +45,8 @@ class AdditionalInformationDomainSpec extends SpecBase with ScalaCheckPropertyCh
 
             val result = AdditionalInformationDomain.userAnswersReader(additionalInformationIndex).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Seq(
               AdditionalInformationTypePage(additionalInformationIndex),
               AddCommentsYesNoPage(additionalInformationIndex),
               AdditionalInformationTextPage(additionalInformationIndex)
@@ -60,8 +60,8 @@ class AdditionalInformationDomainSpec extends SpecBase with ScalaCheckPropertyCh
       "when reference type unanswered" in {
         val result = AdditionalInformationDomain.userAnswersReader(additionalInformationIndex).apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe AdditionalInformationTypePage(additionalInformationIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual AdditionalInformationTypePage(additionalInformationIndex)
+        result.left.value.pages mustEqual Seq(
           AdditionalInformationTypePage(additionalInformationIndex)
         )
       }
@@ -76,8 +76,8 @@ class AdditionalInformationDomainSpec extends SpecBase with ScalaCheckPropertyCh
 
               val result = AdditionalInformationDomain.userAnswersReader(Index(0)).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe AdditionalInformationTextPage(Index(0))
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual AdditionalInformationTextPage(Index(0))
+              result.left.value.pages mustEqual Seq(
                 AdditionalInformationTypePage(Index(0)),
                 AddCommentsYesNoPage(Index(0)),
                 AdditionalInformationTextPage(Index(0))

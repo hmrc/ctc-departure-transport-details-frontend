@@ -134,7 +134,7 @@ class IdentificationNumberControllerSpec extends SpecBase with AppWithDefaultMoc
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
 
-        userAnswersCaptor.getValue.get(UuidPage(equipmentIndex)).value mustBe uuid
+        userAnswersCaptor.getValue.get(UuidPage(equipmentIndex)).value mustEqual uuid
       }
     }
 

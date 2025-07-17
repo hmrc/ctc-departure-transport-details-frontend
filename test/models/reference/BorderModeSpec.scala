@@ -99,13 +99,13 @@ class BorderModeSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val borderMode = BorderMode(code, description)
-          borderMode.toString mustBe s"$description"
+          borderMode.toString mustEqual s"$description"
       }
     }
 
     "when description contains raw HTML" in {
       val borderMode = BorderMode("test", "one &amp; two")
-      borderMode.toString mustBe "one & two"
+      borderMode.toString mustEqual "one & two"
     }
   }
 

@@ -36,7 +36,7 @@ class AdditionalReferenceSpec extends SpecBase with ScalaCheckPropertyChecks wit
               .setValue(AdditionalReferenceNumberPage(index), additionalReferenceNumber)
 
             val result = AdditionalReference(userAnswers, index)
-            result.value mustBe AdditionalReference(additionalReferenceType, Some(additionalReferenceNumber))
+            result.value mustEqual AdditionalReference(additionalReferenceType, Some(additionalReferenceNumber))
         }
       }
 
@@ -47,7 +47,7 @@ class AdditionalReferenceSpec extends SpecBase with ScalaCheckPropertyChecks wit
               .setValue(AdditionalReferenceTypePage(index), additionalReferenceType)
 
             val result = AdditionalReference(userAnswers, index)
-            result.value mustBe AdditionalReference(additionalReferenceType, None)
+            result.value mustEqual AdditionalReference(additionalReferenceType, None)
         }
       }
     }
@@ -78,7 +78,7 @@ class AdditionalReferenceSpec extends SpecBase with ScalaCheckPropertyChecks wit
           additionalReferenceType =>
             val additionalReference = AdditionalReference(additionalReferenceType, None)
             val result              = additionalReference.forRemoveDisplay
-            result mustBe s"${additionalReferenceType.documentType} - ${additionalReferenceType.description}"
+            result mustEqual s"${additionalReferenceType.documentType} - ${additionalReferenceType.description}"
         }
       }
 
@@ -87,7 +87,7 @@ class AdditionalReferenceSpec extends SpecBase with ScalaCheckPropertyChecks wit
           (additionalReferenceType, additionalReferenceNumber) =>
             val additionalReference = AdditionalReference(additionalReferenceType, Some(additionalReferenceNumber))
             val result              = additionalReference.forRemoveDisplay
-            result mustBe s"${additionalReferenceType.documentType} - ${additionalReferenceType.description} - $additionalReferenceNumber"
+            result mustEqual s"${additionalReferenceType.documentType} - ${additionalReferenceType.description} - $additionalReferenceNumber"
         }
       }
     }

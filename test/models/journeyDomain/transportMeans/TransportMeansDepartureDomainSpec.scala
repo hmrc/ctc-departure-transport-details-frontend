@@ -50,8 +50,8 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
         val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex).apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           IdentificationPage(departureIndex),
           MeansIdentificationNumberPage(departureIndex),
           VehicleCountryPage(departureIndex),
@@ -66,8 +66,8 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
         val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex).apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe IdentificationPage(departureIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual IdentificationPage(departureIndex)
+        result.left.value.pages mustEqual Seq(
           IdentificationPage(departureIndex)
         )
       }
@@ -78,8 +78,8 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
         val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex).apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe MeansIdentificationNumberPage(departureIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual MeansIdentificationNumberPage(departureIndex)
+        result.left.value.pages mustEqual Seq(
           IdentificationPage(departureIndex),
           MeansIdentificationNumberPage(departureIndex)
         )
@@ -92,8 +92,8 @@ class TransportMeansDepartureDomainSpec extends SpecBase with Generators with Sc
 
         val result = TransportMeansDepartureDomain.userAnswersReader(departureIndex).apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe VehicleCountryPage(departureIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual VehicleCountryPage(departureIndex)
+        result.left.value.pages mustEqual Seq(
           IdentificationPage(departureIndex),
           MeansIdentificationNumberPage(departureIndex),
           VehicleCountryPage(departureIndex)

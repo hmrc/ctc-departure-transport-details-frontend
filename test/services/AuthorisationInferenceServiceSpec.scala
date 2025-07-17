@@ -74,7 +74,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
                 val result = service.inferAuthorisations(userAnswers, authTypes)
 
-                result mustBe userAnswers
+                result mustEqual userAnswers
             }
           }
         }
@@ -87,7 +87,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
                 val result = service.inferAuthorisations(userAnswers, NonEmptySet.of(authTypeACR, authTypeSSE))
 
-                result mustBe userAnswers
+                result mustEqual userAnswers
             }
           }
         }
@@ -110,7 +110,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
                   .setValue(InferredAuthorisationTypePage(Index(1)), authTypeTRD)
                   .setValue(IsMandatoryPage(Index(1)), true)
 
-                result mustBe expectedResult
+                result mustEqual expectedResult
             }
           }
         }
@@ -123,7 +123,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
                 val result = service.inferAuthorisations(userAnswers, NonEmptySet.of(authTypeSSE))
 
-                result mustBe userAnswers
+                result mustEqual userAnswers
             }
           }
         }
@@ -143,7 +143,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
               val result = service.inferAuthorisations(userAnswers, authTypes)
 
-              result mustBe userAnswers
+              result mustEqual userAnswers
           }
         }
       }
@@ -163,7 +163,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
                   .setValue(InferredAuthorisationTypePage(Index(0)), authTypeACR)
                   .setValue(IsMandatoryPage(Index(0)), true)
 
-                result mustBe expectedResult
+                result mustEqual expectedResult
             }
           }
         }
@@ -176,7 +176,7 @@ class AuthorisationInferenceServiceSpec extends SpecBase with ScalaCheckProperty
 
                 val result = service.inferAuthorisations(userAnswers, NonEmptySet.of(authTypeSSE, authTypeTRD))
 
-                result mustBe userAnswers
+                result mustEqual userAnswers
             }
           }
         }

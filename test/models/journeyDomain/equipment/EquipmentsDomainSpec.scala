@@ -38,8 +38,8 @@ class EquipmentsDomainSpec extends SpecBase with ScalaCheckPropertyChecks with G
 
         val result = EquipmentsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value.value.size mustBe numberOfEquipments
-        result.value.pages.last mustBe AddAnotherEquipmentPage
+        result.value.value.value.size mustEqual numberOfEquipments
+        result.value.pages.last mustEqual AddAnotherEquipmentPage
       }
     }
 
@@ -47,7 +47,7 @@ class EquipmentsDomainSpec extends SpecBase with ScalaCheckPropertyChecks with G
       "when there aren't any equipments" in {
         val result = EquipmentsDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
-        result.isLeft mustBe true
+        result.isLeft mustEqual true
       }
     }
   }

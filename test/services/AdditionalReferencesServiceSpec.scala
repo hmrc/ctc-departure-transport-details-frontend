@@ -54,7 +54,7 @@ class AdditionalReferencesServiceSpec extends SpecBase with BeforeAndAfterEach w
         when(mockRefDataConnector.getAdditionalReferences()(any(), any()))
           .thenReturn(Future.successful(Right(additionalReferences)))
 
-        service.getAdditionalReferences().futureValue mustBe
+        service.getAdditionalReferences().futureValue mustEqual
           SelectableList(Seq(additionalReference2, additionalReference3, additionalReference1))
 
         verify(mockRefDataConnector).getAdditionalReferences()(any(), any())

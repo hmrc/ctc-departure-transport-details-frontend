@@ -32,9 +32,9 @@ class AddDepartureTransportMeansYesNoViewModelSpec extends SpecBase with ScalaCh
       val viewModelProvider = new AddDepartureTransportMeansYesNoViewModelProvider()
       val result            = viewModelProvider.apply(userAnswers)
 
-      result.prefix mustBe "transportMeans.addDepartureTransportMeansYesNo.inlandModeYes"
-      result.title mustBe "Do you want to add identification for this vehicle?"
-      result.heading mustBe "Do you want to add identification for this vehicle?"
+      result.prefix mustEqual "transportMeans.addDepartureTransportMeansYesNo.inlandModeYes"
+      result.title mustEqual "Do you want to add identification for this vehicle?"
+      result.heading mustEqual "Do you want to add identification for this vehicle?"
       result.paragraph must not be defined
     }
 
@@ -45,10 +45,10 @@ class AddDepartureTransportMeansYesNoViewModelSpec extends SpecBase with ScalaCh
       val viewModelProvider = new AddDepartureTransportMeansYesNoViewModelProvider()
       val result            = viewModelProvider.apply(userAnswers)
 
-      result.prefix mustBe "transportMeans.addDepartureTransportMeansYesNo.inlandModeNo"
-      result.title mustBe "Do you want to add identification for the departure means of transport?"
-      result.heading mustBe "Do you want to add identification for the departure means of transport?"
-      result.paragraph.value mustBe "This is the means of transport used from the UK office of departure to a UK port or airport."
+      result.prefix mustEqual "transportMeans.addDepartureTransportMeansYesNo.inlandModeNo"
+      result.title mustEqual "Do you want to add identification for the departure means of transport?"
+      result.heading mustEqual "Do you want to add identification for the departure means of transport?"
+      result.paragraph.value mustEqual "This is the means of transport used from the UK office of departure to a UK port or airport."
     }
 
   }

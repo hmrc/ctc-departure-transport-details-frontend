@@ -44,7 +44,7 @@ class DepartureTransportAnswersViewModelProviderSpec extends SpecBase with Scala
 
       val section = result.sections.head
       section.sectionTitle must not be defined
-      section.rows.size mustBe 6
+      section.rows.size mustEqual 6
       section.addAnotherLink must not be defined
     }
 

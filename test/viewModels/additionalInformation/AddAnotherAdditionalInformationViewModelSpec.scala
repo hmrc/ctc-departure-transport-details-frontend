@@ -35,11 +35,11 @@ class AddAnotherAdditionalInformationViewModelSpec extends SpecBase with Generat
 
           val result = new AddAnotherAdditionalInformationViewModelProvider().apply(userAnswers, mode)
 
-          result.listItems.length mustBe 1
-          result.title mustBe "You have added 1 additional information for all items"
-          result.heading mustBe "You have added 1 additional information for all items"
-          result.legend mustBe "Do you want to add any more additional information for all items?"
-          result.maxLimitLabel mustBe "You cannot add any more additional information for all items. To add another, you need to remove one first."
+          result.listItems.length mustEqual 1
+          result.title mustEqual "You have added 1 additional information for all items"
+          result.heading mustEqual "You have added 1 additional information for all items"
+          result.legend mustEqual "Do you want to add any more additional information for all items?"
+          result.maxLimitLabel mustEqual "You cannot add any more additional information for all items. To add another, you need to remove one first."
       }
     }
 
@@ -54,11 +54,11 @@ class AddAnotherAdditionalInformationViewModelSpec extends SpecBase with Generat
           }
 
           val result = new AddAnotherAdditionalInformationViewModelProvider().apply(userAnswers, mode)
-          result.listItems.length mustBe additionalInformation
-          result.title mustBe s"You have added ${formatter.format(additionalInformation)} additional information for all items"
-          result.heading mustBe s"You have added ${formatter.format(additionalInformation)} additional information for all items"
-          result.legend mustBe "Do you want to add any more additional information for all items?"
-          result.maxLimitLabel mustBe "You cannot add any more additional information for all items. To add another, you need to remove one first."
+          result.listItems.length mustEqual additionalInformation
+          result.title mustEqual s"You have added ${formatter.format(additionalInformation)} additional information for all items"
+          result.heading mustEqual s"You have added ${formatter.format(additionalInformation)} additional information for all items"
+          result.legend mustEqual "Do you want to add any more additional information for all items?"
+          result.maxLimitLabel mustEqual "You cannot add any more additional information for all items. To add another, you need to remove one first."
       }
     }
   }
