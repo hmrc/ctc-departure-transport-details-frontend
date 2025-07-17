@@ -26,9 +26,9 @@ class DateFormProviderSpec extends DateBehaviours {
 
   private val prefix = Gen.alphaNumStr.sample.value
 
-  private val (minDate, mustBeAfter)  = (LocalDate.of(2021: Int, 1: Int, 1: Int), "31 December 2020")
-  private val (maxDate, mustBeBefore) = (LocalDate.of(2021: Int, 12: Int, 31: Int), "1 January 2022")
-  private val form                    = new DateFormProvider()(prefix, minDate, maxDate)
+  private val (minDate, mustEqualAfter)  = (LocalDate.of(2021: Int, 1: Int, 1: Int), "31 December 2020")
+  private val (maxDate, mustEqualBefore) = (LocalDate.of(2021: Int, 12: Int, 31: Int), "1 January 2022")
+  private val form                       = new DateFormProvider()(prefix, minDate, maxDate)
 
   ".value" - {
 
@@ -43,9 +43,9 @@ class DateFormProviderSpec extends DateBehaviours {
 
     behave like mandatoryDateField(form, fieldName, s"$prefix.error.required.all", Seq("day", "month", "year"))
 
-    behave like dateFieldWithMin(form, fieldName, min = minDate, FormError("value", s"$prefix.error.min.date", Seq(mustBeAfter)))
+    behave like dateFieldWithMin(form, fieldName, min = minDate, FormError("value", s"$prefix.error.min.date", Seq(mustEqualAfter)))
 
-    behave like dateFieldWithMax(form, fieldName, max = maxDate, FormError("value", s"$prefix.error.max.date", Seq(mustBeBefore)))
+    behave like dateFieldWithMax(form, fieldName, max = maxDate, FormError("value", s"$prefix.error.max.date", Seq(mustEqualBefore)))
 
   }
 }

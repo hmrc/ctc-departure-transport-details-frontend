@@ -83,7 +83,7 @@ class IdentificationControllerSpec extends SpecBase with AppWithDefaultMockFixtu
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.getValue(InferredIdentificationPage(activeIndex)) mustBe identificationType1
+        userAnswersCaptor.getValue.getValue(InferredIdentificationPage(activeIndex)) mustEqual identificationType1
         userAnswersCaptor.getValue.get(IdentificationPage(activeIndex)) must not be defined
       }
     }

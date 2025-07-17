@@ -46,7 +46,7 @@ class SelectableListSpec extends SpecBase with Generators with ScalaCheckPropert
 
       val result = json.as[SelectableList[CustomsOffice]](SelectableList.officesOfExitReads)
 
-      result mustBe SelectableList(
+      result mustEqual SelectableList(
         Seq(
           CustomsOffice("GB1", "Newcastle", None),
           CustomsOffice("GB2", "London", Some("999"))
@@ -77,7 +77,7 @@ class SelectableListSpec extends SpecBase with Generators with ScalaCheckPropert
 
       val result = json.as[SelectableList[CustomsOffice]](SelectableList.officesOfTransitReads)
 
-      result mustBe SelectableList(
+      result mustEqual SelectableList(
         Seq(
           CustomsOffice("GB1", "Newcastle", None),
           CustomsOffice("GB2", "London", Some("999"))

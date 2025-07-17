@@ -49,7 +49,7 @@ class ContainerIndicatorViewSpec extends OptionalYesNoViewBehaviours {
     "must render 3 radio buttons not inlined" in {
       val view = applyView(form, "D")
       val doc  = parseView(view)
-      doc.getElementsByClass("govuk-radios__item").toList.size mustBe 3
+      doc.getElementsByClass("govuk-radios__item").toList.size mustEqual 3
       assertNotRenderedByClass(doc, "govuk-radios--inline")
     }
   }
@@ -58,7 +58,7 @@ class ContainerIndicatorViewSpec extends OptionalYesNoViewBehaviours {
     "must render 2 radio buttons inlined" in {
       val view = applyView(form, "A")
       val doc  = parseView(view)
-      doc.getElementsByClass("govuk-radios__item").toList.size mustBe 2
+      doc.getElementsByClass("govuk-radios__item").toList.size mustEqual 2
       assertRenderedByClass(doc, "govuk-radios--inline")
     }
   }

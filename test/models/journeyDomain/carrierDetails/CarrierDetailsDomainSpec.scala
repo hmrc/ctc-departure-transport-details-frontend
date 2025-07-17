@@ -52,8 +52,8 @@ class CarrierDetailsDomainSpec extends SpecBase with UserAnswersSpecHelper with 
 
         val result = CarrierDetailsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           IdentificationNumberPage,
           AddContactYesNoPage,
           NamePage,
@@ -73,8 +73,8 @@ class CarrierDetailsDomainSpec extends SpecBase with UserAnswersSpecHelper with 
 
         val result = CarrierDetailsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           IdentificationNumberPage,
           AddContactYesNoPage
         )
@@ -88,8 +88,8 @@ class CarrierDetailsDomainSpec extends SpecBase with UserAnswersSpecHelper with 
 
         val result = CarrierDetailsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe IdentificationNumberPage
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual IdentificationNumberPage
+        result.left.value.pages mustEqual Seq(
           IdentificationNumberPage
         )
       }
@@ -100,8 +100,8 @@ class CarrierDetailsDomainSpec extends SpecBase with UserAnswersSpecHelper with 
 
         val result = CarrierDetailsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-        result.left.value.page mustBe AddContactYesNoPage
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual AddContactYesNoPage
+        result.left.value.pages mustEqual Seq(
           IdentificationNumberPage,
           AddContactYesNoPage
         )

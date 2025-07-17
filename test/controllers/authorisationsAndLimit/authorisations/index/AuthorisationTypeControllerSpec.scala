@@ -90,7 +90,7 @@ class AuthorisationTypeControllerSpec extends SpecBase with AppWithDefaultMockFi
 
         val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-        userAnswersCaptor.getValue.getValue(InferredAuthorisationTypePage(index)) mustBe authorisationType3
+        userAnswersCaptor.getValue.getValue(InferredAuthorisationTypePage(index)) mustEqual authorisationType3
         userAnswersCaptor.getValue.get(AuthorisationTypePage(index)) must not be defined
 
         verify(mockAuthorisationTypesService).getAuthorisationTypes(eqTo(userAnswers), eqTo(Some(index)))(any())

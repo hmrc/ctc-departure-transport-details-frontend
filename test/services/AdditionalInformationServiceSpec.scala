@@ -63,7 +63,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
           when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
             .thenReturn(Future.successful(Right(additionalInformationCodes)))
 
-          service.getAdditionalInformationCodes(emptyUserAnswers).futureValue mustBe expectedResult
+          service.getAdditionalInformationCodes(emptyUserAnswers).futureValue mustEqual expectedResult
 
           verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
         }
@@ -74,7 +74,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
 
           val userAnswers = emptyUserAnswers.setValue(ItemsDestinationCountryInCL009Page, false)
 
-          service.getAdditionalInformationCodes(userAnswers).futureValue mustBe expectedResult
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustEqual expectedResult
 
           verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
         }
@@ -88,7 +88,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
             .setValue(ItemCountryOfDestinationInCL009Page(Index(1)), false)
             .setValue(ItemCountryOfDestinationInCL009Page(Index(2)), false)
 
-          service.getAdditionalInformationCodes(userAnswers).futureValue mustBe expectedResult
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustEqual expectedResult
 
           verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
         }
@@ -103,7 +103,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
 
           val userAnswers = emptyUserAnswers.setValue(ItemsDestinationCountryInCL009Page, true)
 
-          service.getAdditionalInformationCodes(userAnswers).futureValue mustBe expectedResult
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustEqual expectedResult
 
           verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
         }
@@ -117,7 +117,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
             .setValue(ItemCountryOfDestinationInCL009Page(Index(1)), false)
             .setValue(ItemCountryOfDestinationInCL009Page(Index(2)), false)
 
-          service.getAdditionalInformationCodes(userAnswers).futureValue mustBe expectedResult
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustEqual expectedResult
 
           verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
         }
@@ -131,7 +131,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
             .setValue(ItemCountryOfDestinationInCL009Page(Index(1)), true)
             .setValue(ItemCountryOfDestinationInCL009Page(Index(2)), true)
 
-          service.getAdditionalInformationCodes(userAnswers).futureValue mustBe expectedResult
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustEqual expectedResult
 
           verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
         }

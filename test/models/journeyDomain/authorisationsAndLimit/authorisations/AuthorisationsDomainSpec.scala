@@ -37,8 +37,8 @@ class AuthorisationsDomainSpec extends SpecBase with Generators {
 
       val result = AuthorisationsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value.authorisations.length mustBe numberOfAuthorisations
-      result.value.pages.last mustBe AddAnotherAuthorisationPage
+      result.value.value.authorisations.length mustEqual numberOfAuthorisations
+      result.value.pages.last mustEqual AddAnotherAuthorisationPage
     }
   }
 }

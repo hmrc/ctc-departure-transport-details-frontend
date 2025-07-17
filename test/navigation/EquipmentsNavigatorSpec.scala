@@ -37,7 +37,7 @@ class EquipmentsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wit
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.equipment.routes.AddAnotherEquipmentController.onPageLoad(answers.lrn, mode))
+                .mustEqual(controllers.equipment.routes.AddAnotherEquipmentController.onPageLoad(answers.lrn, mode))
           }
         }
       }
@@ -55,7 +55,7 @@ class EquipmentsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wit
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.routes.TransportAnswersController.onPageLoad(answers.lrn))
+                .mustEqual(controllers.routes.TransportAnswersController.onPageLoad(answers.lrn))
           }
         }
       }

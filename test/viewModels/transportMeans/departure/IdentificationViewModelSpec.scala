@@ -42,7 +42,7 @@ class IdentificationViewModelSpec extends SpecBase with ScalaCheckPropertyChecks
 
       val result = viewModelProvider.apply(userAnswers, departureIndex)
 
-      result.para.value mustBe "You must add the registration number of the road vehicle for your inland mode."
+      result.para.value mustEqual "You must add the registration number of the road vehicle for your inland mode."
     }
 
     "when InlandMode is Road and not first Index" in {
@@ -52,7 +52,7 @@ class IdentificationViewModelSpec extends SpecBase with ScalaCheckPropertyChecks
 
       val result = viewModelProvider.apply(userAnswers, Index(1))
 
-      result.para.value mustBe "You must add the registration number of the road trailer for your inland mode."
+      result.para.value mustEqual "You must add the registration number of the road trailer for your inland mode."
     }
   }
 }

@@ -45,8 +45,8 @@ class SealsDomainSpec extends SpecBase {
 
         val result = SealsDomain.userAnswersReader(equipmentIndex).apply(Nil).run(userAnswers)
 
-        result.value.value mustBe expectedResult
-        result.value.pages mustBe Seq(
+        result.value.value mustEqual expectedResult
+        result.value.pages mustEqual Seq(
           IdentificationNumberPage(equipmentIndex, Index(0)),
           IdentificationNumberPage(equipmentIndex, Index(1)),
           AddAnotherSealPage(equipmentIndex)
@@ -58,8 +58,8 @@ class SealsDomainSpec extends SpecBase {
       "when there aren't any seals" in {
         val result = SealsDomain.userAnswersReader(equipmentIndex).apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe IdentificationNumberPage(equipmentIndex, Index(0))
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual IdentificationNumberPage(equipmentIndex, Index(0))
+        result.left.value.pages mustEqual Seq(
           IdentificationNumberPage(equipmentIndex, Index(0))
         )
       }

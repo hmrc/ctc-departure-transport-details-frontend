@@ -46,8 +46,8 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
           val result = EquipmentsAndChargesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             AddTransportEquipmentYesNoPage
           )
         }
@@ -77,8 +77,8 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
           val result = EquipmentsAndChargesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-          result.left.value.page mustBe AddPaymentMethodYesNoPage
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual AddPaymentMethodYesNoPage
+          result.left.value.pages mustEqual Seq(
             AddPaymentMethodYesNoPage
           )
         }
@@ -119,7 +119,7 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
             val result = EquipmentsAndChargesDomain.equipmentsReader.apply(Nil).run(userAnswers)
             result.value.value must not be defined
-            result.value.pages mustBe Seq(
+            result.value.pages mustEqual Seq(
               AddTransportEquipmentYesNoPage
             )
           }
@@ -134,8 +134,8 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
             val result = EquipmentsAndChargesDomain.equipmentsReader.apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe AddTransportEquipmentYesNoPage
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual AddTransportEquipmentYesNoPage
+            result.left.value.pages mustEqual Seq(
               AddTransportEquipmentYesNoPage
             )
           }
@@ -153,8 +153,8 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
           val result = EquipmentsAndChargesDomain.chargesReader.apply(Nil).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Nil
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Nil
         }
 
         "when there is security" - {
@@ -169,8 +169,8 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
                 val result = EquipmentsAndChargesDomain.chargesReader.apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   AddPaymentMethodYesNoPage
                 )
             }
@@ -188,8 +188,8 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
                 val result = EquipmentsAndChargesDomain.chargesReader.apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   AddPaymentMethodYesNoPage,
                   PaymentMethodPage
                 )
@@ -208,8 +208,8 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
                 val result = EquipmentsAndChargesDomain.chargesReader.apply(Nil).run(userAnswers)
 
-                result.left.value.page mustBe AddPaymentMethodYesNoPage
-                result.left.value.pages mustBe Seq(
+                result.left.value.page mustEqual AddPaymentMethodYesNoPage
+                result.left.value.pages mustEqual Seq(
                   AddPaymentMethodYesNoPage
                 )
             }
@@ -225,8 +225,8 @@ class EquipmentsAndChargesDomainSpec extends SpecBase with ScalaCheckPropertyChe
 
                   val result = EquipmentsAndChargesDomain.chargesReader.apply(Nil).run(userAnswers)
 
-                  result.left.value.page mustBe PaymentMethodPage
-                  result.left.value.pages mustBe Seq(
+                  result.left.value.page mustEqual PaymentMethodPage
+                  result.left.value.pages mustEqual Seq(
                     AddPaymentMethodYesNoPage,
                     PaymentMethodPage
                   )

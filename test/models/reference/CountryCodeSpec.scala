@@ -29,7 +29,7 @@ class CountryCodeSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr) {
         code =>
           val countryCode = CountryCode(code)
-          Json.toJson(countryCode) mustBe JsString(code)
+          Json.toJson(countryCode) mustEqual JsString(code)
       }
     }
 
@@ -37,7 +37,7 @@ class CountryCodeSpec extends SpecBase with ScalaCheckPropertyChecks {
       forAll(Gen.alphaNumStr) {
         code =>
           val countryCode = CountryCode(code)
-          JsString(code).as[CountryCode] mustBe countryCode
+          JsString(code).as[CountryCode] mustEqual countryCode
       }
     }
   }

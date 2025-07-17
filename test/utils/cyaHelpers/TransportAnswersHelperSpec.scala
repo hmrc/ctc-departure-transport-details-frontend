@@ -84,14 +84,14 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val result  = helper.usingSameUcr.get
 
               result.key.value mustEqual "Do you want to use the same Unique Consignment Reference (UCR) for all items?"
-              result.value.value mustBe "Yes"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe preRequisitesRoutes.SameUcrYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to use the same Unique Consignment Reference (UCR) for all items"
-              action.id mustBe "change-using-same-ucr"
+              action.content.value mustEqual "Change"
+              action.href mustEqual preRequisitesRoutes.SameUcrYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to use the same Unique Consignment Reference (UCR) for all items"
+              action.id mustEqual "change-using-same-ucr"
           }
         }
       }
@@ -117,15 +117,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.ucr.get
 
-              result.key.value mustBe "Unique Consignment Reference (UCR)"
-              result.value.value mustBe ucr
+              result.key.value mustEqual "Unique Consignment Reference (UCR)"
+              result.value.value mustEqual ucr
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe preRequisitesRoutes.UniqueConsignmentReferenceController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "Unique Consignment Reference (UCR)"
-              action.id mustBe "change-ucr"
+              action.content.value mustEqual "Change"
+              action.href mustEqual preRequisitesRoutes.UniqueConsignmentReferenceController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "Unique Consignment Reference (UCR)"
+              action.id mustEqual "change-ucr"
           }
         }
       }
@@ -151,15 +151,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.usingSameCountryOfDispatch.get
 
-              result.key.value mustBe "Are all the items being dispatched from the same country?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Are all the items being dispatched from the same country?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe preRequisitesRoutes.SameCountryOfDispatchYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if all the items are being dispatched from the same country"
-              action.id mustBe "change-using-same-country-of-dispatch"
+              action.content.value mustEqual "Change"
+              action.href mustEqual preRequisitesRoutes.SameCountryOfDispatchYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if all the items are being dispatched from the same country"
+              action.id mustEqual "change-using-same-country-of-dispatch"
           }
         }
       }
@@ -185,15 +185,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.countryOfDispatch.get
 
-              result.key.value mustBe "Country of dispatch"
-              result.value.value mustBe country.toString
+              result.key.value mustEqual "Country of dispatch"
+              result.value.value mustEqual country.toString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe preRequisitesRoutes.CountryOfDispatchController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "country of dispatch"
-              action.id mustBe "change-country-of-dispatch"
+              action.content.value mustEqual "Change"
+              action.href mustEqual preRequisitesRoutes.CountryOfDispatchController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "country of dispatch"
+              action.id mustEqual "change-country-of-dispatch"
           }
         }
       }
@@ -219,15 +219,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addCountryOfDestination.get
 
-              result.key.value mustBe "Are the goods being transported to another country after the end of this transit movement?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Are the goods being transported to another country after the end of this transit movement?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe preRequisitesRoutes.AddCountryOfDestinationController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if the goods are being transported to another country after the end of this transit movement"
-              action.id mustBe "change-add-country-of-destination"
+              action.content.value mustEqual "Change"
+              action.href mustEqual preRequisitesRoutes.AddCountryOfDestinationController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if the goods are being transported to another country after the end of this transit movement"
+              action.id mustEqual "change-add-country-of-destination"
           }
         }
 
@@ -238,15 +238,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addCountryOfDestination.get
 
-              result.key.value mustBe "Are the goods being transported to another country after the end of this transit movement?"
-              result.value.value mustBe "No"
+              result.key.value mustEqual "Are the goods being transported to another country after the end of this transit movement?"
+              result.value.value mustEqual "No"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe preRequisitesRoutes.AddCountryOfDestinationController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if the goods are being transported to another country after the end of this transit movement"
-              action.id mustBe "change-add-country-of-destination"
+              action.content.value mustEqual "Change"
+              action.href mustEqual preRequisitesRoutes.AddCountryOfDestinationController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if the goods are being transported to another country after the end of this transit movement"
+              action.id mustEqual "change-add-country-of-destination"
           }
         }
 
@@ -257,15 +257,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addCountryOfDestination.get
 
-              result.key.value mustBe "Are the goods being transported to another country after the end of this transit movement?"
-              result.value.value mustBe "Not sure"
+              result.key.value mustEqual "Are the goods being transported to another country after the end of this transit movement?"
+              result.value.value mustEqual "Not sure"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe preRequisitesRoutes.AddCountryOfDestinationController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if the goods are being transported to another country after the end of this transit movement"
-              action.id mustBe "change-add-country-of-destination"
+              action.content.value mustEqual "Change"
+              action.href mustEqual preRequisitesRoutes.AddCountryOfDestinationController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if the goods are being transported to another country after the end of this transit movement"
+              action.id mustEqual "change-add-country-of-destination"
           }
         }
       }
@@ -291,15 +291,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.transportedToSameCountry.get
 
-              result.key.value mustBe "Are all the items being transported to the same country?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Are all the items being transported to the same country?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe preRequisitesRoutes.TransportedToSameCountryYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if all the items are being transported to the same country"
-              action.id mustBe "change-transported-to-same-country"
+              action.content.value mustEqual "Change"
+              action.href mustEqual preRequisitesRoutes.TransportedToSameCountryYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if all the items are being transported to the same country"
+              action.id mustEqual "change-transported-to-same-country"
           }
         }
       }
@@ -325,15 +325,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.countryOfDestination.get
 
-              result.key.value mustBe "Country the items are being transported to"
-              result.value.value mustBe country.toString
+              result.key.value mustEqual "Country the items are being transported to"
+              result.value.value mustEqual country.toString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe preRequisitesRoutes.ItemsDestinationCountryController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "country the items are being transported to"
-              action.id mustBe "change-country-of-destination"
+              action.content.value mustEqual "Change"
+              action.href mustEqual preRequisitesRoutes.ItemsDestinationCountryController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "country the items are being transported to"
+              action.id mustEqual "change-country-of-destination"
           }
         }
       }
@@ -359,15 +359,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.usingContainersYesNo.get
 
-              result.key.value mustBe "Are you using any containers?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Are you using any containers?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe preRequisitesRoutes.ContainerIndicatorController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you are using any containers"
-              action.id mustBe "change-using-containers"
+              action.content.value mustEqual "Change"
+              action.href mustEqual preRequisitesRoutes.ContainerIndicatorController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you are using any containers"
+              action.id mustEqual "change-using-containers"
           }
         }
 
@@ -378,15 +378,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.usingContainersYesNo.get
 
-              result.key.value mustBe "Are you using any containers?"
-              result.value.value mustBe "No"
+              result.key.value mustEqual "Are you using any containers?"
+              result.value.value mustEqual "No"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe preRequisitesRoutes.ContainerIndicatorController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you are using any containers"
-              action.id mustBe "change-using-containers"
+              action.content.value mustEqual "Change"
+              action.href mustEqual preRequisitesRoutes.ContainerIndicatorController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you are using any containers"
+              action.id mustEqual "change-using-containers"
           }
         }
 
@@ -397,15 +397,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.usingContainersYesNo.get
 
-              result.key.value mustBe "Are you using any containers?"
-              result.value.value mustBe "Not sure"
+              result.key.value mustEqual "Are you using any containers?"
+              result.value.value mustEqual "Not sure"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe preRequisitesRoutes.ContainerIndicatorController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you are using any containers"
-              action.id mustBe "change-using-containers"
+              action.content.value mustEqual "Change"
+              action.href mustEqual preRequisitesRoutes.ContainerIndicatorController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you are using any containers"
+              action.id mustEqual "change-using-containers"
           }
         }
       }
@@ -431,15 +431,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addSupplyChainActor.get
 
-              result.key.value mustBe "Do you want to add a supply chain actor for all items?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add a supply chain actor for all items?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe supplyChainActorsRoutes.SupplyChainActorYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add a supply chain actor for all items"
-              action.id mustBe "change-add-supply-chain-actor"
+              action.content.value mustEqual "Change"
+              action.href mustEqual supplyChainActorsRoutes.SupplyChainActorYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add a supply chain actor for all items"
+              action.id mustEqual "change-add-supply-chain-actor"
           }
         }
       }
@@ -465,15 +465,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper           = new TransportAnswersHelper(userAnswers, mode)
               val result           = helper.supplyChainActor(index).get
 
-              result.key.value mustBe "Supply chain actor 1"
-              result.value.value mustBe supplyChainActor.asString
+              result.key.value mustEqual "Supply chain actor 1"
+              result.value.value mustEqual supplyChainActor.asString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe supplyChainActorRoutes.SupplyChainActorTypeController.onPageLoad(userAnswers.lrn, mode, index).url
-              action.visuallyHiddenText.get mustBe "supply chain actor 1"
-              action.id mustBe "change-supply-chain-actor-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual supplyChainActorRoutes.SupplyChainActorTypeController.onPageLoad(userAnswers.lrn, mode, index).url
+              action.visuallyHiddenText.get mustEqual "supply chain actor 1"
+              action.id mustEqual "change-supply-chain-actor-1"
           }
         }
       }
@@ -499,9 +499,9 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addOrRemoveSupplyChainActors.get
 
-              result.id mustBe "add-or-remove-supply-chain-actors"
-              result.text mustBe "Add or remove supply chain actors"
-              result.href mustBe supplyChainActorsRoutes.AddAnotherSupplyChainActorController.onPageLoad(answers.lrn, mode).url
+              result.id mustEqual "add-or-remove-supply-chain-actors"
+              result.text mustEqual "Add or remove supply chain actors"
+              result.href mustEqual supplyChainActorsRoutes.AddAnotherSupplyChainActorController.onPageLoad(answers.lrn, mode).url
           }
         }
       }
@@ -527,15 +527,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addAuthorisation.get
 
-              result.key.value mustBe "Do you want to add an authorisation?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add an authorisation?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe authorisationsAndLimitRoutes.AddAuthorisationsYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add an authorisation"
-              action.id mustBe "change-add-authorisation"
+              action.content.value mustEqual "Change"
+              action.href mustEqual authorisationsAndLimitRoutes.AddAuthorisationsYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add an authorisation"
+              action.id mustEqual "change-add-authorisation"
           }
         }
       }
@@ -561,15 +561,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper        = new TransportAnswersHelper(userAnswers, mode)
               val result        = helper.authorisation(index).get
 
-              result.key.value mustBe "Authorisation 1"
-              result.value.value mustBe authorisation.asString
+              result.key.value mustEqual "Authorisation 1"
+              result.value.value mustEqual authorisation.asString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe authorisationRoutes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, index).url
-              action.visuallyHiddenText.get mustBe "authorisation 1"
-              action.id mustBe "change-authorisation-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual authorisationRoutes.AuthorisationReferenceNumberController.onPageLoad(userAnswers.lrn, mode, index).url
+              action.visuallyHiddenText.get mustEqual "authorisation 1"
+              action.id mustEqual "change-authorisation-1"
           }
         }
       }
@@ -595,9 +595,9 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addOrRemoveAuthorisations.get
 
-              result.id mustBe "add-or-remove-an-authorisation"
-              result.text mustBe "Add or remove an authorisation"
-              result.href mustBe authorisationsRoutes.AddAnotherAuthorisationController.onPageLoad(answers.lrn, mode).url
+              result.id mustEqual "add-or-remove-an-authorisation"
+              result.text mustEqual "Add or remove an authorisation"
+              result.href mustEqual authorisationsRoutes.AddAnotherAuthorisationController.onPageLoad(answers.lrn, mode).url
           }
         }
       }
@@ -623,15 +623,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addLimitDateYesNo.get
 
-              result.key.value mustBe "Do you want to add the arrival date at the office of destination?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add the arrival date at the office of destination?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe limitRoutes.AddLimitDateYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add the arrival date at the office of destination"
-              action.id mustBe "change-add-limit-date"
+              action.content.value mustEqual "Change"
+              action.href mustEqual limitRoutes.AddLimitDateYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add the arrival date at the office of destination"
+              action.id mustEqual "change-add-limit-date"
           }
         }
       }
@@ -658,15 +658,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper    = new TransportAnswersHelper(answers, mode)
               val result    = helper.limitDate.get
 
-              result.key.value mustBe "Estimated arrival date at the office of destination"
-              result.value.value mustBe "8 January 2000"
+              result.key.value mustEqual "Estimated arrival date at the office of destination"
+              result.value.value mustEqual "8 January 2000"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe limitRoutes.LimitDateController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "estimated arrival date at the office of destination"
-              action.id mustBe "change-limit-date"
+              action.content.value mustEqual "Change"
+              action.href mustEqual limitRoutes.LimitDateController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "estimated arrival date at the office of destination"
+              action.id mustEqual "change-limit-date"
           }
         }
       }
@@ -692,15 +692,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addCarrierDetail.get
 
-              result.key.value mustBe "Do you want to add a carrier?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add a carrier?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe carrierDetailsRoutes.CarrierDetailYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add a carrier"
-              action.id mustBe "change-add-carrier-detail"
+              action.content.value mustEqual "Change"
+              action.href mustEqual carrierDetailsRoutes.CarrierDetailYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add a carrier"
+              action.id mustEqual "change-add-carrier-detail"
           }
         }
       }
@@ -726,15 +726,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.eoriNumber.get
 
-              result.key.value mustBe "EORI number or Third Country Unique Identification Number (TCUIN)"
-              result.value.value mustBe eoriNumber
+              result.key.value mustEqual "EORI number or Third Country Unique Identification Number (TCUIN)"
+              result.value.value mustEqual eoriNumber
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe carrierDetailsRoutes.IdentificationNumberController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "carrier EORI number or Third Country Unique Identification Number (TCUIN)"
-              action.id mustBe "change-eori-number"
+              action.content.value mustEqual "Change"
+              action.href mustEqual carrierDetailsRoutes.IdentificationNumberController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "carrier EORI number or Third Country Unique Identification Number (TCUIN)"
+              action.id mustEqual "change-eori-number"
           }
         }
       }
@@ -760,15 +760,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addContactPerson.get
 
-              result.key.value mustBe "Do you want to add a contact for the carrier?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add a contact for the carrier?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe carrierDetailsRoutes.AddContactYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add a contact for the carrier"
-              action.id mustBe "change-add-contact"
+              action.content.value mustEqual "Change"
+              action.href mustEqual carrierDetailsRoutes.AddContactYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add a contact for the carrier"
+              action.id mustEqual "change-add-contact"
           }
         }
       }
@@ -794,15 +794,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.contactName.get
 
-              result.key.value mustBe "Contact name"
-              result.value.value mustBe contactName
+              result.key.value mustEqual "Contact name"
+              result.value.value mustEqual contactName
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe carrierDetailsContactRoutes.NameController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "carrier contact name"
-              action.id mustBe "change-contact-name"
+              action.content.value mustEqual "Change"
+              action.href mustEqual carrierDetailsContactRoutes.NameController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "carrier contact name"
+              action.id mustEqual "change-contact-name"
           }
         }
       }
@@ -828,15 +828,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.contactTelephoneNumber.get
 
-              result.key.value mustBe "Phone number"
-              result.value.value mustBe contactNumber
+              result.key.value mustEqual "Phone number"
+              result.value.value mustEqual contactNumber
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe carrierDetailsContactRoutes.TelephoneNumberController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "carrier phone number"
-              action.id mustBe "change-contact-telephone-number"
+              action.content.value mustEqual "Change"
+              action.href mustEqual carrierDetailsContactRoutes.TelephoneNumberController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "carrier phone number"
+              action.id mustEqual "change-contact-telephone-number"
           }
         }
       }
@@ -862,15 +862,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addEquipment.get
 
-              result.key.value mustBe "Do you want to add any transport equipment?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add any transport equipment?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe equipmentsRoutes.AddTransportEquipmentYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add any transport equipment"
-              action.id mustBe "change-add-equipment"
+              action.content.value mustEqual "Change"
+              action.href mustEqual equipmentsRoutes.AddTransportEquipmentYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add any transport equipment"
+              action.id mustEqual "change-add-equipment"
           }
         }
       }
@@ -898,15 +898,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper = new TransportAnswersHelper(userAnswers, mode)
               val result = helper.equipment(index).get
 
-              result.key.value mustBe "Transport equipment 1"
-              result.value.value mustBe "No container identification number"
+              result.key.value mustEqual "Transport equipment 1"
+              result.value.value mustEqual "No container identification number"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe equipmentRoutes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, index).url
-              action.visuallyHiddenText.get mustBe "transport equipment 1"
-              action.id mustBe "change-transport-equipment-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual equipmentRoutes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, index).url
+              action.visuallyHiddenText.get mustEqual "transport equipment 1"
+              action.id mustEqual "change-transport-equipment-1"
           }
         }
 
@@ -919,15 +919,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper = new TransportAnswersHelper(userAnswers, mode)
               val result = helper.equipment(index).get
 
-              result.key.value mustBe "Transport equipment 1"
-              result.value.value mustBe "No container identification number"
+              result.key.value mustEqual "Transport equipment 1"
+              result.value.value mustEqual "No container identification number"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe equipmentRoutes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, index).url
-              action.visuallyHiddenText.get mustBe "transport equipment 1"
-              action.id mustBe "change-transport-equipment-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual equipmentRoutes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, index).url
+              action.visuallyHiddenText.get mustEqual "transport equipment 1"
+              action.id mustEqual "change-transport-equipment-1"
           }
         }
 
@@ -942,15 +942,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper = new TransportAnswersHelper(userAnswers, mode)
               val result = helper.equipment(index).get
 
-              result.key.value mustBe "Transport equipment 1"
-              result.value.value mustBe s"Container ${equipment.containerId.get}"
+              result.key.value mustEqual "Transport equipment 1"
+              result.value.value mustEqual s"Container ${equipment.containerId.get}"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe equipmentRoutes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, index).url
-              action.visuallyHiddenText.get mustBe "transport equipment 1"
-              action.id mustBe "change-transport-equipment-1"
+              action.content.value mustEqual "Change"
+              action.href mustEqual equipmentRoutes.EquipmentAnswersController.onPageLoad(userAnswers.lrn, mode, index).url
+              action.visuallyHiddenText.get mustEqual "transport equipment 1"
+              action.id mustEqual "change-transport-equipment-1"
           }
         }
       }
@@ -976,9 +976,9 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addOrRemoveEquipments.get
 
-              result.id mustBe "add-or-remove-transport-equipment"
-              result.text mustBe "Add or remove transport equipment"
-              result.href mustBe equipmentsRoutes.AddAnotherEquipmentController.onPageLoad(answers.lrn, mode).url
+              result.id mustEqual "add-or-remove-transport-equipment"
+              result.text mustEqual "Add or remove transport equipment"
+              result.href mustEqual equipmentsRoutes.AddAnotherEquipmentController.onPageLoad(answers.lrn, mode).url
           }
         }
       }
@@ -1004,15 +1004,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addPaymentMethod.get
 
-              result.key.value mustBe "Do you want to add a method of payment for transport charges?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add a method of payment for transport charges?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe equipmentsRoutes.AddPaymentMethodYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add a method of payment for transport charges"
-              action.id mustBe "change-add-payment-method"
+              action.content.value mustEqual "Change"
+              action.href mustEqual equipmentsRoutes.AddPaymentMethodYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add a method of payment for transport charges"
+              action.id mustEqual "change-add-payment-method"
           }
         }
       }
@@ -1038,15 +1038,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.paymentMethod.get
 
-              result.key.value mustBe "Payment method"
-              result.value.value mustBe paymentMethod.asString
+              result.key.value mustEqual "Payment method"
+              result.value.value mustEqual paymentMethod.asString
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe equipmentsRoutes.PaymentMethodController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "payment method for transport charges"
-              action.id mustBe "change-payment-method"
+              action.content.value mustEqual "Change"
+              action.href mustEqual equipmentsRoutes.PaymentMethodController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "payment method for transport charges"
+              action.id mustEqual "change-payment-method"
           }
         }
       }
@@ -1072,15 +1072,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addAdditionalReferenceYesNo.get
 
-              result.key.value mustBe "Do you want to add an additional reference for all items?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add an additional reference for all items?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.additionalReference.routes.AddAdditionalReferenceYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add an additional reference  for all items"
-              action.id mustBe "change-add-additional-reference"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.additionalReference.routes.AddAdditionalReferenceYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add an additional reference  for all items"
+              action.id mustEqual "change-add-additional-reference"
           }
         }
       }
@@ -1093,7 +1093,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.additionalReferences
-              result mustBe Seq.empty
+              result mustEqual Seq.empty
           }
         }
       }
@@ -1106,17 +1106,17 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.additionalReferences
 
-              result.head.key.value mustBe "Additional reference 1"
-              result.head.value.value mustBe additionalReferenceType.toString
+              result.head.key.value mustEqual "Additional reference 1"
+              result.head.value.value mustEqual additionalReferenceType.toString
               val actions = result.head.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.additionalReference.index.routes.AdditionalReferenceTypeController
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.additionalReference.index.routes.AdditionalReferenceTypeController
                 .onPageLoad(answers.lrn, mode, additionalReferenceIndex)
                 .url
-              action.visuallyHiddenText.get mustBe "if you want to add any additional information for all items"
-              action.id mustBe s"change-add-additional-reference-${additionalReferenceIndex.display}"
+              action.visuallyHiddenText.get mustEqual "if you want to add any additional information for all items"
+              action.id mustEqual s"change-add-additional-reference-${additionalReferenceIndex.display}"
           }
         }
       }
@@ -1142,15 +1142,15 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addAdditionalInformationYesNo.get
 
-              result.key.value mustBe "Do you want to add any additional information for all items?"
-              result.value.value mustBe "Yes"
+              result.key.value mustEqual "Do you want to add any additional information for all items?"
+              result.value.value mustEqual "Yes"
               val actions = result.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.additionalInformation.routes.AddAdditionalInformationYesNoController.onPageLoad(answers.lrn, mode).url
-              action.visuallyHiddenText.get mustBe "if you want to add any additional information for all items"
-              action.id mustBe "change-add-additional-information"
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.additionalInformation.routes.AddAdditionalInformationYesNoController.onPageLoad(answers.lrn, mode).url
+              action.visuallyHiddenText.get mustEqual "if you want to add any additional information for all items"
+              action.id mustEqual "change-add-additional-information"
           }
         }
       }
@@ -1163,7 +1163,7 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
             mode =>
               val helper = new TransportAnswersHelper(emptyUserAnswers, mode)
               val result = helper.additionalInformationList
-              result mustBe Seq.empty
+              result mustEqual Seq.empty
           }
         }
       }
@@ -1175,16 +1175,16 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.additionalInformationList
 
-              result.head.key.value mustBe "Additional information 1"
-              result.head.value.value mustBe additionalInformationCode.toString
+              result.head.key.value mustEqual "Additional information 1"
+              result.head.value.value mustEqual additionalInformationCode.toString
               val actions = result.head.actions.get.items
-              actions.size mustBe 1
+              actions.size mustEqual 1
               val action = actions.head
-              action.content.value mustBe "Change"
-              action.href mustBe controllers.additionalInformation.index.routes.AdditionalInformationTypeController
+              action.content.value mustEqual "Change"
+              action.href mustEqual controllers.additionalInformation.index.routes.AdditionalInformationTypeController
                 .onPageLoad(additionalInformationIndex, answers.lrn, mode)
                 .url
-              action.id mustBe s"change-add-additional-information-${additionalInformationIndex.display}"
+              action.id mustEqual s"change-add-additional-information-${additionalInformationIndex.display}"
           }
         }
       }
@@ -1211,9 +1211,9 @@ class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks 
               val helper  = new TransportAnswersHelper(answers, mode)
               val result  = helper.addOrRemoveAdditionalInformation(mode).get
 
-              result.id mustBe "add-or-remove-additional-information"
-              result.text mustBe "Add or remove additional information for all items"
-              result.href mustBe additionalInformationRoutes.AddAnotherAdditionalInformationController.onPageLoad(answers.lrn, mode).url
+              result.id mustEqual "add-or-remove-additional-information"
+              result.text mustEqual "Add or remove additional information for all items"
+              result.href mustEqual additionalInformationRoutes.AddAnotherAdditionalInformationController.onPageLoad(answers.lrn, mode).url
           }
         }
       }

@@ -37,8 +37,8 @@ class TransportMeansDepartureListDomainSpec extends SpecBase with Generators {
 
       val result = TransportMeansDepartureListDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value.transportMeansDepartureListDomain.length mustBe numberOfDepartureTransportMeans
-      result.value.pages.last mustBe AddAnotherDepartureTransportMeansPage
+      result.value.value.transportMeansDepartureListDomain.length mustEqual numberOfDepartureTransportMeans
+      result.value.pages.last mustEqual AddAnotherDepartureTransportMeansPage
 
     }
   }

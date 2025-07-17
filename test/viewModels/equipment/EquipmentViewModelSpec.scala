@@ -34,13 +34,13 @@ class EquipmentViewModelSpec extends SpecBase with Generators {
         val viewModelProvider = injector.instanceOf[EquipmentViewModelProvider]
         val sections          = viewModelProvider.apply(answers, mode, index).sections
 
-        sections.size mustBe 2
+        sections.size mustEqual 2
 
         sections.head.sectionTitle must not be defined
         sections.head.rows must be(empty)
         sections.head.addAnotherLink must not be defined
 
-        sections(1).sectionTitle.get mustBe "Seals"
+        sections(1).sectionTitle.get mustEqual "Seals"
         sections(1).rows must be(empty)
         sections(1).addAnotherLink must not be defined
       }
@@ -72,17 +72,17 @@ class EquipmentViewModelSpec extends SpecBase with Generators {
         val viewModelProvider = injector.instanceOf[EquipmentViewModelProvider]
         val sections          = viewModelProvider.apply(answers, mode, index).sections
 
-        sections.size mustBe 2
+        sections.size mustEqual 2
 
         sections.head.sectionTitle must not be defined
-        sections.head.rows.size mustBe 2
-        sections.head.rows.head.value.value mustBe "Yes"
-        sections.head.rows(1).value.value mustBe containerId
+        sections.head.rows.size mustEqual 2
+        sections.head.rows.head.value.value mustEqual "Yes"
+        sections.head.rows(1).value.value mustEqual containerId
         sections.head.addAnotherLink must not be defined
 
-        sections(1).sectionTitle.get mustBe "Seals"
-        sections(1).rows.size mustBe 1 + numberOfSeals
-        sections(1).rows.head.value.value mustBe "Yes"
+        sections(1).sectionTitle.get mustEqual "Seals"
+        sections(1).rows.size mustEqual 1 + numberOfSeals
+        sections(1).rows.head.value.value mustEqual "Yes"
         sections(1).addAnotherLink must be(defined)
 
       }

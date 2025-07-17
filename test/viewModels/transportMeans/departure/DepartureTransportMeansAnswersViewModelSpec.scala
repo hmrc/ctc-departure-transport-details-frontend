@@ -51,7 +51,7 @@ class DepartureTransportMeansAnswersViewModelSpec extends SpecBase with ScalaChe
       val departureTransportMeansSection = sections.head
 
       departureTransportMeansSection.sectionTitle mustNot be(defined)
-      departureTransportMeansSection.rows.size mustBe 6
+      departureTransportMeansSection.rows.size mustEqual 6
       departureTransportMeansSection.addAnotherLink must not be defined
     }
   }

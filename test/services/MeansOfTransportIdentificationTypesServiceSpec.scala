@@ -73,7 +73,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(identifications)))
 
-        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustEqual
           Seq(
             identification10,
             identification9,
@@ -96,7 +96,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(identifications)))
 
-        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustEqual
           Seq(identification10, identification9)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
@@ -108,7 +108,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(identifications)))
 
-        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustEqual
           Seq(identification8, identification7)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
@@ -120,7 +120,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(identifications)))
 
-        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustEqual
           Seq(identification6, identification5)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
@@ -132,7 +132,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(identifications)))
 
-        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustEqual
           Seq(identification4, identification3)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
@@ -144,7 +144,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(identifications)))
 
-        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustEqual
           Seq(identification2, identification1)
 
         verify(mockRefDataConnector).getMeansOfTransportIdentificationTypes()(any(), any())
@@ -160,7 +160,7 @@ class MeansOfTransportIdentificationTypesServiceSpec extends SpecBase with Befor
         when(mockRefDataConnector.getMeansOfTransportIdentificationTypes()(any(), any()))
           .thenReturn(Future.successful(Right(identifications)))
 
-        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustBe
+        service.getMeansOfTransportIdentificationTypes(inlandMode).futureValue mustEqual
           Seq(
             identification10,
             identification9,

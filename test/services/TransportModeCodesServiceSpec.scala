@@ -55,7 +55,7 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
         when(mockRefDataConnector.getInlandModes()(any(), any()))
           .thenReturn(Future.successful(Right(inlandModes)))
 
-        service.getInlandModes().futureValue mustBe
+        service.getInlandModes().futureValue mustEqual
           Seq(inlandMode7, inlandMode6, inlandMode5, inlandMode4, inlandMode3, inlandMode2, inlandMode1)
 
         verify(mockRefDataConnector).getInlandModes()(any(), any())
@@ -78,7 +78,7 @@ class TransportModeCodesServiceSpec extends SpecBase with BeforeAndAfterEach {
         when(mockRefDataConnector.getBorderModes()(any(), any()))
           .thenReturn(Future.successful(Right(borderModes)))
 
-        service.getBorderModes().futureValue mustBe
+        service.getBorderModes().futureValue mustEqual
           Seq(borderMode7, borderMode6, borderMode5, borderMode4)
 
         verify(mockRefDataConnector).getBorderModes()(any(), any())

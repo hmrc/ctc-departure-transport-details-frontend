@@ -69,8 +69,8 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
               val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 ContainerIdentificationNumberPage(equipmentIndex),
                 IdentificationNumberPage(equipmentIndex, sealIndex),
                 AddAnotherSealPage(equipmentIndex),
@@ -96,8 +96,8 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
               val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 ContainerIdentificationNumberPage(equipmentIndex),
                 AddSealYesNoPage(equipmentIndex),
                 EquipmentSection(equipmentIndex)
@@ -128,8 +128,8 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
               val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 ContainerIdentificationNumberPage(equipmentIndex),
                 AddSealYesNoPage(equipmentIndex),
                 IdentificationNumberPage(equipmentIndex, sealIndex),
@@ -166,8 +166,8 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
                 val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   AddContainerIdentificationNumberYesNoPage(index),
                   ContainerIdentificationNumberPage(index),
                   IdentificationNumberPage(index, sealIndex),
@@ -192,8 +192,8 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
                 val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   AddContainerIdentificationNumberYesNoPage(index),
                   ContainerIdentificationNumberPage(index),
                   AddSealYesNoPage(index),
@@ -222,8 +222,8 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
               val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-              result.value.value mustBe expectedResult
-              result.value.pages mustBe Seq(
+              result.value.value mustEqual expectedResult
+              result.value.pages mustEqual Seq(
                 AddContainerIdentificationNumberYesNoPage(index),
                 IdentificationNumberPage(index, sealIndex),
                 AddAnotherSealPage(index),
@@ -256,8 +256,8 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
             val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Seq(
               IdentificationNumberPage(equipmentIndex, sealIndex),
               AddAnotherSealPage(equipmentIndex),
               EquipmentSection(equipmentIndex)
@@ -285,8 +285,8 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
             val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Seq(
               IdentificationNumberPage(index, sealIndex),
               AddAnotherSealPage(index),
               EquipmentSection(index)
@@ -304,8 +304,8 @@ class EquipmentDomainSpec extends SpecBase with Generators {
 
             val result = EquipmentDomain.userAnswersReader(index).apply(Nil).run(userAnswers)
 
-            result.left.value.page mustBe IdentificationNumberPage(equipmentIndex, sealIndex)
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual IdentificationNumberPage(equipmentIndex, sealIndex)
+            result.left.value.pages mustEqual Seq(
               IdentificationNumberPage(equipmentIndex, sealIndex)
             )
           }

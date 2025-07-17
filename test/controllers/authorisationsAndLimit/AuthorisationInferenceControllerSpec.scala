@@ -78,8 +78,8 @@ class AuthorisationInferenceControllerSpec extends SpecBase with AppWithDefaultM
 
       val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-      userAnswersCaptor.getValue.data mustBe userAnswersAfterInference.setValue(AuthorisationsInferredPage, true).data
-      userAnswersCaptor.getValue.tasks.get(".transportDetails").value mustBe TaskStatus.InProgress
+      userAnswersCaptor.getValue.data mustEqual userAnswersAfterInference.setValue(AuthorisationsInferredPage, true).data
+      userAnswersCaptor.getValue.tasks.get(".transportDetails").value mustEqual TaskStatus.InProgress
     }
 
     "must redirect to Session Expired for a GET if no existing data is found" in {

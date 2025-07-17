@@ -37,7 +37,7 @@ class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.equipment.index.routes.AddAnotherSealController.onPageLoad(lrn, mode, equipmentIndex))
+                .mustEqual(controllers.equipment.index.routes.AddAnotherSealController.onPageLoad(lrn, mode, equipmentIndex))
           }
         }
       }
@@ -55,7 +55,7 @@ class SealNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gene
             answers =>
               navigator
                 .nextPage(answers, None)
-                .mustBe(controllers.equipment.index.routes.EquipmentAnswersController.onPageLoad(answers.lrn, mode, equipmentIndex))
+                .mustEqual(controllers.equipment.index.routes.EquipmentAnswersController.onPageLoad(answers.lrn, mode, equipmentIndex))
           }
         }
       }

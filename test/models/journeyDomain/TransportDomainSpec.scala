@@ -49,7 +49,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
             userAnswers =>
               val result = TransportDomain.userAnswersReader.run(userAnswers)
               result.value.value.transportMeans must not be defined
-              result.value.pages.last mustBe TransportSection
+              result.value.pages.last mustEqual TransportSection
           }
         }
 
@@ -63,7 +63,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
                 userAnswers =>
                   val result = TransportDomain.userAnswersReader.run(userAnswers)
                   result.value.value.transportMeans must be(defined)
-                  result.value.pages.last mustBe TransportSection
+                  result.value.pages.last mustEqual TransportSection
               }
           }
         }
@@ -76,7 +76,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
           userAnswers =>
             val result = TransportDomain.userAnswersReader.run(userAnswers)
             result.value.value.transportMeans must be(defined)
-            result.value.pages.last mustBe TransportSection
+            result.value.pages.last mustEqual TransportSection
         }
       }
 
@@ -90,7 +90,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
           userAnswers =>
             val result = TransportDomain.userAnswersReader.run(userAnswers)
             result.value.value.authorisationsAndLimit must not be defined
-            result.value.pages.last mustBe TransportSection
+            result.value.pages.last mustEqual TransportSection
         }
       }
 
@@ -106,7 +106,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
               userAnswers =>
                 val result = TransportDomain.userAnswersReader.run(userAnswers)
                 result.value.value.authorisationsAndLimit must not be defined
-                result.value.pages.last mustBe TransportSection
+                result.value.pages.last mustEqual TransportSection
             }
         }
       }
@@ -123,7 +123,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
               userAnswers =>
                 val result = TransportDomain.userAnswersReader.run(userAnswers)
                 result.value.value.authorisationsAndLimit must be(defined)
-                result.value.pages.last mustBe TransportSection
+                result.value.pages.last mustEqual TransportSection
             }
         }
       }
@@ -140,7 +140,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
               userAnswers =>
                 val result = TransportDomain.userAnswersReader.run(userAnswers)
                 result.value.value.authorisationsAndLimit must not be defined
-                result.value.pages.last mustBe TransportSection
+                result.value.pages.last mustEqual TransportSection
             }
         }
       }
@@ -151,7 +151,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
           userAnswers =>
             val result = TransportDomain.userAnswersReader.run(userAnswers)
             result.value.value.supplyChainActors must be(defined)
-            result.value.pages.last mustBe TransportSection
+            result.value.pages.last mustEqual TransportSection
         }
       }
 
@@ -161,7 +161,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
           userAnswers =>
             val result = TransportDomain.userAnswersReader.run(userAnswers)
             result.value.value.supplyChainActors must not be defined
-            result.value.pages.last mustBe TransportSection
+            result.value.pages.last mustEqual TransportSection
         }
       }
 
@@ -171,7 +171,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
           userAnswers =>
             val result = TransportDomain.userAnswersReader.run(userAnswers)
             result.value.value.carrierDetails must be(defined)
-            result.value.pages.last mustBe TransportSection
+            result.value.pages.last mustEqual TransportSection
         }
       }
 
@@ -181,7 +181,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
           userAnswers =>
             val result = TransportDomain.userAnswersReader.run(userAnswers)
             result.value.value.carrierDetails must not be defined
-            result.value.pages.last mustBe TransportSection
+            result.value.pages.last mustEqual TransportSection
         }
       }
 
@@ -191,7 +191,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
           userAnswers =>
             val result = TransportDomain.userAnswersReader.run(userAnswers)
             result.value.value.additionalReferences must be(defined)
-            result.value.pages.last mustBe TransportSection
+            result.value.pages.last mustEqual TransportSection
         }
       }
 
@@ -201,7 +201,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
           userAnswers =>
             val result = TransportDomain.userAnswersReader.run(userAnswers)
             result.value.value.additionalReferences must not be defined
-            result.value.pages.last mustBe TransportSection
+            result.value.pages.last mustEqual TransportSection
         }
       }
 
@@ -211,7 +211,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
           userAnswers =>
             val result = TransportDomain.userAnswersReader.run(userAnswers)
             result.value.value.additionalInformations must be(defined)
-            result.value.pages.last mustBe TransportSection
+            result.value.pages.last mustEqual TransportSection
         }
       }
 
@@ -221,7 +221,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
           userAnswers =>
             val result = TransportDomain.userAnswersReader.run(userAnswers)
             result.value.value.additionalInformations must not be defined
-            result.value.pages.last mustBe TransportSection
+            result.value.pages.last mustEqual TransportSection
         }
       }
     }
@@ -234,7 +234,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
           val result = TransportDomain.authorisationsAndLimitReads.apply(Nil).run(userAnswers)
           result.value.value must not be defined
-          result.value.pages mustBe Nil
+          result.value.pages mustEqual Nil
         }
       }
 
@@ -245,8 +245,8 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
               .setValue(ProcedureTypePage, Simplified)
 
             val result = TransportDomain.authorisationsAndLimitReads.apply(Nil).run(userAnswers)
-            result.left.value.page mustBe AuthorisationsInferredPage
-            result.left.value.pages mustBe Seq(
+            result.left.value.page mustEqual AuthorisationsInferredPage
+            result.left.value.pages mustEqual Seq(
               AuthorisationsInferredPage
             )
           }

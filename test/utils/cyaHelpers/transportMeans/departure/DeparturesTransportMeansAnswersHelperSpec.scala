@@ -37,7 +37,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
         val userAnswers = emptyUserAnswers
 
         val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, NormalMode)
-        helper.listItems mustBe Nil
+        helper.listItems mustEqual Nil
       }
     }
 
@@ -47,7 +47,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
         (userAnswers, mode) =>
           val helper    = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig)
           val departure = TransportMeansDepartureDomain.userAnswersReader(index).apply(Nil).run(userAnswers).value.value
-          helper.listItems mustBe Seq(
+          helper.listItems mustEqual Seq(
             Right(
               ListItem(
                 name = departure.asString,
@@ -69,7 +69,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
         forAll(arbitrary[Mode]) {
           mode =>
             val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig)
-            helper.listItems mustBe Seq(
+            helper.listItems mustEqual Seq(
               Left(
                 ListItem(
                   name = s"Departure means of transport ${index.display} - ${identificationType.asString}",
@@ -101,7 +101,7 @@ class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheck
         forAll(arbitrary[Mode]) {
           mode =>
             val helper = new DeparturesTransportMeansAnswersHelper(userAnswers, mode)(messages, frontendAppConfig)
-            helper.listItems mustBe Seq(
+            helper.listItems mustEqual Seq(
               Right(
                 ListItem(
                   name = s"Departure means of transport ${index.display} - ${identificationType.asString} - $identificationNumber",

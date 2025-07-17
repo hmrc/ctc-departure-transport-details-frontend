@@ -116,7 +116,7 @@ class ItemsDestinationCountryControllerSpec extends SpecBase with AppWithDefault
 
           val userAnswersCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
           verify(mockSessionRepository).set(userAnswersCaptor.capture())(any())
-          userAnswersCaptor.getValue.data mustBe Json.parse(s"""
+          userAnswersCaptor.getValue.data mustEqual Json.parse(s"""
                |{
                |  "transportDetails" : {
                |    "preRequisites" : {

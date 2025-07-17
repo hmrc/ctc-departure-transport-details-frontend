@@ -59,8 +59,8 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
 
           val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-          result.value.value mustBe expectedResult
-          result.value.pages mustBe Seq(
+          result.value.value mustEqual expectedResult
+          result.value.pages mustEqual Seq(
             SameUcrYesNoPage,
             SameCountryOfDispatchYesNoPage,
             CountryOfDispatchPage,
@@ -91,8 +91,8 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
 
             val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Seq(
               SameUcrYesNoPage,
               SameCountryOfDispatchYesNoPage,
               AddCountryOfDestinationPage,
@@ -121,8 +121,8 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
 
                 val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-                result.value.value mustBe expectedResult
-                result.value.pages mustBe Seq(
+                result.value.value mustEqual expectedResult
+                result.value.pages mustEqual Seq(
                   SameUcrYesNoPage,
                   SameCountryOfDispatchYesNoPage,
                   AddCountryOfDestinationPage,
@@ -137,8 +137,8 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
         "when answers are empty" in {
           val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
-          result.left.value.page mustBe SameUcrYesNoPage
-          result.left.value.pages mustBe Seq(
+          result.left.value.page mustEqual SameUcrYesNoPage
+          result.left.value.pages mustEqual Seq(
             SameUcrYesNoPage
           )
         }
@@ -174,7 +174,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
 
                   val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(updatedAnswers)
 
-                  result.left.value.page mustBe mandatoryPage
+                  result.left.value.page mustEqual mandatoryPage
               }
             }
 
@@ -206,7 +206,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
 
                     val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(updatedAnswers)
 
-                    result.left.value.page mustBe mandatoryPage
+                    result.left.value.page mustEqual mandatoryPage
                 }
               }
 
@@ -235,7 +235,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
 
                         val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(updatedAnswers)
 
-                        result.left.value.page mustBe mandatoryPage
+                        result.left.value.page mustEqual mandatoryPage
                     }
                 }
               }
@@ -269,7 +269,7 @@ class PreRequisitesDomainSpec extends SpecBase with Generators {
 
                 val result = PreRequisitesDomain.userAnswersReader.apply(Nil).run(updatedAnswers)
 
-                result.left.value.page mustBe mandatoryPage
+                result.left.value.page mustEqual mandatoryPage
             }
           }
         }

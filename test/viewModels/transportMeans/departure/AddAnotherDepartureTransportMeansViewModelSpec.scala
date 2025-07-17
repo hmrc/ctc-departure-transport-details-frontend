@@ -38,11 +38,11 @@ class AddAnotherDepartureTransportMeansViewModelSpec extends SpecBase with Gener
             val userAnswers = arbitraryTransportMeansDepartureAnswers(answers, departureIndex).sample.value
 
             val result = new AddAnotherDepartureTransportMeansViewModelProvider()(frontendAppConfig)(userAnswers, mode)
-            result.listItems.length mustBe 1
-            result.title mustBe "You have added 1 departure means of transport"
-            result.heading mustBe "You have added 1 departure means of transport"
-            result.legend mustBe "Do you want to add another departure means of transport?"
-            result.maxLimitLabel mustBe "You can only add up to 3 departure means of transport when using road as your mode. To add another, you need to remove one first."
+            result.listItems.length mustEqual 1
+            result.title mustEqual "You have added 1 departure means of transport"
+            result.heading mustEqual "You have added 1 departure means of transport"
+            result.legend mustEqual "Do you want to add another departure means of transport?"
+            result.maxLimitLabel mustEqual "You can only add up to 3 departure means of transport when using road as your mode. To add another, you need to remove one first."
         }
       }
 
@@ -54,11 +54,11 @@ class AddAnotherDepartureTransportMeansViewModelSpec extends SpecBase with Gener
             val userAnswers = arbitraryTransportMeansDepartureAnswers(answers, departureIndex).sample.value
 
             val result = new AddAnotherDepartureTransportMeansViewModelProvider()(frontendAppConfig)(userAnswers, mode)
-            result.listItems.length mustBe 1
-            result.title mustBe "You have added 1 departure means of transport"
-            result.heading mustBe "You have added 1 departure means of transport"
-            result.legend mustBe "Do you want to add another departure means of transport?"
-            result.maxLimitLabel mustBe "You cannot add any more departure means of transport. To add another, you need to remove one first."
+            result.listItems.length mustEqual 1
+            result.title mustEqual "You have added 1 departure means of transport"
+            result.heading mustEqual "You have added 1 departure means of transport"
+            result.legend mustEqual "Do you want to add another departure means of transport?"
+            result.maxLimitLabel mustEqual "You cannot add any more departure means of transport. To add another, you need to remove one first."
         }
       }
 
@@ -77,11 +77,11 @@ class AddAnotherDepartureTransportMeansViewModelSpec extends SpecBase with Gener
           }
 
           val result = new AddAnotherDepartureTransportMeansViewModelProvider()(frontendAppConfig)(userAnswers, mode)
-          result.listItems.length mustBe departureTransportMeans
-          result.title mustBe s"You have added ${formatter.format(departureTransportMeans)} departure means of transport"
-          result.heading mustBe s"You have added ${formatter.format(departureTransportMeans)} departure means of transport"
-          result.legend mustBe "Do you want to add another departure means of transport?"
-          result.maxLimitLabel mustBe "You cannot add any more departure means of transport. To add another, you need to remove one first."
+          result.listItems.length mustEqual departureTransportMeans
+          result.title mustEqual s"You have added ${formatter.format(departureTransportMeans)} departure means of transport"
+          result.heading mustEqual s"You have added ${formatter.format(departureTransportMeans)} departure means of transport"
+          result.legend mustEqual "Do you want to add another departure means of transport?"
+          result.maxLimitLabel mustEqual "You cannot add any more departure means of transport. To add another, you need to remove one first."
       }
     }
   }

@@ -40,7 +40,7 @@ class AdditionalInformationAnswersHelperSpec extends SpecBase with ScalaCheckPro
               val userAnswers = emptyUserAnswers
 
               val helper = new AdditionalInformationAnswersHelper(userAnswers, mode)
-              helper.listItems mustBe Nil
+              helper.listItems mustEqual Nil
           }
         }
       }
@@ -55,7 +55,7 @@ class AdditionalInformationAnswersHelperSpec extends SpecBase with ScalaCheckPro
               .setValue(AdditionalInformationTextPage(Index(0)), additionalInformation)
 
             val helper = new AdditionalInformationAnswersHelper(userAnswers, mode)
-            helper.listItems mustBe Seq(
+            helper.listItems mustEqual Seq(
               Right(
                 ListItem(
                   name = s"${refType.toString} - $additionalInformation",

@@ -45,8 +45,8 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
 
             val result = AdditionalReferenceDomain.userAnswersReader(additionalReferenceIndex).apply(Nil).run(userAnswers)
 
-            result.value.value mustBe expectedResult
-            result.value.pages mustBe Seq(
+            result.value.value mustEqual expectedResult
+            result.value.pages mustEqual Seq(
               AdditionalReferenceTypePage(additionalReferenceIndex),
               AddAdditionalReferenceNumberYesNoPage(additionalReferenceIndex),
               AdditionalReferenceNumberPage(additionalReferenceIndex)
@@ -60,8 +60,8 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
       "when reference type unanswered" in {
         val result = AdditionalReferenceDomain.userAnswersReader(additionalReferenceIndex).apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe AdditionalReferenceTypePage(additionalReferenceIndex)
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual AdditionalReferenceTypePage(additionalReferenceIndex)
+        result.left.value.pages mustEqual Seq(
           AdditionalReferenceTypePage(additionalReferenceIndex)
         )
       }
@@ -76,8 +76,8 @@ class AdditionalReferenceDomainSpec extends SpecBase with ScalaCheckPropertyChec
 
               val result = AdditionalReferenceDomain.userAnswersReader(Index(0)).apply(Nil).run(userAnswers)
 
-              result.left.value.page mustBe AdditionalReferenceNumberPage(Index(0))
-              result.left.value.pages mustBe Seq(
+              result.left.value.page mustEqual AdditionalReferenceNumberPage(Index(0))
+              result.left.value.pages mustEqual Seq(
                 AdditionalReferenceTypePage(Index(0)),
                 AddAdditionalReferenceNumberYesNoPage(Index(0)),
                 AdditionalReferenceNumberPage(Index(0))

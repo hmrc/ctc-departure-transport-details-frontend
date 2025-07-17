@@ -38,16 +38,16 @@ class AdditionalInformationsDomainSpec extends SpecBase with Generators {
 
       val result = AdditionalInformationsDomain.userAnswersReader.apply(Nil).run(userAnswers)
 
-      result.value.value.value.length mustBe numberOfAdditionalInformations
-      result.value.pages.last mustBe AddAnotherAdditionalInformationPage
+      result.value.value.value.length mustEqual numberOfAdditionalInformations
+      result.value.pages.last mustEqual AddAnotherAdditionalInformationPage
     }
 
     "cannot be parsed from user answers" - {
       "when no additional Information" in {
         val result = AdditionalInformationsDomain.userAnswersReader.apply(Nil).run(emptyUserAnswers)
 
-        result.left.value.page mustBe AdditionalInformationTypePage(Index(0))
-        result.left.value.pages mustBe Seq(
+        result.left.value.page mustEqual AdditionalInformationTypePage(Index(0))
+        result.left.value.pages mustEqual Seq(
           AdditionalInformationTypePage(Index(0))
         )
       }
