@@ -16,17 +16,16 @@
 
 @import controllers.transportMeans.departure.routes
 @import models.LocalReferenceNumber
-@import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo}
 @import viewModels.transportMeans.departure.AddIdentificationTypeViewModel
 @import viewModels.components.InputYesNoViewModel
 
 @this(
-        mainTemplate: MainTemplate,
-        formHelper: FormWithCSRF,
-        inputYesNo: InputYesNo,
-        errorSummary: ErrorSummary,
-        button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputYesNo: InputYesNo,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, departureIndex: Index, viewModel: AddIdentificationTypeViewModel)(implicit request: Request[?], messages: Messages)
