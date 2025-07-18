@@ -16,18 +16,16 @@
 
 @import controllers.additionalReference.index.routes
 @import models.LocalReferenceNumber
-@import viewModels.components.InputYesNoViewModel._
 @import views.html.components.{Button, ErrorSummary, InputYesNo, InsetText}
 @import viewModels.components.InputYesNoViewModel
-@import viewModels.components.InputYesNoViewModel._
 
 @this(
-        mainTemplate: MainTemplate,
-        formHelper: FormWithCSRF,
-        inputYesNo: InputYesNo,
-        insetText: InsetText,
-        errorSummary: ErrorSummary,
-        button: Button
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    inputYesNo: InputYesNo,
+    insetText: InsetText,
+    errorSummary: ErrorSummary,
+    button: Button
 )
 
 @(form: Form[Boolean], lrn: LocalReferenceNumber, mode: Mode, additionalReferenceIndex: Index, additionalReference: Option[String])(implicit request: Request[?], messages: Messages)
