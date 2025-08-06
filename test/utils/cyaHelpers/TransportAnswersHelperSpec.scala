@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.additionalInformation.routes as additionalInformationRoutes
 import controllers.authorisationsAndLimit.authorisations.index.routes as authorisationRoutes
 import controllers.authorisationsAndLimit.authorisations.routes as authorisationsRoutes
@@ -59,7 +59,7 @@ import play.api.libs.json.Json
 
 import java.time.LocalDate
 
-class TransportAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class TransportAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "TransportAnswersHelper" - {
 

@@ -16,8 +16,8 @@
 
 package viewModels.transportMeans.active
 
-import base.SpecBase
-import config.Constants.SecurityType._
+import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.Constants.SecurityType.*
 import generators.Generators
 import models.Mode
 import models.reference.transportMeans.active.Identification
@@ -27,10 +27,10 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
 import pages.transportMeans.BorderModeOfTransportPage
-import pages.transportMeans.active._
+import pages.transportMeans.active.*
 import viewModels.transportMeans.active.ActiveBorderAnswersViewModel.ActiveBorderAnswersViewModelProvider
 
-class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class ActiveBorderAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   val mode: Mode                   = arbitrary[Mode].sample.value
   val identificationNumber: String = Gen.alphaNumStr.sample.value
@@ -61,7 +61,7 @@ class ActiveBorderAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyC
               .setValue(AddIdentificationYesNoPage(activeIndex), true)
               .setValue(AddVehicleIdentificationNumberYesNoPage(activeIndex), true)
 
-            val viewModelProvider   = injector.instanceOf[ActiveBorderAnswersViewModelProvider]
+            val viewModelProvider   = new ActiveBorderAnswersViewModelProvider()
             val sections            = viewModelProvider.apply(answers, mode, activeIndex).sections
             val activeBorderSection = sections.head
 

@@ -16,13 +16,13 @@
 
 package models.journeyDomain.transportMeans
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
 import pages.transportMeans.AddAnotherDepartureTransportMeansPage
 
-class TransportMeansDepartureListDomainSpec extends SpecBase with Generators {
+class TransportMeansDepartureListDomainSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "TransportMeansDepartureListDomain" - {
 

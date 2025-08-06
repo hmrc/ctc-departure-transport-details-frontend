@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.equipment
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.equipment.index.routes
 import generators.Generators
 import models.ProcedureType.Simplified
@@ -30,7 +30,7 @@ import pages.equipment.index.{AddSealYesNoPage, ContainerIdentificationNumberPag
 import pages.external.ProcedureTypePage
 import viewModels.ListItem
 
-class EquipmentsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class EquipmentsAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "EquipmentsAnswersHelperSpec" - {
 

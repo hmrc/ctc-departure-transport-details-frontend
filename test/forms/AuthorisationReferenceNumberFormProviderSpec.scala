@@ -16,7 +16,7 @@
 
 package forms
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import forms.Constants.maxAuthorisationRefNumberLength
 import forms.behaviours.StringFieldBehaviours
 import models.reference.authorisations.AuthorisationType
@@ -25,7 +25,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import play.api.data.FormError
 
-class AuthorisationReferenceNumberFormProviderSpec extends StringFieldBehaviours with SpecBase {
+class AuthorisationReferenceNumberFormProviderSpec extends StringFieldBehaviours with SpecBase with AppWithDefaultMockFixtures {
 
   private val authorisationType = arbitrary[AuthorisationType].sample.value
   private val prefix            = Gen.alphaNumStr.sample.value

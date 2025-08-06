@@ -16,17 +16,17 @@
 
 package viewModels
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.CheckMode
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.TransportAnswersViewModel.TransportAnswersViewModelProvider
 import viewModels.transportMeans.TransportMeansAnswersViewModel
 import viewModels.transportMeans.TransportMeansAnswersViewModel.TransportMeansAnswersViewModelProvider
 
-class TransportAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class TransportAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val mockTransportMeansAnswersViewModelProvider = mock[TransportMeansAnswersViewModelProvider]
 

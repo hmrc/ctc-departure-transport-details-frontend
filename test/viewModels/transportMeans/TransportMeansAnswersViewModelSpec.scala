@@ -16,7 +16,7 @@
 
 package viewModels.transportMeans
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.{BorderMode, InlandMode}
 import models.{Index, Mode}
@@ -24,11 +24,11 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
-import pages.transportMeans._
+import pages.transportMeans.*
 import play.api.libs.json.{JsArray, Json}
 import viewModels.transportMeans.TransportMeansAnswersViewModel.TransportMeansAnswersViewModelProvider
 
-class TransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class TransportMeansAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val mode = arbitrary[Mode].sample.value
 

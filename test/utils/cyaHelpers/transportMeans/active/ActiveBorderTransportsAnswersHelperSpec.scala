@@ -16,8 +16,8 @@
 
 package utils.cyaHelpers.transportMeans.active
 
-import base.SpecBase
-import config.Constants.SecurityType._
+import base.{AppWithDefaultMockFixtures, SpecBase}
+import config.Constants.SecurityType.*
 import controllers.transportMeans.active.routes
 import generators.Generators
 import models.journeyDomain.transportMeans.TransportMeansActiveDomain
@@ -29,11 +29,11 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.external.SecurityDetailsTypePage
 import pages.sections.external.OfficesOfTransitSection
 import pages.transportMeans.BorderModeOfTransportPage
-import pages.transportMeans.active._
+import pages.transportMeans.active.*
 import play.api.libs.json.{JsArray, Json}
 import viewModels.ListItem
 
-class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class ActiveBorderTransportsAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   private val officesOfTransit: JsArray = JsArray(Seq(Json.obj("foo" -> "bar")))
 

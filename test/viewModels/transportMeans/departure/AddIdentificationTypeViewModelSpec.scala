@@ -16,13 +16,13 @@
 
 package viewModels.transportMeans.departure
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.AddInlandModeYesNoPage
 import viewModels.transportMeans.departure.AddIdentificationTypeViewModel.AddIdentificationTypeViewModelProvider
 
-class AddIdentificationTypeViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class AddIdentificationTypeViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "must create view model" - {
     "when addInlandModeYesNo is true" in {

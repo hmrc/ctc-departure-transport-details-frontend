@@ -16,7 +16,7 @@
 
 package viewModels.authorisations
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.authorisations.AuthorisationType
 import models.{Index, Mode}
@@ -25,7 +25,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.authorisations.AddAnotherAuthorisationViewModel.AddAnotherAuthorisationViewModelProvider
 
-class AddAnotherAuthorisationViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherAuthorisationViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "must get list items" - {
 

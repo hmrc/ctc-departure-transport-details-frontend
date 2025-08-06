@@ -16,20 +16,20 @@
 
 package utils.cyaHelpers.equipment
 
-import base.SpecBase
-import controllers.equipment.index.routes._
-import controllers.equipment.index.seals.routes._
+import base.{AppWithDefaultMockFixtures, SpecBase}
+import controllers.equipment.index.routes.*
+import controllers.equipment.index.seals.routes.*
 import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.equipment.SealSection
-import pages.equipment.index._
+import pages.equipment.index.*
 import play.api.libs.json.Json
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.*
 
-class EquipmentAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class EquipmentAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "EquipmentAnswersHelper" - {
 

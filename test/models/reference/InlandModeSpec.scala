@@ -18,12 +18,14 @@ package models.reference
 
 import base.SpecBase
 import config.FrontendAppConfig
+import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import play.api.test.Helpers.running
 
 class InlandModeSpec extends SpecBase with ScalaCheckPropertyChecks {
+
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "InlandMode" - {
 
@@ -42,40 +44,33 @@ class InlandModeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
     "must deserialise" - {
       "when phase -6" in {
-        running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-          app =>
-            val config = app.injector.instanceOf[FrontendAppConfig]
-            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-              (code, description) =>
-                val inlandMode = InlandMode(code, description)
-                Json
-                  .parse(s"""
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val inlandMode = InlandMode(code, description)
+            Json
+              .parse(s"""
                        |{
                        |  "key": "$code",
                        |  "value": "$description"
                        |}
                        |""".stripMargin)
-                  .as[InlandMode](InlandMode.reads(config)) mustEqual inlandMode
-            }
+              .as[InlandMode](InlandMode.reads(mockFrontendAppConfig)) mustEqual inlandMode
         }
-
       }
       "when phase -5" in {
-        running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-          app =>
-            val config = app.injector.instanceOf[FrontendAppConfig]
-            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-              (code, description) =>
-                val inlandMode = InlandMode(code, description)
-                Json
-                  .parse(s"""
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val inlandMode = InlandMode(code, description)
+            Json
+              .parse(s"""
                        |{
                        |  "code": "$code",
                        |  "description": "$description"
                        |}
                        |""".stripMargin)
-                  .as[InlandMode](InlandMode.reads(config)) mustEqual inlandMode
-            }
+              .as[InlandMode](InlandMode.reads(mockFrontendAppConfig)) mustEqual inlandMode
         }
 
       }

@@ -16,7 +16,7 @@
 
 package viewModels.transportMeans.departure
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.InlandMode
 import models.{Index, Mode}
@@ -26,7 +26,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.InlandModePage
 import viewModels.transportMeans.departure.AddAnotherDepartureTransportMeansViewModel.AddAnotherDepartureTransportMeansViewModelProvider
 
-class AddAnotherDepartureTransportMeansViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherDepartureTransportMeansViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "must get list items" - {
 

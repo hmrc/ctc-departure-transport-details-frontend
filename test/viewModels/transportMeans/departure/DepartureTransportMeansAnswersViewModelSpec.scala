@@ -16,7 +16,7 @@
 
 package viewModels.transportMeans.departure
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Mode
 import models.reference.Nationality
@@ -24,10 +24,10 @@ import models.reference.transportMeans.departure.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.AddInlandModeYesNoPage
-import pages.transportMeans.departure._
+import pages.transportMeans.departure.*
 import viewModels.transportMeans.departure.DepartureTransportMeansAnswersViewModel.DepartureTransportMeansAnswersViewModelProvider
 
-class DepartureTransportMeansAnswersViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DepartureTransportMeansAnswersViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   val mode: Mode = arbitrary[Mode].sample.value
 
@@ -46,7 +46,7 @@ class DepartureTransportMeansAnswersViewModelSpec extends SpecBase with ScalaChe
         .setValue(AddIdentificationTypeYesNoPage(departureIndex), true)
         .setValue(AddVehicleCountryYesNoPage(departureIndex), true)
 
-      val viewModelProvider              = injector.instanceOf[DepartureTransportMeansAnswersViewModelProvider]
+      val viewModelProvider              = new DepartureTransportMeansAnswersViewModelProvider()
       val sections                       = viewModelProvider.apply(userAnswers, mode, departureIndex).sections
       val departureTransportMeansSection = sections.head
 

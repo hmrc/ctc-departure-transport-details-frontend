@@ -16,22 +16,22 @@
 
 package viewModels.equipment
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{Index, Mode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import pages.equipment.index._
+import pages.equipment.index.*
 import viewModels.equipment.EquipmentViewModel.EquipmentViewModelProvider
 
-class EquipmentViewModelSpec extends SpecBase with Generators {
+class EquipmentViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "apply" - {
     "when user answers empty" - {
       "must return empty rows" in {
         val answers           = emptyUserAnswers
         val mode              = arbitrary[Mode].sample.value
-        val viewModelProvider = injector.instanceOf[EquipmentViewModelProvider]
+        val viewModelProvider = new EquipmentViewModelProvider()
         val sections          = viewModelProvider.apply(answers, mode, index).sections
 
         sections.size mustEqual 2

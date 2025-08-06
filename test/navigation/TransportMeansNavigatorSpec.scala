@@ -17,18 +17,21 @@
 package navigation
 
 import base.SpecBase
+import config.FrontendAppConfig
 import generators.Generators
-import models._
+import models.*
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class TransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "Pre Requisites Navigator" - {
 
     "when in NormalMode" - {
 
       val mode              = NormalMode
-      val navigatorProvider = new TransportMeansNavigatorProviderImpl()
+      val navigatorProvider = new TransportMeansNavigatorProviderImpl()(mockFrontendAppConfig)
       val navigator         = navigatorProvider.apply(mode)
 
       "when answers complete" - {
@@ -46,7 +49,7 @@ class TransportMeansNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
       "when in CheckMode" - {
 
         val mode              = CheckMode
-        val navigatorProvider = new TransportMeansNavigatorProviderImpl()
+        val navigatorProvider = new TransportMeansNavigatorProviderImpl()(mockFrontendAppConfig)
         val navigator         = navigatorProvider.apply(mode)
 
         "when answers complete" - {

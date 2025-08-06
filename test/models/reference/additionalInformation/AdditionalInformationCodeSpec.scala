@@ -19,12 +19,14 @@ package models.reference.additionalInformation
 import base.SpecBase
 import config.FrontendAppConfig
 import generators.Generators
+import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import play.api.test.Helpers.running
 
 class AdditionalInformationCodeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "AdditionalInformationCode" - {
 
@@ -43,40 +45,34 @@ class AdditionalInformationCodeSpec extends SpecBase with ScalaCheckPropertyChec
 
     "must deserialise" - {
       "when phase-6" in {
-        running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-          app =>
-            val config = app.injector.instanceOf[FrontendAppConfig]
-            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-              (code, description) =>
-                val additionalInformationCode = AdditionalInformationCode(code, description)
-                Json
-                  .parse(s"""
-                     |{
-                     |  "key": "$code",
-                     |  "value": "$description"
-                     |}
-                     |""".stripMargin)
-                  .as[AdditionalInformationCode](AdditionalInformationCode.reads(config)) mustEqual additionalInformationCode
-            }
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val additionalInformationCode = AdditionalInformationCode(code, description)
+            Json
+              .parse(s"""
+                       |{
+                       |  "key": "$code",
+                       |  "value": "$description"
+                       |}
+                       |""".stripMargin)
+              .as[AdditionalInformationCode](AdditionalInformationCode.reads(mockFrontendAppConfig)) mustEqual additionalInformationCode
         }
 
       }
       "when phase-5" in {
-        running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-          app =>
-            val config = app.injector.instanceOf[FrontendAppConfig]
-            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-              (code, description) =>
-                val additionalInformationCode = AdditionalInformationCode(code, description)
-                Json
-                  .parse(s"""
-                     |{
-                     |  "code": "$code",
-                     |  "description": "$description"
-                     |}
-                     |""".stripMargin)
-                  .as[AdditionalInformationCode](AdditionalInformationCode.reads(config)) mustEqual additionalInformationCode
-            }
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val additionalInformationCode = AdditionalInformationCode(code, description)
+            Json
+              .parse(s"""
+                   |{
+                   |  "code": "$code",
+                   |  "description": "$description"
+                   |}
+                   |""".stripMargin)
+              .as[AdditionalInformationCode](AdditionalInformationCode.reads(mockFrontendAppConfig)) mustEqual additionalInformationCode
         }
 
       }

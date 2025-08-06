@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.transportMeans
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.transportMeans.active.routes
 import generators.Generators
 import models.journeyDomain.transportMeans.{TransportMeansActiveDomain, TransportMeansDepartureDomain}
@@ -26,14 +26,14 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
 import pages.sections.transportMeans.{ActiveSection, DepartureSection}
-import pages.transportMeans._
+import pages.transportMeans.*
 import pages.transportMeans.active.NationalityPage
 import play.api.libs.json.{JsArray, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, Value}
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.*
 
-class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class TransportMeansCheckYourAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "TransportMeansCheckYourAnswersHelper" - {
 

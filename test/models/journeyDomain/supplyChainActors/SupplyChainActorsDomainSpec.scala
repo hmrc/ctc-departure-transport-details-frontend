@@ -16,14 +16,14 @@
 
 package models.journeyDomain.supplyChainActors
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
 import pages.supplyChainActors.AddAnotherSupplyChainActorPage
 import pages.supplyChainActors.index.SupplyChainActorTypePage
 
-class SupplyChainActorsDomainSpec extends SpecBase with Generators {
+class SupplyChainActorsDomainSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "SupplyChainActorsDomain" - {
 

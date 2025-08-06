@@ -16,14 +16,14 @@
 
 package models.journeyDomain.additionalReferences
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
 import pages.additionalReference.AddAnotherAdditionalReferencePage
 import pages.additionalReference.index.AdditionalReferenceTypePage
 
-class AdditionalReferencesDomainSpec extends SpecBase with Generators {
+class AdditionalReferencesDomainSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "AdditionalReferences" - {
 
