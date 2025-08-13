@@ -16,7 +16,7 @@
 
 package viewModels.equipment
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.{Index, Mode}
 import org.scalacheck.Arbitrary.arbitrary
@@ -24,7 +24,7 @@ import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import viewModels.equipment.AddAnotherEquipmentViewModel.AddAnotherEquipmentViewModelProvider
 
-class AddAnotherEquipmentViewModelSpec extends SpecBase with Generators with ScalaCheckPropertyChecks {
+class AddAnotherEquipmentViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with Generators with ScalaCheckPropertyChecks {
 
   "AddAnotherEquipmentViewModelSpec" - {
     "listItems" - {

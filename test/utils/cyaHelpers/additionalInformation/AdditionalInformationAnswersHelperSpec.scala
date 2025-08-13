@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.additionalInformation
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.additionalInformation.AdditionalInformationCode
 import models.{Index, Mode}
@@ -27,7 +27,7 @@ import pages.additionalInformation.AddAdditionalInformationYesNoPage
 import pages.additionalInformation.index.{AddCommentsYesNoPage, AdditionalInformationTextPage, AdditionalInformationTypePage}
 import viewModels.ListItem
 
-class AdditionalInformationAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class AdditionalInformationAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "AdditionalReferenceAnswersHelper" - {
 

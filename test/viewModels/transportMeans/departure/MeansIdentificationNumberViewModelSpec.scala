@@ -16,7 +16,7 @@
 
 package viewModels.transportMeans.departure
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.transportMeans.departure.Identification
 import org.scalacheck.Arbitrary.arbitrary
@@ -24,7 +24,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.departure.IdentificationPage
 import viewModels.transportMeans.departure.MeansIdentificationNumberViewModel.MeansIdentificationNumberViewModelProvider
 
-class MeansIdentificationNumberViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class MeansIdentificationNumberViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "must create view model" - {
     "when identification type is defined" in {

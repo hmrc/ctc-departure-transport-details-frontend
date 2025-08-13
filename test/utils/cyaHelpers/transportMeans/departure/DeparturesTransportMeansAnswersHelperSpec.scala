@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.transportMeans.departure
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.transportMeans.departure.routes
 import generators.Generators
 import models.journeyDomain.transportMeans.TransportMeansDepartureDomain
@@ -28,7 +28,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.departure.*
 import viewModels.ListItem
 
-class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DeparturesTransportMeansAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "DeparturesTransportMeansAnswersHelperSpec" - {
 

@@ -16,14 +16,14 @@
 
 package navigation
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
-import models._
+import models.*
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.sections.external.OfficesOfTransitSection
 import play.api.libs.json.{JsArray, Json}
 
-class TransportMeansActiveNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class TransportMeansActiveNavigatorSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "TransportMeansActiveNavigator" - {
 
@@ -62,7 +62,7 @@ class TransportMeansActiveNavigatorSpec extends SpecBase with ScalaCheckProperty
       "when in CheckMode" - {
 
         val mode              = CheckMode
-        val navigatorProvider = new TransportMeansActiveNavigatorProviderImpl()
+        val navigatorProvider = new TransportMeansActiveNavigatorProviderImpl()(frontendAppConfig)
         val navigator         = navigatorProvider.apply(mode, activeIndex)
 
         "when answers complete" - {

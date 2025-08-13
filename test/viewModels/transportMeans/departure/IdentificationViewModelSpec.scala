@@ -16,7 +16,7 @@
 
 package viewModels.transportMeans.departure
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import config.Constants.ModeOfTransport.Road
 import generators.Generators
 import models.Index
@@ -25,7 +25,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.InlandModePage
 import viewModels.transportMeans.departure.IdentificationViewModel.IdentificationViewModelProvider
 
-class IdentificationViewModelSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class IdentificationViewModelSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "must create view model" - {
     "when InlandMode mode is not ROAD" in {

@@ -18,12 +18,14 @@ package models.reference.transportMeans.active
 
 import base.SpecBase
 import config.FrontendAppConfig
+import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import play.api.test.Helpers.running
 
 class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
+
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "Identification" - {
 
@@ -42,40 +44,34 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
 
     "must deserialise" - {
       "when phase-6" in {
-        running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-          app =>
-            val config = app.injector.instanceOf[FrontendAppConfig]
-            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-              (code, description) =>
-                val identification = Identification(code, description)
-                Json
-                  .parse(s"""
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val identification = Identification(code, description)
+            Json
+              .parse(s"""
                        |{
                        |  "key": "$code",
                        |  "value": "$description"
                        |}
                        |""".stripMargin)
-                  .as[Identification](Identification.reads(config)) mustEqual identification
-            }
+              .as[Identification](Identification.reads(mockFrontendAppConfig)) mustEqual identification
         }
 
       }
       "when phase-5" in {
-        running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-          app =>
-            val config = app.injector.instanceOf[FrontendAppConfig]
-            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-              (code, description) =>
-                val identification = Identification(code, description)
-                Json
-                  .parse(s"""
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val identification = Identification(code, description)
+            Json
+              .parse(s"""
                        |{
                        |  "code": "$code",
                        |  "description": "$description"
                        |}
                        |""".stripMargin)
-                  .as[Identification](Identification.reads(config)) mustEqual identification
-            }
+              .as[Identification](Identification.reads(mockFrontendAppConfig)) mustEqual identification
         }
 
       }

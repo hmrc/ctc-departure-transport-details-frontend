@@ -17,12 +17,15 @@
 package navigation
 
 import base.SpecBase
+import config.FrontendAppConfig
 import generators.Generators
-import models._
+import models.*
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class TransportNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "Transport Navigator" - {
 
@@ -30,7 +33,7 @@ class TransportNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
       "must redirect to transport check your answers" in {
         forAll(arbitraryTransportAnswers(emptyUserAnswers), arbitrary[Mode]) {
           (answers, mode) =>
-            val navigatorProvider = new TransportNavigatorProviderImpl()
+            val navigatorProvider = new TransportNavigatorProviderImpl()(mockFrontendAppConfig)
             val navigator         = navigatorProvider.apply(mode)
 
             navigator

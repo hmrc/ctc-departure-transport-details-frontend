@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.authorisations
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.authorisationsAndLimit.authorisations.index.routes
 import generators.Generators
 import models.reference.authorisations.AuthorisationType
@@ -32,7 +32,7 @@ import pages.authorisationsAndLimit.authorisations.index.{
 }
 import viewModels.ListItem
 
-class AuthorisationsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class AuthorisationsAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "AuthorisationsAnswersHelperSpec" - {
 

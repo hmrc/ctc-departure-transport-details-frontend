@@ -16,16 +16,16 @@
 
 package viewModels
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.reference.Nationality
 import models.reference.transportMeans.departure.Identification
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.AddInlandModeYesNoPage
-import pages.transportMeans.departure._
+import pages.transportMeans.departure.*
 import viewModels.DepartureTransportAnswersViewModel.DepartureTransportAnswersViewModelProvider
 
-class DepartureTransportAnswersViewModelProviderSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DepartureTransportAnswersViewModelProviderSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "MiniTransportAnswersViewModelProviderSpec" - {
 

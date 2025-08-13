@@ -17,18 +17,21 @@
 package navigation
 
 import base.SpecBase
+import config.FrontendAppConfig
 import generators.Generators
-import models._
+import models.*
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "Equipment Navigator" - {
 
     "when in NormalMode" - {
 
       val mode              = NormalMode
-      val navigatorProvider = new EquipmentNavigatorProviderImpl
+      val navigatorProvider = new EquipmentNavigatorProviderImpl()(mockFrontendAppConfig)
       val navigator         = navigatorProvider.apply(mode, equipmentIndex)
 
       "when answers complete" - {
@@ -46,7 +49,7 @@ class EquipmentNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with
     "when in CheckMode" - {
 
       val mode              = CheckMode
-      val navigatorProvider = new EquipmentNavigatorProviderImpl
+      val navigatorProvider = new EquipmentNavigatorProviderImpl()(mockFrontendAppConfig)
       val navigator         = navigatorProvider.apply(mode, equipmentIndex)
 
       "when answers complete" - {

@@ -16,17 +16,13 @@
 
 package base
 
-import config.FrontendAppConfig
 import models.{EoriNumber, Index, LocalReferenceNumber, RichJsObject, SubmissionState, UserAnswers}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.{EitherValues, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import pages.{QuestionPage, ReadOnlyPage}
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.Injector
 import play.api.libs.json.{Format, JsResultException, Json, Reads}
 import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
@@ -40,7 +36,6 @@ trait SpecBase
     with Matchers
     with OptionValues
     with EitherValues
-    with GuiceOneAppPerSuite
     with TryValues
     with ScalaFutures
     with IntegrationPatience
@@ -66,13 +61,6 @@ trait SpecBase
   val emptyUserAnswers: UserAnswers = UserAnswers(lrn, eoriNumber, submitStatus, Json.obj())
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  def injector: Injector = app.injector
-
-  def messagesApi: MessagesApi    = injector.instanceOf[MessagesApi]
-  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
-
-  implicit def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
 
   implicit class RichUserAnswers(userAnswers: UserAnswers) {
 

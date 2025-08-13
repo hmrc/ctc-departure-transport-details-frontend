@@ -16,13 +16,13 @@
 
 package models.journeyDomain.authorisationsAndLimit.authorisations
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import generators.Generators
 import models.Index
 import org.scalacheck.Gen
 import pages.authorisationsAndLimit.authorisations.AddAnotherAuthorisationPage
 
-class AuthorisationsDomainSpec extends SpecBase with Generators {
+class AuthorisationsDomainSpec extends SpecBase with AppWithDefaultMockFixtures with Generators {
 
   "Authorisations" - {
 

@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.equipment
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.equipment.index.seals.routes
 import generators.Generators
 import models.{Index, Mode}
@@ -27,7 +27,7 @@ import pages.equipment.index.AddSealYesNoPage
 import pages.equipment.index.seals.IdentificationNumberPage
 import viewModels.ListItem
 
-class SealsAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class SealsAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "SealsAnswersHelper" - {
 

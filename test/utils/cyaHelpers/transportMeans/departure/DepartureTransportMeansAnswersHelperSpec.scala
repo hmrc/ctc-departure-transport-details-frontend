@@ -16,7 +16,7 @@
 
 package utils.cyaHelpers.transportMeans.departure
 
-import base.SpecBase
+import base.{AppWithDefaultMockFixtures, SpecBase}
 import controllers.transportMeans.departure.routes
 import generators.Generators
 import models.Mode
@@ -25,12 +25,12 @@ import models.reference.transportMeans.departure.Identification
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.transportMeans.AddInlandModeYesNoPage
-import pages.transportMeans.departure._
+import pages.transportMeans.departure.*
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryListRow, Value}
-import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+import uk.gov.hmrc.govukfrontend.views.html.components.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions}
 
-class DepartureTransportMeansAnswersHelperSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+class DepartureTransportMeansAnswersHelperSpec extends SpecBase with AppWithDefaultMockFixtures with ScalaCheckPropertyChecks with Generators {
 
   "DepartureTransportMeansAnswersHelper" - {
 

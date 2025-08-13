@@ -19,14 +19,16 @@ package models.reference
 import base.SpecBase
 import config.FrontendAppConfig
 import generators.Generators
+import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
-import play.api.test.Helpers.running
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class NationalitySpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
+
+  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "Nationality" - {
 
@@ -45,42 +47,35 @@ class NationalitySpec extends SpecBase with ScalaCheckPropertyChecks with Genera
 
     "must deserialise" - {
       "when phase-6" in {
-        running(_.configure("feature-flags.phase-6-enabled" -> true)) {
-          app =>
-            val config = app.injector.instanceOf[FrontendAppConfig]
-            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-              (code, description) =>
-                val nationality = Nationality(code, description)
-                Json
-                  .parse(s"""
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val nationality = Nationality(code, description)
+            Json
+              .parse(s"""
                        |{
                        |  "key": "$code",
                        |  "value": "$description"
                        |}
                        |""".stripMargin)
-                  .as[Nationality](Nationality.reads(config)) mustEqual nationality
-            }
+              .as[Nationality](Nationality.reads(mockFrontendAppConfig)) mustEqual nationality
         }
 
       }
       "when phase-5" in {
-        running(_.configure("feature-flags.phase-6-enabled" -> false)) {
-          app =>
-            val config = app.injector.instanceOf[FrontendAppConfig]
-            forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-              (code, description) =>
-                val nationality = Nationality(code, description)
-                Json
-                  .parse(s"""
+        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+          (code, description) =>
+            val nationality = Nationality(code, description)
+            Json
+              .parse(s"""
                        |{
                        |  "code": "$code",
                        |  "description": "$description"
                        |}
                        |""".stripMargin)
-                  .as[Nationality](Nationality.reads(config)) mustEqual nationality
-            }
+              .as[Nationality](Nationality.reads(mockFrontendAppConfig)) mustEqual nationality
         }
-
       }
       "must read from mongo" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
