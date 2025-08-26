@@ -18,7 +18,7 @@ package base
 
 import config.FrontendAppConfig
 import controllers.actions.*
-import models.{Index, LockCheck, Mode, UserAnswers}
+import models.{Index, Mode, UserAnswers}
 import navigation.*
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -27,12 +27,12 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.{GuiceFakeApplicationFactory, GuiceOneAppPerSuite}
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.{bind, Injector}
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.inject.{bind, Injector}
 import play.api.mvc.Call
 import play.test.Helpers.fakeRequest
 import repositories.SessionRepository
-import services.{CountriesService, LockService}
+import services.CountriesService
 
 import scala.concurrent.Future
 
