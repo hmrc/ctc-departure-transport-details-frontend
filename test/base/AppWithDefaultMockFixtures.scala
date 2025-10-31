@@ -30,7 +30,6 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{bind, Injector}
 import play.api.mvc.Call
-import play.test.Helpers.fakeRequest
 import repositories.SessionRepository
 import services.CountriesService
 
