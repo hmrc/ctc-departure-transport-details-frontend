@@ -24,6 +24,7 @@ import pages.external.ItemCountryOfDestinationInCL009Page
 import pages.preRequisites.ItemsDestinationCountryInCL009Page
 import pages.sections.external.ItemsSection
 import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,6 +39,9 @@ class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceD
         additionalInformationList =>
           val isConsignmentCountryOfDestinationInCL009 = userAnswers.get(ItemsDestinationCountryInCL009Page).contains(true)
 
+          val isConsigneeDetails: Boolean =
+            (userAnswers.data \ "traderDetails" \ "consignment" \ "consignee" \ "name").asOpt[String].exists(_.trim.nonEmpty)
+
           val isAtLeastOneItemCountryOfDestinationInCL009 = {
             val numberOfItems = userAnswers.get(ItemsSection).length
             (0 until numberOfItems).map(Index(_)).exists {
@@ -45,7 +49,12 @@ class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceD
             }
           }
 
-          if (isConsignmentCountryOfDestinationInCL009 || isAtLeastOneItemCountryOfDestinationInCL009) {
+          val hide30600 =
+            isConsignmentCountryOfDestinationInCL009 ||
+              isAtLeastOneItemCountryOfDestinationInCL009 ||
+              isConsigneeDetails
+
+          if (hide30600) {
             SelectableList(additionalInformationList.filterNot(_.code == `30600`).toSeq)
           } else {
             SelectableList(additionalInformationList)
