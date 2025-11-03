@@ -148,7 +148,6 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
                   "traderDetails" -> Json.obj(
                     "consignment" -> Json.obj(
                       "consignee" -> Json.obj(
-                        "name" -> "Test Name"
                       )
                     )
                   )

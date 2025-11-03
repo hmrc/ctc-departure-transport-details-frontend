@@ -22,9 +22,10 @@ import models.reference.additionalInformation.AdditionalInformationCode
 import models.{Index, RichOptionalJsArray, SelectableList, UserAnswers}
 import pages.external.ItemCountryOfDestinationInCL009Page
 import pages.preRequisites.ItemsDestinationCountryInCL009Page
+import pages.sections.additionalInformation.ConsigneeSection
 import pages.sections.external.ItemsSection
 import uk.gov.hmrc.http.HeaderCarrier
-import play.api.libs.json._
+import play.api.libs.json.*
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,8 +40,7 @@ class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceD
         additionalInformationList =>
           val isConsignmentCountryOfDestinationInCL009 = userAnswers.get(ItemsDestinationCountryInCL009Page).contains(true)
 
-          val isConsigneeDetails: Boolean =
-            (userAnswers.data \ "traderDetails" \ "consignment" \ "consignee" \ "name").asOpt[String].exists(_.trim.nonEmpty)
+          val isConsigneeDetails: Boolean = userAnswers.get(ConsigneeSection).isDefined
 
           val isAtLeastOneItemCountryOfDestinationInCL009 = {
             val numberOfItems = userAnswers.get(ItemsSection).length
