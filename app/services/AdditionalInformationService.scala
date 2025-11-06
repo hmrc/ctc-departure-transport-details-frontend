@@ -39,7 +39,7 @@ class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceD
         additionalInformationList =>
           val isConsignmentCountryOfDestinationInCL009 = userAnswers.get(ItemsDestinationCountryInCL009Page).contains(true)
 
-          val isConsigneeDetailsPresent: Boolean = userAnswers.get(ConsigneeSection).isDefined
+          val isConsigneeDetailsPresent: Boolean = userAnswers.get(ConsigneeSection).exists(_.value.nonEmpty)
 
           val isAtLeastOneItemCountryOfDestinationInCL009 = {
             val numberOfItems = userAnswers.get(ItemsSection).length
