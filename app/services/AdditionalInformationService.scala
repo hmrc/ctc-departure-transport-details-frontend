@@ -22,8 +22,7 @@ import models.reference.additionalInformation.AdditionalInformationCode
 import models.{Index, RichOptionalJsArray, SelectableList, UserAnswers}
 import pages.external.ItemCountryOfDestinationInCL009Page
 import pages.preRequisites.ItemsDestinationCountryInCL009Page
-import pages.sections.additionalInformation.ConsigneeSection
-import pages.sections.external.ItemsSection
+import pages.sections.external.{ConsigneeSection, ItemsSection}
 import uk.gov.hmrc.http.HeaderCarrier
 import play.api.libs.json.*
 

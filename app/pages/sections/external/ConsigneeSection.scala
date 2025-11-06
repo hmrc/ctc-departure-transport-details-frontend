@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package pages.sections.additionalInformation
+package pages.sections.external
 
-import pages.sections.Section
-import pages.external.traderDetailsConsignmentPath
-import play.api.libs.json.{JsObject, JsPath, Reads}
+import pages.sections.external.traderDetailsConsignmentPath
+import pages.sections.ReadOnlySection
+import play.api.libs.json.{JsObject, JsPath}
 
-case object ConsigneeSection extends Section[JsObject] {
+case object ConsigneeSection extends ReadOnlySection[JsObject] {
 
   override def path: JsPath = traderDetailsConsignmentPath \ toString
 
   override def toString: String = "consignee"
-
-  implicit val reads: Reads[JsObject] = Reads.JsObjectReads
 }

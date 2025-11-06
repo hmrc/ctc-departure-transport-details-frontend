@@ -20,7 +20,8 @@ import play.api.libs.json.{__, JsPath}
 
 package object external {
 
-  lazy val exitSectionPath: JsPath    = __ \ "routeDetails" \ "exit"
-  lazy val transitSectionPath: JsPath = __ \ "routeDetails" \ "transit"
+  lazy val exitSectionPath: JsPath              = __ \ "routeDetails" \ "exit"
+  lazy val transitSectionPath: JsPath           = __ \ "routeDetails" \ "transit"
+  lazy val traderDetailsConsignmentPath: JsPath = __ \ "traderDetails" \ "consignment"
 
 }

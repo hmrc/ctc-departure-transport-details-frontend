@@ -27,6 +27,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import pages.external.ItemCountryOfDestinationInCL009Page
 import pages.preRequisites.ItemsDestinationCountryInCL009Page
+import pages.sections.external.ConsigneeSection
 import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -141,19 +142,7 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
           when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
             .thenReturn(Future.successful(Right(additionalInformationCodes)))
 
-          val isConsigneeDetails =
-            emptyUserAnswers.copy(
-              data = emptyUserAnswers.data.deepMerge(
-                Json.obj(
-                  "traderDetails" -> Json.obj(
-                    "consignment" -> Json.obj(
-                      "consignee" -> Json.obj(
-                      )
-                    )
-                  )
-                )
-              )
-            )
+          val isConsigneeDetails = emptyUserAnswers.setValue(ConsigneeSection, Json.obj())
 
           service.getAdditionalInformationCodes(isConsigneeDetails).futureValue mustEqual expectedResult
 
