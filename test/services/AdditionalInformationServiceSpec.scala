@@ -61,14 +61,15 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
       "must return a list of additional information codes" - {
         val expectedResult = SelectableList(Seq(additionalInformationCode1, additionalInformationCode2, additionalInformationCode3))
 
-        "when user answers contains no information about consignment or item countries of destination" in {
-          when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
-            .thenReturn(Future.successful(Right(additionalInformationCodes)))
+        "when user answers contains no information about consignment," +
+          "item countries of destination and consignee details are not present" in {
+            when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
+              .thenReturn(Future.successful(Right(additionalInformationCodes)))
 
-          service.getAdditionalInformationCodes(emptyUserAnswers).futureValue mustEqual expectedResult
+            service.getAdditionalInformationCodes(emptyUserAnswers).futureValue mustEqual expectedResult
 
-          verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
-        }
+            verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+          }
 
         "when consignment country of destination is not in CL009" in {
           when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
@@ -89,6 +90,18 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
             .setValue(ItemCountryOfDestinationInCL009Page(Index(0)), false)
             .setValue(ItemCountryOfDestinationInCL009Page(Index(1)), false)
             .setValue(ItemCountryOfDestinationInCL009Page(Index(2)), false)
+
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustEqual expectedResult
+
+          verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+        }
+
+        "when consignee details are not present" in {
+          when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
+            .thenReturn(Future.successful(Right(additionalInformationCodes)))
+
+          val userAnswers = emptyUserAnswers
+          userAnswers.get(ConsigneeSection).isDefined mustBe false
 
           service.getAdditionalInformationCodes(userAnswers).futureValue mustEqual expectedResult
 
@@ -142,9 +155,9 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
           when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
             .thenReturn(Future.successful(Right(additionalInformationCodes)))
 
-          val isConsigneeDetails = emptyUserAnswers.setValue(ConsigneeSection, Json.obj())
+          val userAnswers = emptyUserAnswers.setValue(ConsigneeSection, Json.obj("foo" -> "bar"))
 
-          service.getAdditionalInformationCodes(isConsigneeDetails).futureValue mustEqual expectedResult
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustEqual expectedResult
 
           verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
         }

@@ -39,7 +39,7 @@ class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceD
         additionalInformationList =>
           val isConsignmentCountryOfDestinationInCL009 = userAnswers.get(ItemsDestinationCountryInCL009Page).contains(true)
 
-          val isConsigneeDetails: Boolean = userAnswers.get(ConsigneeSection).isDefined
+          val isConsigneeDetailsPresent: Boolean = userAnswers.get(ConsigneeSection).isDefined
 
           val isAtLeastOneItemCountryOfDestinationInCL009 = {
             val numberOfItems = userAnswers.get(ItemsSection).length
@@ -51,7 +51,7 @@ class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceD
           val hide30600 =
             isConsignmentCountryOfDestinationInCL009 ||
               isAtLeastOneItemCountryOfDestinationInCL009 ||
-              isConsigneeDetails
+              isConsigneeDetailsPresent
 
           if (hide30600) {
             SelectableList(additionalInformationList.filterNot(_.code == `30600`).toSeq)
