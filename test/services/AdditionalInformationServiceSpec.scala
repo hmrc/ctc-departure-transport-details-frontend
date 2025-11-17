@@ -27,6 +27,8 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import pages.external.ItemCountryOfDestinationInCL009Page
 import pages.preRequisites.ItemsDestinationCountryInCL009Page
+import pages.sections.external.ConsigneeSection
+import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -92,6 +94,17 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
 
           verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
         }
+
+        "when consignee details are not present" in {
+          when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
+            .thenReturn(Future.successful(Right(additionalInformationCodes)))
+
+          val userAnswers = emptyUserAnswers.setValue(ConsigneeSection, Json.obj())
+
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustEqual expectedResult
+
+          verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+        }
       }
 
       "must return a list of additional information codes with 30600 filtered out" - {
@@ -130,6 +143,17 @@ class AdditionalInformationServiceSpec extends SpecBase with BeforeAndAfterEach 
             .setValue(ItemCountryOfDestinationInCL009Page(Index(0)), true)
             .setValue(ItemCountryOfDestinationInCL009Page(Index(1)), true)
             .setValue(ItemCountryOfDestinationInCL009Page(Index(2)), true)
+
+          service.getAdditionalInformationCodes(userAnswers).futureValue mustEqual expectedResult
+
+          verify(mockRefDataConnector).getAdditionalInformationCodes()(any(), any())
+        }
+
+        "when consignee details are present" in {
+          when(mockRefDataConnector.getAdditionalInformationCodes()(any(), any()))
+            .thenReturn(Future.successful(Right(additionalInformationCodes)))
+
+          val userAnswers = emptyUserAnswers.setValue(ConsigneeSection, Json.obj("foo" -> "bar"))
 
           service.getAdditionalInformationCodes(userAnswers).futureValue mustEqual expectedResult
 

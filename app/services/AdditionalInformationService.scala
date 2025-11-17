@@ -22,8 +22,9 @@ import models.reference.additionalInformation.AdditionalInformationCode
 import models.{Index, RichOptionalJsArray, SelectableList, UserAnswers}
 import pages.external.ItemCountryOfDestinationInCL009Page
 import pages.preRequisites.ItemsDestinationCountryInCL009Page
-import pages.sections.external.ItemsSection
+import pages.sections.external.{ConsigneeSection, ItemsSection}
 import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json.*
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,6 +39,8 @@ class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceD
         additionalInformationList =>
           val isConsignmentCountryOfDestinationInCL009 = userAnswers.get(ItemsDestinationCountryInCL009Page).contains(true)
 
+          val isConsigneeDetailsPresent: Boolean = userAnswers.get(ConsigneeSection).exists(_.value.nonEmpty)
+
           val isAtLeastOneItemCountryOfDestinationInCL009 = {
             val numberOfItems = userAnswers.get(ItemsSection).length
             (0 until numberOfItems).map(Index(_)).exists {
@@ -45,7 +48,12 @@ class AdditionalInformationService @Inject() (referenceDataConnector: ReferenceD
             }
           }
 
-          if (isConsignmentCountryOfDestinationInCL009 || isAtLeastOneItemCountryOfDestinationInCL009) {
+          val hide30600 =
+            isConsignmentCountryOfDestinationInCL009 ||
+              isAtLeastOneItemCountryOfDestinationInCL009 ||
+              isConsigneeDetailsPresent
+
+          if (hide30600) {
             SelectableList(additionalInformationList.filterNot(_.code == `30600`).toSeq)
           } else {
             SelectableList(additionalInformationList)

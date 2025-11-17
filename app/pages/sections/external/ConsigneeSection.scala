@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package pages.sections
+package pages.sections.external
 
-import play.api.libs.json.{__, JsPath}
+import pages.sections.external.traderDetailsConsignmentPath
+import pages.sections.ReadOnlySection
+import play.api.libs.json.{JsObject, JsPath}
 
-package object external {
+case object ConsigneeSection extends ReadOnlySection[JsObject] {
 
-  lazy val exitSectionPath: JsPath              = __ \ "routeDetails" \ "exit"
-  lazy val transitSectionPath: JsPath           = __ \ "routeDetails" \ "transit"
-  lazy val traderDetailsConsignmentPath: JsPath = __ \ "traderDetails" \ "consignment"
+  override def path: JsPath = traderDetailsConsignmentPath \ toString
 
+  override def toString: String = "consignee"
 }
