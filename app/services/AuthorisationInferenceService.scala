@@ -51,6 +51,8 @@ class AuthorisationInferenceService @Inject() () {
             (procedureType, reducedDataset) match {
               case (Simplified, false) =>
                 updateUserAnswers(authTypeACR)
+              case (Normal, true) =>
+                updateUserAnswers(authTypeTRD)
               case (Simplified, true) =>
                 updateUserAnswers(authTypeACR, authTypeTRD)
               case _ =>

@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import base.SpecBase
-import config.Constants.DeclarationType.TIR
+import config.Constants.DeclarationType.{T1, TIR}
 import generators.Generators
 import models.ProcedureType.{Normal, Simplified}
 import models.reference.InlandMode
@@ -94,20 +94,23 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
         }
       }
 
-      "when reduced data set indicator is false and procedure type is Normal" in {
-        forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
-          declarationType =>
-            val initialUserAnswers = emptyUserAnswers
-              .setValue(DeclarationTypePage, declarationType)
-              .setValue(ApprovedOperatorPage, false)
-              .setValue(ProcedureTypePage, Normal)
+      "when reduced data set indicator is false and procedure type is Normal" - {
+        "and AddAuthorisationsYesNoPage is true" in {
+          forAll(arbitrary[String](arbitraryNonTIRDeclarationType)) {
+            declarationType =>
+              val initialUserAnswers = emptyUserAnswers
+                .setValue(DeclarationTypePage, declarationType)
+                .setValue(ApprovedOperatorPage, false)
+                .setValue(ProcedureTypePage, Normal)
+                .setValue(AddAuthorisationsYesNoPage, true)
 
-            forAll(arbitraryTransportAnswers(initialUserAnswers)) {
-              userAnswers =>
-                val result = TransportDomain.userAnswersReader.run(userAnswers)
-                result.value.value.authorisationsAndLimit must not be defined
-                result.value.pages.last mustEqual TransportSection
-            }
+              forAll(arbitraryTransportAnswers(initialUserAnswers)) {
+                userAnswers =>
+                  val result = TransportDomain.userAnswersReader.run(userAnswers)
+                  result.value.value.authorisationsAndLimit must be(defined)
+                  result.value.pages.last mustEqual TransportSection
+              }
+          }
         }
       }
 
@@ -139,7 +142,7 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
             forAll(arbitraryTransportAnswers(initialUserAnswers)) {
               userAnswers =>
                 val result = TransportDomain.userAnswersReader.run(userAnswers)
-                result.value.value.authorisationsAndLimit must not be defined
+                result.value.value.authorisationsAndLimit must be(defined)
                 result.value.pages.last mustEqual TransportSection
             }
         }
@@ -228,13 +231,16 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
 
     "authorisationsAndLimitReads" - {
       "can not parsed from user answers" - {
-        "when procedure type is normal" in {
+        "when procedure type is normal and approved operator is false" in {
           val userAnswers = emptyUserAnswers
+            .setValue(DeclarationTypePage, TIR)
             .setValue(ProcedureTypePage, Normal)
+            .setValue(ApprovedOperatorPage, false)
+            .setValue(AddAuthorisationsYesNoPage, false)
 
           val result = TransportDomain.authorisationsAndLimitReads.apply(Nil).run(userAnswers)
           result.value.value must not be defined
-          result.value.pages mustEqual Nil
+          result.value.pages mustEqual Seq(AddAuthorisationsYesNoPage)
         }
       }
 
@@ -242,7 +248,9 @@ class TransportDomainSpec extends SpecBase with Generators with ScalaCheckProper
         "when procedure type is simplified" - {
           "and inference is not flagged as true" in {
             val userAnswers = emptyUserAnswers
+              .setValue(DeclarationTypePage, T1)
               .setValue(ProcedureTypePage, Simplified)
+              .setValue(ApprovedOperatorPage, true)
 
             val result = TransportDomain.authorisationsAndLimitReads.apply(Nil).run(userAnswers)
             result.left.value.page mustEqual AuthorisationsInferredPage

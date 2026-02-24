@@ -30,9 +30,9 @@ import models.journeyDomain.transportMeans.TransportMeansDomain
 import models.reference.InlandMode
 import pages.additionalInformation.AddAdditionalInformationYesNoPage
 import pages.additionalReference.AddAdditionalReferenceYesNoPage
-import pages.authorisationsAndLimit.AuthorisationsInferredPage
+import pages.authorisationsAndLimit.{AddAuthorisationsYesNoPage, AuthorisationsInferredPage}
 import pages.carrierDetails.CarrierDetailYesNoPage
-import pages.external.ProcedureTypePage
+import pages.external.{ApprovedOperatorPage, ProcedureTypePage}
 import pages.sections.{Section, TransportSection}
 import pages.supplyChainActors.SupplyChainActorYesNoPage
 import pages.transportMeans.{AddInlandModeYesNoPage, InlandModePage}
@@ -82,10 +82,13 @@ object TransportDomain {
   }
 
   implicit lazy val authorisationsAndLimitReads: Read[Option[AuthorisationsAndLimitDomain]] =
-    ProcedureTypePage.reader.to {
-      case Normal =>
-        UserAnswersReader.none
-      case Simplified =>
+    (
+      ApprovedOperatorPage.inferredReader,
+      ProcedureTypePage.reader
+    ).to {
+      case (false, Normal) =>
+        AddAuthorisationsYesNoPage.filterOptionalDependent(identity)(AuthorisationsAndLimitDomain.userAnswersReader)
+      case _ =>
         AuthorisationsInferredPage.reader.to {
           _ => AuthorisationsAndLimitDomain.userAnswersReader.toOption
         }
