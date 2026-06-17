@@ -47,7 +47,6 @@ class AdditionalReferenceTypeSpec extends SpecBase with ScalaCheckPropertyChecks
 
     "must deserialise" - {
       "when phase-6" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (docType, description) =>
             val additionalReferenceType = AdditionalReferenceType(docType, description)
@@ -61,24 +60,7 @@ class AdditionalReferenceTypeSpec extends SpecBase with ScalaCheckPropertyChecks
               .as[AdditionalReferenceType](AdditionalReferenceType.reads(mockFrontendAppConfig)) mustEqual additionalReferenceType
         }
       }
-
     }
-    "when phase-5" in {
-      when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (docType, description) =>
-          val additionalReferenceType = AdditionalReferenceType(docType, description)
-          Json
-            .parse(s"""
-                       |{
-                       |  "documentType": "$docType",
-                       |  "description": "$description"
-                       |}
-                       |""".stripMargin)
-            .as[AdditionalReferenceType](AdditionalReferenceType.reads(mockFrontendAppConfig)) mustEqual additionalReferenceType
-      }
-    }
-
   }
 
   "must read from mongo" in {

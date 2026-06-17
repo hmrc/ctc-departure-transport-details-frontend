@@ -44,7 +44,6 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
 
     "must deserialise" - {
       "when phase-6" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
             val identification = Identification(code, description)
@@ -53,22 +52,6 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
                    |{
                    |  "key": "$code",
                    |  "value": "$description"
-                   |}
-                   |""".stripMargin)
-              .as[Identification](Identification.reads(mockFrontendAppConfig)) mustEqual identification
-        }
-
-      }
-      "when phase-5" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val identification = Identification(code, description)
-            Json
-              .parse(s"""
-                   |{
-                   |  "type": "$code",
-                   |  "description": "$description"
                    |}
                    |""".stripMargin)
               .as[Identification](Identification.reads(mockFrontendAppConfig)) mustEqual identification

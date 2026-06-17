@@ -33,14 +33,10 @@ case class AdditionalInformationCode(code: String, description: String) extends 
 object AdditionalInformationCode {
 
   def reads(config: FrontendAppConfig): Reads[AdditionalInformationCode] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(AdditionalInformationCode.apply)
-    } else {
-      Json.reads[AdditionalInformationCode]
-    }
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(AdditionalInformationCode.apply)
 
   implicit val format: Format[AdditionalInformationCode] = Json.format[AdditionalInformationCode]
 

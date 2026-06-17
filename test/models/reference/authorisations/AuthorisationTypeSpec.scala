@@ -44,7 +44,6 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
     "must deserialise" - {
       "when phase-6" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
             val authorisationType = AuthorisationType(code, description)
@@ -60,22 +59,6 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
       }
     }
-    "when phase-5" in {
-      when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-        (code, description) =>
-          val authorisationType = AuthorisationType(code, description)
-          Json
-            .parse(s"""
-                       |{
-                       |  "code": "$code",
-                       |  "description": "$description"
-                       |}
-                       |""".stripMargin)
-            .as[AuthorisationType](AuthorisationType.reads(mockFrontendAppConfig)) mustEqual authorisationType
-      }
-    }
-
   }
 
   "must read from mongo" in {

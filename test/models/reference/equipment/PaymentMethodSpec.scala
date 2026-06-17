@@ -44,7 +44,6 @@ class PaymentMethodSpec extends SpecBase with ScalaCheckPropertyChecks {
 
     "must deserialise" - {
       "when phase-6" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
             val paymentMethod = PaymentMethod(code, description)
@@ -58,21 +57,6 @@ class PaymentMethodSpec extends SpecBase with ScalaCheckPropertyChecks {
               .as[PaymentMethod](PaymentMethod.reads(mockFrontendAppConfig)) mustEqual paymentMethod
         }
 
-      }
-      "when phase-5" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val paymentMethod = PaymentMethod(code, description)
-            Json
-              .parse(s"""
-                       |{
-                       |  "method": "$code",
-                       |  "description": "$description"
-                       |}
-                       |""".stripMargin)
-              .as[PaymentMethod](PaymentMethod.reads(mockFrontendAppConfig)) mustEqual paymentMethod
-        }
       }
     }
 

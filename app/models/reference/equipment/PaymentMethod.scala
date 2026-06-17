@@ -37,14 +37,11 @@ case class PaymentMethod(method: String, description: String) extends Radioable[
 object PaymentMethod extends DynamicEnumerableType[PaymentMethod] {
 
   def reads(config: FrontendAppConfig): Reads[PaymentMethod] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(PaymentMethod.apply)
-    } else {
-      Json.reads[PaymentMethod]
-    }
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(PaymentMethod.apply)
+
   implicit val format: Format[PaymentMethod] = Json.format[PaymentMethod]
 
   implicit val order: Order[PaymentMethod] = (x: PaymentMethod, y: PaymentMethod) => (x, y).compareBy(_.method)

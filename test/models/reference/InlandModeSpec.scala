@@ -44,7 +44,6 @@ class InlandModeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
     "must deserialise" - {
       "when phase -6" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
             val inlandMode = InlandMode(code, description)
@@ -58,23 +57,6 @@ class InlandModeSpec extends SpecBase with ScalaCheckPropertyChecks {
               .as[InlandMode](InlandMode.reads(mockFrontendAppConfig)) mustEqual inlandMode
         }
       }
-      "when phase -5" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val inlandMode = InlandMode(code, description)
-            Json
-              .parse(s"""
-                       |{
-                       |  "code": "$code",
-                       |  "description": "$description"
-                       |}
-                       |""".stripMargin)
-              .as[InlandMode](InlandMode.reads(mockFrontendAppConfig)) mustEqual inlandMode
-        }
-
-      }
-
     }
     "must read from mongo" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {

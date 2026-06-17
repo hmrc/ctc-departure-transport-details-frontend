@@ -31,21 +31,16 @@ case class Country(code: CountryCode, description: String) extends Selectable {
 object Country {
 
   def reads(config: FrontendAppConfig): Reads[Country] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[CountryCode] and
-          (__ \ "value").read[String]
-      )(Country.apply)
-    } else {
-      Json.reads[Country]
-    }
+    (
+      (__ \ "key").read[CountryCode] and
+        (__ \ "value").read[String]
+    )(Country.apply)
 
   implicit val format: OFormat[Country] = Json.format[Country]
 
   implicit val order: Order[Country] = (x: Country, y: Country) => (x, y).compareBy(_.description, _.code.code)
 
   def queryParameters(code: String)(config: FrontendAppConfig): Seq[(String, String)] =
-    val key = if (config.phase6Enabled) "keys" else "data.code"
-    Seq(key -> code)
+    Seq("keys" -> code)
 
 }

@@ -32,14 +32,10 @@ case class Nationality(code: String, description: String) extends Selectable {
 object Nationality {
 
   def reads(config: FrontendAppConfig): Reads[Nationality] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(Nationality.apply)
-    } else {
-      Json.reads[Nationality]
-    }
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(Nationality.apply)
 
   implicit val format: Format[Nationality] = Json.format[Nationality]
 

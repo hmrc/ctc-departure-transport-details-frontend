@@ -43,7 +43,6 @@ class BorderModeSpec extends SpecBase with ScalaCheckPropertyChecks {
 
     "must deserialise" - {
       "when phase -6" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
             val borderMode = BorderMode(code, description)
@@ -57,22 +56,6 @@ class BorderModeSpec extends SpecBase with ScalaCheckPropertyChecks {
               .as[BorderMode](BorderMode.reads(mockFrontendAppConfig)) mustEqual borderMode
         }
       }
-      "when phase -5" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val borderMode = BorderMode(code, description)
-            Json
-              .parse(s"""
-                       |{
-                       |  "code": "$code",
-                       |  "description": "$description"
-                       |}
-                       |""".stripMargin)
-              .as[BorderMode](BorderMode.reads(mockFrontendAppConfig)) mustEqual borderMode
-        }
-      }
-
     }
     "must read from mongo" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {

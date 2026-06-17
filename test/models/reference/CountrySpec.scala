@@ -49,7 +49,6 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
 
     "must deserialise" - {
       "when phase-6 " in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
             val country = Country(CountryCode(code), description)
@@ -63,21 +62,6 @@ class CountrySpec extends SpecBase with ScalaCheckPropertyChecks with Generators
               .as[Country](Country.reads(mockFrontendAppConfig)) mustEqual country
         }
 
-      }
-      "when phase-5 " in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val country = Country(CountryCode(code), description)
-            Json
-              .parse(s"""
-                   |{
-                   |  "code": "$code",
-                   |  "description": "$description"
-                   |}
-                   |""".stripMargin)
-              .as[Country](Country.reads(mockFrontendAppConfig)) mustEqual country
-        }
       }
     }
 

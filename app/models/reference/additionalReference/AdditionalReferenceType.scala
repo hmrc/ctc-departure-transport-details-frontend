@@ -33,14 +33,11 @@ case class AdditionalReferenceType(documentType: String, description: String) ex
 object AdditionalReferenceType {
 
   def reads(config: FrontendAppConfig): Reads[AdditionalReferenceType] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(AdditionalReferenceType.apply)
-    } else {
-      Json.reads[AdditionalReferenceType]
-    }
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(AdditionalReferenceType.apply)
+
   implicit val format: Format[AdditionalReferenceType] = Json.format[AdditionalReferenceType]
 
   implicit val order: Order[AdditionalReferenceType] = (x: AdditionalReferenceType, y: AdditionalReferenceType) =>

@@ -47,7 +47,6 @@ class NationalitySpec extends SpecBase with ScalaCheckPropertyChecks with Genera
 
     "must deserialise" - {
       "when phase-6" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
           (code, description) =>
             val nationality = Nationality(code, description)
@@ -61,21 +60,6 @@ class NationalitySpec extends SpecBase with ScalaCheckPropertyChecks with Genera
               .as[Nationality](Nationality.reads(mockFrontendAppConfig)) mustEqual nationality
         }
 
-      }
-      "when phase-5" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val nationality = Nationality(code, description)
-            Json
-              .parse(s"""
-                       |{
-                       |  "code": "$code",
-                       |  "description": "$description"
-                       |}
-                       |""".stripMargin)
-              .as[Nationality](Nationality.reads(mockFrontendAppConfig)) mustEqual nationality
-        }
       }
       "must read from mongo" in {
         forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
