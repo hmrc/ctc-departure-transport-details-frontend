@@ -17,15 +17,11 @@
 package models.reference.transportMeans.departure
 
 import base.SpecBase
-import config.FrontendAppConfig
-import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 
 class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
-
-  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "Identification" - {
 
@@ -42,38 +38,18 @@ class IdentificationSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
     }
 
-    "must deserialise" - {
-      "when phase-6" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val identification = Identification(code, description)
-            Json
-              .parse(s"""
+    "must deserialise" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val identification = Identification(code, description)
+          Json
+            .parse(s"""
                    |{
                    |  "key": "$code",
                    |  "value": "$description"
                    |}
                    |""".stripMargin)
-              .as[Identification](Identification.reads(mockFrontendAppConfig)) mustEqual identification
-        }
-
-      }
-      "when phase-5" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val identification = Identification(code, description)
-            Json
-              .parse(s"""
-                   |{
-                   |  "type": "$code",
-                   |  "description": "$description"
-                   |}
-                   |""".stripMargin)
-              .as[Identification](Identification.reads(mockFrontendAppConfig)) mustEqual identification
-        }
-
+            .as[Identification](Identification.reads) mustEqual identification
       }
     }
     "when read from mongo" in {

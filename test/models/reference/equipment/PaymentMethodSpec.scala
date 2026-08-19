@@ -17,15 +17,11 @@
 package models.reference.equipment
 
 import base.SpecBase
-import config.FrontendAppConfig
-import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 
 class PaymentMethodSpec extends SpecBase with ScalaCheckPropertyChecks {
-
-  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "PaymentMethod" - {
 
@@ -42,37 +38,18 @@ class PaymentMethodSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
     }
 
-    "must deserialise" - {
-      "when phase-6" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val paymentMethod = PaymentMethod(code, description)
-            Json
-              .parse(s"""
+    "must deserialise" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val paymentMethod = PaymentMethod(code, description)
+          Json
+            .parse(s"""
                        |{
                        |  "key": "$code",
                        |  "value": "$description"
                        |}
                        |""".stripMargin)
-              .as[PaymentMethod](PaymentMethod.reads(mockFrontendAppConfig)) mustEqual paymentMethod
-        }
-
-      }
-      "when phase-5" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val paymentMethod = PaymentMethod(code, description)
-            Json
-              .parse(s"""
-                       |{
-                       |  "method": "$code",
-                       |  "description": "$description"
-                       |}
-                       |""".stripMargin)
-              .as[PaymentMethod](PaymentMethod.reads(mockFrontendAppConfig)) mustEqual paymentMethod
-        }
+            .as[PaymentMethod](PaymentMethod.reads) mustEqual paymentMethod
       }
     }
 
@@ -104,5 +81,4 @@ class PaymentMethodSpec extends SpecBase with ScalaCheckPropertyChecks {
       paymentMethod.toString mustEqual "one & two"
     }
   }
-
 }

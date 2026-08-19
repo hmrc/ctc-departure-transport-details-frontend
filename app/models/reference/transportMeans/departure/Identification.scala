@@ -17,7 +17,6 @@
 package models.reference.transportMeans.departure
 
 import cats.Order
-import config.FrontendAppConfig
 import models.reference.RichComparison
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
@@ -36,15 +35,12 @@ case class Identification(`type`: String, description: String) extends Radioable
 
 object Identification extends DynamicEnumerableType[Identification] {
 
-  def reads(config: FrontendAppConfig): Reads[Identification] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(Identification.apply)
-    } else {
-      Json.reads[Identification]
-    }
+  val reads: Reads[Identification] =
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(Identification.apply)
+
   implicit val format: Format[Identification] = Json.format[Identification]
 
   implicit val order: Order[Identification] = (x: Identification, y: Identification) => (x, y).compareBy(_.`type`)

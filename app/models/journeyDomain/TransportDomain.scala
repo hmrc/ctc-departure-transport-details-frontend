@@ -17,7 +17,7 @@
 package models.journeyDomain
 
 import config.Constants.ModeOfTransport.Mail
-import models.ProcedureType.{Normal, Simplified}
+import models.ProcedureType.Normal
 import models.UserAnswers
 import models.journeyDomain.*
 import models.journeyDomain.additionalInformation.AdditionalInformationsDomain

@@ -17,15 +17,11 @@
 package models.reference.authorisations
 
 import base.SpecBase
-import config.FrontendAppConfig
-import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 
 class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
-
-  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "AuthorisationType" - {
 
@@ -42,67 +38,47 @@ class AuthorisationTypeSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
     }
 
-    "must deserialise" - {
-      "when phase-6" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val authorisationType = AuthorisationType(code, description)
-            Json
-              .parse(s"""
-                       |{
-                       |  "key": "$code",
-                       |  "value": "$description"
-                       |}
-                       |""".stripMargin)
-              .as[AuthorisationType](AuthorisationType.reads(mockFrontendAppConfig)) mustEqual authorisationType
-        }
-
-      }
-    }
-    "when phase-5" in {
-      when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+    "must deserialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
           val authorisationType = AuthorisationType(code, description)
           Json
             .parse(s"""
                        |{
-                       |  "code": "$code",
-                       |  "description": "$description"
+                       |  "key": "$code",
+                       |  "value": "$description"
                        |}
                        |""".stripMargin)
-            .as[AuthorisationType](AuthorisationType.reads(mockFrontendAppConfig)) mustEqual authorisationType
+            .as[AuthorisationType](AuthorisationType.reads) mustEqual authorisationType
       }
     }
 
-  }
-
-  "must read from mongo" in {
-    forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-      (code, description) =>
-        val authorisationType = AuthorisationType(code, description)
-        Json
-          .parse(s"""
-                   |{
-                   |  "code": "$code",
-                   |  "description": "$description"
-                   |}
-                   |""".stripMargin)
-          .as[AuthorisationType] mustEqual authorisationType
+    "must read from mongo" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val authorisationType = AuthorisationType(code, description)
+          Json
+            .parse(s"""
+                 |{
+                 |  "code": "$code",
+                 |  "description": "$description"
+                 |}
+                 |""".stripMargin)
+            .as[AuthorisationType] mustEqual authorisationType
+      }
     }
-  }
 
-  "must format as string" in {
-    forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-      (code, description) =>
-        val authorisationType = AuthorisationType(code, description)
-        authorisationType.toString mustEqual s"$description"
+    "must format as string" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val authorisationType = AuthorisationType(code, description)
+          authorisationType.toString mustEqual s"$description"
+      }
     }
-  }
 
-  "when description contains raw HTML" in {
-    val authorisationType = AuthorisationType("test", "one &amp; two")
-    authorisationType.toString mustEqual "one & two"
+    "when description contains raw HTML" in {
+      val authorisationType = AuthorisationType("test", "one &amp; two")
+      authorisationType.toString mustEqual "one & two"
+    }
   }
 }

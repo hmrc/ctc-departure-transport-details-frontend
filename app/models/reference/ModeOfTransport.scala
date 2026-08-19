@@ -18,7 +18,6 @@ package models.reference
 
 import cats.Order
 import config.Constants.ModeOfTransport.*
-import config.FrontendAppConfig
 import models.{DynamicEnumerableType, Radioable}
 import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.functional.syntax.toFunctionalBuilderOps
@@ -41,15 +40,12 @@ case class InlandMode(code: String, description: String) extends ModeOfTransport
 
 object InlandMode extends DynamicEnumerableType[InlandMode] {
 
-  def reads(config: FrontendAppConfig): Reads[InlandMode] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(InlandMode.apply)
-    } else {
-      Json.reads[InlandMode]
-    }
+  val reads: Reads[InlandMode] =
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(InlandMode.apply)
+
   implicit val format: Format[InlandMode] = Json.format[InlandMode]
 
   implicit val order: Order[InlandMode] = (x: InlandMode, y: InlandMode) => (x, y).compareBy(_.code)
@@ -66,15 +62,11 @@ case class BorderMode(code: String, description: String) extends ModeOfTransport
 
 object BorderMode extends DynamicEnumerableType[BorderMode] {
 
-  def reads(config: FrontendAppConfig): Reads[BorderMode] =
-    if (config.phase6Enabled) {
-      (
-        (__ \ "key").read[String] and
-          (__ \ "value").read[String]
-      )(BorderMode.apply)
-    } else {
-      Json.reads[BorderMode]
-    }
+  val reads: Reads[BorderMode] =
+    (
+      (__ \ "key").read[String] and
+        (__ \ "value").read[String]
+    )(BorderMode.apply)
 
   implicit val format: Format[BorderMode] = Json.format[BorderMode]
 

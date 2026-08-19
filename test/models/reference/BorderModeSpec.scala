@@ -17,15 +17,11 @@
 package models.reference
 
 import base.SpecBase
-import config.FrontendAppConfig
-import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 
 class BorderModeSpec extends SpecBase with ScalaCheckPropertyChecks {
-
-  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "BorderMode" - {
     "must serialise" in {
@@ -41,39 +37,21 @@ class BorderModeSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
     }
 
-    "must deserialise" - {
-      "when phase -6" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val borderMode = BorderMode(code, description)
-            Json
-              .parse(s"""
+    "must deserialise" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val borderMode = BorderMode(code, description)
+          Json
+            .parse(s"""
                        |{
                        |  "key": "$code",
                        |  "value": "$description"
                        |}
                        |""".stripMargin)
-              .as[BorderMode](BorderMode.reads(mockFrontendAppConfig)) mustEqual borderMode
-        }
+            .as[BorderMode](BorderMode.reads) mustEqual borderMode
       }
-      "when phase -5" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val borderMode = BorderMode(code, description)
-            Json
-              .parse(s"""
-                       |{
-                       |  "code": "$code",
-                       |  "description": "$description"
-                       |}
-                       |""".stripMargin)
-              .as[BorderMode](BorderMode.reads(mockFrontendAppConfig)) mustEqual borderMode
-        }
-      }
-
     }
+
     "must read from mongo" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (code, description) =>
@@ -102,5 +80,4 @@ class BorderModeSpec extends SpecBase with ScalaCheckPropertyChecks {
       borderMode.toString mustEqual "one & two"
     }
   }
-
 }
