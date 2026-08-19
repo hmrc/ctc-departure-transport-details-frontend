@@ -17,16 +17,12 @@
 package models.reference.additionalInformation
 
 import base.SpecBase
-import config.FrontendAppConfig
 import generators.Generators
-import org.mockito.Mockito.when
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.Json
 
 class AdditionalInformationCodeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
-  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "AdditionalInformationCode" - {
 
@@ -43,38 +39,18 @@ class AdditionalInformationCodeSpec extends SpecBase with ScalaCheckPropertyChec
       }
     }
 
-    "must deserialise" - {
-      "when phase-6" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val additionalInformationCode = AdditionalInformationCode(code, description)
-            Json
-              .parse(s"""
+    "must deserialise" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (code, description) =>
+          val additionalInformationCode = AdditionalInformationCode(code, description)
+          Json
+            .parse(s"""
                        |{
                        |  "key": "$code",
                        |  "value": "$description"
                        |}
                        |""".stripMargin)
-              .as[AdditionalInformationCode](AdditionalInformationCode.reads(mockFrontendAppConfig)) mustEqual additionalInformationCode
-        }
-
-      }
-      "when phase-5" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (code, description) =>
-            val additionalInformationCode = AdditionalInformationCode(code, description)
-            Json
-              .parse(s"""
-                   |{
-                   |  "code": "$code",
-                   |  "description": "$description"
-                   |}
-                   |""".stripMargin)
-              .as[AdditionalInformationCode](AdditionalInformationCode.reads(mockFrontendAppConfig)) mustEqual additionalInformationCode
-        }
-
+            .as[AdditionalInformationCode](AdditionalInformationCode.reads) mustEqual additionalInformationCode
       }
     }
 

@@ -17,9 +17,7 @@
 package models.reference.additionalReference
 
 import base.SpecBase
-import config.FrontendAppConfig
 import generators.Generators
-import org.mockito.Mockito.when
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -27,8 +25,6 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 class AdditionalReferenceTypeSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
-
-  private val mockFrontendAppConfig = mock[FrontendAppConfig]
 
   "AdditionalReferenceType" - {
 
@@ -45,72 +41,52 @@ class AdditionalReferenceTypeSpec extends SpecBase with ScalaCheckPropertyChecks
       }
     }
 
-    "must deserialise" - {
-      "when phase-6" in {
-        when(mockFrontendAppConfig.phase6Enabled).thenReturn(true)
-        forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-          (docType, description) =>
-            val additionalReferenceType = AdditionalReferenceType(docType, description)
-            Json
-              .parse(s"""
-                       |{
-                       |  "key": "$docType",
-                       |  "value": "$description"
-                       |}
-                       |""".stripMargin)
-              .as[AdditionalReferenceType](AdditionalReferenceType.reads(mockFrontendAppConfig)) mustEqual additionalReferenceType
-        }
-      }
-
-    }
-    "when phase-5" in {
-      when(mockFrontendAppConfig.phase6Enabled).thenReturn(false)
+    "must deserialise" in {
       forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
         (docType, description) =>
           val additionalReferenceType = AdditionalReferenceType(docType, description)
           Json
             .parse(s"""
                        |{
-                       |  "documentType": "$docType",
-                       |  "description": "$description"
+                       |  "key": "$docType",
+                       |  "value": "$description"
                        |}
                        |""".stripMargin)
-            .as[AdditionalReferenceType](AdditionalReferenceType.reads(mockFrontendAppConfig)) mustEqual additionalReferenceType
+            .as[AdditionalReferenceType](AdditionalReferenceType.reads) mustEqual additionalReferenceType
       }
     }
 
-  }
-
-  "must read from mongo" in {
-    forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
-      (docType, description) =>
-        val additionalReferenceType = AdditionalReferenceType(docType, description)
-        Json
-          .parse(s"""
+    "must read from mongo" in {
+      forAll(Gen.alphaNumStr, Gen.alphaNumStr) {
+        (docType, description) =>
+          val additionalReferenceType = AdditionalReferenceType(docType, description)
+          Json
+            .parse(s"""
                  |{
                  |  "documentType": "$docType",
                  |  "description": "$description"
                  |}
                  |""".stripMargin)
-          .as[AdditionalReferenceType] mustEqual additionalReferenceType
+            .as[AdditionalReferenceType] mustEqual additionalReferenceType
+      }
     }
-  }
 
-  "must convert to select item" in {
-    forAll(arbitrary[AdditionalReferenceType], arbitrary[Boolean]) {
-      (additionalReferenceType, selected) =>
-        additionalReferenceType.toSelectItem(selected) mustEqual SelectItem(
-          Some(additionalReferenceType.documentType),
-          s"${additionalReferenceType.documentType} - ${additionalReferenceType.description}",
-          selected
-        )
+    "must convert to select item" in {
+      forAll(arbitrary[AdditionalReferenceType], arbitrary[Boolean]) {
+        (additionalReferenceType, selected) =>
+          additionalReferenceType.toSelectItem(selected) mustEqual SelectItem(
+            Some(additionalReferenceType.documentType),
+            s"${additionalReferenceType.documentType} - ${additionalReferenceType.description}",
+            selected
+          )
+      }
     }
-  }
 
-  "must format as string" in {
-    forAll(arbitrary[AdditionalReferenceType]) {
-      additionalReferenceType =>
-        additionalReferenceType.toString mustEqual s"${additionalReferenceType.documentType} - ${additionalReferenceType.description}"
+    "must format as string" in {
+      forAll(arbitrary[AdditionalReferenceType]) {
+        additionalReferenceType =>
+          additionalReferenceType.toString mustEqual s"${additionalReferenceType.documentType} - ${additionalReferenceType.description}"
+      }
     }
   }
 }
